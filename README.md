@@ -7,9 +7,7 @@ Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-### ---------------------------------------------------------------------------------------------------- ###
 
-### ---------------------------------------------------------------------------------------------------- ###
 # Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
@@ -30,6 +28,69 @@ export default {
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 ### ---------------------------------------------------------------------------------------------------- ###
+
+### Configuración de Variables de Entorno en TypeScript
+   ```typescript
+   
+   import dotenv from 'dotenv';// src/config.ts
+   dotenv.config();// Cargar las variables de entorno desde el archivo .env
+   interface Config { FRONTEND_URL: string; ANOTHER_SECRET_KEY: string }// Definir los tipos de las variables de entorno
+   const config: Config = {// Asignar las variables de entorno a constantes con sus tipos
+     FRONTEND_URL: process.env.FRONTEND_URL as string,
+     ANOTHER_SECRET_KEY: process.env.ANOTHER_SECRET_KEY as string,
+   }
+   export default config;
+   ```
+
+   ```typescript
+   // src/index.ts
+   import express, { Express } from 'express';
+   import cors from 'cors';
+   import config from './config';
+   const app: Express = express();
+
+   // Usar las variables de entorno
+   app.use(cors({ credentials: true, origin: config.FRONTEND_URL }))
+   app.listen(3000, () => { console.log(`Server is running on ${config.FRONTEND_URL}`) })
+   ```
+### Consideraciones para Producción
+
+1. **Archivos de Entorno en Producción**:
+   - En un entorno de producción, las variables de entorno generalmente se configuran directamente en el servidor o a través de un sistema de gestión de secretos como AWS Secrets Manager, Azure Key Vault, o similares.
+   - No debes incluir archivos `.env` en tu repositorio de producción. Utiliza variables de entorno configuradas en tu entorno de despliegue.
+
+2. **Uso Seguro de Variables de Entorno**:
+   - Asegúrate de nunca exponer tus variables de entorno en el frontend o en los logs.
+   - Utiliza herramientas de gestión de secretos para manejar datos sensibles de forma segura en producción.
+
+### Instalación de Definiciones de Tipos
+Primero, instala las definiciones de tipos para Express:
+```bash
+npm i @types/express -D
+```
+### Importación de Express en TypeScript
+```typescript
+import express, { Express, Request, Response } from 'express';
+const app: Express = express();
+app.get('/', (req: Request, res: Response) => { res.send('Hello, world!') });
+app.listen(3000, () => { console.log('Server is running on http://localhost:3000') });
+```
+
+### Compilar y Ejecutar
+1. **Compilar el Código TypeScript**:
+   ```bash
+   npx tsc
+   ```
+Esto generará el código JavaScript en la carpeta `dist`.
+2. **Ejecutar el Servidor**:
+   ```bash
+   node dist/index.js
+   ```
+
+
+
+
+
 
 ### ---------------------------------------------------------------------------------------------------- ###
 # Response GPT
