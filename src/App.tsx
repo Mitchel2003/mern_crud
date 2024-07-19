@@ -1,14 +1,7 @@
-import express, { Express } from 'express';
-import cors from 'cors';
+import express from 'express';
 
-const app: Express = express();
+export const app = express();
 
-app.use(
-  cors({
-    credentials: true,
-    origin: FRONTEND_URL,
-  })
-)
 function App() {
   return (
     <>
