@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-export const connectDB = async () => {
+export const connectionDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost/mern-crud-db');
-    console.log('Connected with database');
-  } catch (e) { console.log('Error connect with database: ' + e) }
+    await mongoose.connect('mongodb+srv://avilesmaicol08:123.maicol@mern-crud-db.rnks6cx.mongodb.net/?retryWrites=true&w=majority&appName=mern-crud-db');
+    console.log("connection sucessful");
+  } catch (e) { console.log("Error to try conect with database: " + e) }
 }

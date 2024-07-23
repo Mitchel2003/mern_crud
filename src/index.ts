@@ -1,6 +1,6 @@
-import { connectDB } from './db'
-import app from './App';
+import { connectionDB } from "./db";
+import app from "./app";
 
-connectDB();
+connectionDB();
 app.listen(3000);
-console.log('server on port 3000');
+console.log('server opened port 3000');
