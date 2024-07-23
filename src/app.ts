@@ -6,8 +6,9 @@ import authRoutes from './routes/auth.routes';
 
 const app = express();
 app.use(morgan('dev'));
-app.use('/api', authRoutes);
 app.use(express.json());
-app.use(cors);
+app.use(cors());
+
+app.use('/api', authRoutes);
 
 export default app;

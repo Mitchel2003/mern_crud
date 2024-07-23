@@ -1,12 +1,19 @@
 import { Request, Response } from "express";
+import { encrypt } from "../utils/password.handle";
+import User from "../models/user.model";
 
-export const login = (req: Request, res: Response) => {
-  console.log(req);
-  
-  res.send('processing login...')
+export const login = async (req: Request, res: Response) => {
+  try {
+    res.send('Login exitoso');
+  } catch (e) { console.log('Error to login: ' + e) }
 }
 
-export const register = (req: Request, res: Response) => {
-  console.log(req.body);
-  res.send('processing register...')
+export const register = async (req: Request, res: Response) => {
+  try {
+    const { username, email, password } = req.body;
+    const passHash = await encrypt(password, 10);
+    const new_user = new User({ username, email, password: passHash });
+    await new_user.save();
+    res.send('Registro exitoso');
+  } catch (e) { console.log('Error to register: ' + e) }
 }
