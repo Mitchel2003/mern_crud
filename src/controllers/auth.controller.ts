@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+
 import { encrypt } from "../utils/password.handle";
+import { createAccessToken } from "../libs/jwt";
+import { TOKEN_SECRET } from "../config";
 import User from "../models/user.model";
 
 export const login = async (req: Request, res: Response) => {
