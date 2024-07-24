@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";//npm install
 
 import { encrypt } from "../utils/password.handle";
 import { createAccessToken } from "../libs/jwt";
