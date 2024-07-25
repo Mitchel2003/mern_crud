@@ -1,6 +1,7 @@
 import { connectionDB } from "./db";
+import { PORT } from "./config";
 import app from "./app";
 
 connectionDB();
-app.listen(3000);
-console.log('server opened port 3000');
+app.listen(PORT);
+console.log(`Server initialized on port ${PORT}`);

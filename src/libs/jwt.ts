@@ -9,3 +9,17 @@ export async function createAccessToken(payload: object) {
     });
   })
 }
+
+/**
+ * This verify the credentials user { id: '', exp: '' } in a token specific
+ * @param token - is the token to verify
+ * @returns {object} we get a object with properties like "id" or "exp" correspond to user logged
+ */
+export async function verifyAccessToken(token: string): Promise<object> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, TOKEN_SECRET, (error, user) => {
+      if (error) reject(error);
+      resolve({ user });
+    })
+  })
+}
