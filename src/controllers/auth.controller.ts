@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import ExtendsRequest from "../interfaces/request.interface";
-import { encrypt, verified } from "../utils/password.handle";
+import { encrypt, verified } from "../libs/bcrypt";
 import { createAccessToken } from "../libs/jwt";
 import User from "../models/user.model";
 /*--------------------------------------------------controllers--------------------------------------------------*/
