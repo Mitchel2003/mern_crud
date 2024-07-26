@@ -1,5 +1,7 @@
 import { Request } from "express";
 
-interface ExtendsRequest extends Request { user?: object }
+interface ExtendsRequest extends Request {
+  user?: { id?: string; };
+}
 
-export default ExtendsRequest;
+export default ExtendsRequest
