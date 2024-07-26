@@ -1,9 +1,14 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config";
-
-export async function createAccessToken(payload: object) {
+import AuthJWT from "../interfaces/jwt.interface";
+/**
+ * This create a access token to auth services and protected routes
+ * @param token - is the param data to encrypt in the token, can be used in other moment to auth
+ * @returns {string} we get a string that correspond to hash token
+ */
+export async function createAccessToken(payload: object): Promise<string> {
   return new Promise((resolve, reject) => {
-    jwt.sign(payload, TOKEN_SECRET, { expiresIn: "1d" }, (error, token) => {
+    jwt.sign(payload, TOKEN_SECRET, { expiresIn: "1d" }, (error, token = '') => {
       if (error) reject(error);
       resolve(token);
     });
@@ -12,13 +17,13 @@ export async function createAccessToken(payload: object) {
 /**
  * This verify the credentials user { id: string } in a token specific
  * @param token - is the token to verify
- * @returns {JwtPayload} we get a object with properties like "id" or "exp" correspond to user logged
+ * @returns {AuthJWT} we get a object with properties like "id" or "exp" correspond to token of user logged
  */
-export async function verifyAccessToken(token: string): Promise<JwtPayload> {
+export async function verifyAccessToken(token: string): Promise<AuthJWT> {
   return new Promise((resolve, reject) => {
     jwt.verify(token, TOKEN_SECRET, (error, user) => {
       if (error) reject(error);
-      resolve(user as JwtPayload);
+      resolve(user as AuthJWT);
     })
   })
 }

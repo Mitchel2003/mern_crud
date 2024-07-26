@@ -14,6 +14,6 @@ export const encrypt = async (pass: string, salt: number): Promise<string> => {
  * @param passHash - is hash and represent the password that we get from database
  * @returns {boolean} this return a boolean
  */
-export const verified = async (pass: string, passHash: string = 'false'): Promise<boolean> => {
+export const verified = async (pass: string, passHash: string = ''): Promise<boolean> => {
   return await compare(pass, passHash);
 }

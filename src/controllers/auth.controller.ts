@@ -33,15 +33,13 @@ export const logout = (req: Request, res: Response) => {
 }
 
 export const profile = async (req: ExtendsRequest, res: Response) => {
-  const { id } = req.user;
-  const userFound = await User.findById(id);
+  const userFound = await User.findById(req.user?.id);
   if (!userFound) return res.status(401).json({ message: "User not found" });
   res.json({
     username: userFound.username,
     email: userFound.email,
     dateUpdate: userFound.updatedAt
-  })
-  res.send('On profile...');
+  });
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
