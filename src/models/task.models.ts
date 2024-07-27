@@ -13,6 +13,11 @@ const taskSchema: Schema<Task> = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
   }
 }, { timestamps: true, versionKey: false })
 
