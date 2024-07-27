@@ -5,47 +5,44 @@ export const getTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const task = await Task.findById(id);
-    res.json({ message: "!Tarea obtenida!", task: task });
-  } catch (e) { res.status(404).json({ message: `Task not found: ${e}` }) }
+    if (!task) return res.status(404);
+    res.json({ alert: "Success", task });
+  } catch (e) { res.status(404).json({ alert: `Error to get task: ${e}` }) }
 }
 
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const tasks = await Task.find();
-    res.json({ message: `!Un total de ${tasks.length} obtenidas!`, tasks: tasks });
-  } catch (e) { res.status(404).json({ message: `Nothing task found: ${e}` }) }
+    const length = tasks.length;
+    const plural = length === 1 ? '' : 's';
+    const alert = `---> ${length} tarea${plural} <---`;
+    res.json({ alert, tasks });
+  } catch (e) { res.status(404).json({ alert: `Error to get tasks: ${e}` }) }
 }
 
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, date } = req.body;
     const taskForm = new Task({ title, description, date });
-    const taskSaved = await taskForm.save();
-    res.json({
-      message: "Tarea guardada satisfactoriamente",
-      task: taskSaved
-    });
-  } catch (e) { res.status(404).json({ message: `Could not be saved: ${e}` }) }
+    const task = await taskForm.save();
+    res.json({ alert: "save success", task });
+  } catch (e) { res.status(404).json({ alert: `Error to create task: ${e}` }) }
 }
 
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const task = await Task.findByIdAndUpdate(id, req.body, { new: true });
-    res.json({
-      message: "Tarea actualizada satisfactoriamente",
-      task: task
-    });
-  } catch (e) { res.status(404).json({ message: `Could not be updated: ${e}` }) }
+    if (!task) return res.status(404);
+    res.json({ alert: "update success", task });
+  } catch (e) { res.status(404).json({ alert: `Error to update task: ${e}` }) }
 }
 
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const task = await Task.findByIdAndDelete(id);
-    res.json({
-      message: "Tarea eliminada satisfactoriamente",
-      task: task
-    });
-  } catch (e) { res.status(404).json({ message: `Could not be deleted: ${e}` }) }
+    if (!task) return res.status(404);
+    res.json({ alert: "delete done", task });
+  } catch (e) { res.status(404).json({ message: `Error to delete task: ${e}` }) }
 }
