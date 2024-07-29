@@ -5,15 +5,15 @@ import Task from "../models/task.models";
 export const getTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const task = await Task.findById(id);
+    const task = await Task.findById(id).populate('user');
     if (!task) return res.status(404);
-    res.json({ message: "Success", task });
+    res.json(task);
   } catch (e) { res.status(404).json({ message: `Error to get task: ${e}` }) }
 }
 
 export const getTasks = async (req: ExtendsRequest, res: Response) => {
   try {
-    const tasks = await Task.find({ user: req.user?.id });
+    const tasks = await Task.find({ user: req.user?.id }).populate('user');
     const length = tasks.length;
     const plural = length === 1 ? '' : 's';
     const message = `---> ${length} tarea${plural} <---`;
@@ -35,7 +35,7 @@ export const updateTask = async (req: Request, res: Response) => {
     const id = req.params.id;
     const task = await Task.findByIdAndUpdate(id, req.body, { new: true });
     if (!task) return res.status(404);
-    res.json({ message: "update success", task });
+    res.sendStatus(204);
   } catch (e) { res.status(404).json({ message: `Error to update task: ${e}` }) }
 }
 
@@ -44,6 +44,6 @@ export const deleteTask = async (req: Request, res: Response) => {
     const id = req.params.id;
     const task = await Task.findByIdAndDelete(id);
     if (!task) return res.status(404);
-    res.json({ message: "delete done", task });
+    res.sendStatus(204);
   } catch (e) { res.status(404).json({ message: `Error to delete task: ${e}` }) }
 }
