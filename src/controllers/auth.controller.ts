@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import ExtendsRequest from "../interfaces/request.interface";
-import { encrypt, verified } from "../libs/bcrypt";
-import { createAccessToken } from "../libs/jwt";
+import { encrypt, verified } from "../libs/bcrypt.handle";
+import { createAccessToken } from "../libs/jwt.handle";
 import User from "../models/user.model";
 /*--------------------------------------------------controllers--------------------------------------------------*/
 export const login = async (req: Request, res: Response) => {
