@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import ExtendsRequest from "../interfaces/request.interface";
 import Task from "../models/task.models";
 
 export const getTask = async (req: Request, res: Response) => {
@@ -20,10 +21,10 @@ export const getTasks = async (req: Request, res: Response) => {
   } catch (e) { res.status(404).json({ message: `Error to get tasks: ${e}` }) }
 }
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (req: ExtendsRequest, res: Response) => {
   try {
-    const { title, description, date } = req.body;
-    const taskForm = new Task({ title, description, date });
+    const { title, description } = req.body;
+    const taskForm = new Task({ title, description, user: req.user?.id });
     const task = await taskForm.save();
     res.json({ message: "save success", task });
   } catch (e) { res.status(404).json({ message: `Error to create task: ${e}` }) }
