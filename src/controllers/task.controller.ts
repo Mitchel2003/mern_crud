@@ -11,9 +11,9 @@ export const getTask = async (req: Request, res: Response) => {
   } catch (e) { res.status(404).json({ message: `Error to get task: ${e}` }) }
 }
 
-export const getTasks = async (req: Request, res: Response) => {
+export const getTasks = async (req: ExtendsRequest, res: Response) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ user: req.user?.id });
     const length = tasks.length;
     const plural = length === 1 ? '' : 's';
     const message = `---> ${length} tarea${plural} <---`;
