@@ -1,5 +1,6 @@
 import { JwtPayload } from "jsonwebtoken";
+import { Schema } from "mongoose";
 
-interface AuthJWT extends JwtPayload { id?: string }
+interface CredentialsJWT extends JwtPayload { id?: Schema.Types.ObjectId }
 
-export default AuthJWT;
+export default CredentialsJWT;

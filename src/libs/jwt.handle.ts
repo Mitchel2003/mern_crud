@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
+import { Response } from "express";
 import { TOKEN_SECRET } from "../config";
-import AuthJWT from "../interfaces/jwt.interface";
+import CredentialsJWT from "../interfaces/jwt.interface";
+
 /**
  * This create a access token to auth services and protected routes
  * @param token - is the param data to encrypt in the token, can be used in other moment to auth
@@ -15,15 +17,17 @@ export async function createAccessToken(payload: object): Promise<string> {
   })
 }
 /**
- * This verify the credentials user { id: string } in a token specific
+ * This verify the credentials user { id: Schema.Types.ObjectId } in a token specific
  * @param token - is the token to verify
- * @returns {AuthJWT} we get a object with properties like "id" or "exp" correspond to token of user logged
+ * @returns {CredentialsJWT} we get a object with properties like "id" or "exp" correspond to token of user logged
  */
-export async function verifyAccessToken(token: string): Promise<AuthJWT> {
-  return new Promise((resolve, reject) => {
+export async function verifyAccessToken(token: string, res: Response): Promise<CredentialsJWT> {
+  return new Promise((resolve) => {
     jwt.verify(token, TOKEN_SECRET, (error, user) => {
-      if (error) reject(error);
-      resolve(user as AuthJWT);
+      if (error) return res.status(401).json({ message: "Token expired" });//check expiration
+      const token = user as CredentialsJWT;//convert to use credentials
+      if (!token.id) return res.status(401).json({ message: "Invalid token" });
+      resolve(token);
     })
   })
 }

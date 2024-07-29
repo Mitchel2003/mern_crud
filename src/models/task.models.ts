@@ -15,7 +15,7 @@ const taskSchema: Schema<Task> = new Schema({
     default: Date.now
   },
   user: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'user',
     required: true
   }

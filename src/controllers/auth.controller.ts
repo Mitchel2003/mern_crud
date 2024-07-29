@@ -11,7 +11,7 @@ export const login = async (req: Request, res: Response) => {
     if (!access) return res.status(400).json({ message: "Invalid credentials" });
     const token = await createAccessToken({ id: access._id });
     res.cookie("token", token);
-    res.json({ id: access._id, username: access.username, email: access.email, lastUpdate: access.updatedAt });
+    res.json({ id: access._id });
   } catch (e) { res.status(500).json({ message: `Error to login => ${e}` }) }
 }
 
@@ -33,12 +33,11 @@ export const logout = (req: Request, res: Response) => {
 }
 
 export const profile = async (req: ExtendsRequest, res: Response) => {
-  const userFound = await User.findById(req.user?.id);
-  if (!userFound) return res.status(401).json({ message: "User not found" });
+  const document = await User.findById(req.user?.id);
+  if (!document) return res.status(401).json({ message: "User not found" });
   res.json({
-    username: userFound.username,
-    email: userFound.email,
-    dateUpdate: userFound.updatedAt
+    id: document._id,
+    username: document.username
   });
 }
 /*---------------------------------------------------------------------------------------------------------*/
