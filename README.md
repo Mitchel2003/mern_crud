@@ -1,4 +1,33 @@
 ### ---------------------------------------------------------------------------------------------------- ###
+### Códigos de estado informativos (100-199)
+100 Continue: El servidor ha recibido los encabezados de la solicitud y el cliente debe proceder a enviar el cuerpo de la solicitud.
+101 Switching Protocols: El servidor acepta el cambio de protocolo solicitado por el cliente.
+### Códigos de estado de éxito (200-299)
+200 OK: La solicitud ha tenido éxito. La respuesta depende del método de solicitud utilizado.
+201 Created: La solicitud ha sido cumplida y ha resultado en la creación de un nuevo recurso.
+202 Accepted: La solicitud ha sido aceptada para procesamiento, pero aún no se ha completado.
+204 No Content: La solicitud ha tenido éxito, pero el servidor no devuelve ningún contenido.
+### Códigos de redirección (300-399)
+301 Moved Permanently: La URL del recurso solicitado ha sido cambiada permanentemente.
+302 Found: El recurso solicitado se encuentra temporalmente en una URL diferente.
+304 Not Modified: El recurso no ha sido modificado desde la última solicitud.
+### Códigos de error del cliente (400-499)
+400 Bad Request: El servidor no puede procesar la solicitud debido a un error del cliente.
+401 Unauthorized: La solicitud requiere autenticación del usuario.
+403 Forbidden: El servidor entiende la solicitud, pero se niega a autorizarla.
+404 Not Found: El recurso solicitado no se ha encontrado.
+405 Method Not Allowed: El método de solicitud no está permitido para el recurso solicitado.
+409 Conflict: La solicitud no puede ser completada debido a un conflicto con el estado actual del recurso.
+422 Unprocessable Entity: El servidor entiende el tipo de contenido de la solicitud, pero no puede procesar las instrucciones contenidas en ella.
+### Códigos de error del servidor (500-599)
+500 Internal Server Error: El servidor ha encontrado una condición inesperada que le impide cumplir con la solicitud.
+501 Not Implemented: El servidor no reconoce el método de solicitud y no puede soportarlo.
+502 Bad Gateway: El servidor, actuando como una puerta de enlace o proxy, recibió una respuesta inválida del servidor ascendente.
+503 Service Unavailable: El servidor no está disponible temporalmente, generalmente debido a mantenimiento o sobrecarga.
+504 Gateway Timeout: El servidor, actuando como una puerta de enlace o proxy, no recibió una respuesta a tiempo del servidor ascendente.
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
 ### Uso de interfaz !IMPORTANT!
 ```typescript
 import { Request } from "express";
