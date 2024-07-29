@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { authRequired } from "../middlewares/auth.middleware";
+import auth from "../middlewares/auth.middleware";
 import { getTask, getTasks, createTask, updateTask, deleteTask } from "../controllers/task.controller";
 
 const router = Router();
-
-router.get('/task/:id', authRequired, getTask)
-router.get('/tasks', authRequired, getTasks)
-router.post('/task', authRequired, createTask)
-router.put('/task/:id', authRequired, updateTask)
-router.delete('/task/:id', authRequired, deleteTask)
+router.get('/task/:id', auth, getTask)
+router.get('/tasks', auth, getTasks)
+router.post('/task', auth, createTask)
+router.put('/task/:id', auth, updateTask)
+router.delete('/task/:id', auth, deleteTask)
 
 export default router;
