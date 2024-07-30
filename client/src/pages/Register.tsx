@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { requestRegister } from "../api/auth";
+import { registerRequest } from "../api/auth";
 
 function Register() {
   const { register, handleSubmit } = useForm();
@@ -7,7 +7,7 @@ function Register() {
   return (
     <>
       <div>Register</div>
-      <form onSubmit={handleSubmit(async (values) => { const res = await requestRegister(values); console.log(res) })}>
+      <form onSubmit={handleSubmit(async (values) => await registerRequest(values))} >
         <input type="text" placeholder="Username" autoFocus {...register('username', { required: true })} />
         <input type="email" placeholder="Email" {...register('email', { required: true })} />
         <input type="password" placeholder="Password" {...register('password', { required: true })} />
