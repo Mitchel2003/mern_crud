@@ -4,10 +4,15 @@ import { registerRequest } from "../api/auth";
 function Register() {
   const { register, handleSubmit } = useForm();
 
+  const onSubmit = handleSubmit(async(values) => {
+    const req = await registerRequest(values);
+    console.log(req);
+  })
+
   return (
     <>
       <div>Register</div>
-      <form onSubmit={handleSubmit(async (values) => await registerRequest(values))} >
+      <form onSubmit={onSubmit} >
         <input type="text" placeholder="Username" autoFocus {...register('username', { required: true })} />
         <input type="email" placeholder="Email" {...register('email', { required: true })} />
         <input type="password" placeholder="Password" {...register('password', { required: true })} />
