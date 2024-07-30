@@ -6,17 +6,11 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
 
-  const signup = async (user) => {
-    const req = await registerRequest(user);
-    console.log(req);
-  }
-  const signin = async (user) => {
-    const req = await loginRequest(user);
-    console.log(req);
-  }
+  const signin = async (user) => await loginRequest(user);
+  const signup = async (user) => await registerRequest(user);
 
   return (
-    <AuthContext.Provider value={{user, signup, signin}}>
+    <AuthContext.Provider value={{user, signin, signup}}>
       { children }
     </AuthContext.Provider>
   )
