@@ -12,8 +12,14 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const signin = async (user) => await loginRequest(user);
-  const signup = async (user) => await registerRequest(user);
+  const signin = async (user) => {
+    const res = await loginRequest(user);
+    setUser(res.data);
+  }
+  const signup = async (user) => {
+    const res = await registerRequest(user);
+    setUser(res.data);
+  }
 
   return (
     <AuthContext.Provider value={{ user, signin, signup }}>
