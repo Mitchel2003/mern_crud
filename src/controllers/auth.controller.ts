@@ -1,27 +1,25 @@
 import { Request, Response } from "express";
+import { Document } from "mongoose";
 
 import ExtendsRequest from "../interfaces/request.interface";
 import { encrypt, verified } from "../libs/bcrypt.handle";
-import { createAccessToken } from "../libs/jwt.handle";
+import { generateAccessToken } from "../libs/jwt.handle";
 import User from "../models/user.model";
 /*--------------------------------------------------controllers--------------------------------------------------*/
 export const login = async (req: Request, res: Response) => {
   try {
-    const access = await validateCredencials(req);
-    if (!access) return res.status(400).json({ message: "Invalid credentials" });
-    const token = await createAccessToken({ id: access._id });
+    const user = await validateCredencials(req, res);
+    const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
-    res.json({ id: access._id });
+    res.json({ id: user._id });
   } catch (e) { res.status(500).json({ message: `Error to login => ${e}` }) }
 }
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
-    const passHash = await encrypt(password, 10);
-    const new_user = new User({ username, email, password: passHash });
-    const userCredentials = await new_user.save();
-    const token = await createAccessToken({ id: userCredentials._id });
+    if (await isAccountFound(req)) return res.status(403).json({ message: "This email has been registed previously" });
+    const user = await createUserEncrypt(req);
+    const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
     res.send("User registed");
   } catch (e) { res.status(500).json({ message: `Error to register => ${e}` }) }
@@ -43,11 +41,21 @@ export const profile = async (req: ExtendsRequest, res: Response) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-async function validateCredencials({ body }: Request) {
+async function validateCredencials({ body }: Request, res: Response): Promise<Document> {
   const { email, password } = body;
   const userFound = await User.findOne({ email })
   const isMatch = await verified(password, userFound?.password);
-  if (!isMatch || !userFound) return;
-  return userFound;
+  if (!isMatch || !userFound) res.status(400).json({ message: "Invalid credentials" });
+  return userFound as Document;
+}
+async function isAccountFound(req: Request): Promise<boolean> {
+  const { email } = req.body;
+  return await User.findOne({ email });
+}
+async function createUserEncrypt(req: Request) {
+  const { username, email, password } = req.body;
+  const passHash = await encrypt(password, 10);
+  const user = new User({ username, email, password: passHash });
+  return await user.save();
 }
 /*---------------------------------------------------------------------------------------------------------*/

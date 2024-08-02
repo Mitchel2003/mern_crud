@@ -1,3 +1,125 @@
+### Diferencias clave entre `type` e `interface`
+1. **Extensibilidad**:
+   - `interface` permite la declaración incremental, es decir, se pueden declarar múltiples interfaces con el mismo nombre y TypeScript las combinará automáticamente.
+   - `type` no permite la declaración incremental. Sin embargo, puedes extender tipos usando intersecciones (`&`).
+
+2. **Uso de Unión y Tuplas**:
+   - `type` permite definir uniones y tuplas directamente, lo cual es útil en ciertos casos.
+   - `interface` no permite uniones directamente pero puede ser extendida o implementada.
+
+3. **Uso en bibliotecas y definiciones de API**:
+   - `interface` es generalmente preferida en definiciones de bibliotecas públicas y APIs debido a su capacidad de declaración incremental.
+   - `type` es más flexible y se suele usar en definiciones más específicas o internas.
+
+4. **Composición**:
+   - Ambos pueden ser compuestos, pero con sintaxis ligeramente diferentes. `interface` usa `extends` y `type` usa intersecciones (`&`).
+```typescript
+type PropsWithChildren<P> = P & { children?: ReactNode };
+```
+### ¿Cuál es más profesional?
+Ambos enfoques son válidos y profesionales, y la elección depende del contexto y las preferencias del equipo. Sin embargo, aquí hay algunas recomendaciones de mejores prácticas:
+- **Para definiciones simples y específicas**: Usar `type` es una buena opción debido a su flexibilidad.
+- **Para definiciones públicas y extensibles**: Usar `interface` puede ser preferible debido a su capacidad de extensión incremental.
+
+
+```typescript
+interface User {
+  // Define aquí las propiedades de tu usuario, por ejemplo:
+  id: string;
+  name: string;
+  email: string;
+  // Añade las propiedades necesarias
+}
+
+interface AuthContextType {
+  user: User | null;
+  signin: (user: object) => Promise<void>;
+  signup: (user: object) => Promise<void>;
+}
+```
+
+### Modificación del contexto y el proveedor
+Luego, usa estos tipos en tu contexto y proveedor:
+
+```typescript
+import { createContext, useContext, useState, ReactNode } from 'react';
+import { loginRequest, registerRequest } from '../api/auth';
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  return context;
+}
+
+interface Props {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: Props) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const signin = async (user: object) => {
+    const res = await loginRequest(user);
+    setUser(res.data);
+  }
+
+  const signup = async (user: object) => {
+    const res = await registerRequest(user);
+    setUser(res.data);
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, signin, signup }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+```
+
+### Modificación del componente Register
+Asegúrate de que el componente que consume el contexto esté utilizando el hook `useAuth` correctamente:
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { useAuth } from '../context/AuthContext';
+
+function Register() {
+  const { register, handleSubmit } = useForm();
+  const { signup } = useAuth();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await signup(data);
+      // Manejar el registro exitoso aquí
+    } catch (error) {
+      // Manejar errores aquí
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('username')} placeholder="Username" />
+      <input {...register('password')} type="password" placeholder="Password" />
+      <button type="submit">Register</button>
+    </form>
+  );
+}
+
+export default Register;
+```
+
+### Detalles de las mejoras:
+1. **Tipos explícitos**: Definir `AuthContextType` asegura que TypeScript pueda verificar correctamente los tipos y prevenir errores como el que mencionaste.
+2. **Manejo de estado con tipos claros**: Usar `User | null` para el estado `user` proporciona claridad sobre los posibles valores.
+3. **Uso adecuado de contextos**: Proveer un tipo `undefined` inicial para `createContext` y luego lanzar un error en `useAuth` si el contexto no está definido asegura que el hook se use correctamente.
+
+### Beneficios:
+- **Menos errores en tiempo de desarrollo**: Gracias a los tipos, TypeScript te alertará sobre cualquier uso incorrecto del contexto.
+- **Código más mantenible y legible**: Los tipos explícitos y las verificaciones claras hacen que el código sea más fácil de entender y mantener.
+- **Buenas prácticas**: Este enfoque sigue las mejores prácticas para el uso de contextos y hooks en React con TypeScript.
+
 ### ---------------------------------------------------------------------------------------------------- ###
 ### Códigos de estado informativos (100-199)
 100 Continue: El servidor ha recibido los encabezados de la solicitud y el cliente debe proceder a enviar el cuerpo de la solicitud.
