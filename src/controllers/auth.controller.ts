@@ -17,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
-    if (await isAccountFound(req)) return res.status(403).json({ message: "This email has been registed previously" });
+    await isAccountFound(req, res);
     const user = await createUserEncrypt(req);
     const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
@@ -48,9 +48,10 @@ async function validateCredencials({ body }: Request, res: Response): Promise<Do
   if (!isMatch || !userFound) res.status(400).json({ message: "Invalid credentials" });
   return userFound as Document;
 }
-async function isAccountFound(req: Request): Promise<boolean> {
+async function isAccountFound(req: Request, res: Response) {
   const { email } = req.body;
-  return await User.findOne({ email });
+  const userFound = await User.findOne({ email });
+  if(!userFound) return res.status(403);
 }
 async function createUserEncrypt(req: Request) {
   const { username, email, password } = req.body;
