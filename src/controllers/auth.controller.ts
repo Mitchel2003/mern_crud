@@ -7,8 +7,8 @@ import { generateAccessToken } from "../libs/jwt.handle";
 import User from "../models/user.model";
 /*--------------------------------------------------controllers--------------------------------------------------*/
 export const login = async (req: Request, res: Response) => {
-  try {
-    const user = await validateCredencials(req, res);
+  try { 
+    const user = await verifyCredencials(req, res);
     const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
     res.json({ id: user._id });
@@ -41,19 +41,19 @@ export const profile = async (req: ExtendsRequest, res: Response) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-async function validateCredencials({ body }: Request, res: Response): Promise<Document> {
+async function verifyCredentials({ body }: Request, res: Response): Promise<Document> {
   const { email, password } = body;
-  const userFound = await User.findOne({ email })
+  const userFound = await User.findOne({ email });
   const isMatch = await verified(password, userFound?.password);
-  if (!isMatch || !userFound) res.status(400).json({ message: "Invalid credentials" });
+  if (!isMatch || !userFound) res.status(403);
   return userFound as Document;
 }
-async function isAccountFound(req: Request, res: Response) {
+async function isAccountFound(req: Request, res: Response): Promise<Response> {
   const { email } = req.body;
   const userFound = await User.findOne({ email });
-  if(!userFound) return res.status(403);
+  if(userFound) return res.status(403);
 }
-async function createUserEncrypt(req: Request) {
+async function createUserEncrypt(req: Request): Promise<Document> {
   const { username, email, password } = req.body;
   const passHash = await encrypt(password, 10);
   const user = new User({ username, email, password: passHash });
