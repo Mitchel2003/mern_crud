@@ -12,7 +12,7 @@ export const login = async (req: Request, res: Response) => {
     const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
     res.json({ id: user._id });
-  } catch (e) { res.status(500).json({ message: `Error to login => ${e}` }) }
+  } catch (e) { res.status(500).json(["Error to login => " + e ]) }
 }
 
 export const register = async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ export const register = async (req: Request, res: Response) => {
     const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
     res.send("User registed");
-  } catch (e) { res.status(500).json({ message: `Error to register => ${e}` }) }
+  } catch (e) { res.status(500).json(["Error to register => " + e ]) }
 }
 
 export const logout = (req: Request, res: Response) => {
@@ -32,7 +32,7 @@ export const logout = (req: Request, res: Response) => {
 
 export const profile = async (req: ExtendsRequest, res: Response) => {
   const document = await User.findById(req.user?.id);
-  if (!document) return res.status(401).json({ message: "User not found" });
+  if (!document) return res.status(401).json(["User not found"]);
   res.json({
     id: document._id,
     username: document.username
