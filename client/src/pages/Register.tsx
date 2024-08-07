@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+                  import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"
 import { useForm } from "react-hook-form";
 
 function Register() {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { signup, isAuth } = useAuth();
+  const { signup, isAuth, err: registerErrors } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => { if (isAuth) return navigate("/tasks") }, [isAuth]);
@@ -16,6 +16,9 @@ function Register() {
     <>
       <div>Register</div>
       <form onSubmit={onSubmit} >
+
+        { registerErrors.map((e, index) => (<div className="bg-red-500 text-white" key={index}> {e} </div>)) }
+        
         <input type="text" placeholder="Username" autoFocus {...register('username', { required: true })} />
         {errors.username && (<p className="text-red-500">Username is required</p>)}
         <input type="email" placeholder="Email" {...register('email', { required: true })} />
