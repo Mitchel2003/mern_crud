@@ -9,11 +9,11 @@ function Login() {
   
   return (
     <div>Login</div>
-    { errs.map((e, i) => (<div className="bg-red-500 m-1 text-white" key={i}>{e}</div>)) }
+    { errs.map((e, index) => (<div className="bg-red-500 text-white" key={index}> {e} </div>)) }
     <form onSubmit={onSubmit}>
-      <input name="email" type="email" placeholder="Email" />
-      <input name="password" type="password" placeholder="Password"/>
-      <button type="onsubmit"> Submit </button>
+      <input type="email" placeholder="Email" {...register('email', { required: true })}/>
+      <input type="password" placeholder="Password" {...register('password', { required: true })}/>
+      <button type="submit"> Submit </button>
     </form>
   )
 }
