@@ -14,6 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserContext>({});
   const [isAuth, setIsAuth] = useState(false);
+  const [errors, setErrors] useState({});
 
   const signin = async (user: object) => {
     try {
@@ -27,11 +28,11 @@ export const AuthProvider = ({ children }: Props) => {
       const res = await registerRequest(user);
       setUser(res.data);
       setIsAuth(true);
-    } catch (e) { console.log(e) }
+    } catch (e) { setErrors(e.response.errors) }
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuth, signin, signup }}>
+    <AuthContext.Provider value={{ user, isAuth, errors, signin, signup }}>
       {children}
     </AuthContext.Provider>
   )
