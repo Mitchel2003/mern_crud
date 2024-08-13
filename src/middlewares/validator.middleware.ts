@@ -7,7 +7,7 @@ const validateSchema = (schema: ZodType) => (req: Request, res: Response, next: 
     next();
   } catch (e) {
     if (!(e instanceof ZodError)) return res.sendStatus(500);
-    return res.status(400).json({ error: e.errors.map(alert => alert.message) });
+    return res.status(400).json(e.errors.map(alert => alert.message));
   }
 }
 
