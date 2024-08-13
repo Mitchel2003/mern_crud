@@ -1,9 +1,9 @@
 import { createContext, useContext, useState } from 'react';
 import { loginRequest, registerRequest } from '../api/auth';
-import { ContextType, UserContext } from '../interfaces/context.interface';
+import { TypeContext, UserContext } from '../interfaces/context.interface';
 import { Props } from '../interfaces/props.interface';
 
-const AuthContext = createContext<ContextType | undefined>(undefined);
+const AuthContext = createContext<TypeContext | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -14,21 +14,21 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserContext>({});
   const [isAuth, setIsAuth] = useState(false);
-  const [errors, setErrors] useState({});
+  const [errors, setErrors] = useState([]);
 
   const signin = async (user: object) => {
     try {
       const res = await loginRequest(user);
       setUser(res.data);
       setIsAuth(true);
-    } catch (e) { console.log(e) }
+    } catch (e) { setErrors(e.response.data) }
   }
   const signup = async (user: object) => {
     try {
       const res = await registerRequest(user);
       setUser(res.data);
       setIsAuth(true);
-    } catch (e) { setErrors(e.response.errors) }
+    } catch (e) { setErrors(e.response.data) }
   }
 
   return (
