@@ -4,7 +4,7 @@ export interface UserContext {
   email?: string
 }
 
-export interface ContextType {
+export interface TypeContext {
   isAuth: boolean;
   user?: UserContext;
   signin: (user: object) => Promise<void>;
