@@ -12,7 +12,9 @@ function Login() {
     { errs.map((e, index) => (<div className="bg-red-500 text-white" key={index}> {e} </div>)) }
     <form onSubmit={onSubmit}>
       <input type="email" placeholder="Email" {...register('email', { required: true })}/>
+      {errors.email && (<p className="text-red-500"> Email is required </p>)}
       <input type="password" placeholder="Password" {...register('password', { required: true })}/>
+      {errors.password && (<p className="text-red-500"> Password is required </p>)}
       <button type="submit"> Submit </button>
     </form>
   )
