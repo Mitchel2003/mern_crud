@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { loginRequest, registerRequest } from '../api/auth';
 import { TypeContext, UserContext } from '../interfaces/context.interface';
 import { Props } from '../interfaces/props.interface';
@@ -16,6 +16,13 @@ export const AuthProvider = ({ children }: Props) => {
   const [isAuth, setIsAuth] = useState(false);
   const [errors, setErrors] = useState([]);
 
+  useEffect(() => {
+    if(errors.length > 0) {
+      const timer = setTimeout(() => setErrors([]), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
+
   const signin = async (user: object) => {
     try {
       const res = await loginRequest(user);
@@ -23,6 +30,7 @@ export const AuthProvider = ({ children }: Props) => {
       setIsAuth(true);
     } catch (e) { setErrors(e.response.data) }
   }
+  
   const signup = async (user: object) => {
     try {
       const res = await registerRequest(user);
