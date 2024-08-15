@@ -7,6 +7,7 @@ export interface UserContext {
 export interface TypeContext {
   isAuth: boolean;
   user?: UserContext;
+  errors?: string[];
   signin: (user: object) => Promise<void>;
   signup: (user: object) => Promise<void>;
 }

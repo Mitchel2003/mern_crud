@@ -8,7 +8,7 @@ import User from "../models/user.model";
 
 export const login = async (req: Request, res: Response) => {
   try { 
-    const user = await verifyCredencials(req, res);
+    const user = await verifyCredentials(req, res);
     const token = await generateAccessToken({ id: user._id });
     res.cookie("token", token);
     res.json({ id: user._id });

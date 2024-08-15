@@ -1,7 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { loginRequest, registerRequest } from '../api/auth';
+
 import { TypeContext, UserContext } from '../interfaces/context.interface';
+import { ErrorResponse } from '../interfaces/response.interface';
 import { Props } from '../interfaces/props.interface';
+import { loginRequest, registerRequest } from '../api/auth';
 
 const AuthContext = createContext<TypeContext | undefined>(undefined);
 
@@ -12,12 +14,12 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }: Props) => {
+  const [errors, setErrors] = useState<string[]>([]);
   const [user, setUser] = useState<UserContext>({});
   const [isAuth, setIsAuth] = useState(false);
-  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
-    if(errors.length > 0) {
+    if (errors.length > 0) {
       const timer = setTimeout(() => setErrors([]), 5000);
       return () => clearTimeout(timer);
     }
@@ -28,15 +30,15 @@ export const AuthProvider = ({ children }: Props) => {
       const res = await loginRequest(user);
       setUser(res.data);
       setIsAuth(true);
-    } catch (e) { setErrors(e.response.data) }
+    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
-  
+
   const signup = async (user: object) => {
     try {
       const res = await registerRequest(user);
       setUser(res.data);
       setIsAuth(true);
-    } catch (e) { setErrors(e.response.data) }
+    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   return (
@@ -44,4 +46,8 @@ export const AuthProvider = ({ children }: Props) => {
       {children}
     </AuthContext.Provider>
   )
+}
+
+function isErrorResponse(e: unknown): e is ErrorResponse {
+  return (typeof e === "object" && e !== null && "response" in e)
 }

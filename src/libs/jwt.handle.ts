@@ -8,7 +8,7 @@ import CredentialsJWT from "../interfaces/jwt.interface";
  * @param token - is the param data to encrypt in the token, can be used in other moment to auth
  * @returns {string} we get a string that correspond to hash token
  */
-export async function createAccessToken(payload: object): Promise<string> {
+export async function generateAccessToken(payload: object): Promise<string> {
   return new Promise((resolve, reject) => {
     jwt.sign(payload, TOKEN_SECRET, { expiresIn: "1d" }, (error, token = '') => {
       if (error) reject(error);
