@@ -1,5 +1,105 @@
 
 ### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+## Opciones profesionales para trabajar con diferentes retornos
+### 1. **Separar la Lógica de Autenticación del Controlador HTTP:**
+   Una opción es hacer que `verifyCredentials` solo se encargue de verificar las credenciales y devolver el usuario si es válido o `null` si no lo es. El controlador HTTP, en cambio, manejaría la lógica de la respuesta.
+
+   ```typescript
+   // Autenticación (pura lógica)
+   async function verifyCredentials(email: string, password: string): Promise<User | null> {
+     const userFound = await User.findOne({ email });
+     const isMatch = await verified(password, userFound?.password);
+     return isMatch ? userFound : null;
+   }
+
+   // Controlador HTTP
+   export const login = async (req: Request, res: Response) => {
+     try {
+       const { email, password } = req.body;
+       const user = await verifyCredentials(email, password);
+       if (!user) return res.status(403).json(["Invalid credentials"]);
+       ...
+     }
+   }
+   ```
+
+### 2. **Retornar un Objeto de Resultado con un Tipo Seguro:**
+   Si prefieres mantener una única función que devuelva más de un tipo de resultado, puedes usar un objeto que envíe de vuelta tanto el usuario como un posible mensaje de error:
+
+   ```typescript
+   interface VerifyCredentialsResult { user?: User, error?: string }
+
+   async function verifyCredentials(email: string, password: string): Promise<VerifyCredentialsResult> {
+     const userFound = await User.findOne({ email });
+     if (!userFound) return { error: "User not found" };
+     const isMatch = await verified(password, userFound.password);
+     if (!isMatch) return { error: "Invalid credentials" };
+     return { user: userFound };
+   }
+
+   export const login = async (req: Request, res: Response) => {
+     try {
+       const { email, password } = req.body;
+       const { user, error } = await verifyCredentials(email, password);
+       if (error) return res.status(403).json([error]);
+       ...
+     }
+   }
+   ```
+
+### 3. **Uso de Result Types o Either (Tipo Funcional):**
+   Puedes aplicar un patrón funcional que separa claramente los resultados exitosos de los fallidos usando un tipo `Either` o `Result`.Este enfoque es ideal si buscas un código altamente mantenible y limpio:
+
+   ```typescript
+   type Result<T, E> = { ok: true, value: T } | { ok: false, error: E };
+
+   async function verifyCredentials(email: string, password: string): Promise<Result<User, string>> {
+     const userFound = await User.findOne({ email });
+     if (!userFound) return { ok: false, error: "User not found" };
+     const isMatch = await verified(password, userFound.password);
+     if (!isMatch) return { ok: false, error: "Invalid credentials" };
+     return { ok: true, value: userFound };
+   }
+
+   export const login = async (req: Request, res: Response) => {
+     try {
+       const { email, password } = req.body;
+       const result = await verifyCredentials(email, password);
+       if (!result.ok) return res.status(403).json([result.error]);
+       ...
+     }
+   }
+   ```
+
+```typescript
+
+```
+
+### Alternativas:
+- Si prefieres algo más explícito y con menos validaciones, podrías usar una discriminated union (unión discriminada) en lugar de solo basarte en la existencia de las propiedades:
+```typescript
+export type Result<T, E> = { success: true; value: T } | { success: false; error: E };
+//Con esto, el código sería:
+const user = await verifyCredentials(email, password);
+if (!user.success) return res.status(403).json([user.error]);
+return res.json({ id: user.value._id });
+
+//or
+
+//**Destructuración del `Result`:** Cuando uses esta estructura, asegúrate de manejarla con un patrón claro:    
+const result = await verifyCredentials(email, password);
+if ('error' in result) return console.error(result.error.message);
+const user = result.value;
+```
+
+- **Primera opción (separación de responsabilidades)**: Mantiene la lógica simple y desacoplada, permitiendo pruebas más sencillas y código reutilizable.
+- **Segunda opción (objeto de resultado)**: Flexibilidad para manejar múltiples resultados dentro de un único retorno, ideal para casos más complejos.
+- **Tercera opción (result types o either)**: Profesional y con un enfoque funcional, mejora la claridad y reduce la ambigüedad en los tipos retornados.
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
 ### 1. **Nombres de Archivos para Interfaces**
 Respecto a cómo nombrar el archivo que contiene la interfaz `ErrorResponse`, es importante que el nombre sea claro y específico. Algunas convenciones que puedes seguir son:
 - **Por módulo o propósito**: Si la interfaz está relacionada con respuestas HTTP, puedes optar por algo como `http-response.interface.ts` o `error-response.interface.ts`. De esta manera, otros desarrolladores podrán identificar rápidamente la relación de esta interfaz con respuestas del backend.

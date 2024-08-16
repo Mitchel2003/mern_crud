@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from "js-cookie";
 
 import { TypeContext, UserContext } from '../interfaces/context.interface';
 import { ErrorResponse } from '../interfaces/response.interface';
@@ -25,11 +26,17 @@ export const AuthProvider = ({ children }: Props) => {
     }
   }, [errors]);
 
+  useEffect(() => {//working here...
+    const cookies = Cookies.get();
+    if (cookies.token) console.log(cookies.token);
+  }, []);
+
   const signin = async (user: object) => {
     try {
       const res = await loginRequest(user);
       setUser(res.data);
       setIsAuth(true);
+      console.log(res.data);
     } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 

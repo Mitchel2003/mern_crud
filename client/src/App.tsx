@@ -1,20 +1,29 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import { AuthProvider } from "./context/AuthContext";
-import Register from "./pages/Register";
+import ProtectedRoute from "./secure/ProtectedRoute";
+import TaskForm from "./pages/TaskForm";
+import Profile from "./pages/Profile";
+import Tasks from "./pages/Tasks";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" index element={<h1 className="text-4xl">Welcome</h1>} />
+          <Route path="/" index element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/task/:id" element={<h1>get task</h1>} />
-          <Route path="/tasks" element={<h1>get tasks</h1>} />
-          <Route path="/add-task" element={<h1>add task</h1>} />
-          <Route path="/profile" element={<h1>get profile</h1>} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/add-task" element={<TaskForm />} />
+            <Route path="/task/:id" element={<TaskForm />} />
+          </Route>
 
         </Routes>
       </BrowserRouter>
