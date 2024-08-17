@@ -28,10 +28,9 @@ export const createTask = async (req: ExtendsRequest, res: Response) => {
   } catch (e) { res.status(404).json([`Error to create task => ${e}`]) }
 }
 
-export const updateTask = async (req: Request, res: Response) => {
+export const updateTask = async ({ params, body }: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const task = await Task.findByIdAndUpdate(id, req.body, { new: true });
+    const task = await Task.findByIdAndUpdate(params.id, body, { new: true });
     if (!task) return res.status(404).json(['Task not has been updated']);
     res.status(204).json(['Successfull update']);
   } catch (e) { res.status(404).json([`Error to update task => ${e}`]) }
@@ -48,12 +47,7 @@ export const deleteTask = async ({ params }: Request, res: Response) => {
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 function messageFormat(res: Array<TypeTask> | TypeTask) {
-  if (!Array.isArray(res)) {
-    return `Title: ${res.title} ||| Description: ${res.description}`;
-  }
+  if (!Array.isArray(res)) return `Title: ${res.title} ||| Description: ${res.description}`;
   const plural = res.length === 1 ? '' : 's';
-  return `
-    ---> ${res.length} tarea${plural} <---
-    ${res.map((e) => `|ID: ${e.id}|`).join('/n')}
-  `;
+  return `---> ${res.length} tarea${plural} <--- ${res.map((e) => `|ID: ${e.id}|`).join('/n')}`;
 }

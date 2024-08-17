@@ -64,9 +64,8 @@ async function verifyCredentials(req: Request): Promise<Result<Document, Error>>
   if (!isMatch || !userFound) return { error: 'Invalid credentials' }
   return { value: userFound }
 }
-async function isAccountFound(req: Request, res: Response) {
-  const { email } = req.body;
-  const userFound = await User.findOne({ email });
+async function isAccountFound({ body }: Request, res: Response) {
+  const userFound = await User.findOne({ email: body.email });
   if (userFound) return res.status(403).json(['Email is used']);
 }
 async function createUserEncrypt(req: Request) {
