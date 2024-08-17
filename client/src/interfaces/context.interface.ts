@@ -6,6 +6,7 @@ export interface UserCredentials {
 
 export interface TypeContext {
   isAuth: boolean;
+  isLoading: boolean;
   user?: UserCredentials;
   errors?: string[];
   signin: (user: object) => Promise<void>;

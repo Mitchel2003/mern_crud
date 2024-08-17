@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from "js-cookie";
+import axios from 'axios';
 
 import { loginRequest, registerRequest, tokenCredentialsRequest } from '../api/auth';
 import { TypeContext, UserCredentials } from '../interfaces/context.interface';
@@ -15,11 +16,12 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-  const [errors, setErrors] = useState<string[]>([]);
   const [user, setUser] = useState<UserCredentials>({});
+  const [errors, setErrors] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => { showAlert() }, [errors]);
+  useEffect(() => showAlert(), [errors]);
   useEffect(() => { verifyToken() }, []);
 
   const showAlert = () => {
@@ -29,22 +31,19 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   const verifyToken = async () => {
-    const { token } = Cookies.get();
-    if (!token) return setIsAuth(false);
+    if (!Cookies.get().token) { setIsAuth(false); setUser({}); return }
 
     try {
       const res = await tokenCredentialsRequest();
-      console.log(res);
-
       if (!res.data) return setIsAuth(false);
-      setUser(res.data);
       setIsAuth(true);
+      setUser(res.data);
+      setIsLoading(false);
     } catch (e: unknown) {
-
-      console.log(e);
-      // setErrors([e.toString()])
-      setIsAuth(false);
       setUser({});
+      setIsAuth(false);
+      setIsLoading(false);
+      if (axios.isAxiosError(e)) setErrors([e.response?.data]);
     }
   }
 
@@ -53,7 +52,6 @@ export const AuthProvider = ({ children }: Props) => {
       const res = await loginRequest(user);
       setUser(res.data);
       setIsAuth(true);
-      console.log(res.data);
     } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
@@ -66,7 +64,7 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuth, errors, signin, signup }}>
+    <AuthContext.Provider value={{ isAuth, isLoading, user, errors, signin, signup }}>
       {children}
     </AuthContext.Provider>
   )
