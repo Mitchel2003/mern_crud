@@ -1,4 +1,4 @@
-export interface UserContext {
+export interface UserCredentials {
   id?: string,
   username?: string,
   email?: string
@@ -6,7 +6,7 @@ export interface UserContext {
 
 export interface TypeContext {
   isAuth: boolean;
-  user?: UserContext;
+  user?: UserCredentials;
   errors?: string[];
   signin: (user: object) => Promise<void>;
   signup: (user: object) => Promise<void>;

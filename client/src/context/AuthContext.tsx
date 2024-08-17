@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from "js-cookie";
 
-import { TypeContext, UserContext } from '../interfaces/context.interface';
+import { loginRequest, registerRequest, tokenCredentialsRequest } from '../api/auth';
+import { TypeContext, UserCredentials } from '../interfaces/context.interface';
 import { ErrorResponse } from '../interfaces/response.interface';
 import { Props } from '../interfaces/props.interface';
-import { loginRequest, registerRequest } from '../api/auth';
 
 const AuthContext = createContext<TypeContext | undefined>(undefined);
 
@@ -16,20 +16,37 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: Props) => {
   const [errors, setErrors] = useState<string[]>([]);
-  const [user, setUser] = useState<UserContext>({});
+  const [user, setUser] = useState<UserCredentials>({});
   const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => setErrors([]), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [errors]);
+  useEffect(() => { showAlert() }, [errors]);
+  useEffect(() => { verifyToken() }, []);
 
-  useEffect(() => {//working here...
-    const cookies = Cookies.get();
-    if (cookies.token) console.log(cookies.token);
-  }, []);
+  const showAlert = () => {
+    if (errors.length === 0) return;
+    const timer = setTimeout(() => setErrors([]), 5000);
+    return () => clearTimeout(timer);
+  }
+
+  const verifyToken = async () => {
+    const { token } = Cookies.get();
+    if (!token) return setIsAuth(false);
+
+    try {
+      const res = await tokenCredentialsRequest();
+      console.log(res);
+
+      if (!res.data) return setIsAuth(false);
+      setUser(res.data);
+      setIsAuth(true);
+    } catch (e: unknown) {
+
+      console.log(e);
+      // setErrors([e.toString()])
+      setIsAuth(false);
+      setUser({});
+    }
+  }
 
   const signin = async (user: object) => {
     try {

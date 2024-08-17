@@ -6,9 +6,9 @@ import { getTask, getTasks, createTask, updateTask, deleteTask } from "../contro
 
 const router = Router();
 
+router.post('/task', authRequired, validateSchema(createTaskSchema), createTask)
 router.get('/task/:id', authRequired, getTask)
 router.get('/tasks', authRequired, getTasks)
-router.post('/task', authRequired, validateSchema(createTaskSchema), createTask)
 router.put('/task/:id', authRequired, updateTask)
 router.delete('/task/:id', authRequired, deleteTask)
 

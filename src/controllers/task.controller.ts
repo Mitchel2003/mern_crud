@@ -1,23 +1,21 @@
 import { Request, Response } from "express";
+
 import ExtendsRequest from "../interfaces/request.interface";
+import TypeTask from "../interfaces/task.interface";
 import Task from "../models/task.models";
 
-export const getTask = async (req: Request, res: Response) => {
+export const getTask = async ({ params }: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const task = await Task.findById(id).populate('user');
-    if (!task) return res.status(404).json(['Task not found']);
-    res.status(200).json([task]);
+    const task = await Task.findById(params.id).populate('user');
+    if (!task) return res.status(404).json(['Task not exist']);
+    res.status(200).json([messageFormat(task)]);
   } catch (e) { res.status(404).json([`Error to get task => ${e}`]) }
 }
 
 export const getTasks = async (req: ExtendsRequest, res: Response) => {
   try {
     const tasks = await Task.find({ user: req.user?.id }).populate('user');
-    const length = tasks.length;
-    const plural = length === 1 ? '' : 's';
-    const message = `---> ${length} tarea${plural} <---`;
-    res.status(200).json([`${message} => ${tasks}`]);
+    res.status(200).json([messageFormat(tasks)]);
   } catch (e) { res.status(404).json([`Error to get tasks => ${e}`]) }
 }
 
@@ -39,11 +37,23 @@ export const updateTask = async (req: Request, res: Response) => {
   } catch (e) { res.status(404).json([`Error to update task => ${e}`]) }
 }
 
-export const deleteTask = async (req: Request, res: Response) => {
+export const deleteTask = async ({ params }: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const task = await Task.findByIdAndDelete(id);
+    const task = await Task.findByIdAndDelete(params.id);
     if (!task) return res.status(404).json(['Task not found']);
     res.status(200).json(['Successfull deleted']);
   } catch (e) { res.status(404).json([`Error to delete task => ${e}`]) }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+function messageFormat(res: Array<TypeTask> | TypeTask) {
+  if (!Array.isArray(res)) {
+    return `Title: ${res.title} ||| Description: ${res.description}`;
+  }
+  const plural = res.length === 1 ? '' : 's';
+  return `
+    ---> ${res.length} tarea${plural} <---
+    ${res.map((e) => `|ID: ${e.id}|`).join('/n')}
+  `;
 }

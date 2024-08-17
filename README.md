@@ -2,6 +2,61 @@
 ### ---------------------------------------------------------------------------------------------------- ###
 
 ### ---------------------------------------------------------------------------------------------------- ###
+### Tipificando las Respuestas en Express:
+Es posible que desees controlar el tipo de datos que respondes en res.json. Considera definir una respuesta estructurada con interfaces:
+
+```typescript
+interface ResponseData {
+  message: string;
+  data?: string[]; // O un tipo más específico si el contenido varía.
+}
+
+res.status(200).json({ message: messageFormat(tasks) } as ResponseData);
+```
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+### Paso 1: Definir Tipos de Respuesta
+```ts
+interface UserCredentials {
+  email: string;
+  username: string;
+}
+
+import { AxiosResponse } from "axios";
+
+export const tokenCredentialsRequest = async (): Promise<AxiosResponse<UserCredentials>> => {
+  return axios.get<UserCredentials>('/verify');
+};
+
+//useEffect
+useEffect(() => {
+  const checkCredentials = async () => {
+    try {
+      const res = await tokenCredentialsRequest();
+      setUser(res.data);
+    } catch (e: unknown) {
+      if (!axios.isAxiosError(e)) return;
+      const errorResponse = e.response?.data as ErrorResponse;
+      setErrors(errorResponse.errors);
+      setIsAuth(false);
+      setUser({});
+    };
+
+  checkCredentials();
+}, []);
+```
+### Tipo Condicional para la Respuesta
+```ts
+type ApiResponse<T> = T | { errors: string[] };
+
+export const tokenCredentialsRequest = async (): Promise<AxiosResponse<ApiResponse<UserCredentials>>> => {
+  return axios.get<ApiResponse<UserCredentials>>('/verify');
+};
+```
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
 ## Opciones profesionales para trabajar con diferentes retornos
 ### 1. **Separar la Lógica de Autenticación del Controlador HTTP:**
    Una opción es hacer que `verifyCredentials` solo se encargue de verificar las credenciales y devolver el usuario si es válido o `null` si no lo es. El controlador HTTP, en cambio, manejaría la lógica de la respuesta.
@@ -73,30 +128,48 @@
    }
    ```
 
-```typescript
-
-```
-
-### Alternativas:
-- Si prefieres algo más explícito y con menos validaciones, podrías usar una discriminated union (unión discriminada) en lugar de solo basarte en la existencia de las propiedades:
-```typescript
-export type Result<T, E> = { success: true; value: T } | { success: false; error: E };
-//Con esto, el código sería:
-const user = await verifyCredentials(email, password);
-if (!user.success) return res.status(403).json([user.error]);
-return res.json({ id: user.value._id });
-
-//or
-
-//**Destructuración del `Result`:** Cuando uses esta estructura, asegúrate de manejarla con un patrón claro:    
-const result = await verifyCredentials(email, password);
-if ('error' in result) return console.error(result.error.message);
-const user = result.value;
-```
-
 - **Primera opción (separación de responsabilidades)**: Mantiene la lógica simple y desacoplada, permitiendo pruebas más sencillas y código reutilizable.
 - **Segunda opción (objeto de resultado)**: Flexibilidad para manejar múltiples resultados dentro de un único retorno, ideal para casos más complejos.
 - **Tercera opción (result types o either)**: Profesional y con un enfoque funcional, mejora la claridad y reduce la ambigüedad en los tipos retornados.
+
+### Alternativas:
+-**Segunda opcion** Podemos hacer un comportamiento similar a este:
+```typescript
+interface CredentialsJWT extends JwtPayload { id?: Schema.Types.ObjectId, error?: string }
+
+export async function verifyAccessToken(token: string = 'none'): Promise<CredentialsJWT> {
+  try {
+    const access = jwt.verify(token, TOKEN_SECRET) as CredentialsJWT;
+    if (token === 'none') return { error: 'Token not found, auth denied' };
+    if (!access.id) return { error: 'Invalid token' };
+    return access
+  } catch (e) { return { error: 'Expired token' } }
+}
+
+const authRequired = async (req: ExtendsRequest, res: Response, next: NextFunction) => {
+  const access = await verifyAccessToken(req.cookies.token);
+  if ('error' in access) return res.status(401).json([access.error]);
+  req.user = access;
+  next();
+}
+```
+
+-**Tercera opcion** Si prefieres algo más explícito y con menos validaciones, podrías usar una discriminated union (unión discriminada) en lugar de solo basarte en la existencia de las propiedades:
+```typescript
+   export type Result<T, E> = { success: true; value: T } | { success: false; error: E };
+   //Con esto, el código sería:
+   const user = await verifyCredentials(email, password);
+   if (!user.success) return res.status(403).json([user.error]);
+   return res.json({ id: user.value._id });
+
+   //or
+
+   //**Destructuración del `Result`:** Cuando uses esta estructura, asegúrate de manejarla con un patrón claro:    
+   const result = await verifyCredentials(email, password);
+   if ('error' in result) return console.error(result.error.message);
+   const user = result.value;
+```
+
 ### ---------------------------------------------------------------------------------------------------- ###
 
 ### ---------------------------------------------------------------------------------------------------- ###
