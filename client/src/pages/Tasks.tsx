@@ -4,10 +4,7 @@ import { useTasks } from "../context/TaskContext";
 function Tasks() {
   const { tasks, getTasks } = useTasks();
 
-  useEffect(() => {
-    getTasks();
-    console.log(tasks);
-  }, []);
+  useEffect(() => { getTasks() }, []);
 
   return (
     <>

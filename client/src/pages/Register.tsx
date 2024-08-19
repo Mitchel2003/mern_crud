@@ -17,7 +17,7 @@ function Register() {
       <div>Register</div>
       <form onSubmit={onSubmit} >
 
-        {errors.map((e, index) => (<div className="bg-red-500 text-white" key={index}> {e} </div>))}
+        {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
 
         <input type="text" placeholder="Username" autoFocus {...register('username', { required: true })} />
         {errsForm.username && (<p className="text-red-500">Username is required</p>)}

@@ -1,5 +1,5 @@
 //AuthContext
-export type User = { _id: string, username: string, email: string } | {};
+export type User = { _id: string, username: string, email: string } | {}
 
 export type AuthContext = {
   user: User;
@@ -13,13 +13,13 @@ export type AuthContext = {
 
 //TaskContext
 export interface Task { _id: string, title: string, description: string, date: Date }
-export type Tasks = Task[] | [];
 
 export type TaskContext = {
-  tasks: Tasks,
-  getTask: () => Promise<void>,
-  getTasks: () => Promise<void>,
-  createTask: (task: object) => Promise<void>,
-  updateTask: () => Promise<void>,
-  deleteTask: () => Promise<void>
+  tasks: Task[];
+  errors: string[];
+  getTask: (id: string) => Promise<void>;
+  getTasks: () => Promise<void>;
+  createTask: (task: object) => Promise<void>;
+  updateTask: (data: Task) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
 } | undefined

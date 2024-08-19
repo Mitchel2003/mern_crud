@@ -10,7 +10,7 @@ function Login() {
   return (
     <>
       <div>Login</div>
-      {errors.map((e, index) => (<div className="bg-red-500 text-white" key={index}> {e} </div>))}
+      {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
 
       <form onSubmit={onSubmit}>
 

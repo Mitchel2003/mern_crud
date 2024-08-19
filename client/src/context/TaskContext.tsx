@@ -1,7 +1,8 @@
 import { useState, useContext, createContext } from 'react';
 
-import { createTaskRequest, getTasksRequest } from "../api/task";
-import { TaskContext, Tasks } from '../interfaces/context.interface';
+import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "../api/task";
+import { TaskContext, Task as TypeTask } from '../interfaces/context.interface';
+import { ErrorResponse } from '../interfaces/response.interface';
 import { Props } from '../interfaces/props.interface';
 
 const Task = createContext<TaskContext>(undefined);
@@ -13,32 +14,51 @@ export const useTasks = () => {
 }
 
 export const TaskProvider = ({ children }: Props) => {
-  const [tasks, setTasks] = useState<Tasks>([]);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<TypeTask[]>([]);
 
-  const getTask = async () => { setTasks([]) }
+  const getTask = async (id: string) => {
+    try {
+      const res = await getTaskRequest(id);
+      setTasks([res.data]);
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+  }
 
   const getTasks = async () => {
-    const res = await getTasksRequest();
-    if (!res.data) return console.log(res);
-    setTasks(res.data)
+    try {
+      const res = await getTasksRequest();
+      setTasks(res.data)
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
+
   const createTask = async (task: object) => {
-    const res = await createTaskRequest(task);
-    if (!res.data) return console.log(res);
-    // console.log(res);
+    try {
+      const res = await createTaskRequest(task);
+      if (res.data) setTasks(res.data);
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
-  const updateTask = async () => {
 
+  const updateTask = async (data: TypeTask) => {
+    try {
+      const res = await updateTaskRequest(data);
+      if (res.data) setTasks(res.data);
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
-  const deleteTask = async () => {
 
+  const deleteTask = async (id: string) => {
+    try {
+      const res = await deleteTaskRequest(id);
+      if (res.data) setTasks(res.data);
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   return (
-    <Task.Provider value={{ tasks, getTask, getTasks, createTask, updateTask, deleteTask }}>
+    <Task.Provider value={{ tasks, errors, getTask, getTasks, createTask, updateTask, deleteTask }}>
       {children}
     </Task.Provider>
   )
 }
 
-//function isTask(e: unknown): e is Tasks { return (!Array.isArray(e)) }
+function isErrorResponse(e: unknown): e is ErrorResponse {
+  return (typeof e === "object" && e !== null && "response" in e)
+}
