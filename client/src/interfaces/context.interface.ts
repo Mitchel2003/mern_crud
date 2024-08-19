@@ -12,7 +12,7 @@ export type AuthContext = {
 
 
 //TaskContext
-export interface Task { _id: string, title: string, description: string, date: Date }
+export type Task = { _id?: string, title?: string, description?: string, date?: Date }
 
 export type TaskContext = {
   tasks: Task[];

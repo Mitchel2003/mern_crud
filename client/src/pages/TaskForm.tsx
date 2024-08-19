@@ -12,9 +12,7 @@ function TaskForm() {
   useEffect(() => { loadTask() }, [])
 
   const loadTask = async () => { if (!id || id === 'new') return; getTask(id) }
-
   const onSubmit = handleSubmit(async (values) => createTask(values));
-
   return (
     <>
       <div>TaskForm</div>
@@ -22,13 +20,25 @@ function TaskForm() {
 
         {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
 
-        <input type="text" placeholder="Title" value={tasks[0]?.title || ''} autoFocus {...register('title', { required: true })} />
+        <input
+          type="text"
+          placeholder="Title"
+          value={tasks[0]?.title || ''}
+          {...register('title', { required: true })}
+        />
+
         {errsForm.title && (<p className="text-red-500">Title is required</p>)}
 
-        <textarea className="text-black" placeholder="Description" value={tasks[0]?.description || ''} {...register('description', { required: true })} />
+        <textarea
+          className="text-black"
+          placeholder="Description"
+          value={tasks[0]?.description || ''}
+          {...register('description', { required: true })}
+        />
+
         {errsForm.description && (<p className="text-red-500">Description is required</p>)}
 
-        <button type="submit" > Save </button>
+        <button type="submit"> Save </button>
       </form>
     </>
   )
