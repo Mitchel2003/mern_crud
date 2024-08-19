@@ -3,22 +3,22 @@ import Cookies from "js-cookie";
 import axios from 'axios';
 
 import { loginRequest, registerRequest, tokenCredentialsRequest } from '../api/auth';
-import { TypeContext, UserCredentials } from '../interfaces/context.interface';
+import { User, AuthContext } from '../interfaces/context.interface';
 import { ErrorResponse } from '../interfaces/response.interface';
 import { Props } from '../interfaces/props.interface';
 
-const AuthContext = createContext<TypeContext | undefined>(undefined);
+const Auth = createContext<AuthContext>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(Auth);
   if (!context) throw new Error('Error to try use context');
   return context;
 }
 
 export const AuthProvider = ({ children }: Props) => {
-  const [user, setUser] = useState<UserCredentials>({});
   const [errors, setErrors] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User>({});
+  const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => showAlert(), [errors]);
@@ -31,19 +31,19 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   const verifyToken = async () => {
-    if (!Cookies.get().token) { setIsAuth(false); setUser({}); return }
+    if (!Cookies.get().token) { setIsAuth(false); return setLoading(false) }
 
     try {
       const res = await tokenCredentialsRequest();
       if (!res.data) return setIsAuth(false);
       setIsAuth(true);
       setUser(res.data);
-      setIsLoading(false);
+      setLoading(false);
     } catch (e: unknown) {
-      setUser({});
-      setIsAuth(false);
-      setIsLoading(false);
       if (axios.isAxiosError(e)) setErrors([e.response?.data]);
+      setLoading(false);
+      setIsAuth(false);
+      setUser({});
     }
   }
 
@@ -64,9 +64,9 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuth, isLoading, user, errors, signin, signup }}>
+    <Auth.Provider value={{ isAuth, loading, user, errors, signin, signup }}>
       {children}
-    </AuthContext.Provider>
+    </Auth.Provider>
   )
 }
 

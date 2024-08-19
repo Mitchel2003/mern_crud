@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
+import { TaskProvider } from "./context/TaskContext";
 import ProtectedRoute from "./secure/ProtectedRoute";
 import TaskForm from "./pages/TaskForm";
 import Profile from "./pages/Profile";
@@ -12,21 +13,21 @@ import Register from "./pages/Register";
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      <TaskProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/add-task" element={<TaskForm />} />
-            <Route path="/task/:id" element={<TaskForm />} />
-          </Route>
-
-        </Routes>
-      </BrowserRouter>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/task/:id" element={<TaskForm />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </TaskProvider>
     </AuthProvider>
   )
 }
