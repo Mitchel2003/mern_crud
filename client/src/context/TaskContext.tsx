@@ -18,38 +18,28 @@ export const TaskProvider = ({ children }: Props) => {
   const [tasks, setTasks] = useState<TypeTask[]>([]);
 
   const getTask = async (id: string) => {
-    try {
-      const res = await getTaskRequest(id);
-      setTasks([res.data]);
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await getTaskRequest(id); setTasks([res.data]) }
+    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const getTasks = async () => {
-    try {
-      const res = await getTasksRequest();
-      setTasks(res.data)
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await getTasksRequest(); setTasks(res.data) }
+    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const createTask = async (task: object) => {
-    try {
-      const res = await createTaskRequest(task);
-      if (res.data) setTasks(res.data);
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await createTaskRequest(task); if (res.data) setTasks(res.data) }
+    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const updateTask = async (data: TypeTask) => {
-    try {
-      const res = await updateTaskRequest(data);
-      if (res.data) setTasks(res.data);
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await updateTaskRequest(data); if (res.data) setTasks(res.data) }
+    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const deleteTask = async (id: string) => {
-    try {
-      const res = await deleteTaskRequest(id);
-      if (res.data) setTasks(res.data);
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await deleteTaskRequest(id); if (res.data) setTasks(res.data) }
+    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   return (

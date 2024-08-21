@@ -1,3 +1,53 @@
+Para optimizar el componente `Navbar` y manejar la selección de enlaces de manera más efectiva, puedes simplificar la lógica y evitar el uso de `useEffect`. En este caso, dado que la decisión de qué enlaces mostrar depende directamente del valor de `isAuth`, puedes hacer la evaluación condicional directamente en el renderizado, sin necesidad de usar un estado adicional (`setLinks` o `links`). Esto mantendrá tu código más limpio y evitará la sobrecarga innecesaria.
+
+Voy a sugerirte una solución más concisa y profesional:
+
+### Código Optimizado
+
+```tsx
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
+// Definición de los enlaces para autenticados y no autenticados
+const navAuth = ['/task/new', '/tasks'];
+const navUnauth = ['/login', '/register'];
+
+function Navbar() {
+  const { isAuth } = useAuth();
+
+  // Determina los enlaces según el estado de autenticación
+  const links = isAuth ? navAuth : navUnauth;
+
+  // Genera el texto del enlace basado en la URL
+  const navString = (url: string) => {
+    const text = url.split('/').pop(); // Obtiene el último segmento de la URL
+    return text?.charAt(0).toUpperCase() + text?.slice(1); // Capitaliza la primera letra
+  }
+
+  return (
+    <nav className="bg-zinc-700 flex justify-between my-3 py-5 px-10 rounded-lg">
+      <Link to='/'>
+        <h1 className="text-2xl font-bold">Tasks Management</h1>
+      </Link>
+      <ul className="flex gap-x-2">
+        {links.map((link, index) => (
+          <li key={index}>
+            <Link to={link}> {navString(link)} </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+export default Navbar;
+```
+
+1. **Evita el Uso de `useEffect`:** No necesitas efectos secundarios como el uso de `useEffect` porque el cambio en los enlaces depende únicamente del valor de `isAuth`, que ya está disponible en cada renderizado.
+2. **Sin Estado Adicional (`setLinks`)**: El código no usa ningún estado adicional para almacenar los enlaces, ya que se determina dinámicamente durante cada renderizado. Esto simplifica el componente y reduce la complejidad.
+3. **Manejo de Enlaces Condicionalmente:** Usando una simple condición ternaria (`isAuth ? navAuth : navUnauth`), decides qué enlaces mostrar. Esto es más eficiente y directo que actualizar el estado.
+### ---------------------------------------------------------------------------------------------------- ###
+
 ### ---------------------------------------------------------------------------------------------------- ###
 ## Usar useNavigate() or <Navigate>
 ### Navigate (Componente):

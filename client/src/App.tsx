@@ -9,12 +9,15 @@ import Tasks from "./pages/Tasks";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <AuthProvider>
       <TaskProvider>
         <BrowserRouter>
+
+          <Navbar />
           <Routes>
             <Route path="/" index element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -26,6 +29,7 @@ function App() {
               <Route path="/task/:id" element={<TaskForm />} />
             </Route>
           </Routes>
+
         </BrowserRouter>
       </TaskProvider>
     </AuthProvider>
