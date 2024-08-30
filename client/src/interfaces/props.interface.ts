@@ -1,3 +1,7 @@
 import { ReactNode } from "react";
+import { Task } from "./context.interface";
 
-export interface Props { children: ReactNode }
+//interface defautl props
+export interface Props { children?: ReactNode }
+
+export type TaskCardProps = { task: Task }

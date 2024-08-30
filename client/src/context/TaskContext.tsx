@@ -38,8 +38,10 @@ export const TaskProvider = ({ children }: Props) => {
   }
 
   const deleteTask = async (id: string) => {
-    try { const res = await deleteTaskRequest(id); if (res.data) setTasks(res.data) }
-    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try {
+      const res = await deleteTaskRequest(id);
+      if (res.data) setTasks(prev => prev.filter(e => e._id !== id))
+    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   return (

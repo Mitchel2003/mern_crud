@@ -1,51 +1,105 @@
-Para optimizar el componente `Navbar` y manejar la selección de enlaces de manera más efectiva, puedes simplificar la lógica y evitar el uso de `useEffect`. En este caso, dado que la decisión de qué enlaces mostrar depende directamente del valor de `isAuth`, puedes hacer la evaluación condicional directamente en el renderizado, sin necesidad de usar un estado adicional (`setLinks` o `links`). Esto mantendrá tu código más limpio y evitará la sobrecarga innecesaria.
+## Partials < >
+```typescript
+import { useTasks } from "../../context/TaskContext";
+import { TaskCardProps, createTask } from "../../interfaces/props.interface";
 
-Voy a sugerirte una solución más concisa y profesional:
+export type Task = { 
+  _id: string; 
+  title: string; 
+  description: string; 
+  date: Date;
+};
 
-### Código Optimizado
+export const createTask = (overrides: Partial<Task> = {}): Task => ({
+  _id: '',
+  title: '',
+  description: '',
+  date: new Date(),
+  ...overrides
+});
 
-```tsx
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-
-// Definición de los enlaces para autenticados y no autenticados
-const navAuth = ['/task/new', '/tasks'];
-const navUnauth = ['/login', '/register'];
-
-function Navbar() {
-  const { isAuth } = useAuth();
-
-  // Determina los enlaces según el estado de autenticación
-  const links = isAuth ? navAuth : navUnauth;
-
-  // Genera el texto del enlace basado en la URL
-  const navString = (url: string) => {
-    const text = url.split('/').pop(); // Obtiene el último segmento de la URL
-    return text?.charAt(0).toUpperCase() + text?.slice(1); // Capitaliza la primera letra
-  }
-
+function TaskCard({ task }: TaskCardProps) {
+  const { deleteTask } = useTasks();
+  const taskWithDefaults = createTask(task);
   return (
-    <nav className="bg-zinc-700 flex justify-between my-3 py-5 px-10 rounded-lg">
-      <Link to='/'>
-        <h1 className="text-2xl font-bold">Tasks Management</h1>
-      </Link>
-      <ul className="flex gap-x-2">
-        {links.map((link, index) => (
-          <li key={index}>
-            <Link to={link}> {navString(link)} </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <>
+      <h1 className="text-2xl font-bold"> Title: {taskWithDefaults.title} </h1>
+    </>
   );
 }
 
-export default Navbar;
+export default TaskCard;
 ```
+### ---------------------------------------------------------------------------------------------------- ###
 
-1. **Evita el Uso de `useEffect`:** No necesitas efectos secundarios como el uso de `useEffect` porque el cambio en los enlaces depende únicamente del valor de `isAuth`, que ya está disponible en cada renderizado.
-2. **Sin Estado Adicional (`setLinks`)**: El código no usa ningún estado adicional para almacenar los enlaces, ya que se determina dinámicamente durante cada renderizado. Esto simplifica el componente y reduce la complejidad.
-3. **Manejo de Enlaces Condicionalmente:** Usando una simple condición ternaria (`isAuth ? navAuth : navUnauth`), decides qué enlaces mostrar. Esto es más eficiente y directo que actualizar el estado.
+### ---------------------------------------------------------------------------------------------------- ###
+### 1. Uso de Default Values en el Tipado
+Podrías aprovechar los valores por defecto en la desestructuración directamente en el componente. Esto ayuda a evitar que tengas que hacer chequeos adicionales para cada propiedad.
+```typescript
+export type Task = { 
+  _id?: string, 
+  title?: string, 
+  description?: string, 
+  date?: Date 
+}
+function TaskCard({ task = {} as Task }: TaskCardProps) {
+  return (
+    <h1 className="text-2xl font-bold"> Title: {task.title ?? 'No Title'} </h1>
+    <div className="flex gap-x-2 items-center">
+      <button onClick={() => deleteTask(task._id ?? '')}>Delete</button>
+      <button>Edit</button>
+    </div>
+  )
+}
+```
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+## Usar Genéricos y Tipos Opcionales
+
+Puedes definir un genérico para tu función `setAuthStatus` y usar tipos opcionales para la respuesta de Axios. Esto te permitirá mantener la flexibilidad y reutilizar la función en diferentes escenarios.
+
+#### Solución Propuesta
+Define tu función `setAuthStatus` como un genérico:
+```typescript
+const setAuthStatus = <T = {}>(res: AxiosResponse<T> | undefined) => {
+  setUser(res?.data ?? {});
+  setIsAuth(Boolean(res?.data));
+  setLoading(false);
+};
+
+const verifyToken = async () => {
+  if (!Cookies.get().token) return setAuthStatus<{}>(undefined); // Pasando un valor vacío o undefined
+
+  try {
+    const res = await tokenCredentialsRequest();
+    setAuthStatus(res); // Aquí el tipo es inferido automáticamente
+  } catch (e: unknown) {
+    if (axios.isAxiosError(e)) setErrors([e.response?.data]);
+    setAuthStatus<{}>(undefined);
+  }
+};
+```
+Cuando utilices la función dentro de `verifyToken`, puedes beneficiarte de la flexibilidad del tipo genérico:
+**Explicación:**
+- `T = {}`: Esto indica que el tipo genérico por defecto es un objeto vacío `{}`. Sin embargo, puedes sobrescribir este tipo cuando llamas a la función si esperas una estructura de datos diferente.
+- `AxiosResponse<T> | undefined`: Maneja tanto la respuesta de Axios con datos como una posible respuesta `undefined` (cuando no se recibe respuesta o está vacía).
+
+## Usar Tipo Personalizado
+Si quieres asegurar que la estructura de la respuesta sea más clara, puedes definir un tipo específico y reutilizarlo:
+
+```typescript
+type AuthResponse = { user?: object; token?: string };
+
+const setAuthStatus = (res?: AxiosResponse<AuthResponse>) => {
+  setUser(res?.data?.user ?? {});
+  setIsAuth(Boolean(res?.data?.user));
+  setLoading(false);
+};
+
+// Uso en verifyToken
+setAuthStatus(res);
+```
 ### ---------------------------------------------------------------------------------------------------- ###
 
 ### ---------------------------------------------------------------------------------------------------- ###

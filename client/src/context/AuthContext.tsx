@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import axios, { AxiosResponse } from 'axios';
 import Cookies from "js-cookie";
-import axios from 'axios';
 
 import { loginRequest, registerRequest, tokenCredentialsRequest } from '../api/auth';
 import { User, AuthContext } from '../interfaces/context.interface';
@@ -21,50 +21,44 @@ export const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => showAlert(), [errors]);
+  useEffect(() => timeAlert(), [errors]);
   useEffect(() => { verifyToken() }, []);
 
-  const showAlert = () => {
+  const timeAlert = () => {
     if (errors.length === 0) return;
     const timer = setTimeout(() => setErrors([]), 5000);
     return () => clearTimeout(timer);
   }
 
   const verifyToken = async () => {
-    if (!Cookies.get().token) { setIsAuth(false); return setLoading(false) }
-
-    try {
-      const res = await tokenCredentialsRequest();
-      if (!res.data) return setIsAuth(false);
-      setIsAuth(true);
-      setUser(res.data);
-      setLoading(false);
-    } catch (e: unknown) {
+    if (!Cookies.get().token) return setAuthStatus();
+    try { const res = await tokenCredentialsRequest(); setAuthStatus(res) }
+    catch (e: unknown) {
       if (axios.isAxiosError(e)) setErrors([e.response?.data]);
-      setLoading(false);
-      setIsAuth(false);
-      setUser({});
+      setAuthStatus()
     }
   }
 
   const signin = async (user: object) => {
-    try {
-      const res = await loginRequest(user);
-      setUser(res.data);
-      setIsAuth(true);
-    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await loginRequest(user); setAuthStatus(res) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const signup = async (user: object) => {
-    try {
-      const res = await registerRequest(user);
-      setUser(res.data);
-      setIsAuth(true);
-    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await registerRequest(user); setAuthStatus(res) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+  }
+
+  const logout = () => { Cookies.remove('token'); setAuthStatus() }
+
+  const setAuthStatus = (res?: AxiosResponse) => {
+    setUser(res?.data ?? {})
+    setIsAuth(Boolean(res?.data))
+    setLoading(false)
   }
 
   return (
-    <Auth.Provider value={{ isAuth, loading, user, errors, signin, signup }}>
+    <Auth.Provider value={{ isAuth, loading, user, errors, signin, signup, logout }}>
       {children}
     </Auth.Provider>
   )

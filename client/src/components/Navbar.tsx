@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { navAuth, navGuest } from "../interfaces/components.interface";
 
 function Navbar() {
-  const { isAuth } = useAuth();
+  const { isAuth, logout } = useAuth();
   const links = isAuth ? navAuth : navGuest
 
   return (
@@ -12,13 +12,22 @@ function Navbar() {
         <Link to='/'>
           <h1 className="text-2xl font-bold"> Tasks management </h1>
         </Link>
-        <ul className="flex gap-x-2">
+        <ul className="flex gap-x-3">
           {
             links.map((e, i) => (
-              <li key={i}>
+              <li key={i} className="bg-indigo-500 px-4 py-1 rounded-sm">
                 <Link to={e}> {navString(e)} </Link>
               </li>
             ))
+          }
+          {
+            isAuth ? (
+              <li className="bg-indigo-500 px-4 py-1 rounded-sm">
+                <Link to='/' onClick={logout}> Logout </Link>
+              </li>
+            ) : (
+              <> </>
+            )
           }
         </ul>
       </nav>

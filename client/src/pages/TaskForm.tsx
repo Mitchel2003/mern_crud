@@ -1,22 +1,31 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 
 import { useTasks } from "../context/TaskContext";
+import { Task } from "../interfaces/context.interface";
 
-function TaskForm() {
+function TaskForm() { //working here...
   const { register, handleSubmit, setValue, formState: { errors: errsForm } } = useForm();
   const { tasks, errors, getTask, createTask } = useTasks();
+  const [loading, setLoading] = useState(true);
   const { id = 'new' } = useParams();
+  const navigate = useNavigate();
 
-  useEffect(() => { loadTaskParam() }, [])
+  useEffect(() => { loadTask() }, [id])
 
-  if (tasks.length > 0) {
-    setValue('title', tasks[0].title)
-    setValue('description', tasks[0].description)
+  const loadTask = async () => {
+    if (id === 'new') return setFormValues();
+    getTask(id);
   }
-  const loadTaskParam = async () => { if (id === 'new') return; getTask(id) }
-  const onSubmit = handleSubmit(async (values) => createTask(values));
+  const setFormValues = (data?: Task) => {
+    setValue('title', data?.title || '');
+    setValue('description', data?.description || '');
+  };
+
+  if (!loading) { setFormValues(tasks[0]) }
+
+  const onSubmit = handleSubmit(async (values) => { createTask(values); navigate('/tasks') })
   return (
     <>
       <div>TaskForm</div>

@@ -8,11 +8,12 @@ export type AuthContext = {
   errors: string[];
   signin: (user: object) => Promise<void>;
   signup: (user: object) => Promise<void>;
+  logout: () => void;
 } | undefined
 
 
 //TaskContext
-export type Task = { _id?: string, title?: string, description?: string, date?: Date }
+export type Task = { _id: string, title: string, description: string, date: Date }
 
 export type TaskContext = {
   tasks: Task[];

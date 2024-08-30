@@ -11,10 +11,9 @@ export const login = async (req: Request, res: Response) => {
   try {
     const user = await verifyCredentials(req);
     if ('error' in user) return res.status(403).json([user.error]);
-    const { _id } = user.value;//correct credentials
-    const token = await generateAccessToken({ id: _id });
+    const token = await generateAccessToken({ id: user.value._id });
     res.cookie('token', token);
-    res.json({ id: _id });
+    res.json(user.value);
   } catch (e) { res.status(500).json([`Error to try login => ${e}`]) }
 }
 
