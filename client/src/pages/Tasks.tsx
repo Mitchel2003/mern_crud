@@ -7,7 +7,7 @@ function Tasks() {
 
   useEffect(() => { getTasks() }, [])
   return (
-    <div className="grid-cols-3 gap-2">
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
       {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
       {tasks.map((e, i) => <TaskCard key={i} task={e} />)}
     </div>

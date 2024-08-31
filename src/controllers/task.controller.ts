@@ -20,8 +20,7 @@ export const getTasks = async (req: ExtendsRequest, res: Response) => {
 
 export const createTask = async (req: ExtendsRequest, res: Response) => {
   try {
-    const { title, description } = req.body;
-    const taskForm = new Task({ title, description, user: req.user?.id });
+    const taskForm = new Task({ ...req.body, user: req.user?.id });
     const task = await taskForm.save();
     res.status(200).json([task]);
   } catch (e) { res.status(404).json([`Error to create task => ${e}`]) }

@@ -13,14 +13,21 @@ export type AuthContext = {
 
 
 //TaskContext
-export type Task = { _id: string, title: string, description: string, date: Date }
+export type Task = {
+  _id: string;
+  title: string;
+  description: string;
+  date?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 export type TaskContext = {
   tasks: Task[];
   errors: string[];
-  getTask: (id: string) => Promise<void>;
+  getTask: (id: string) => Promise<Task>;
   getTasks: () => Promise<void>;
   createTask: (task: object) => Promise<void>;
-  updateTask: (data: Task) => Promise<void>;
+  updateTask: (id: string, data: object) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
 } | undefined
