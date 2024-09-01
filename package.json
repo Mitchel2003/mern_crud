@@ -4,7 +4,8 @@
   "description": "App web autentication",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "start": "node src/index.ts"
   },
   "keywords": [],
   "author": "",

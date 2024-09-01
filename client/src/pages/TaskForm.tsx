@@ -21,6 +21,7 @@ function TaskForm() {
     const res = await getTask(id);
     setValue('title', res.title);
     setValue('description', res.description);
+    setValue('date', dayjs(res.date).utc().format('YYYY-MM-DD'));
   }
 
   const onSubmit = handleSubmit(async (values) => {
@@ -60,12 +61,10 @@ function TaskForm() {
         <input
           type="date"
           className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
-          {...register('date', { required: true })}
+          {...register('date')}
         />
 
-        {errsForm.date && (<p className="text-red-500">Date is required</p>)}
-
-        <button type="submit" className="bg-indigo-500 px-3 py-2 rounded-md"> Save </button>
+        <button type="submit" className="bg-indigo-500 px-3 py-2 mt-3 rounded-md"> Save </button>
 
       </form>
     </div>
@@ -75,6 +74,15 @@ function TaskForm() {
 export default TaskForm
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-function schemaTask(values: FieldValues) {
-  return { ...values, date: dayjs.utc(values.date).format() }
-}
+/**
+ * Helps us to build a task format and send request like create or update
+ * @param values its a data object that represent the fields on form context
+ * @returns {object} a object that mean the task schema to use on request
+ */
+function schemaTask(values: FieldValues): object { return { ...values, date: dateFormat(values.date) } }
+/**
+ * Allows us obtain the date formated from client side (<input type="date"/>)
+ * @param date Correspond to date in string format (DD/MM/YYYY)
+ * @returns {Date} its a date; if the input dont have something this method returns the current date 
+ */
+function dateFormat(date?: string): Date { return new Date(dayjs.utc(date || undefined).format()) }

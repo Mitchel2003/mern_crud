@@ -7,31 +7,29 @@ function Navbar() {
   const links = isAuth ? navAuth : navGuest
 
   return (
-    <>
-      <nav className="bg-zinc-700 flex justify-between my-3 py-5 px-10 rounded-lg">
-        <Link to='/'>
-          <h1 className="text-2xl font-bold"> Tasks management </h1>
-        </Link>
-        <ul className="flex gap-x-3">
-          {
-            links.map((e, i) => (
-              <li key={i} className="bg-indigo-500 px-4 py-1 rounded-sm">
-                <Link to={e}> {navString(e)} </Link>
-              </li>
-            ))
-          }
-          {
-            isAuth ? (
-              <li className="bg-indigo-500 px-4 py-1 rounded-sm">
-                <Link to='/' onClick={logout}> Logout </Link>
-              </li>
-            ) : (
-              <> </>
-            )
-          }
-        </ul>
-      </nav>
-    </>
+    <nav className="bg-zinc-700 flex justify-between my-3 py-5 px-10 rounded-lg">
+      <Link to={isAuth ? '/tasks' : '/'}>
+        <h1 className="text-2xl font-bold"> Tasks management </h1>
+      </Link>
+      <ul className="flex gap-x-3">
+        {
+          links.map((e, i) => (
+            <li key={i} className="bg-indigo-500 px-4 py-1 rounded-sm">
+              <Link to={e}> {navString(e)} </Link>
+            </li>
+          ))
+        }
+        {
+          isAuth ? (
+            <li className="bg-indigo-500 px-4 py-1 rounded-sm">
+              <Link to='/' onClick={logout}> Logout </Link>
+            </li>
+          ) : (
+            <> </>
+          )
+        }
+      </ul>
+    </nav>
   )
 }
 

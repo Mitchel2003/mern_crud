@@ -12,40 +12,49 @@ function Register() {
   useEffect(() => { if (isAuth) return navigate('/tasks') }, [isAuth]);
   const onSubmit = handleSubmit(async (values) => signup(values));
   return (
-    <>
-      <div>Register</div>
-      <form onSubmit={onSubmit}>
+    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+      <div className="bg-zinc-800 max-w-md w-full p-8 rounded-md">
+        <h1 className="text-3xl font-bold my-2"> Register </h1>
 
-        {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
+        <form onSubmit={onSubmit}>
 
-        <input
-          type="text"
-          placeholder="Username"
-          {...register('username', { required: true })}
-        />
+          {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white text-center my-2"> {e} </div>))}
 
-        {errsForm.username && (<p className="text-red-500">Username is required</p>)}
+          <input
+            type="text"
+            autoComplete="off"
+            placeholder="Username"
+            className="bg-zinc-700 text-white w-full px-4 py-2 my-2 rounded-md"
+            {...register('username', { required: true })}
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          {...register('email', { required: true })}
-        />
+          {errsForm.username && (<p className="text-red-500">Username is required</p>)}
 
-        {errsForm.email && (<p className="text-red-500">Email is required</p>)}
+          <input
+            type="email"
+            autoComplete="off"
+            placeholder="Email"
+            className="bg-zinc-700 text-white w-full px-4 py-2 my-2 rounded-md"
+            {...register('email', { required: true })}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          {...register('password', { required: true })}
-        />
+          {errsForm.email && (<p className="text-red-500">Email is required</p>)}
 
-        {errsForm.password && (<p className="text-red-500">Password is required</p>)}
+          <input
+            type="password"
+            autoComplete="off"
+            placeholder="Password"
+            className="bg-zinc-700 text-white w-full px-4 py-2 my-2 rounded-md"
+            {...register('password', { required: true })}
+          />
 
-        <button type="submit"> Submit </button>
+          {errsForm.password && (<p className="text-red-500">Password is required</p>)}
 
-      </form>
-    </>
+          <button type="submit" className="bg-sky-600 hover:bg-sky-700 px-4 py-2 mt-2 rounded-md"> Submit </button>
+
+        </form>
+      </div>
+    </div>
   )
 }
 
