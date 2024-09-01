@@ -1,7 +1,7 @@
 import { connectionDB } from "./db";
-import { PORT } from "./config";
 import app from "./app";
+import "dotenv/config"
 
 connectionDB();
-app.listen(PORT);
-console.log(`Server initialized on port ${PORT}`);
+app.listen(process.env.PORT);
+console.log(`Server initialized on port ${process.env.PORT}`);

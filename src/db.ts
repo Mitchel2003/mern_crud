@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { MONGODB_URI } from "./config"
+import "dotenv/config"
 
 export const connectionDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI ?? '');
     console.log("connection sucessful");
   } catch (e) { console.log("Error to try conect with database: " + e) }
 }
