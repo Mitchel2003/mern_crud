@@ -1,6 +1,4 @@
-import { Response } from "express";
-
-export interface ErrorResponse extends Response {
+export interface ErrorResponse {
     response: { data: string[] }
 }
 
