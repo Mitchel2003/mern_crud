@@ -1,3 +1,157 @@
+### 1. **Asegurarse de que las cookies no son `HttpOnly`**
+- Las cookies configuradas con la opción `HttpOnly` **no** pueden ser accesibles mediante JavaScript en el frontend. Si estás utilizando cookies para manejar el token de autenticación y las marcas como `HttpOnly`, estas no estarán disponibles para su lectura en `document.cookie` o `js-cookie`.
+- Si **no necesitas** que las cookies sean accesibles en el frontend, puedes seguir usando `HttpOnly` y enviar las cookies automáticamente en cada solicitud HTTP al backend (usando en las peticiones `fetch` o `axios`).
+
+### 2. **Asegurarse de que las cookies están configuradas correctamente con CORS**
+
+Si el frontend y el backend están en dominios diferentes, debes asegurarte de que tanto el servidor como el frontend permiten el uso compartido de cookies a través de solicitudes CORS:
+
+- **Backend (Express):** Deberías tener algo como esto en tu configuración de CORS:
+  
+  ```javascript
+  app.use(cors({
+    origin: process.env.FRONTEND_URL, // La URL del frontend
+    credentials: true // Permitir cookies
+  }));
+  ```
+
+- **Frontend (Axios o Fetch):** Asegúrate de que estás enviando las credenciales con cada petición. Por ejemplo, en `fetch`:
+
+  ```javascript
+  fetch('http://backend-url/api/tasks', {
+    method: 'GET',
+    credentials: 'include' // Esto asegura que las cookies se envíen
+  });
+  ```
+
+  Y con `axios`:
+
+  ```javascript
+  axios.get('http://backend-url/api/tasks', {
+    withCredentials: true // Habilita el envío de cookies
+  });
+  ```
+
+### 3. **Revisar las propiedades `SameSite` y `Secure` de las cookies**
+
+Si las cookies están configuradas con la propiedad `SameSite` incorrectamente, o si estás en un entorno `http` y la cookie tiene la propiedad `Secure`, entonces el navegador puede bloquear las cookies.
+
+- **En producción**, si el frontend y el backend están en diferentes dominios, asegúrate de usar `SameSite=None` y `Secure=true`. Esto debe configurarse en tu servidor backend.
+  
+  ```javascript
+  res.cookie('token', token, {
+    httpOnly: false, // Si necesitas acceder a la cookie desde el frontend
+    secure: process.env.NODE_ENV === 'production', // 'true' si usas HTTPS
+    sameSite: 'None', // Para que las cookies funcionen en diferentes dominios
+  });
+  ```
+
+- **En desarrollo**, podrías deshabilitar temporalmente `Secure` y usar `SameSite=Lax`.
+
+### 4. **Probar las cabeceras de la respuesta del servidor**
+
+Verifica en las herramientas de desarrollo de tu navegador (sección "Network" o "Red") que las cookies estén siendo enviadas correctamente desde el backend. Debes buscar en la respuesta HTTP de la solicitud de inicio de sesión para asegurarte de que la cookie del token se está enviando en las cabeceras de respuesta. La cabecera debe verse algo como esto:
+
+```
+Set-Cookie: token=eyJhbGciOiJIUzI1NiIsInR...; Path=/; HttpOnly; Secure; SameSite=None
+```
+
+Si no ves esta cabecera o si las propiedades de la cookie son incorrectas, puede que ahí esté el problema.
+
+### 5. **Depuración adicional**
+
+1. **Verificar la existencia de cookies desde `document.cookie` directamente**:
+   - Asegúrate de que las cookies se estén estableciendo correctamente inspeccionando directamente `document.cookie` en la consola del navegador:
+     ```javascript
+     console.log(document.cookie);
+     ```
+   
+2. **Revisar las políticas del navegador:**
+   - Asegúrate de que el navegador no esté bloqueando cookies de terceros debido a configuraciones de privacidad.
+   - Algunas extensiones de navegador pueden estar bloqueando cookies, asegúrate de probar en un navegador limpio.
+
+---
+
+### Alternativa sin cookies `HttpOnly` (utilizando Local Storage)
+
+Si las cookies están siendo un problema por el acceso, puedes considerar almacenar el token en **LocalStorage** o **SessionStorage**, aunque esta no es la forma más segura comparado con `HttpOnly` cookies (ya que las cookies con `HttpOnly` no pueden ser accedidas por scripts, protegiendo un poco más el token). Sin embargo, es una opción en términos de manejo simple:
+
+```javascript
+localStorage.setItem('token', token); // Guarda el token
+const token = localStorage.getItem('token'); // Obtiene el token
+```
+
+### Conclusión:
+Es importante verificar cómo las cookies están siendo configuradas en el backend y asegurarse de que se estén manejando correctamente las configuraciones de CORS, `SameSite`, y `Secure`. Si las cookies deben ser accesibles en el frontend, no deben ser `HttpOnly`.
+
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+  //add this for GPT4
+  """necesito lograr esto de la manera mas profesional posible, usando patrones de diseño, optimizaciones de codigo y de rendimiento, eficiciencia en cuanto empleo de macanismos profesionales,
+  
+  siempre opto por las maneras mas profesionales y esteticas de conseguirlo, recuerda que siempre busco maneras de hacer mejor las cosas, necesito la forma mas optima en cuanto a rendimiento y escalabilidad, eficiente en cuanto a codigo y profesional en cuanto a empleo de codigo limpio, mejores practicas y patrones de diseño, por favor, dame lo mas profesional que tengas; que cuando el CEO vea mi codigo, se impresione por el modelo de desestructurar datos tan bonita, !VAMOS!"""
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+### **Enfoque Usando `MutationObserver`**:
+El `MutationObserver` puede observar cambios en el DOM, y aunque no hay una API nativa para observar directamente cambios en las cookies, podemos detectar cambios en el atributo `document.cookie` observando el nodo del documento. Aquí tienes una implementación limpia y profesional:
+
+### **Código para Implementar `MutationObserver` en React:**
+
+```javascript
+const Tasks = () => {
+  const [tasks, setTasks] = useState([]);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => { observerCookies() }, []);
+  useEffect(() => { if (token) getTasks() }, [token]);
+
+  const observerCookies = () => {
+    const observer = new MutationObserver(() => {
+      const cookies = document.cookie;
+      const match = cookies.match(/token=([^;]*)/);
+      if (match && match[1]) setToken(match[1])
+    });
+    observer.observe(document, { subtree: true, attributes: true, attributeFilter: ['cookie'] });
+    return () => observer.disconnect();
+  }
+}
+```
+1. **MutationObserver**: 
+   - Se usa para observar cambios en el DOM, específicamente en el atributo `document.cookie`. Cada vez que hay un cambio, el observador se activa y lee el valor de `document.cookie`.
+   - Busca la cookie `token` en el documento y, si está presente, la guarda en el estado `token`.
+
+3. **Escalabilidad y Eficiencia**:
+   - **Escalable**: No usamos ningún tipo de temporizador, lo que minimiza la sobrecarga y mejora el rendimiento. Este método es completamente reactivo, basado en eventos del DOM.
+   - **Eficiente**: Como el `MutationObserver` es un enfoque basado en cambios, no desperdicia recursos revisando periódicamente el estado de las cookies.
+
+4. **Patrones de Diseño**:
+   - **Observador**: El patrón `Observer` utilizado aquí es excelente para cuando se necesitan detectar cambios sin intervención manual.
+   - **Código Limpio**: separacion clara entre la detección de cookies y lógica de la solicitud de tareas
+
+## Tambien podemos usar setInterval (not recomended)
+
+**Monitorear las Cookies con un Intervalo Temporal Controlado**:
+   ```javascript
+   const [token, setToken] = useState<Token>(null);
+
+  useEffect(() => { listenCookies() }, []);
+  useEffect(() => { getTasks() }, [token]);
+
+  const listenCookies = () => {
+    const interval = setInterval(() => checkToken(), 100);
+    return () => clearInterval(interval); //when its on avaliable
+  }
+
+  const checkToken = () => {
+    const cookies = Cookies.get();
+    if (token) { setToken(cookies.token) }
+  };
+   ```
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
 ## Partials < >
 ```typescript
 import { useTasks } from "../../context/TaskContext";

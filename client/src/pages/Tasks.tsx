@@ -1,11 +1,13 @@
-import { useEffect } from "react";
 import { useTasks } from "../context/TaskContext";
+import { useEffect } from "react";
+
 import TaskCard from "../components/tasks/TaskCard";
 
 function Tasks() {
   const { tasks, errors, getTasks } = useTasks();
 
-  useEffect(() => { getTasks() }, [])
+  useEffect(() => { getTasks() }, []);
+
   return (
     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
       {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}

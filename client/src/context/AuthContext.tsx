@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import { createContext, useContext, useState, useEffect } from "react";
+import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
-import { loginRequest, registerRequest, tokenCredentialsRequest } from '../api/auth';
-import { User, AuthContext } from '../interfaces/context.interface';
-import { ErrorResponse } from '../interfaces/response.interface';
-import { Props } from '../interfaces/props.interface';
+import { loginRequest, registerRequest, tokenCredentialsRequest } from "../api/auth";
+import { User, AuthContext } from "../interfaces/context.interface";
+import { isErrorResponse } from "../interfaces/response.interface";
+import { Props } from "../interfaces/props.interface";
 
 const Auth = createContext<AuthContext>(undefined);
 
@@ -17,9 +17,9 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: Props) => {
   const [errors, setErrors] = useState<string[]>([]);
-  const [user, setUser] = useState<User>({});
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const [user, setUser] = useState<User>({});
 
   useEffect(() => timeAlert(), [errors]);
   useEffect(() => { verifyToken() }, []);
@@ -52,8 +52,8 @@ export const AuthProvider = ({ children }: Props) => {
   const logout = () => { Cookies.remove('token'); setAuthStatus() }
 
   const setAuthStatus = (res?: AxiosResponse) => {
-    setUser(res?.data ?? {})
     setIsAuth(Boolean(res?.data))
+    setUser(res?.data ?? {})
     setLoading(false)
   }
 
@@ -62,8 +62,4 @@ export const AuthProvider = ({ children }: Props) => {
       {children}
     </Auth.Provider>
   )
-}
-
-function isErrorResponse(e: unknown): e is ErrorResponse {
-  return (typeof e === "object" && e !== null && "response" in e)
 }

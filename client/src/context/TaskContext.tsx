@@ -2,7 +2,7 @@ import { useState, useContext, createContext } from 'react';
 
 import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "../api/task";
 import { TaskContext, Task as TypeTask } from '../interfaces/context.interface';
-import { ErrorResponse } from '../interfaces/response.interface';
+import { isErrorResponse } from '../interfaces/response.interface';
 import { Props } from '../interfaces/props.interface';
 
 const Task = createContext<TaskContext>(undefined);
@@ -19,29 +19,29 @@ export const TaskProvider = ({ children }: Props) => {
 
   const getTask = async (id: string) => {
     try { const res = await getTaskRequest(id); return res.data }
-    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const getTasks = async () => {
     try { const res = await getTasksRequest(); setTasks(res.data) }
-    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const createTask = async (task: object) => {
     try { await createTaskRequest(task) }
-    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const updateTask = async (id: string, data: object) => {
     try { await updateTaskRequest(id, data) }
-    catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   const deleteTask = async (id: string) => {
     try {
       const res = await deleteTaskRequest(id);
       if (res.data) setTasks(prev => prev.filter(e => e._id !== id))
-    } catch (e) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
   return (
@@ -49,8 +49,4 @@ export const TaskProvider = ({ children }: Props) => {
       {children}
     </Task.Provider>
   )
-}
-
-function isErrorResponse(e: unknown): e is ErrorResponse {
-  return (typeof e === "object" && e !== null && "response" in e)
 }
