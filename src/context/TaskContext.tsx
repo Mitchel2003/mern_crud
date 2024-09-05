@@ -44,8 +44,10 @@ export const TaskProvider = ({ children }: Props) => {
     } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
   }
 
+  const setTaskStatus = (data?: []) => { setErrors(data ?? []); setTasks(data ?? []) }
+
   return (
-    <Task.Provider value={{ tasks, errors, getTask, getTasks, createTask, updateTask, deleteTask }}>
+    <Task.Provider value={{ tasks, errors, getTask, getTasks, createTask, updateTask, deleteTask, setTaskStatus }}>
       {children}
     </Task.Provider>
   )

@@ -30,4 +30,5 @@ export type TaskContext = {
   createTask: (task: object) => Promise<void>;
   updateTask: (id: string, data: object) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
+  setTaskStatus: (data?: []) => void;
 } | undefined

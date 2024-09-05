@@ -10,7 +10,7 @@ dayjs.extend(utc)
 
 function TaskForm() {
   const { register, handleSubmit, setValue, formState: { errors: errsForm } } = useForm();
-  const { errors, getTask, createTask, updateTask } = useTasks();
+  const { errors, getTask, createTask, updateTask, setTaskStatus } = useTasks();
   const { id = 'new' } = useParams();
   const navigate = useNavigate();
 
@@ -25,10 +25,12 @@ function TaskForm() {
   }
 
   const onSubmit = handleSubmit(async (values) => {
+    const url = '/tasks'
     const task = schemaTask(values);
     if (id === 'new') { createTask(task) }
     else { updateTask(id, task) }
-    navigate('/tasks');
+    setTaskStatus();
+    navigate(url);
   })
 
   return (
