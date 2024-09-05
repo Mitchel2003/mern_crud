@@ -12,7 +12,11 @@ export const login = async (req: Request, res: Response) => {
     const user = await verifyCredentials(req);
     if ('error' in user) return res.status(403).json([user.error]);
     const token = await generateAccessToken({ id: user.value._id });
-    res.cookie('token', token, { httpOnly: false, secure: true, sameSite: 'none' });
+    res.cookie('token', token, { //this specifications will be modified on producction
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none'
+    });
     res.json(user.value);
   } catch (e) { res.status(500).json([`Error to try login => ${e}`]) }
 }
