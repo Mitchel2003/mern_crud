@@ -1,7 +1,8 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 
+import { CustomMutation } from "../interfaces/props.interface";
 import { useTasks } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
@@ -10,35 +11,50 @@ dayjs.extend(utc)
 
 function TaskForm() {
   const { register, handleSubmit, setValue, formState: { errors: errsForm } } = useForm();
-  const { errors, getTask, createTask, updateTask, setTaskStatus } = useTasks();
+  const { errors, getTask, createTask, updateTask } = useTasks();
+  const queryClient = useQueryClient();
   const { id = 'new' } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => { preloadTask() }, [])
+  const { data: task, error, isLoading } = useQuery({//query react defined
+    queryKey: ['task', id],
+    queryFn: ({ queryKey }) => getTask(queryKey[1]),
+    enabled: id !== 'new'
+  })
 
-  const preloadTask = async () => {
-    if (id === 'new') return;
-    const res = await getTask(id);
-    setValue('title', res.title);
-    setValue('description', res.description);
-    setValue('date', dayjs(res.date).utc().format('YYYY-MM-DD'));
+  if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
+  if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
+  if (task && id !== 'new') {
+    setValue('title', task.title);
+    setValue('description', task.description);
+    setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }
 
-  const onSubmit = handleSubmit(async (values) => {
-    const url = '/tasks'
-    const task = schemaTask(values);
-    if (id === 'new') { createTask(task) }
-    else { updateTask(id, task) }
-    setTaskStatus();
-    navigate(url);
-  })
+  const onSubmit = async (values: FieldValues) => {
+    const data = schemaTask(values);
+    const mutation = id === 'new'
+      ? useCustomMutation(createTask as CustomMutation, 'tasks')
+      : useCustomMutation(updateTask as CustomMutation, 'tasks')
+    mutation(data, id !== 'new' ? id : undefined);
+    navigate('/tasks');
+  }
+
+  const useCustomMutation = (method: CustomMutation, key: string) => {
+    return (data: object, id?: string) => {
+      const build = useMutation({
+        mutationFn: (value: object) => id ? method(id, value) : method(value),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: [key] }) } // Invalidate and refetch
+      })
+      build.mutate(data);
+    }
+  }
 
   return (
     <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
 
       {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
 
         <label> Title </label>
         <input

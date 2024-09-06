@@ -23,12 +23,10 @@ export type Task = {
 }
 
 export type TaskContext = {
-  tasks: Task[];
   errors: string[];
   getTask: (id: string) => Promise<Task>;
-  getTasks: () => Promise<void>;
-  createTask: (task: object) => Promise<void>;
-  updateTask: (id: string, data: object) => Promise<void>;
-  deleteTask: (id: string) => Promise<void>;
-  setTaskStatus: (data?: []) => void;
+  getTasks: () => Promise<Task[]>;
+  createTask: (task: object) => Promise<Task>;
+  updateTask: (id: string, task: object) => Promise<Task>;
+  deleteTask: (id: string) => Promise<Task>;
 } | undefined

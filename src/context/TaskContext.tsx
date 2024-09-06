@@ -1,8 +1,8 @@
 import { useState, useContext, createContext } from 'react';
 
 import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "../api/task";
-import { TaskContext, Task as TypeTask } from '../interfaces/context.interface';
 import { isErrorResponse } from '../interfaces/response.interface';
+import { TaskContext } from '../interfaces/context.interface';
 import { Props } from '../interfaces/props.interface';
 
 const Task = createContext<TaskContext>(undefined);
@@ -15,39 +15,36 @@ export const useTasks = () => {
 
 export const TaskProvider = ({ children }: Props) => {
   const [errors, setErrors] = useState<string[]>([]);
-  const [tasks, setTasks] = useState<TypeTask[]>([]);
 
   const getTask = async (id: string) => {
     try { const res = await getTaskRequest(id); return res.data }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { setTaskStatus(e) }
   }
 
   const getTasks = async () => {
-    try { const res = await getTasksRequest(); setTasks(res.data) }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await getTasksRequest(); return res.data }
+    catch (e: unknown) { setTaskStatus(e) }
   }
 
   const createTask = async (task: object) => {
-    try { await createTaskRequest(task) }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await createTaskRequest(task); return res.data }
+    catch (e: unknown) { setTaskStatus(e) }
   }
 
-  const updateTask = async (id: string, data: object) => {
-    try { await updateTaskRequest(id, data) }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+  const updateTask = async (id: string, task: object) => {
+    try { const res = await updateTaskRequest(id, task); return res.data }
+    catch (e: unknown) { setTaskStatus(e) }
   }
 
   const deleteTask = async (id: string) => {
-    try {
-      const res = await deleteTaskRequest(id);
-      if (res.data) setTasks(prev => prev.filter(e => e._id !== id))
-    } catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    try { const res = await deleteTaskRequest(id); return res.data }
+    catch (e: unknown) { setTaskStatus(e) }
   }
 
-  const setTaskStatus = (data?: []) => { setErrors(data ?? []); setTasks(data ?? []) }
+  const setTaskStatus = (e: unknown) => { if (isErrorResponse(e)) setErrors(e.response.data) }
 
   return (
-    <Task.Provider value={{ tasks, errors, getTask, getTasks, createTask, updateTask, deleteTask, setTaskStatus }}>
+    <Task.Provider value={{ errors, getTask, getTasks, createTask, updateTask, deleteTask }}>
       {children}
     </Task.Provider>
   )
