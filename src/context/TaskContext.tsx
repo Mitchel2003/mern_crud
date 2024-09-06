@@ -1,7 +1,7 @@
 import { useState, useContext, createContext } from 'react';
 
 import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "../api/task";
-import { isErrorResponse } from '../interfaces/response.interface';
+import { isApiResponse, isAxiosResponse } from '../interfaces/response.interface';
 import { TaskContext } from '../interfaces/context.interface';
 import { Props } from '../interfaces/props.interface';
 
@@ -41,7 +41,10 @@ export const TaskProvider = ({ children }: Props) => {
     catch (e: unknown) { setTaskStatus(e) }
   }
 
-  const setTaskStatus = (e: unknown) => { if (isErrorResponse(e)) setErrors(e.response.data) }
+  const setTaskStatus = (e: unknown) => {
+    if (isAxiosResponse(e)) setErrors(e.response.data)
+    if (isApiResponse(e)) setErrors(e.data)
+  }
 
   return (
     <Task.Provider value={{ errors, getTask, getTasks, createTask, updateTask, deleteTask }}>

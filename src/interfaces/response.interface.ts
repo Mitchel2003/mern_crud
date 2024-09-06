@@ -1,9 +1,10 @@
-import { Task } from "./context.interface"
+export interface AxiosResponse { response: { data: string[] } }
+export interface ApiResponse { data: [] }
 
-export interface ErrorResponse {
-  response: { data: string[] }
+export function isAxiosResponse(e: unknown): e is AxiosResponse {
+  return (typeof e === "object" && e !== null && "response" in e)
 }
 
-export function isErrorResponse(e: unknown): e is ErrorResponse {
-  return (typeof e === "object" && e !== null && "response" in e)
+export function isApiResponse(e: unknown): e is ApiResponse {
+  return (typeof e === "object" && e !== null && "data" in e)
 }

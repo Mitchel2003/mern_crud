@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 import { loginRequest, registerRequest, tokenCredentialsRequest } from "../api/auth";
 import { User, AuthContext } from "../interfaces/context.interface";
-import { isErrorResponse } from "../interfaces/response.interface";
+import { isAxiosResponse } from "../interfaces/response.interface";
 import { Props } from "../interfaces/props.interface";
 
 const Auth = createContext<AuthContext>(undefined);
@@ -41,12 +41,12 @@ export const AuthProvider = ({ children }: Props) => {
 
   const signin = async (user: object) => {
     try { const res = await loginRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isAxiosResponse(e)) setErrors(e.response.data) }
   }
 
   const signup = async (user: object) => {
     try { const res = await registerRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isErrorResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isAxiosResponse(e)) setErrors(e.response.data) }
   }
 
   const logout = () => { Cookies.remove('token'); setAuthStatus() }

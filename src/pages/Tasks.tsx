@@ -4,11 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import TaskCard from "../components/tasks/TaskCard";
 
 function Tasks() {
+  const { data: tasks, error, isLoading } = useQuery({ queryKey: ['tasks'], queryFn: () => getTasks() });
   const { errors, getTasks } = useTasks();
-  const { data: tasks, error, isLoading } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: () => getTasks()
-  });
 
   if (error) return (<h1> {error.message} </h1>)
   if (isLoading) return (<h1> Cargando... </h1>)

@@ -30,14 +30,14 @@ function TaskForm() {
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }
 
-  const onSubmit = async (values: FieldValues) => {
+  const onSubmit = handleSubmit(async (values) => {
     const data = schemaTask(values);
     const mutation = id === 'new'
       ? useCustomMutation(createTask as CustomMutation, 'tasks')
       : useCustomMutation(updateTask as CustomMutation, 'tasks')
     mutation(data, id !== 'new' ? id : undefined);
     navigate('/tasks');
-  }
+  })
 
   const useCustomMutation = (method: CustomMutation, key: string) => {
     return (data: object, id?: string) => {
@@ -54,7 +54,7 @@ function TaskForm() {
 
       {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
 
         <label> Title </label>
         <input
