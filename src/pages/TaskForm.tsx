@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
-import { CustomMutation } from "../interfaces/props.interface";
 import { useTasks } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
@@ -16,36 +16,36 @@ function TaskForm() {
   const { id = 'new' } = useParams();
   const navigate = useNavigate();
 
-  const { data: task, error, isLoading } = useQuery({//query react defined
+  const { data: task, error, isLoading } = useQuery({ //query react defined
     queryKey: ['task', id],
     queryFn: ({ queryKey }) => getTask(queryKey[1]),
     enabled: id !== 'new'
+  });
+
+  useEffect(() => {
+    if (!task || id === 'new') return;
+    setValue('title', task.title);
+    setValue('description', task.description);
+    setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
+  }, [task]);
+
+  const mutation = useMutation({ //configurate data mutation
+    mutationFn: (data: object) => id !== 'new'
+      ? updateTask(id, data)
+      : createTask(data),
+    onSuccess: () => { // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      navigate('/tasks');
+    }
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
+    const data = schemaTask(values);
+    mutation.mutate(data);
   })
 
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
   if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
-  if (task && id !== 'new') {
-    setValue('title', task.title);
-    setValue('description', task.description);
-    setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
-  }
-
-  const onSubmit = handleSubmit(async (values) => {
-    const data = schemaTask(values);
-    const mutation = id === 'new'
-      ? useCustomMutation(createTask as CustomMutation, 'tasks')
-      : useCustomMutation(updateTask as CustomMutation, 'tasks')
-    mutation(data);
-    navigate('/tasks');
-  })
-
-  const useCustomMutation = (method: CustomMutation, key: string) => {
-    const build = useMutation({
-      mutationFn: (data: object) => id !== 'new' ? method(id, data) : method(data),
-      onSuccess: () => { queryClient.invalidateQueries({ queryKey: [key] }) } // Invalidate and refetch
-    });
-    return (data: object) => build.mutate(data);
-  };
 
   return (
     <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
