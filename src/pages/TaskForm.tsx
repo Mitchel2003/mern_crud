@@ -30,18 +30,14 @@ function TaskForm() {
   }, [task]);
 
   const mutation = useMutation({ //configurate data mutation
-    mutationFn: (data: object) => id !== 'new'
-      ? updateTask(id, data)
-      : createTask(data),
-    onSuccess: () => { // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      navigate('/tasks');
-    }
+    mutationFn: (data: object) => id !== 'new' ? updateTask(id, data) : createTask(data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tasks'] }) } // Invalidate and refetch
   });
 
   const onSubmit = handleSubmit(async (values) => {
     const data = schemaTask(values);
     mutation.mutate(data);
+    navigate('/tasks');
   })
 
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
