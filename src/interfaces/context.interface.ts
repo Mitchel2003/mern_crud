@@ -22,11 +22,27 @@ export type Task = {
   updatedAt?: Date;
 }
 
+export type TypeTask = {
+  (id: string): Promise<Task>
+}
+export type TypeTasks = {
+  (): Promise<Task[]>
+}
+export type CreateTask = {
+  (task: object): Promise<Task>
+}
+export type UpdateTask = {
+  (id: string, task: object): Promise<Task>
+}
+export type DeleteTask = {
+  (id: string): Promise<Task>
+}
+
 export type TaskContext = {
   errors: string[];
-  getTask: (id: string) => Promise<Task>;
-  getTasks: () => Promise<Task[]>;
-  createTask: (task: object) => Promise<Task>;
-  updateTask: (id: string, task: object) => Promise<Task>;
-  deleteTask: (id: string) => Promise<Task>;
+  getTask: TypeTask;
+  getTasks: TypeTasks;
+  createTask: CreateTask;
+  updateTask: UpdateTask;
+  deleteTask: DeleteTask;
 } | undefined

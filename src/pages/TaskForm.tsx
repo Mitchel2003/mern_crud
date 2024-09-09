@@ -35,19 +35,17 @@ function TaskForm() {
     const mutation = id === 'new'
       ? useCustomMutation(createTask as CustomMutation, 'tasks')
       : useCustomMutation(updateTask as CustomMutation, 'tasks')
-    mutation(data, id !== 'new' ? id : undefined);
+    mutation(data);
     navigate('/tasks');
   })
 
   const useCustomMutation = (method: CustomMutation, key: string) => {
-    return (data: object, id?: string) => {
-      const build = useMutation({
-        mutationFn: (value: object) => id ? method(id, value) : method(value),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: [key] }) } // Invalidate and refetch
-      })
-      build.mutate(data);
-    }
-  }
+    const build = useMutation({
+      mutationFn: (data: object) => id !== 'new' ? method(id, data) : method(data),
+      onSuccess: () => { queryClient.invalidateQueries({ queryKey: [key] }) } // Invalidate and refetch
+    });
+    return (data: object) => build.mutate(data);
+  };
 
   return (
     <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
