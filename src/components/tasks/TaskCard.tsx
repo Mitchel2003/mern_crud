@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { TaskCardProps } from "../../interfaces/props.interface";
@@ -7,9 +8,15 @@ import dayjs from "dayjs";
 dayjs.extend(utc)
 
 function TaskCard({ task }: TaskCardProps) {
-  const { deleteTask } = useTasks()
+  const queryClient = useQueryClient();
+  const { deleteTask } = useTasks();
 
-  const actionDelete = () => deleteTask(task._id)
+  const mutation = useMutation({ //configurate data mutation
+    mutationFn: (id: string) => deleteTask(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tasks'] }) } // Invalidate and refetch
+  });
+
+  const actionDelete = () => mutation.mutate(task._id)
   return (
     <div className="bg-zinc-800 max-w-md w-full p-6 rounded-md">
       <h1 className="text-2xl font-bold"> {task.title} </h1>
