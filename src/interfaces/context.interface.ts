@@ -22,8 +22,6 @@ export type Task = {
   updatedAt?: Date;
 }
 
-export type Error = string;
-
 export type TypeTask = {
   (id: string): Promise<Task>
 }
@@ -41,7 +39,7 @@ export type DeleteTask = {
 }
 
 export type TaskContext = {
-  errors: Error[];
+  errors: string[];
   getTask: TypeTask;
   getTasks: TypeTasks;
   createTask: CreateTask;

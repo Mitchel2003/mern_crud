@@ -25,7 +25,7 @@ function TaskForm() {
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }, [task]);
 
-  if (mutation.isSuccess) navigate('/tasks'); // no podria acaso ponerlo por fuera? acaso el onClick no renderiza nuevamente el componente?, porque de ser aqui entonces no habria necesidad de poner otro useEffect, 
+  useEffect(() => { if (mutation.isSuccess) navigate('/tasks') }, [mutation.isSuccess])
 
   const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
 

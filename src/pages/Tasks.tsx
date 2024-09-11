@@ -4,9 +4,9 @@ import { useFetchTasks } from "../hooks/useTasks";
 import { useFavoriteTask } from "../store/favoriteTask";
 
 function Tasks() {
-  const { errors } = useTasks();
-  const { favoriteTaskIds } = useFavoriteTask();
+  const favoriteTasks = useFavoriteTask(status => status.favoriteTaskIds);
   const { data: tasks, error, isLoading } = useFetchTasks();
+  const { errors } = useTasks();
 
   if (error) return (<h1> {error.message} </h1>)
   if (isLoading) return (<h1> Cargando... </h1>)
@@ -22,7 +22,7 @@ function Tasks() {
         <TaskCard
           key={i}
           task={e}
-          isFavorite={favoriteTaskIds.includes(e._id)}
+          isFavorite={favoriteTasks.includes(e._id)}
         />
       )}
 
