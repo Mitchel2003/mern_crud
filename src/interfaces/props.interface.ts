@@ -13,6 +13,7 @@ export type TaskCardProps = { task: Task, isFavorite: boolean }
 /*--------------------------------------------------Task--------------------------------------------------*/
 export type FavoriteTaskState = {
     favoriteTaskIds: string[];
-    toggleFavoriteTask: (id: string) => void
+    addFavoriteTask: (id: string) => void;
+    removeFavoriteTask: (id: string) => void;
 }
 /*---------------------------------------------------------------------------------------------------------*/
