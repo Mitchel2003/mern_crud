@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
-import { useMutationCreateOrUpdate, useFetchTask } from "../hooks/useTasks";
+import { useFetchTask, useCustomMutation } from "../hooks/useTasks";
 import { useTasks } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
@@ -16,6 +16,7 @@ function TaskForm() {
   const navigate = useNavigate();
 
   const { data: task, error, isLoading } = useFetchTask(id);
+  const mutation = useCustomMutation().createOrUpdateTask(id);
 
   useEffect(() => {
     if (!task || id === 'new') return;
@@ -24,11 +25,9 @@ function TaskForm() {
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }, [task]);
 
-  const onSubmit = handleSubmit(async (values) => {
-    const mutation = useMutationCreateOrUpdate(id);
-    mutation.mutate(schemaTask(values));
-    if (mutation.isSuccess) navigate('/tasks');
-  });
+  if (mutation.isSuccess) navigate('/tasks'); // no podria acaso ponerlo por fuera? acaso el onClick no renderiza nuevamente el componente?, porque de ser aqui entonces no habria necesidad de poner otro useEffect, 
+
+  const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
 
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
   if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
@@ -74,7 +73,6 @@ function TaskForm() {
 }
 
 export default TaskForm
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
  * Helps us to build a task format and send request like create or update
