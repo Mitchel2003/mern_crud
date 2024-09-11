@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -13,33 +12,29 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 
 function App() {
-  const queryClient = new QueryClient();
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TaskProvider>
-          <BrowserRouter>
-            <main className="container mx-auto px-8">
+    <AuthProvider>
+      <TaskProvider>
+        <BrowserRouter>
+          <main className="container mx-auto px-8">
 
-              <Navbar />
-              <Routes>
-                <Route path="/" index element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+            <Navbar />
+            <Routes>
+              <Route path="/" index element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/task/:id" element={<TaskForm />} />
-                  <Route path="/tasks" element={<Tasks />} />
-                </Route>
-              </Routes>
+              <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/task/:id" element={<TaskForm />} />
+                <Route path="/tasks" element={<Tasks />} />
+              </Route>
+            </Routes>
 
-            </main>
-          </BrowserRouter>
-        </TaskProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+          </main>
+        </BrowserRouter>
+      </TaskProvider>
+    </AuthProvider>
   )
 }
 

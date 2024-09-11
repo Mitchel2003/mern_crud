@@ -1,4 +1,4 @@
-//AuthContext
+/*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type User = { _id: string, username: string, email: string } | {}
 
 export type AuthContext = {
@@ -10,9 +10,9 @@ export type AuthContext = {
   signup: (user: object) => Promise<void>;
   logout: () => void;
 } | undefined
+/*---------------------------------------------------------------------------------------------------------*/
 
-
-//TaskContext
+/*--------------------------------------------------TaskContext--------------------------------------------------*/
 export type Task = {
   _id: string;
   title: string;
@@ -21,6 +21,8 @@ export type Task = {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export type Error = string;
 
 export type TypeTask = {
   (id: string): Promise<Task>
@@ -39,10 +41,11 @@ export type DeleteTask = {
 }
 
 export type TaskContext = {
-  errors: string[];
+  errors: Error[];
   getTask: TypeTask;
   getTasks: TypeTasks;
   createTask: CreateTask;
   updateTask: UpdateTask;
   deleteTask: DeleteTask;
 } | undefined
+/*---------------------------------------------------------------------------------------------------------*/

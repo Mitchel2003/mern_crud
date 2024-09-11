@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { navAuth, navGuest } from "../interfaces/components.interface";
+import { navAuth, navGuest } from "../interfaces/props.interface";
 
 function Navbar() {
   const { isAuth, logout } = useAuth();

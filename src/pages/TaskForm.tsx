@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
+import { useMutationCreateOrUpdate, useFetchTask } from "../hooks/useTasks";
 import { useTasks } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
@@ -11,16 +11,11 @@ dayjs.extend(utc)
 
 function TaskForm() {
   const { register, handleSubmit, setValue, formState: { errors: errsForm } } = useForm();
-  const { errors, getTask, createTask, updateTask } = useTasks();
-  const queryClient = useQueryClient();
   const { id = 'new' } = useParams();
+  const { errors } = useTasks();
   const navigate = useNavigate();
 
-  const { data: task, error, isLoading } = useQuery({ //query react defined
-    queryKey: ['task', id],
-    queryFn: ({ queryKey }) => getTask(queryKey[1]),
-    enabled: id !== 'new'
-  });
+  const { data: task, error, isLoading } = useFetchTask(id);
 
   useEffect(() => {
     if (!task || id === 'new') return;
@@ -29,16 +24,11 @@ function TaskForm() {
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }, [task]);
 
-  const mutation = useMutation({ //configurate data mutation
-    mutationFn: (data: object) => id !== 'new' ? updateTask(id, data) : createTask(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tasks'] }) } // Invalidate and refetch
-  });
-
   const onSubmit = handleSubmit(async (values) => {
-    const data = schemaTask(values);
-    mutation.mutate(data);
-    navigate('/tasks');
-  })
+    const mutation = useMutationCreateOrUpdate(id);
+    mutation.mutate(schemaTask(values));
+    if (mutation.isSuccess) navigate('/tasks');
+  });
 
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
   if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
