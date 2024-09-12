@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { CustomMutation } from "../interfaces/props.interface";
 import { useTasks } from "../context/TaskContext";
 
 /*--------------------------------------------------useQuery--------------------------------------------------*/
@@ -10,7 +11,6 @@ export const useFetchTask = (id: string) => {
     enabled: id !== 'new'
   });
 }
-
 export const useFetchTasks = () => {
   const { getTasks } = useTasks();
   return useQuery({
@@ -21,10 +21,18 @@ export const useFetchTasks = () => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------useMutation--------------------------------------------------*/
-export function useCustomMutation() {
+/**
+ * Allows us prepare the useMutation according to a especific request, we use axios to call the api
+ * @returns {CustomMutation} provide methods that implement useMutationResult
+ * @example
+ *  const mutation = useCustomMutation().create();
+ *  mutation.mutate(id);
+ */
+export function useCustomMutation(): CustomMutation {
+  // to use QueryClientProvider
   const queryClient = useQueryClient();
   /**
-   * Execute a request using axios to call the api, we can "Create or Update" based on id param
+   * Execute a request condicionally based on id param
    * @param id Correspond to idTask from url params to actions create or update
    */
   const createOrUpdateTask = (id: string) => {

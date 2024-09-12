@@ -5,16 +5,22 @@ import { TaskCardProps } from "../../interfaces/props.interface";
 import { useCustomMutation } from "../../hooks/useTasks";
 import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
-
 dayjs.extend(utc)
 
 function TaskCard({ task, isFavorite }: TaskCardProps) {
   const addFavorite = useFavoriteTask(state => state.addFavoriteTask)
   const removeFavorite = useFavoriteTask(state => state.removeFavoriteTask)
   const mutation = useCustomMutation().deleteTask();
-
+  /**
+   * Handler that execute a custom mutation (Query React); this way we can fetch and put data on cache to evade refetchs
+   * @returns a method to remove and agree task favorite depending from Props obtained
+   */
   const handleDelete = () => mutation.mutate(task._id)
-  const handleToggleFavorite = () => isFavorite ? removeFavorite(task._id) : addFavorite(task._id)
+  /**
+   * Helps us to toggle the state favorite task using local store (Zustand)
+   * @returns {void} a method to remove and agree task favorite depending from Props obtained
+   */
+  const handleFavorite = () => isFavorite ? removeFavorite(task._id) : addFavorite(task._id)
 
   return (
     <div className="bg-zinc-800 max-w-md w-full p-6 rounded-md">
@@ -24,7 +30,7 @@ function TaskCard({ task, isFavorite }: TaskCardProps) {
 
       <div className="flex items-center mt-2 gap-x-2">
         <button
-          onClick={handleToggleFavorite}
+          onClick={handleFavorite}
           className={`
             text-white px-4 py-2 rounded-md
             ${isFavorite
