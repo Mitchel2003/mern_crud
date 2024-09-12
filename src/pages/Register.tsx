@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
-import { useAuth } from "../context/AuthContext"
+import { useAuthContext } from "../context/AuthContext"
 
 function Register() {
   const { register, handleSubmit, formState: { errors: errsForm } } = useForm();
-  const { signup, isAuth, errors = [] } = useAuth();
+  const { signup, isAuth, errors = [] } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => { if (isAuth) return navigate('/tasks') }, [isAuth]);

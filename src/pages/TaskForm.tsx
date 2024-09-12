@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
 import { useFetchTask, useCustomMutation } from "../hooks/useTasks";
-import { useTasks } from "../context/TaskContext";
+import { useTaskContext } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
 import dayjs from "dayjs";
@@ -11,8 +11,8 @@ dayjs.extend(utc)
 
 function TaskForm() {
   const { register, handleSubmit, setValue, formState: { errors: errsForm } } = useForm();
+  const { errors } = useTaskContext();
   const { id = 'new' } = useParams();
-  const { errors } = useTasks();
   const navigate = useNavigate();
 
   const { data: task, error, isLoading } = useFetchTask(id);

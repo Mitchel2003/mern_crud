@@ -9,7 +9,7 @@ import { Props } from "../interfaces/props.interface";
 
 const Auth = createContext<AuthContext>(undefined);
 
-export const useAuth = () => {
+export const useAuthContext = () => {
   const context = useContext(Auth);
   if (!context) throw new Error('Error to try use context');
   return context;

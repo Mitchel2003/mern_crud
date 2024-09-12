@@ -7,7 +7,7 @@ import { Props } from '../interfaces/props.interface';
 
 const Task = createContext<TaskContext>(undefined);
 
-export const useTasks = () => {
+export const useTaskContext = () => {
   const context = useContext(Task);
   if (!context) throw new Error('Error to try use context');
   return context;

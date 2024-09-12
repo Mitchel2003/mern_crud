@@ -1,12 +1,12 @@
-import TaskCard from "../components/tasks/TaskCard";
-import { useTasks } from "../context/TaskContext";
-import { useFetchTasks } from "../hooks/useTasks";
+import { useTaskContext } from "../context/TaskContext";
 import { useFavoriteTask } from "../store/favoriteTask";
+import TaskCard from "../components/tasks/TaskCard";
+import { useFetchTasks } from "../hooks/useTasks";
 
 function Tasks() {
   const favoriteTasks = useFavoriteTask(state => state.favoriteTaskIds);
   const { data: tasks, error, isLoading } = useFetchTasks();
-  const { errors } = useTasks();
+  const { errors } = useTaskContext();
 
   if (error) return (<h1> {error.message} </h1>)
   if (isLoading) return (<h1> Cargando... </h1>)

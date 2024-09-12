@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { navAuth, navGuest } from "../interfaces/props.interface";
+import { useAuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 function Navbar() {
-  const { isAuth, logout } = useAuth();
+  const { isAuth, logout } = useAuthContext();
   const links = isAuth ? navAuth : navGuest
 
   return (
