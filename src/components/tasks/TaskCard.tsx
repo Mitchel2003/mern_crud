@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-// import { useFavoriteTask } from "../../store/favoriteTask";
+import { useFavoriteTask } from "../../store/favoriteTask";
 import { TaskCardProps } from "../../interfaces/props.interface";
 import { useCustomMutation } from "../../hooks/useTasks";
 import utc from "dayjs/plugin/utc";
@@ -9,15 +9,12 @@ import dayjs from "dayjs";
 dayjs.extend(utc)
 
 function TaskCard({ task, isFavorite }: TaskCardProps) {
-  // const addFavorite = useFavoriteTask(state => state.addFavoriteTask)
-  // const removeFavorite = useFavoriteTask(state => state.removeFavoriteTask)
+  const addFavorite = useFavoriteTask(state => state.addFavoriteTask)
+  const removeFavorite = useFavoriteTask(state => state.removeFavoriteTask)
   const mutation = useCustomMutation().deleteTask();
 
   const handleDelete = () => mutation.mutate(task._id)
-  // const handleToggleFavorite = () => {
-  //   if (isFavorite) { removeFavorite(task._id) }
-  //   else { addFavorite(task._id) }
-  // }
+  const handleToggleFavorite = () => isFavorite ? removeFavorite(task._id) : addFavorite(task._id)
 
   return (
     <div className="bg-zinc-800 max-w-md w-full p-6 rounded-md">
@@ -27,7 +24,7 @@ function TaskCard({ task, isFavorite }: TaskCardProps) {
 
       <div className="flex items-center mt-2 gap-x-2">
         <button
-          // onClick={handleToggleFavorite}
+          onClick={handleToggleFavorite}
           className={`
             text-white px-4 py-2 rounded-md
             ${isFavorite
