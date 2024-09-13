@@ -21,6 +21,7 @@ function TaskForm() {
   useEffect(() => { if (mutation.isSuccess) navigate('/tasks') }, [mutation.isSuccess])
   useEffect(() => { setInputValues() }, [task]);
 
+  /** Function to handle onClick */
   const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
   const setInputValues = () => {
     if (!task || id === 'new') return;
