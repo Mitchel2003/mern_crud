@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
-import { useFetchTask, useCustomMutation } from "../hooks/useTasks";
+import { useQueryReact, useCustomMutation } from "../hooks/useTasks";
 import { useTaskContext } from "../context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
@@ -15,19 +15,19 @@ function TaskForm() {
   const { id = 'new' } = useParams();
   const navigate = useNavigate();
 
-  const { data: task, error, isLoading } = useFetchTask(id);
   const mutation = useCustomMutation().createOrUpdateTask(id);
+  const { data: task, error, isLoading } = useQueryReact().fetchTask(id);
 
-  useEffect(() => {
+  useEffect(() => { if (mutation.isSuccess) navigate('/tasks') }, [mutation.isSuccess])
+  useEffect(() => { setInputValues() }, [task]);
+
+  const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
+  const setInputValues = () => {
     if (!task || id === 'new') return;
     setValue('title', task.title);
     setValue('description', task.description);
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
-  }, [task]);
-
-  useEffect(() => { if (mutation.isSuccess) navigate('/tasks') }, [mutation.isSuccess])
-
-  const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
+  }
 
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
   if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)

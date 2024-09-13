@@ -1,11 +1,11 @@
 import { useTaskContext } from "../context/TaskContext";
 import { useFavoriteTask } from "../store/favoriteTask";
 import TaskCard from "../components/tasks/TaskCard";
-import { useFetchTasks } from "../hooks/useTasks";
+import { useQueryReact } from "../hooks/useTasks";
 
 function Tasks() {
+  const { data: tasks, error, isLoading } = useQueryReact().fetchTasks();
   const favoriteTasks = useFavoriteTask(state => state.favoriteTaskIds);
-  const { data: tasks, error, isLoading } = useFetchTasks();
   const { errors } = useTaskContext();
 
   if (error) return (<h1> {error.message} </h1>)

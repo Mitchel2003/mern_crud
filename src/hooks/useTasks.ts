@@ -1,22 +1,38 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { CustomMutation } from "../interfaces/props.interface";
+import { CustomMutation, QueryReact } from "../interfaces/props.interface";
 import { useTaskContext } from "../context/TaskContext";
 
 /*--------------------------------------------------useQuery--------------------------------------------------*/
-export const useFetchTask = (id: string) => {
-  const { getTask } = useTaskContext();
-  return useQuery({
-    queryKey: ['task', id],
-    queryFn: ({ queryKey }) => getTask(queryKey[1]),
-    enabled: id !== 'new'
-  });
-}
-export const useFetchTasks = () => {
-  const { getTasks } = useTaskContext();
-  return useQuery({
-    queryKey: ['tasks'],
-    queryFn: () => getTasks()
-  });
+/**
+ * With this method we can use "ReactQuery" hook to handle queries and mutation data of way reactive; we use axios to operate request
+ * @returns {QueryReact} provide methods that implement useQueryResult
+ * @example
+ *  const { fetchTask } = useQueryReact();
+ *  const { data: task, error, isLoading } = fetchTask(id_task);
+ * @description through a key "queryKey" we can handle status;
+ */
+export function useQueryReact(): QueryReact {
+  /**
+   * Execute a request of a task by them id
+   * @param id - Correspond to "_id" of the task in context
+   */
+  const fetchTask = (id: string) => {
+    const { getTask } = useTaskContext();
+    return useQuery({
+      queryKey: ['task', id],
+      queryFn: ({ queryKey }) => getTask(queryKey[1]),
+      enabled: id !== 'new'
+    });
+  }
+  /** Execute a request that returns all tasks from user context */
+  const fetchTasks = () => {
+    const { getTasks } = useTaskContext();
+    return useQuery({
+      queryKey: ['tasks'],
+      queryFn: () => getTasks()
+    });
+  }
+  return { fetchTask, fetchTasks }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -33,7 +49,7 @@ export function useCustomMutation(): CustomMutation {
   const queryClient = useQueryClient();
   /**
    * Execute a request condicionally based on id param
-   * @param id Correspond to idTask from url params to actions create or update
+   * @param id - Correspond to idTask from url params to actions create or update
    */
   const createOrUpdateTask = (id: string) => {
     const { createTask, updateTask } = useTaskContext();
