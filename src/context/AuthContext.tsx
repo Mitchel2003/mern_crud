@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 import { loginRequest, registerRequest, tokenCredentialsRequest } from "../api/auth";
+import { isApiResponse, isAxiosResponse } from "../interfaces/response.interface";
 import { User, AuthContext } from "../interfaces/context.interface";
-import { isAxiosResponse } from "../interfaces/response.interface";
 import { Props } from "../interfaces/props.interface";
 
 const Auth = createContext<AuthContext>(undefined);
@@ -31,22 +31,25 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   const verifyToken = async () => {
-    if (!Cookies.get().token) return setAuthStatus();
-    try { const res = await tokenCredentialsRequest(); setAuthStatus(res) }
-    catch (e: unknown) {
-      if (axios.isAxiosError(e)) setErrors([e.response?.data]);
+    if (!Cookies.get().token) return setAuthStatus()
+    try {
+      const res = await tokenCredentialsRequest();
+      setAuthStatus(res);
+    } catch (e: unknown) {
+      if (isAxiosResponse(e)) setErrors([e.response?.data])
+      if (isApiResponse(e)) setErrors([e.data])
       setAuthStatus()
     }
   }
 
   const signin = async (user: object) => {
     try { const res = await loginRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isAxiosResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.data]) }
   }
 
   const signup = async (user: object) => {
     try { const res = await registerRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isAxiosResponse(e)) setErrors(e.response.data) }
+    catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.data]) }
   }
 
   const logout = () => { Cookies.remove('token'); setAuthStatus() }

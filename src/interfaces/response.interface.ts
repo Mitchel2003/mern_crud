@@ -1,5 +1,5 @@
-export interface AxiosResponse { response: { data: string[] } }
-export interface ApiResponse { data: [] }
+export interface AxiosResponse { response: { data: string } }
+export interface ApiResponse { data: string }
 
 export function isAxiosResponse(e: unknown): e is AxiosResponse {
   return (typeof e === "object" && e !== null && "response" in e)

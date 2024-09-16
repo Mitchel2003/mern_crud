@@ -42,8 +42,8 @@ export const TaskProvider = ({ children }: Props) => {
   }
 
   const setTaskStatus = (e: unknown) => {
-    if (isAxiosResponse(e)) setErrors(e.response.data)
-    if (isApiResponse(e)) setErrors(e.data)
+    if (isAxiosResponse(e)) setErrors([e.response.data])
+    if (isApiResponse(e)) setErrors([e.data])
   }
 
   return (

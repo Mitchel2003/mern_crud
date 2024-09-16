@@ -4,7 +4,7 @@ import TaskCard from "../components/tasks/TaskCard";
 import { useQueryReact } from "../hooks/useTasks";
 
 function Tasks() {
-  const { data: tasks, error, isLoading } = useQueryReact().fetchTasks();
+  const { data: tasks = [], error, isLoading } = useQueryReact().fetchTasks();
   const favoriteTasks = useFavoriteTask(state => state.favoriteTaskIds);
   const { errors } = useTaskContext();
 
