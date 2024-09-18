@@ -1,63 +1,127 @@
-import { navAuth, navGuest, NavbarProps } from "../../interfaces/props.interface";
-import { useAuthContext } from "../../context/AuthContext";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { navAuth, navGuest, NavbarProps } from "@/interfaces/props.interface";
+import { useThemeContext } from "@/context/ThemeContext";
+import { useAuthContext } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Menu } from "lucide-react";
 
-function Navbar() {
+import ThemeToggle from "@/components/others/ThemeToggle";
+
+/**
+ * Componente principal de la barra de navegación.
+ * Muestra un título dinámico y enlaces de navegación basados en el estado de autenticación del usuario.
+ * @returns {JSX.Element} Elemento JSX que representa la barra de navegación.
+ */
+function Navbar(): JSX.Element {
   const { isAuth, logout } = useAuthContext();
-  const links = isAuth ? navAuth : navGuest
+  const { theme } = useThemeContext();
+  const links = isAuth ? navAuth : navGuest;
 
   return (
-    <nav className="bg-zinc-700 flex justify-between my-3 py-5 px-10 rounded-lg">
-      <Link to={isAuth ? '/tasks' : '/'}>
-        <h1 className="text-2xl font-bold"> Tasks management </h1>
-      </Link>
-      <NavbarLinks path={links} isAuth={isAuth} method={logout} />
+    <nav className={`flex justify-between items-center py-3 px-6 transition-colors duration-300 backdrop-blur-md shadow-md
+      ${theme === 'dark'
+        ? 'bg-zinc-800/90 text-zinc-100'
+        : 'bg-white/90 text-gray-900'
+      }`}
+    >
+      <div className="flex items-center gap-x-4">
+        <span className="flex items-center justify-center w-8 h-8">
+          <img src="@/../public/gs_icon.ico" />
+        </span>
+        <h1 className="text-2xl">
+          {isAuth ? "Dashboard" : "Gestión salud"}
+        </h1>
+      </div>
+
+      {/* links standard */}
+      <div className="hidden md:flex items-center space-x-4">
+        <NavbarLinks path={links} isAuth={isAuth} method={logout} />
+        <ThemeToggle />
+      </div>
+
+      {/* dropmenu to links responsives */}
+      <div className="md:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            <NavbarLinksDropdown path={links} isAuth={isAuth} method={logout} />
+            <DropdownMenuItem>
+              <ThemeToggle />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </nav>
   )
 }
 
 export default Navbar
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Provide links to navbar main through an authentication condition
- * @param isAuth - is a boolean that helps us to put links on navbar that correspond to user state (in session or not)
- * @param path - refer a array string that contain the routes to redirect at user "/tasks"
- * @param method - is the action onClick in the button logout
- * @returns {JSX.Element} a HTML element
+ * Componente que renderiza los enlaces de navegación para pantallas medianas y grandes.
+ * @param {boolean} props.isAuth - Indica si el usuario está autenticado.
+ * @param {string[]} props.path - Array de rutas para los enlaces.
+ * @param {Function} props.method - Función para cerrar sesión.
+ * @returns {JSX.Element} Elemento JSX que contiene los enlaces de navegación.
  */
 const NavbarLinks = ({ isAuth, path, method }: NavbarProps): JSX.Element => {
-  return (<ul className="flex gap-x-3">
-    {
-      path.map((e, i) => (
-        <li key={i} className="bg-indigo-500 px-4 py-1 rounded-sm">
-          <Link to={e}> {navString(e)} </Link>
-        </li>
-      ))
-    }
-    {
-      isAuth ? (
-        <li className="bg-indigo-500 px-4 py-1 rounded-sm">
-          <Link to='/' onClick={method}> Logout </Link>
-        </li>
-      ) : (
-        <> </>
-      )
-    }
-  </ul>)
+  return (
+    <>
+      {path.map((e, i) => (
+        <Button key={i} variant="ghost" asChild>
+          <Link to={e}>{navString(e)}</Link>
+        </Button>
+      ))}
+      {isAuth && (
+        <Button variant="outline" onClick={method}>
+          Cerrar sesión
+        </Button>
+      )}
+    </>
+  )
 }
 
 /**
- * Allows us build the title of the link into navbar
- * @param url - is a string to desfragment
- * @returns {string} name of link
+ * Componente que renderiza los enlaces de navegación para el menú desplegable "movile".
+ * @param {boolean} props.isAuth - Indica si el usuario está autenticado.
+ * @param {string[]} props.path - Array de rutas para los enlaces.
+ * @param {Function} props.method - Función para cerrar sesión.
+ * @returns {JSX.Element} Elemento JSX que contiene los elementos del menú desplegable.
+ */
+const NavbarLinksDropdown = ({ isAuth, path, method }: NavbarProps): JSX.Element => {
+  return (
+    <>
+      {path.map((e, i) => (
+        <DropdownMenuItem key={i} asChild>
+          <Link to={e}>{navString(e)}</Link>
+        </DropdownMenuItem>
+      ))}
+      {isAuth && (
+        <DropdownMenuItem onClick={method}>
+          Cerrar sesión
+        </DropdownMenuItem>
+      )}
+    </>
+  )
+}
+
+/**
+ * Función auxiliar para formatear el texto de los enlaces de navegación, toma la última parte de la URL y capitaliza la primera letra.
+ * @param {string} url - URL completa del enlace.
+ * @returns {string} Texto formateado para el enlace.
+ * @example const linkText = navString('/user/profile'); // Imprime: "Profile"
  */
 const navString = (url: string): string => {
   const array = url.split('/');
   const index = array.length - 1;
   const text = array[index];
-  const uppercase = text.charAt(0).toUpperCase();
-  const complement = text.slice(1); //start from second letter
-  const link = uppercase + complement
-  return link;
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }

@@ -1,21 +1,30 @@
-import { useState, useContext, createContext } from 'react';
+import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "@/api/task";
+import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
+import { TaskContext } from "@/interfaces/context.interface";
+import { Props } from "@/interfaces/props.interface";
 
-import { createTaskRequest, getTaskRequest, getTasksRequest, updateTaskRequest, deleteTaskRequest } from "../api/task";
-import { isApiResponse, isAxiosResponse } from '../interfaces/response.interface';
-import { TaskContext } from '../interfaces/context.interface';
-import { Props } from '../interfaces/props.interface';
+import { useState, useContext, createContext, useEffect } from "react";
 
-const Task = createContext<TaskContext>(undefined);
+const Task = createContext<TaskContext>(undefined)
 
 export const useTaskContext = () => {
-  const context = useContext(Task);
-  if (!context) throw new Error('Error to try use context');
-  return context;
+  const context = useContext(Task)
+  if (!context) throw new Error('Error to try use taskContext')
+  return context
 }
 
 export const TaskProvider = ({ children }: Props) => {
   const [errors, setErrors] = useState<string[]>([]);
 
+  useEffect(() => timeAlert(), [errors])
+
+  const timeAlert = () => {
+    if (errors.length === 0) return;
+    const timer = setTimeout(() => setErrors([]), 5000);
+    return () => clearTimeout(timer);
+  }
+
+  //functions
   const getTask = async (id: string) => {
     try { const res = await getTaskRequest(id); return res.data }
     catch (e: unknown) { setTaskStatus(e) }

@@ -1,18 +1,18 @@
+import { loginRequest, registerRequest, tokenCredentialsRequest } from "@/api/auth";
+import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
+import { User, AuthContext } from "@/interfaces/context.interface";
+import { Props } from "@/interfaces/props.interface";
+
 import { createContext, useContext, useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
-import { loginRequest, registerRequest, tokenCredentialsRequest } from "../api/auth";
-import { isApiResponse, isAxiosResponse } from "../interfaces/response.interface";
-import { User, AuthContext } from "../interfaces/context.interface";
-import { Props } from "../interfaces/props.interface";
-
-const Auth = createContext<AuthContext>(undefined);
+const Auth = createContext<AuthContext>(undefined)
 
 export const useAuthContext = () => {
-  const context = useContext(Auth);
-  if (!context) throw new Error('Error to try use context');
-  return context;
+  const context = useContext(Auth)
+  if (!context) throw new Error('Error to try use authContext')
+  return context
 }
 
 export const AuthProvider = ({ children }: Props) => {
@@ -21,8 +21,8 @@ export const AuthProvider = ({ children }: Props) => {
   const [isAuth, setIsAuth] = useState(false);
   const [user, setUser] = useState<User>({});
 
-  useEffect(() => timeAlert(), [errors]);
-  useEffect(() => { verifyToken() }, []);
+  useEffect(() => timeAlert(), [errors])
+  useEffect(() => { verifyToken() }, [])
 
   const timeAlert = () => {
     if (errors.length === 0) return;

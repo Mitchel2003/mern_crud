@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { TaskProvider } from "./context/TaskContext";
-import ProtectedRoute from "./secure/ProtectedRoute";
+import ProtectedRoute from "./auth/ProtectedRoute";
 import TaskForm from "./pages/TaskForm";
 import Profile from "./pages/Profile";
 import Tasks from "./pages/Tasks";
@@ -13,11 +14,11 @@ import Navbar from "./components/global/Navbar";
 
 function App() {
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <BrowserRouter>
-          <main className="container mx-auto px-8">
+    <ThemeProvider>
+      <AuthProvider>
+        <TaskProvider>
 
+          <BrowserRouter>
             <Navbar />
             <Routes>
               <Route path="/" index element={<Home />} />
@@ -30,11 +31,11 @@ function App() {
                 <Route path="/tasks" element={<Tasks />} />
               </Route>
             </Routes>
+          </BrowserRouter>
 
-          </main>
-        </BrowserRouter>
-      </TaskProvider>
-    </AuthProvider>
+        </TaskProvider>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

@@ -1,3 +1,14 @@
+/*--------------------------------------------------ThemeContext--------------------------------------------------*/
+export type Theme = 'light' | 'dark'
+
+export type ThemeContext = {
+  theme: Theme;
+  toggleTheme: () => void;
+} | undefined
+
+export interface ThemeContextProps { theme: Theme }
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type User = { _id: string, username: string, email: string } | {}
 
