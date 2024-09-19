@@ -4,6 +4,13 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      // Permite a Tailwind generar las clases de utilidad para las fuentes,
+      // ayuda a integrar las fuentes con el sistema de Tailwind, permitiendo su uso en variantes.
+      // asegura que estas clases estén disponibles en toda la aplicación sin definirlas manualmente en CSS.
+      fontFamily: {
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'roboto-slab': ['Roboto Slab', 'serif']
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

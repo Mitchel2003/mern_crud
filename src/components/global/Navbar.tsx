@@ -34,7 +34,7 @@ function Navbar(): JSX.Element {
         <span className="flex items-center justify-center w-8 h-8">
           <img src="@/../public/gs_icon.ico" />
         </span>
-        <h1 className="text-2xl">
+        <h1 className="text-2xl font-roboto-slab">
           {isAuth ? "Dashboard" : "Gestión salud"}
         </h1>
       </div>
