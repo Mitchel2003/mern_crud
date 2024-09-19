@@ -1,12 +1,17 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { navAuth, navGuest, NavbarProps } from "@/interfaces/props.interface";
 import { useThemeContext } from "@/context/ThemeContext";
 import { useAuthContext } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 
-import ThemeToggle from "@/components/others/ThemeToggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "#/ui/dropdown-menu";
+import { Button } from "#/ui/button";
+import ThemeToggle from "#/others/ThemeToggle";
 
 /**
  * Componente principal de la barra de navegación.
@@ -34,15 +39,16 @@ function Navbar(): JSX.Element {
         </h1>
       </div>
 
-      {/* links standard */}
+      {/* links "viewport pc" */}
       <div className="hidden md:flex items-center space-x-4">
         <NavbarLinks path={links} isAuth={isAuth} method={logout} />
         <ThemeToggle />
       </div>
 
-      {/* dropmenu to links responsives */}
+      {/* dropmenu "viewport movile" */}
       <div className="md:hidden">
         <DropdownMenu>
+          {/* button collapsible */}
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />

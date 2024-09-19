@@ -1,12 +1,12 @@
+import { TaskCardProps } from "@/interfaces/props.interface";
+import { useFavoriteTask } from "@/store/favoriteTask";
+import { useCustomMutation } from "@/hooks/useTasks";
 import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
-
-import { TaskCardProps } from "../../interfaces/props.interface";
-import { useFavoriteTask } from "../../store/favoriteTask";
-import { useCustomMutation } from "../../hooks/useTasks";
 import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 dayjs.extend(utc)
+
+import { Button } from "#/ui/button";
 
 function TaskCard({ task, isFavorite }: TaskCardProps) {
   const removeFavorite = useFavoriteTask(state => state.removeFavoriteTask)

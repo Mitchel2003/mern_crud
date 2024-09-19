@@ -1,14 +1,14 @@
 import { Eye, EyeOff, Lock, LogIn, ChevronRight, UserPlus } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
-import { CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-
 import { LoginComponentsProps } from "@/interfaces/props.interface";
 import { useAuthContext } from "@/context/AuthContext";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+
+import { Checkbox } from "#/ui/checkbox";
+import { CardContent } from "#/ui/card";
+import { Button } from "#/ui/button";
+import { Input } from "#/ui/input";
+import { Label } from "#/ui/label";
 
 const LoginForm = ({ theme }: LoginComponentsProps) => {
   const { register, handleSubmit, formState: { errors: errsForm } } = useForm();

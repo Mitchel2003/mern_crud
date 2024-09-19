@@ -1,4 +1,4 @@
-import { CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { CardHeader, CardTitle, CardDescription } from "#/ui/card";
 import { LoginComponentsProps } from '@/interfaces/props.interface';
 
 const LoginHeader = ({ theme }: LoginComponentsProps) => {

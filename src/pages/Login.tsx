@@ -1,12 +1,12 @@
+import LoginFooter from '#/Login/LoginFooter';
+import LoginHeader from '#/Login/LoginHeader';
+import LoginForm from '#/Login/LoginForm';
+import { Card } from '#/ui/card';
+
 import { useThemeContext } from "@/context/ThemeContext";
 import { useAuthContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
-import LoginFooter from '@/components/Login/LoginFooter';
-import LoginHeader from '@/components/Login/LoginHeader';
-import LoginForm from '@/components/Login/LoginForm';
-import { Card } from "@/components/ui/card";
 
 const Login = () => {
   const { theme } = useThemeContext();

@@ -23,7 +23,10 @@
     "noFallthroughCasesInSwitch": true,
     /* shadcn/ui and fast redirect path "@" */
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
+    "paths": {
+      "@/*": ["./src/*"],
+      "#/*": ["./src/components/*"]
+    }
   },
   "include": [
     "src",

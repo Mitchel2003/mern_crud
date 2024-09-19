@@ -1,5 +1,5 @@
 import { LoginComponentsProps } from "@/interfaces/props.interface";
-import { CardFooter } from "@/components/ui/card";
+import { CardFooter } from "#/ui/card";
 
 const LoginFooter = ({ theme }: LoginComponentsProps) => {
   return (
