@@ -10,7 +10,7 @@ import Tasks from "@/pages/Tasks";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
-import Navbar from "@/components/global/Navbar";
+import RootLayout from "@/layouts/RootLayout";
 
 function App() {
   return (
@@ -19,23 +19,24 @@ function App() {
         <TaskProvider>
 
           <BrowserRouter>
-            <Navbar />
             <Routes>
-              <Route path="/" index element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route element={<RootLayout />}>
+                <Route path="/" index element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-              <Route element={<ProtectedRoute />}>
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/task/:id" element={<TaskForm />} />
-                <Route path="/tasks" element={<Tasks />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/task/:id" element={<TaskForm />} />
+                  <Route path="/tasks" element={<Tasks />} />
+                </Route>
               </Route>
             </Routes>
           </BrowserRouter>
 
         </TaskProvider>
       </AuthProvider>
-    </ThemeProvider>
+    </ThemeProvider >
   )
 }
 

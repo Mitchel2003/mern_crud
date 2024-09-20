@@ -18,24 +18,17 @@ const Login = () => {
   }, [isAuth, navigate]);
 
   return (
-    <div className={`min-h-screen w-screen flex items-center justify-center overflow-hidden relative
-      ${theme === 'dark' ? 'bg-zinc-900' : 'bg-white'}`}
-    >
-      <div className={`absolute inset-0 bg-gradient-to-br bg-[length:400%_200%] animate-gradient-shift
+    <div className="w-full max-w-md relative">
+      {/* card */} {/* no es necesario z-10 porque el card es un elemento de bloque */}
+      <Card className={`relative w-full transition-all duration-300 backdrop-filter backdrop-blur-lg
         ${theme === 'dark'
-          ? 'from-purple-950/60 via-zinc-800/60 to-purple-950/60'
-          : 'from-purple-200 to-violet-200'
-        }`}
-      />
-      <Card className={`w-[90vw] my-[10vh] max-w-md mx-auto transition-all duration-500 backdrop-filter backdrop-blur-lg z-10
-        ${theme === 'dark'
-          ? 'bg-zinc-800/70 hover:shadow-purple-900/30'
-          : 'bg-white/70 hover:shadow-purple-200'
+          ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
+          : 'bg-white hover:shadow-purple-500/60'
         }`}
       >
-        <LoginHeader theme={theme} />
-        <LoginForm theme={theme} />
-        <LoginFooter theme={theme} />
+        <LoginHeader theme={theme} />{/* header */}
+        <LoginForm theme={theme} />{/* form */}
+        <LoginFooter theme={theme} />{/* footer */}
       </Card>
     </div>
   )

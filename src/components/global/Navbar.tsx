@@ -24,12 +24,14 @@ function Navbar(): JSX.Element {
   const links = isAuth ? navAuth : navGuest;
 
   return (
-    <nav className={`flex justify-between items-center py-3 px-6 transition-colors duration-300 backdrop-blur-md shadow-md
+    <nav className={`flex justify-between items-center py-3 px-6 z-10 transition-colors duration-300 backdrop-blur-md shadow-md
       ${theme === 'dark'
         ? 'bg-zinc-800/90 text-zinc-100'
         : 'bg-white/90 text-gray-900'
       }`}
     >
+
+      {/* main title + icon */}
       <div className="flex items-center gap-x-4">
         <span className="flex items-center justify-center w-8 h-8">
           <img src="@/../public/gs_icon.ico" />

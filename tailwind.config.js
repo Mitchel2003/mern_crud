@@ -22,12 +22,11 @@ export default {
         },
       },
       gradient: {
-        'start': '#4F46E5', // Indigo
-        'middle1': '#7C3AED', // Violeta
-        'middle2': '#2563EB', // Azul
-        'middle3': '#9333EA', // Púrpura
-        'end': '#6366F1', // Indigo claro
+        'middle1': '#faf5ff', // purple-50
+        'middle2': '#f3e8ff', // purple-100
+        'middle3': '#e9d5ff', // purple-200
       },
+
       
       borderRadius: {
         lg: 'var(--radius)',
