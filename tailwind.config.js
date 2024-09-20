@@ -11,6 +11,24 @@ export default {
         'montserrat': ['Montserrat', 'sans-serif'],
         'roboto-slab': ['Roboto Slab', 'serif']
       },
+
+      animation: {
+        'gradient-shift': 'gradient-shift 15s ease infinite',
+      },
+      keyframes: {
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+      },
+      gradient: {
+        'start': '#4F46E5', // Indigo
+        'middle1': '#7C3AED', // Violeta
+        'middle2': '#2563EB', // Azul
+        'middle3': '#9333EA', // Púrpura
+        'end': '#6366F1', // Indigo claro
+      },
+      
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -56,7 +74,7 @@ export default {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
-        }
+        }        
       }
     }
   },

@@ -18,13 +18,16 @@ const Login = () => {
   }, [isAuth, navigate]);
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br transition-colors duration-500
-      ${theme === 'dark'
-        ? 'from-zinc-900 to-purple-900'
-        : 'from-white to-purple-50'
-      }`}
+    <div className={`min-h-screen w-screen flex items-center justify-center overflow-hidden relative
+      ${theme === 'dark' ? 'bg-zinc-900' : 'bg-white'}`}
     >
-      <Card className={`w-full max-w-md transition-all duration-500 backdrop-filter backdrop-blur-lg
+      <div className={`absolute inset-0 bg-gradient-to-br bg-[length:400%_200%] animate-gradient-shift
+        ${theme === 'dark'
+          ? 'from-purple-950/60 via-zinc-800/60 to-purple-950/60'
+          : 'from-purple-200 to-violet-200'
+        }`}
+      />
+      <Card className={`w-[90vw] my-[10vh] max-w-md mx-auto transition-all duration-500 backdrop-filter backdrop-blur-lg z-10
         ${theme === 'dark'
           ? 'bg-zinc-800/70 hover:shadow-purple-900/30'
           : 'bg-white/70 hover:shadow-purple-200'

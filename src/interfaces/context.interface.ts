@@ -10,7 +10,7 @@ export interface ThemeContextProps { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
-export type User = { _id: string, username: string, email: string } | {}
+export type User = { _id: string, username: string, email: string } | undefined
 
 export type AuthContext = {
   user: User;
@@ -31,7 +31,7 @@ export type Task = {
   date?: Date;
   createdAt?: Date;
   updatedAt?: Date;
-}
+} | undefined
 
 export type TypeTask = {
   (id: string): Promise<Task>
