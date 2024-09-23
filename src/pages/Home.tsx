@@ -11,14 +11,11 @@ import { Input } from "#/ui/input"
 
 import { CalendarIcon, CheckSquare, /*Heart,*/ /*User,*/ Zap, Activity, Battery, Thermometer } from 'lucide-react'
 import { useForm } from "react-hook-form"
-// import { useState } from "react"
 import { format } from "date-fns"
 
 const Home = () => {
-
-  // const [date, setDate] = useState<Date | undefined>(new Date());
   const form = useForm();
-
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit((data) => console.log(data))}>
