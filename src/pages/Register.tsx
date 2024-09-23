@@ -204,10 +204,7 @@ const Register = () => {
                           aria-label="Subir imagen del equipo"
                         >
                           <input
-                            ref={(e) => {
-                              fileInputRef.current = e;
-                              field.ref(e);
-                            }}
+                            ref={fileInputRef}
                             type="file"
                             className="sr-only"
                             accept="image/*"
