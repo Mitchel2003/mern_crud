@@ -1,7 +1,7 @@
 import { CardHeader, CardTitle, CardDescription } from "#/ui/card";
 import { LoginComponentsProps } from '@/interfaces/props.interface';
 
-const LoginHeader = ({ theme }: LoginComponentsProps) => {
+const Header = ({ theme }: LoginComponentsProps) => {
   return (
     <CardHeader className="space-y-1">
 
@@ -29,4 +29,4 @@ const LoginHeader = ({ theme }: LoginComponentsProps) => {
   )
 }
 
-export default LoginHeader
+export default Header

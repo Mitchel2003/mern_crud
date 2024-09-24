@@ -6,7 +6,7 @@ export type ThemeContext = {
   toggleTheme: () => void;
 } | undefined
 
-export interface ThemeContextProps { theme: Theme }
+export type ThemeContextProps = { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/

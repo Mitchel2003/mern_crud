@@ -1,11 +1,12 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card } from '@/components/ui/card';
-import LoginFooter from '@/components/Login/LoginFooter';
-import LoginHeader from '@/components/Login/LoginHeader';
-import LoginForm from '@/components/Login/LoginForm';
+import Footer from '#/login/Footer';
+import Header from '#/login/Header';
+import Form from '#/login/Form';
+import { Card } from '#/ui/card';
+
 import { useThemeContext } from "@/context/ThemeContext";
 import { useAuthContext } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Login = () => {
   const { theme } = useThemeContext();
@@ -25,9 +26,9 @@ const Login = () => {
           : 'bg-white hover:shadow-purple-500/60'
         }`}
       >
-        <LoginHeader theme={theme} />{/* header */}
-        <LoginForm theme={theme} />{/* form */}
-        <LoginFooter theme={theme} />{/* footer */}
+        <Header theme={theme} />
+        <Form theme={theme} />
+        <Footer theme={theme} />
       </Card>
     </div>
   )

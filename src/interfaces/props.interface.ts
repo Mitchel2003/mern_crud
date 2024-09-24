@@ -1,6 +1,6 @@
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { Task, ThemeContextProps } from "./context.interface";
-import { ReactNode, ChangeEvent, MouseEvent } from "react";
+import { ReactNode } from "react";
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 export const navAuth = ['/task/new', '/tasks']
 export const navGuest = ['/login']
@@ -19,11 +19,10 @@ export type NavbarProps = {
 
 //theme components
 export interface LoginComponentsProps extends ThemeContextProps { }
+/*---------------------------------------------------------------------------------------------------------*/
 
-//CV format
-export type ChangeEventProps = (event: ChangeEvent<HTMLInputElement>) => void
-export type MouseEventProps = (click: MouseEvent) => void
-export type Image = string | undefined
+/*--------------------------------------------------Layout--------------------------------------------------*/
+export type LayoutProps = (children: ReactNode) => JSX.Element
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Task--------------------------------------------------*/
@@ -46,3 +45,5 @@ export type CustomMutation = {//useMutation
   deleteTask: () => UseMutationResult<Task, Error, string, unknown>
 }
 /*---------------------------------------------------------------------------------------------------------*/
+
+

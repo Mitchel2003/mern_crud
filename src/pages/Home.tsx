@@ -9,13 +9,13 @@ import { Calendar } from "#/ui/calendar"
 import { Button } from "#/ui/button"
 import { Input } from "#/ui/input"
 
-import { CalendarIcon, CheckSquare, /*Heart,*/ /*User,*/ Zap, Activity, Battery, Thermometer } from 'lucide-react'
+import { CalendarIcon, CheckSquare, Zap, Activity, Battery, Thermometer } from 'lucide-react'
 import { useForm } from "react-hook-form"
 import { format } from "date-fns"
 
 const Home = () => {
   const form = useForm();
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit((data) => console.log(data))}>

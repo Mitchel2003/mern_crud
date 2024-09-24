@@ -10,7 +10,7 @@ import { Button } from "#/ui/button";
 import { Input } from "#/ui/input";
 import { Label } from "#/ui/label";
 
-const LoginForm = ({ theme }: LoginComponentsProps) => {
+const Form = ({ theme }: LoginComponentsProps) => {
   const { register, handleSubmit, formState: { errors: errsForm } } = useForm();
   const { signin, errors: authErrors = [] } = useAuthContext();
 
@@ -131,4 +131,4 @@ const LoginForm = ({ theme }: LoginComponentsProps) => {
   )
 }
 
-export default LoginForm
+export default Form
