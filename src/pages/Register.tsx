@@ -1,6 +1,6 @@
-import { Form, FormField, FormItem, FormLabel, FormControl /* FormDescription */ } from "#/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "#/ui/card"
+import { Form, FormField, FormItem, FormLabel, FormControl } from "#/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "#/ui/popover"
 import { Separator } from "#/ui/separator"
 import { Textarea } from "#/ui/textarea"
@@ -9,39 +9,42 @@ import { Checkbox } from "#/ui/checkbox"
 import { Button } from "#/ui/button"
 import { Input } from "#/ui/input"
 
-import { CalendarIcon, PlusCircle, User, Camera, /* Upload, */ X } from 'lucide-react'
+import { CalendarIcon, PlusCircle, User, Camera, X } from 'lucide-react'
 import { useForm, useFieldArray } from "react-hook-form"
+import { useState, useRef } from "react"
 import { format } from 'date-fns'
 
-import { useState, useRef } from "react"
+import {
+  ChangeEventProps,
+  MouseEventProps,
+  Image
+} from "@/interfaces/props.interface"
 import { cn } from "@/lib/utils"
 
 const Register = () => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
+  const [image, setImage] = useState<Image>(undefined)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const form = useForm()
 
-  const { fields, append } = useFieldArray({
-    control: form.control,
-    name: "accessories"
-  })
+  const { fields, append } = useFieldArray({ control: form.control, name: "accessories" })
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage: ChangeEventProps = (event) => {
     const file = event.target.files?.[0]
     if (!file) return
-    setIsUploading(true)
+
+    setIsLoading(true)
     const reader = new FileReader()
     reader.onloadend = () => {
-      setImagePreview(reader.result as string)
-      setIsUploading(false)
+      setImage(reader.result as string)
+      setIsLoading(false)
     }
     reader.readAsDataURL(file)
   }
 
-  const removeImage = (e: React.MouseEvent) => {
+  const removeImage: MouseEventProps = (e) => {
     e.stopPropagation()
-    setImagePreview(null)
+    setImage(undefined)
     form.setValue('equipmentImage', null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -204,20 +207,20 @@ const Register = () => {
                           aria-label="Subir imagen del equipo"
                         >
                           <input
-                            ref={fileInputRef}
+                            ref={(e) => { field.current = e }}
                             type="file"
                             className="sr-only"
                             accept="image/*"
                             onChange={(e) => {
-                              handleImageUpload(e)
+                              handleImage(e)
                               onChange(e.target.files?.[0] || null)
                             }}
                             {...field}
                           />
-                          {imagePreview ? (
+                          {image ? (
                             <div className="relative w-full h-48">
                               <img
-                                src={imagePreview}
+                                src={image}
                                 alt="Vista previa del equipo"
                                 className="w-full h-full object-cover rounded-md"
                               />
@@ -238,9 +241,11 @@ const Register = () => {
                                 <span className="font-semibold text-primary hover:text-primary-dark">
                                   Subir imagen
                                 </span>
-                                <span className="mt-1">o arrastrar y soltar</span>
+                                <span className={isLoading ? `block` : `hidden`}>
+                                  loading...
+                                </span>
                               </div>
-                              <p className="text-xs leading-5 text-gray-600 mt-1">PNG, JPG, GIF hasta 10MB</p>
+                              <p className="text-xs leading-5 text-gray-600 mt-1">PNG, JPG, JPEG hasta 5MB</p>
                             </div>
                           )}
                         </div>
@@ -948,13 +953,14 @@ const Register = () => {
 
             <Separator className="my-8" />
 
+            {/* accesorios */}
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h3 className="text-2xl font-bold">Accesorios</h3>
                 <Button
+                  size="sm"
                   type="button"
                   variant="outline"
-                  size="sm"
                   className="mt-2"
                   onClick={() => append({ name: '', type: '', series: '', model: '' })}
                 >
@@ -962,10 +968,12 @@ const Register = () => {
                   Agregar Accesorio
                 </Button>
               </div>
+
               {fields.map((field, index) => (
                 <Card key={field.id} className="bg-white">
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-2 gap-4">
+
                       <FormField
                         control={form.control}
                         name={`accessories.${index}.name`}
@@ -978,6 +986,7 @@ const Register = () => {
                           </FormItem>
                         )}
                       />
+
                       <FormField
                         control={form.control}
                         name={`accessories.${index}.type`}
@@ -990,6 +999,7 @@ const Register = () => {
                           </FormItem>
                         )}
                       />
+
                       <FormField
                         control={form.control}
                         name={`accessories.${index}.series`}
@@ -1002,6 +1012,7 @@ const Register = () => {
                           </FormItem>
                         )}
                       />
+
                       <FormField
                         control={form.control}
                         name={`accessories.${index}.model`}
@@ -1014,10 +1025,12 @@ const Register = () => {
                           </FormItem>
                         )}
                       />
+
                     </div>
                   </CardContent>
                 </Card>
               ))}
+
             </div>
 
             <Separator className="my-8" />
