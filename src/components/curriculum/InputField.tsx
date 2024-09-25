@@ -24,7 +24,7 @@ const InputField = ({ name, label, control, type = "text", placeholder }: InputF
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-export default InputField;
+export default InputField

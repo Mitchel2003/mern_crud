@@ -19,11 +19,9 @@ interface ImageUploadFieldProps { name: string; label: string }
  * @param name - Corresponds to name of FormField and context of this component
  * @param label - Is the label of the field
  */
-const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
-  const fileReference = useRef<HTMLInputElement>()
+const ImageField = ({ name, label }: ImageUploadFieldProps) => {
   const [image, setImage] = useState<Image>(undefined)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  // const mergedRefs = useMergedRefs<HTMLInputElement>(fileReference);
 
   const form = useForm<HTMLInputElement>() //handle
 
@@ -52,11 +50,11 @@ const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
     e.stopPropagation()
     setImage(undefined)
     form.setValue(name, null)
-    fileReference.current!.value = ''
+    form.control.current!.value = ''
   }
 
   /** Trigger the file input element */
-  const triggerFileInput = () => fileReference.current?.click()
+  const triggerFileInput = () => form.control.current?.click()
 
   return (
     <FormField
@@ -79,10 +77,7 @@ const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
               aria-label="Subir imagen del equipo"
             >
               <input
-                ref={(e) => {
-                  fileReference.current = e;
-                  field.ref(e)
-                }}
+                ref={(e) => { form.control.current = e }}
                 type="file"
                 className="sr-only"
                 accept="image/*"
@@ -129,4 +124,4 @@ const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
   )
 }
 
-export default ImageUploadField;
+export default ImageField
