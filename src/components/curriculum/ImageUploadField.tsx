@@ -20,29 +20,29 @@ interface ImageUploadFieldProps { name: string; label: string }
  * @param label - Is the label of the field
  */
 const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
-  const fileReference = useRef<HTMLInputElement>();
-  const [image, setImage] = useState<Image>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const fileReference = useRef<HTMLInputElement>()
+  const [image, setImage] = useState<Image>(undefined)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   // const mergedRefs = useMergedRefs<HTMLInputElement>(fileReference);
 
-  const form = useForm() //handle
+  const form = useForm<HTMLInputElement>() //handle
 
   /**
    * Handle the image upload
    * @param event The handle event
    */
   const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const file = event.target.files?.[0]
+    if (!file) return
 
-    setIsLoading(true);
-    const reader = new FileReader();
+    setIsLoading(true)
+    const reader = new FileReader()
     reader.onloadend = () => {
       setImage(reader.result as Image)
-      setIsLoading(false);
+      setIsLoading(false)
     }
     reader.readAsDataURL(file)
-  };
+  }
 
   /**
    * Remove the image from the state and reset the file input value
@@ -56,29 +56,9 @@ const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
   }
 
   /** Trigger the file input element */
-  const triggerFileInput = () => fileReference.current?.click();
-
-
-  // const [imagePreview, setImagePreview] = useState<string | null>(null)
-  // const [isUploading, setIsUploading] = useState(false)
-  // const fileInputRef = useRef<HTMLInputElement>(null)
-  // const form = useForm()
-
-  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0]
-  //   if (file) {
-  //     setIsUploading(true)
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setImagePreview(reader.result as string)
-  //       setIsUploading(false)
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
+  const triggerFileInput = () => fileReference.current?.click()
 
   return (
-
     <FormField
       name={name}
       control={form.control}
@@ -93,17 +73,16 @@ const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
                 "hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
               )}
               onClick={triggerFileInput}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  triggerFileInput()
-                }
-              }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') triggerFileInput() }}
               tabIndex={0}
               role="button"
               aria-label="Subir imagen del equipo"
             >
               <input
-                ref={fileReference}
+                ref={(e) => {
+                  fileReference.current = e;
+                  field.ref(e)
+                }}
                 type="file"
                 className="sr-only"
                 accept="image/*"
