@@ -1,40 +1,21 @@
-import { useCallback } from 'react';
-import { MutableRefObject, LegacyRef } from 'react';
+import { LegacyRef, MutableRefObject, useCallback } from 'react';
 
-type MutableRef<T> = MutableRefObject<T> | LegacyRef<T>
-
-const useMergedRefs = <T>(...refs: Array<MutableRef<T>>) => {
-  return useCallback((e: T) => {// e corresponde al elemento que se le pasa al hook
+const useMergedRefs = <T = any>(...refs: Array<MutableRefObject<T> | LegacyRef<T>>) => {
+  return useCallback((element: T) => {
     refs.forEach((ref) => {
-      if (typeof ref === 'function') { ref(e) }
-      else if (ref !== null) { (ref as React.MutableRefObject<T | null>).current = e }
+      if (typeof ref === 'function') ref(element)
+      else if (ref !== null) (ref as MutableRefObject<T | null>).current = element
     })
   }, refs)
 }
 
 export default useMergedRefs
 
-{/*
-  import { useCallback } from 'react';
+// // ... dentro del componente
+// const mergedRefs = useMergedRefs(fileInputRef, field.ref);
 
-function useMergedRefs<T = any>(...refs: Array<React.MutableRefObject<T> | React.LegacyRef<T>>) {
-  return useCallback((element: T) => {
-    refs.forEach((ref) => {
-      if (typeof ref === 'function') {
-        ref(element);
-      } else if (ref != null) {
-        (ref as React.MutableRefObject<T | null>).current = element;
-      }
-    });
-  }, refs);
-}
-
-// ... dentro del componente
-const mergedRefs = useMergedRefs(fileInputRef, field.ref);
-
-// ... en el JSX
-<input
-  ref={mergedRefs}
-  // ... otros props
-/>
-   */}
+// // ... en el JSX
+// <input
+//   ref={mergedRefs}
+//   // ... otros props
+// />

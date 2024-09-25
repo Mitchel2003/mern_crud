@@ -1,46 +1,88 @@
 import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
 import { Button } from "#/ui/button";
 
+import { Image } from "@/interfaces/form.interface";
+import { useForm } from "react-hook-form";
 import { Camera, X } from "lucide-react";
-import { useState, useRef } from "react";
-import { Control } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import {
+  useRef,
+  useState,
+  ChangeEvent,
+  MouseEvent
+} from "react";
 
-interface ImageUploadFieldProps {
-  name: string;
-  label: string;
-  control: Control<any>;
-}
+interface ImageUploadFieldProps { name: string; label: string }
 
-const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
-  const [image, setImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+/**
+ * Allows us to upload an image to the database
+ * @param name - Corresponds to name of FormField and context of this component
+ * @param label - Is the label of the field
+ */
+const ImageUploadField = ({ name, label }: ImageUploadFieldProps) => {
+  const fileReference = useRef<HTMLInputElement>();
+  const [image, setImage] = useState<Image>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const mergedRefs = useMergedRefs<HTMLInputElement>(fileReference);
 
-  const handleImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const form = useForm() //handle
+
+  /**
+   * Handle the image upload
+   * @param event The handle event
+   */
+  const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setIsLoading(true);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const removeImage = () => {
-    setImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      setImage(reader.result as Image)
+      setIsLoading(false);
     }
+    reader.readAsDataURL(file)
   };
 
-  const triggerFileInput = () => fileInputRef.current?.click();
+  /**
+   * Remove the image from the state and reset the file input value
+   * @description fileInputRef contains the file input element
+   */
+  const removeImage = (e: MouseEvent) => {
+    e.stopPropagation()
+    setImage(undefined)
+    form.setValue(name, null)
+    fileReference.current!.value = ''
+  }
+
+  /** Trigger the file input element */
+  const triggerFileInput = () => fileReference.current?.click();
+
+
+  // const [imagePreview, setImagePreview] = useState<string | null>(null)
+  // const [isUploading, setIsUploading] = useState(false)
+  // const fileInputRef = useRef<HTMLInputElement>(null)
+  // const form = useForm()
+
+  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0]
+  //   if (file) {
+  //     setIsUploading(true)
+  //     const reader = new FileReader()
+  //     reader.onloadend = () => {
+  //       setImagePreview(reader.result as string)
+  //       setIsUploading(false)
+  //     }
+  //     reader.readAsDataURL(file)
+  //   }
+  // }
 
   return (
+
     <FormField
       name={name}
-      control={control}
-      render={({ field: { onChange, value, ...field } }) => (
+      control={form.control}
+      render={({ field: { value, onChange, ...field } }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
@@ -53,7 +95,7 @@ const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
               onClick={triggerFileInput}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  triggerFileInput();
+                  triggerFileInput()
                 }
               }}
               tabIndex={0}
@@ -61,13 +103,13 @@ const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
               aria-label="Subir imagen del equipo"
             >
               <input
-                ref={fileInputRef}
+                ref={fileReference}
                 type="file"
                 className="sr-only"
                 accept="image/*"
                 onChange={(e) => {
-                  handleImage(e);
-                  onChange(e.target.files?.[0] || null);
+                  handleImage(e)
+                  onChange(e.target.files?.[0] || null)
                 }}
                 {...field}
               />
@@ -83,11 +125,7 @@ const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeImage();
-                      onChange(null);
-                    }}
+                    onClick={removeImage}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -95,12 +133,13 @@ const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
               ) : (
                 <div className="text-center">
                   <Camera className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                  <div className="mt-4 flex flex-col items-center text-sm leading-6 text-gray-600">
                     <span className="font-semibold text-primary hover:text-primary-dark">
                       Subir imagen
                     </span>
+                    <span className="mt-1">o arrastrar y soltar</span>
                   </div>
-                  <p className="text-xs leading-5 text-gray-600 mt-1">PNG, JPG, JPEG hasta 5MB</p>
+                  <p className="text-xs leading-5 text-gray-600 mt-1">PNG, JPG, GIF hasta 10MB</p>
                 </div>
               )}
             </div>
@@ -108,7 +147,7 @@ const ImageUploadField = ({ name, label, control }: ImageUploadFieldProps) => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
 export default ImageUploadField;

@@ -13,8 +13,6 @@ export interface SelectFieldProps {
 
 /*--------------------------------------------------Section--------------------------------------------------*/
 //ChangeEventProps
-export type ChangeEventProps = (event: ChangeEvent<HTMLInputElement>) => void
-export type MouseEventProps = (click: MouseEvent) => void
 export type Image = string | undefined
 
 //Entity Reference Section
