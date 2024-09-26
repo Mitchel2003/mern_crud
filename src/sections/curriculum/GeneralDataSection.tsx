@@ -1,13 +1,13 @@
 import { GeneralDataSection as TypeGeneralData } from "@/interfaces/form.interface";
-import ImageUploadField from "#/ImageUploadField";
+import { useForm, FormProvider } from "react-hook-form";
+import ImageField from "#/curriculum/ImageField";
 import InputField from "#/curriculum/InputField";
-import { useForm } from "react-hook-form";
 
 const GeneralDataSection = () => {
-  const form = useForm<TypeGeneralData>();
+  const methods = useForm<TypeGeneralData>();
 
   return (
-    <>
+    <FormProvider {...methods}>
       <h3 className="text-2xl font-bold mb-6">Información General</h3>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
 
@@ -18,48 +18,48 @@ const GeneralDataSection = () => {
               <InputField
                 name="name"
                 label="Nombre"
-                control={form.control}
+                control={methods.control}
                 placeholder="Nombre del equipo"
               />
             </div>
-            
+
             <InputField
               name="brand"
               label="Marca"
-              control={form.control}
+              control={methods.control}
               placeholder="Marca del equipo"
             />
             <InputField
               name="model"
               label="Modelo"
-              control={form.control}
+              control={methods.control}
               placeholder="Modelo del equipo"
             />
             <InputField
               name="serie"
               label="Serie"
-              control={form.control}
+              control={methods.control}
               placeholder="Número de serie"
             />
             <InputField
               name="healthRecord"
               label="Registro Sanitario"
-              control={form.control}
+              control={methods.control}
               placeholder="Número de registro sanitario"
             />
           </div>
         </div>
 
         <div className="md:col-span-2">
-          <ImageUploadField
+          <ImageField
             name="equipmentImage"
             label="Imagen del Equipo"
-            control={form.control}
+            control={methods.control}
           />
         </div>
       </div>
-    </>
-  );
-};
+    </FormProvider>
+  )
+}
 
 export default GeneralDataSection

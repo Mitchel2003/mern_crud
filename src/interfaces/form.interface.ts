@@ -1,4 +1,3 @@
-import { ChangeEvent, MouseEvent } from "react";
 import { Control } from "react-hook-form";
 
 /*--------------------------------------------------Component--------------------------------------------------*/
@@ -13,7 +12,7 @@ export interface SelectFieldProps {
 
 /*--------------------------------------------------Section--------------------------------------------------*/
 //ChangeEventProps
-export type Image = string | undefined
+export type Image = File | null
 
 //Entity Reference Section
 export type EntityReferenceSection = {
@@ -28,7 +27,7 @@ export type GeneralDataSection = {
   model: string;
   serie: string;
   healthRecord: string;
-  equipmentImage: File | null;
+  equipmentImage: Image;
 }
 
 //Device Details Section
