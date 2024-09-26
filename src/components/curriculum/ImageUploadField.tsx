@@ -12,14 +12,14 @@ import {
   MouseEvent
 } from "react";
 
-interface ImageUploadFieldProps { name: string; label: string }
+interface ImageUploadFieldProp { name: string; label: string }
 
 /**
  * Allows us to upload an image to the database
  * @param name - Corresponds to name of FormField and context of this component
  * @param label - Is the label of the field
  */
-const ImageField = ({ name, label }: ImageUploadFieldProps) => {
+const ImageFieldhg = ({ name, label }: ImageUploadFieldProps) => {
   const [image, setImage] = useState<Image>(undefined)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -118,10 +118,8 @@ const ImageField = ({ name, label }: ImageUploadFieldProps) => {
               )}
             </div>
           </FormControl>
-        </FormItem>
+        </FormIte>
       )}
     />
   )
 }
-
-export default ImageField

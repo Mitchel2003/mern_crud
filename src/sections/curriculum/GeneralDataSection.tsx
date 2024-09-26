@@ -1,5 +1,5 @@
 import { GeneralDataSection as TypeGeneralData } from "@/interfaces/form.interface";
-import ImageUploadField from "#/curriculum/ImageUploadField";
+import ImageUploadField from "#/ImageUploadField";
 import InputField from "#/curriculum/InputField";
 import { useForm } from "react-hook-form";
 
@@ -62,4 +62,4 @@ const GeneralDataSection = () => {
   );
 };
 
-export default GeneralDataSection;
+export default GeneralDataSection
