@@ -1,16 +1,9 @@
 import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
 import { Input } from "#/ui/input";
-import { Control } from "react-hook-form";
 
-interface InputFieldProps {
-  name: string;
-  label: string;
-  control: Control<any>;
-  type?: string;
-  placeholder?: string;
-}
+import { FieldProps } from "@/interfaces/form.interface";
 
-const InputField = ({ name, label, control, type = "text", placeholder }: InputFieldProps) => {
+const Field = ({ name, label, control, type = "text", placeholder }: FieldProps) => {
   return (
     <FormField
       name={name}
@@ -27,4 +20,4 @@ const InputField = ({ name, label, control, type = "text", placeholder }: InputF
   )
 }
 
-export default InputField
+export default Field

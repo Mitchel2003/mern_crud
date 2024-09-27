@@ -1,146 +1,87 @@
-import { TechnicalCharacteristicsSection as TypeTechnicalCharacteristics } from "@/interfaces/form.interface";
+import { TechnicalCharacteristicsProps } from "@/interfaces/form.interface";
 
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
-import { useForm } from "react-hook-form";
-import { Input } from "#/ui/input";
+import { useForm, FormProvider } from "react-hook-form";
+import InputField from "#/curriculum/Field";
 
 const TechnicalCharacteristicsSection = () => {
-  const form = useForm<TypeTechnicalCharacteristics>()
+  const methods = useForm<TechnicalCharacteristicsProps>()
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-2xl font-bold">Características Técnicas</h3>
+    <FormProvider {...methods}>
+      <div className="space-y-6">
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <FormField
-          name="voltage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Voltaje</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="amperage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Amperaje</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="power"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Potencia</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <h3 className="text-2xl font-bold">Características Técnicas</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <InputField
+            name="voltage"
+            label="Voltaje"
+            control={methods.control}
+            placeholder="Voltaje"
+          />
+          <InputField
+            name="amperage"
+            label="Amperaje"
+            control={methods.control}
+            placeholder="Amperaje"
+          />
+          <InputField
+            name="power"
+            label="Potencia"
+            control={methods.control}
+            placeholder="Potencia"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <InputField
+            name="frequency"
+            label="Frecuencia"
+            control={methods.control}
+            placeholder="Frecuencia"
+          />
+          <InputField
+            name="capacity"
+            label="Capacidad"
+            control={methods.control}
+            placeholder="Capacidad"
+          />
+          <InputField
+            name="pressure"
+            label="Presión (PSI)"
+            control={methods.control}
+            placeholder="Presión (PSI)"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+          <InputField
+            name="speed"
+            label="Velocidad"
+            control={methods.control}
+            placeholder="Velocidad"
+          />
+          <InputField
+            name="temperature"
+            label="Temp (C°)"
+            control={methods.control}
+            placeholder="Temp (C°)"
+          />
+          <InputField
+            name="weight"
+            label="Peso (kg)"
+            control={methods.control}
+            placeholder="Peso (kg)"
+          />
+          <InputField
+            name="humidity"
+            label="Humedad"
+            control={methods.control}
+            placeholder="Humedad"
+          />
+        </div>
+
       </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <FormField
-          name="frequency"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Frecuencia</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="capacity"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Capacidad</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="pressure"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Presión (PSI)</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        <FormField
-          name="speed"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Velocidad</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="temperature"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Temp (C°)</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="weight"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Peso (kg)</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="humidity"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Humedad</FormLabel>
-              <FormControl>
-                <Input className="bg-white" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div>
-
-    </div>
+    </FormProvider>
   )
 }
 

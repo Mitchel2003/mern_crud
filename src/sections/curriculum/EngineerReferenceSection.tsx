@@ -1,11 +1,11 @@
-import { EngineerReferenceSection as TypeEngineerReference } from '@/interfaces/form.interface'
+import { EngineerReferenceProps } from '@/interfaces/form.interface'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 const EngineerReferenceSection = () => {
-  const form = useForm<TypeEngineerReference>()
+  const form = useForm<EngineerReferenceProps>()
 
   return (
     <div className="space-y-6">

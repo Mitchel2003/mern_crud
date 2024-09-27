@@ -4,12 +4,12 @@ import { Button } from "#/ui/button"
 
 import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
 import EngineerReferenceSection from "./EngineerReferenceSection"
-import EntityReferenceSection from "./EntityReferenceSection"
+import DetailsEquipmentSection from "./DetailsEquipmentSection"
 import CharacteristicsSection from "./CharacteristicsSection"
-import DeviceDetailsSection from "./DeviceDetailsSection"
 import GeneralDataSection from "./GeneralDataSection"
 import MaintenanceSection from "./MaintenanceSection"
 import AccessoriesSection from "./AccessoriesSection"
+import OfficeAreaSection from "./OfficeAreaSection"
 import EquipmentSection from "./EquipmentSection"
 
 import { useForm } from "react-hook-form"
@@ -30,41 +30,15 @@ const FormatDevice = () => {
             </CardHeader>
 
             <CardContent className="space-y-8 pt-6">
-
-              <EntityReferenceSection />
-
-              <Separator className="my-8" />
-
-              <GeneralDataSection />
-
-              <Separator className="my-8" />
-
-              <DeviceDetailsSection />
-
-              <Separator className="my-8" />
-
-              <TechnicalCharacteristicsSection />
-
-              <Separator className="my-8" />
-
-              <EquipmentSection />
-
-              <Separator className="my-8" />
-
-              <MaintenanceSection />
-
-              <Separator className="my-8" />
-
-              <AccessoriesSection />
-
-              <Separator className="my-8" />
-
-              <CharacteristicsSection />
-
-              <Separator className="my-8" />
-
-              <EngineerReferenceSection />
-
+              <CurriculumSection section={<OfficeAreaSection />} />
+              <CurriculumSection section={<GeneralDataSection />} />
+              <CurriculumSection section={<DetailsEquipmentSection />} />
+              <CurriculumSection section={<TechnicalCharacteristicsSection />} />
+              <CurriculumSection section={<EquipmentSection />} />
+              <CurriculumSection section={<MaintenanceSection />} />
+              <CurriculumSection section={<AccessoriesSection />} />
+              <CurriculumSection section={<CharacteristicsSection />} />
+              <CurriculumSection section={<EngineerReferenceSection />} />
             </CardContent>
 
             <CardFooter className="flex justify-between">
@@ -78,5 +52,16 @@ const FormatDevice = () => {
     </>
   )
 }
+
+type CurriculumSectionProps = { section: React.ReactNode }
+const CurriculumSection = ({ section }: CurriculumSectionProps) => {
+  return (
+    <>
+      {section}
+      <Separator className="my-8" />
+    </>
+  )
+}
+
 
 export default FormatDevice

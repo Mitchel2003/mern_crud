@@ -19,7 +19,7 @@ const Login = () => {
 
   return (
     <div className="w-full max-w-md relative">
-      {/* card */} {/* no es necesario z-10 porque el card es un elemento de bloque */}
+      {/* card */}
       <Card className={`relative w-full transition-all duration-300 backdrop-filter backdrop-blur-lg
         ${theme === 'dark'
           ? 'bg-zinc-800/90 hover:shadow-purple-900/60'

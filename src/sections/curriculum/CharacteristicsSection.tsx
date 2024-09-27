@@ -2,10 +2,10 @@ import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
 import { Textarea } from "#/ui/textarea";
 import { useForm } from "react-hook-form";
 
-import { CharacteristicsSection as TypeCharacteristics } from "@/interfaces/form.interface";
+import { CharacteristicsProps } from "@/interfaces/form.interface";
 
 const CharacteristicsSection = () => {
-  const form = useForm<TypeCharacteristics>()
+  const form = useForm<CharacteristicsProps>()
   return (
     <div className="space-y-6">
 

@@ -1,33 +1,27 @@
 import { FormControl, FormField, FormItem, FormLabel } from "#/ui/form"
 import { Button } from "#/ui/button"
 
-import { useController, Control } from "react-hook-form"
+import { ImageFieldProps, ImagePreview } from "@/interfaces/form.interface"
 import { useState, useCallback, ChangeEvent } from 'react'
+import { useController } from "react-hook-form"
 import { Camera, X } from "lucide-react"
-
-interface ImageFieldProps {
-  name: string;
-  label: string;
-  control: Control<any>;
-}
-type ImagePreview = string | null
 
 const ImageField = ({ name, label, control }: ImageFieldProps) => {
   const [preview, setPreview] = useState<ImagePreview>()
   const [isLoading, setIsLoading] = useState(false)
 
   /**
-   * @param field - is the form control
-   * @implements useController, is a hook that allows us to control the form field
-   * the params that receive useController we get from the useFormContext (section)
+   * @param field - es el control del formulario
+   * @implements useController, es un hook que nos permite controlar el campo del formulario
+   * los parámetros que recibe useController los obtenemos del useFormContext (sección)
    */
   const { field } = useController({ name, control, defaultValue: null })
 
   /**
-   * This method allows handle the image upload through the input type file
-   * @implements useCallback, is a hook that allows us to memorize a function;
-   * The difference between useCallback and useEffect is that useCallback memorize a function,
-   * while useEffect memorize a value.
+   * Este método permite manejar la carga de imágenes a través del input de tipo file
+   * @implements useCallback, es un hook que nos permite memorizar una función;
+   * La diferencia entre useCallback y useEffect es que useCallback memoriza una función,
+   * mientras que useEffect memoriza un valor.
    */
   const handleImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -36,8 +30,8 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
   }, [field])
 
   /**
-   * Create a FileReader instance to read the image, helps us to update the preview
-   * @param file - The image file to be processed.
+   * Crea una instancia de FileReader para leer la imagen, nos ayuda a actualizar la vista previa
+   * @param file - El archivo de imagen a procesar.
    */
   const processImage = (file: File) => {
     setIsLoading(true)
@@ -50,7 +44,7 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
     reader.readAsDataURL(file)
   }
 
-  /** Remove the preview image and the form field */
+  /** Elimina la vista previa de la imagen y el campo del formulario */
   const removeImage = useCallback(() => {
     setPreview(null)
     field.onChange(null)

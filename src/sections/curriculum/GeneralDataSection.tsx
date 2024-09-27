@@ -1,10 +1,10 @@
-import { GeneralDataSection as TypeGeneralData } from "@/interfaces/form.interface";
+import { GeneralDataProps } from "@/interfaces/form.interface";
 import { useForm, FormProvider } from "react-hook-form";
 import ImageField from "#/curriculum/ImageField";
-import InputField from "#/curriculum/InputField";
+import InputField from "#/curriculum/Field";
 
 const GeneralDataSection = () => {
-  const methods = useForm<TypeGeneralData>();
+  const methods = useForm<GeneralDataProps>();
 
   return (
     <FormProvider {...methods}>
@@ -14,6 +14,7 @@ const GeneralDataSection = () => {
         <div className="md:col-span-5">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
+            {/* input of 2 columns */}
             <div className="sm:col-span-2">
               <InputField
                 name="name"
@@ -22,7 +23,6 @@ const GeneralDataSection = () => {
                 placeholder="Nombre del equipo"
               />
             </div>
-
             <InputField
               name="brand"
               label="Marca"
@@ -57,6 +57,7 @@ const GeneralDataSection = () => {
             control={methods.control}
           />
         </div>
+
       </div>
     </FormProvider>
   )
