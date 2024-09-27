@@ -66,13 +66,13 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+            <div className="flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
               {preview ? (
                 <div className="relative">
                   <img
                     src={preview}
                     alt="Vista previa del equipo"
-                    className="w-full h-48 object-cover rounded-md"
+                    className="w-full h-full object-cover rounded-md"
                   />
                   <Button
                     type="button"
@@ -102,9 +102,9 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
                         onChange={handleImage}
                       />
                     </label>
-                    <p className="pl-1">o arrastrar y soltar</p>
                   </div>
-                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF hasta 10MB</p>
+                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, JPEG</p>
+                  <p className="text-xs leading-5 text-gray-600">hasta 5MB</p>
                 </div>
               )}
             </div>

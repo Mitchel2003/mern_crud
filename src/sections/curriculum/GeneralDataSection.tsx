@@ -9,9 +9,9 @@ const GeneralDataSection = () => {
   return (
     <FormProvider {...methods}>
       <h3 className="text-2xl font-bold mb-6">Información General</h3>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-8">
 
-        <div className="md:col-span-3">
+        <div className="md:col-span-5">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
             <div className="sm:col-span-2">
@@ -50,7 +50,7 @@ const GeneralDataSection = () => {
           </div>
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-3">
           <ImageField
             name="equipmentImage"
             label="Imagen del Equipo"
