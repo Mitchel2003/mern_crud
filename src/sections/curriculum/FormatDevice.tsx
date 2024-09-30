@@ -3,7 +3,6 @@ import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 
 import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
-import EngineerReferenceSection from "./EngineerReferenceSection"
 import DetailsEquipmentSection from "./DetailsEquipmentSection"
 import CharacteristicsSection from "./CharacteristicsSection"
 import GeneralDataSection from "./GeneralDataSection"
@@ -11,6 +10,7 @@ import MaintenanceSection from "./MaintenanceSection"
 import AccessoriesSection from "./AccessoriesSection"
 import OfficeAreaSection from "./OfficeAreaSection"
 import EquipmentSection from "./EquipmentSection"
+import EngineerSection from "./EngineerSection"
 
 import { useForm } from "react-hook-form"
 import { Form } from "#/ui/form"
@@ -38,7 +38,7 @@ const FormatDevice = () => {
               <CurriculumSection section={<MaintenanceSection />} />
               <CurriculumSection section={<AccessoriesSection />} />
               <CurriculumSection section={<CharacteristicsSection />} />
-              <CurriculumSection section={<EngineerReferenceSection />} />
+              <CurriculumSection section={<EngineerSection />} />
             </CardContent>
 
             <CardFooter className="flex justify-between">

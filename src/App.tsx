@@ -4,13 +4,14 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { TaskProvider } from "@/context/TaskContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
+import RootLayout from "@/layouts/Root";
+
 import TaskForm from "@/pages/TaskForm";
 import Profile from "@/pages/Profile";
 import Tasks from "@/pages/Tasks";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
-import RootLayout from "@/layouts/RootLayout";
 
 function App() {
   return (

@@ -1,8 +1,7 @@
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
-import { Textarea } from "#/ui/textarea";
-import { useForm } from "react-hook-form";
+import AreaField from "#/curriculum/AreaField"
 
-import { CharacteristicsProps } from "@/interfaces/form.interface";
+import { CharacteristicsProps } from "@/interfaces/form.interface"
+import { useForm } from "react-hook-form"
 
 const CharacteristicsSection = () => {
   const form = useForm<CharacteristicsProps>()
@@ -11,41 +10,18 @@ const CharacteristicsSection = () => {
 
       <h3 className="text-2xl font-bold">Características</h3>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-        <FormField
+        <AreaField
           name="characteristics"
+          label="Características"
           control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Características</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Ingrese las características del equipo"
-                  className="min-h-[100px] bg-white"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
+          placeholder="Ingrese las características del equipo"
         />
-
-        <FormField
+        <AreaField
           name="recommendations_manufacturer"
+          label="Recomendaciones del Fabricante"
           control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Recomendaciones del Fabricante</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Ingrese las recomendaciones del fabricante"
-                  className="min-h-[100px] bg-white"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
+          placeholder="Ingrese las recomendaciones del fabricante"
         />
-
       </div>
     </div>
   )

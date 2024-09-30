@@ -1,6 +1,8 @@
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { Task, ThemeContextProps } from "./context.interface";
-import { ReactNode } from "react";
+import { ControllerRenderProps } from "react-hook-form";
+
+import { ChangeEvent, SetStateAction, Dispatch, ReactNode } from "react";
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 export const navAuth = ['/task/new', '/tasks']
 export const navGuest = ['/login']
@@ -21,6 +23,26 @@ export type NavbarProps = {
 export interface LoginComponentsProps extends ThemeContextProps { }
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------hooks--------------------------------------------------*/
+//useQuery
+export type QueryReact = {
+  fetchTask: (id: string) => UseQueryResult<Task, Error>
+  fetchTasks: () => UseQueryResult<Task[], Error>
+}
+//useMutation
+export type CustomMutation = {
+  createOrUpdateTask: (id: string) => UseMutationResult<Task, Error, object, unknown>
+  deleteTask: () => UseMutationResult<Task, Error, string, unknown>
+}
+//useCallback (react)
+export type UseCallbackProps = {
+  handler: UseCallback_handler;
+  remove: UseCallback_remove;
+}
+export type UseCallback_handler = <T>(field: ControllerRenderProps<any>, setPreview: Dispatch<SetStateAction<T>>) => (e: ChangeEvent<HTMLInputElement>) => void;
+export type UseCallback_remove = <T>(field: ControllerRenderProps<any>, setPreview: Dispatch<SetStateAction<T | null>>) => () => void;
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------Layout--------------------------------------------------*/
 export type LayoutProps = (children: ReactNode) => JSX.Element
 /*---------------------------------------------------------------------------------------------------------*/
@@ -34,16 +56,3 @@ export type FavoriteTaskState = {
   removeFavoriteTask: (id: string) => void;
 }
 /*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------Query React--------------------------------------------------*/
-export type QueryReact = {//useQuery
-  fetchTask: (id: string) => UseQueryResult<Task, Error>
-  fetchTasks: () => UseQueryResult<Task[], Error>
-}
-export type CustomMutation = {//useMutation
-  createOrUpdateTask: (id: string) => UseMutationResult<Task, Error, object, unknown>
-  deleteTask: () => UseMutationResult<Task, Error, string, unknown>
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-

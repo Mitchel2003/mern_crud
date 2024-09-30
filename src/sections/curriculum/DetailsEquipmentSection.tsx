@@ -10,10 +10,8 @@ const DetailsEquipmentSection = () => {
 
   return (
     <FormProvider {...methods}>
-      {/* first module */}
+      {/* first module - details about the acquisition */}
       <div className="space-y-6">
-
-        {/* Details about the acquisition */}
         <h3 className="text-2xl font-bold">Detalles del Dispositivo</h3>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <DateField
@@ -36,47 +34,41 @@ const DetailsEquipmentSection = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-12">
-          <div className="col-span-10">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              <InputField
-                name="price"
-                label="Valor"
-                control={methods.control}
-                type="number"
-                placeholder="Valor del equipo"
-              />
-              <SelectField
-                name="type_acquisition"
-                label="Tipo de Adquisición"
-                control={methods.control}
-                options={["compra", "comodato", "alquiler", "otro"]}
-                placeholder="Seleccionar tipo"
-              />
-              <SelectField
-                name="warranty"
-                label="Garantía"
-                control={methods.control}
-                options={["na", "6meses", "1ano", "2anos"]}
-                placeholder="Seleccionar garantía"
-              />
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <InputField
-              name="year_manufacture"
-              label="Año de fabricación"
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <SelectField
+              name="type_acquisition"
+              label="Tipo de Adquisición"
               control={methods.control}
-              type="number"
-              placeholder="Año de fabricación del equipo"
+              options={["compra", "comodato", "alquiler", "otro"]}
+              placeholder="Seleccionar tipo"
+            />
+            <SelectField
+              name="warranty"
+              label="Garantía"
+              control={methods.control}
+              options={["N/A", "6 months", "1 year", "2 years"]}
+              placeholder="Seleccionar garantía"
             />
           </div>
+          <InputField
+            name="price"
+            label="Valor"
+            type="number"
+            control={methods.control}
+            placeholder="Valor del equipo"
+          />
+          <InputField
+            name="year_manufacture"
+            label="Año de fabricación"
+            control={methods.control}
+            type="number"
+            placeholder="Año de fabricación del equipo"
+          />
         </div>
+      </div>
 
-      </div >
-
-      {/* second module */}
+      {/* second module - information references */}
       <div className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 

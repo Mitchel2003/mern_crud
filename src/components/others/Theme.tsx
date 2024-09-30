@@ -2,7 +2,7 @@ import { useThemeContext } from '@/context/ThemeContext';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from "#/ui/button";
 
-const ThemeToggle = () => {
+const Theme = () => {
   const { theme, toggleTheme } = useThemeContext();
 
   return (
@@ -13,7 +13,8 @@ const ThemeToggle = () => {
       className={`rounded-full transition-colors duration-300 
         ${theme === 'dark'
           ? 'bg-zinc-700 text-yellow-500 hover:bg-zinc-600'
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`}
     >
       {theme === 'dark'
         ? (<Sun className="h-5 w-5" />)
@@ -23,4 +24,4 @@ const ThemeToggle = () => {
   )
 }
 
-export default ThemeToggle
+export default Theme

@@ -19,6 +19,14 @@ export interface SelectFieldProps {
   placeholder: string;
 }
 
+//input type area (textArea)
+export interface AreaFieldProps {
+  name: string;
+  label: string;
+  control: Control<any>;
+  placeholder?: string;
+}
+
 //input type checkbox
 export interface CheckboxFieldProps {
   name: string;
@@ -35,8 +43,6 @@ export interface DateFieldProps {
   placeholder?: string;
 }
 
-
-
 //props of IterableCardField
 export interface FieldFormat { name: string; label: string; placeholder?: string }
 export interface IterableCardFieldProps {
@@ -46,7 +52,7 @@ export interface IterableCardFieldProps {
   addButtonText: string;
 }
 
-//input type file (image)
+//input type file (image equipment)
 export type ImagePreview = string | null
 export interface ImageFieldProps {
   name: string;
@@ -54,6 +60,13 @@ export interface ImageFieldProps {
   control: Control<any>;
 }
 
+//input type file (image user)
+export interface UserImageFieldProps {
+  name: string
+  label: string
+  control: Control<any>
+  className?: string
+}
 /* --------------------------------------------------------------------------------------------------------- */
 
 /*--------------------------------------------------Section--------------------------------------------------*/
@@ -153,7 +166,7 @@ export type CharacteristicsProps = {
 }
 
 //Engineer Reference Section
-export type EngineerReferenceProps = {
+export type EngineerProps = {
   service_engineer: string;
   invima_registration: string;
 }

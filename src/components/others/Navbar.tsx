@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger
 } from "#/ui/dropdown-menu";
 import { Button } from "#/ui/button";
-import ThemeToggle from "#/others/ThemeToggle";
+import ThemeToggle from "#/others/Theme";
 
 /**
  * Componente principal de la barra de navegación.
