@@ -1,67 +1,55 @@
 import { Control } from "react-hook-form";
 
 /*--------------------------------------------------Component--------------------------------------------------*/
-//input standard with type changeable
-export interface FieldProps {
+{/* Inputs */ }
+export interface FieldProps {//standard with type changeable
   name: string;
   label: string;
   control: Control<any>;
   type?: string;
   placeholder?: string;
 }
-
-//input type select (dropdown)
-export interface SelectFieldProps {
+export interface SelectFieldProps {//type select (dropdown)
   name: string;
   label: string;
   control: Control<any>;
   options: string[];
   placeholder: string;
 }
-
-//input type area (textArea)
-export interface AreaFieldProps {
+export interface AreaFieldProps {//type area (textArea)
   name: string;
   label: string;
   control: Control<any>;
   placeholder?: string;
 }
-
-//input type checkbox
-export interface CheckboxFieldProps {
+export interface CheckboxFieldProps {//type checkbox
   name: string;
   label: string;
   control: Control<any>;
   options: string[];
 }
-
-//input type date (calendar)
-export interface DateFieldProps {
+export interface DateFieldProps {//type date (calendar)
   name: string;
   label: string;
   control: Control<any>;
   placeholder?: string;
 }
-
-//props of IterableCardField
 export interface FieldFormat { name: string; label: string; placeholder?: string }
-export interface IterableCardFieldProps {
+export interface IterableCardFieldProps {//type card (IterableCardField)
   name: string;
   title: string;
   fields: FieldFormat[];
   addButtonText: string;
 }
-
-//input type file (image equipment)
 export type ImagePreview = string | null
-export interface ImageFieldProps {
+export interface ImageFieldProps {//type file (image equipment)
   name: string;
   label: string;
   control: Control<any>;
 }
 
-//input type file (image user)
-export interface UserImageFieldProps {
+{/* Elements */ }
+export interface LogoImageFieldProps {//file (logo entity)
   name: string
   label: string
   control: Control<any>
@@ -169,5 +157,6 @@ export type CharacteristicsProps = {
 export type EngineerProps = {
   service_engineer: string;
   invima_registration: string;
+  engineer_image: Image;
 }
 /* --------------------------------------------------------------------------------------------------------- */

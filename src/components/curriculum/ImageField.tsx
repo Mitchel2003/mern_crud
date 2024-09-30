@@ -1,57 +1,16 @@
 import { FormControl, FormField, FormItem, FormLabel } from "#/ui/form"
 import { Button } from "#/ui/button"
 
-import { ImageFieldProps, ImagePreview } from "@/interfaces/form.interface"
-import { useState, useCallback, ChangeEvent } from 'react'
+import { ImageFieldProps } from "@/interfaces/form.interface"
+import { useState } from 'react'
 import { useController } from "react-hook-form"
 import { Camera, X } from "lucide-react"
+import useImageField from "@/hooks/useCallback"
 
 const ImageField = ({ name, label, control }: ImageFieldProps) => {
-  const [preview, setPreview] = useState<ImagePreview>()
-  const [isLoading, setIsLoading] = useState(false)
-
-  /**
-   * @param field - es el control del formulario
-   * @implements useController, es un hook que nos permite controlar el campo del formulario
-   * los parámetros que recibe useController los obtenemos del useFormContext (sección)
-   */
+  const [preview, setPreview] = useState<string | null>(null)
   const { field } = useController({ name, control, defaultValue: null })
-
-  /**
-   * Este método permite manejar la carga de imágenes a través del input de tipo file
-   * @implements useCallback, es un hook que nos permite memorizar una función;
-   * La diferencia entre useCallback y useEffect es que useCallback memoriza una función,
-   * mientras que useEffect memoriza un valor.
-   */
-  const handleImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    processImage(file)
-  }, [field])
-
-  /**
-   * Crea una instancia de FileReader para leer la imagen, nos ayuda a actualizar la vista previa
-   * @param file - El archivo de imagen a procesar.
-   */
-  const processImage = (file: File) => {
-    setIsLoading(true)
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreview(reader.result as string)
-      field.onChange(file)
-      setIsLoading(false)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  /** Elimina la vista previa de la imagen y el campo del formulario */
-  const removeImage = useCallback(() => {
-    setPreview(null)
-    field.onChange(null)
-  }, [field])
-
-  if (isLoading) return <div>Cargando...</div>
-
+  const { handler, remove } = useImageField()
   return (
     <FormField
       name={name}
@@ -73,7 +32,7 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2"
-                    onClick={removeImage}
+                    onClick={remove(field, setPreview)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -93,12 +52,11 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
                         type="file"
                         className="sr-only"
                         accept="image/*"
-                        onChange={handleImage}
+                        onChange={handler(field, setPreview)}
                       />
                     </label>
                   </div>
-                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, JPEG</p>
-                  <p className="text-xs leading-5 text-gray-600">hasta 5MB</p>
+                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, JPEG hasta 5MB</p>
                 </div>
               )}
             </div>

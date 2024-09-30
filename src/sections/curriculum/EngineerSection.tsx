@@ -1,6 +1,7 @@
-import { EngineerProps } from '@/interfaces/form.interface'
+import LogoField from '#/curriculum/LogoImageField'
 import InputField from '#/curriculum/Field'
-import UserImageField from '#/curriculum/UserImageField'
+
+import { EngineerProps } from '@/interfaces/form.interface'
 import { useForm } from 'react-hook-form'
 
 const EngineerSection = () => {
@@ -22,7 +23,7 @@ const EngineerSection = () => {
           control={form.control}
           placeholder="Ingrese el registro asociado"
         />
-        <UserImageField
+        <LogoField
           name="engineer_image"
           control={form.control}
           label="Imagen del Ingeniero"

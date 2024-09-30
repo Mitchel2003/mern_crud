@@ -35,12 +35,18 @@ export type CustomMutation = {
   deleteTask: () => UseMutationResult<Task, Error, string, unknown>
 }
 //useCallback (react)
-export type UseCallbackProps = {
-  handler: UseCallback_handler;
-  remove: UseCallback_remove;
+export interface ImageFieldHandlers {
+  handler: (
+    field: ControllerRenderProps<any, string>,
+    setPreview: Dispatch<SetStateAction<string | null>>
+  ) => (event: ChangeEvent<HTMLInputElement>) => void;
+  remove: (
+    field: ControllerRenderProps<any, string>,
+    setPreview: Dispatch<SetStateAction<string | null>>
+  ) => () => void;
 }
-export type UseCallback_handler = <T>(field: ControllerRenderProps<any>, setPreview: Dispatch<SetStateAction<T>>) => (e: ChangeEvent<HTMLInputElement>) => void;
-export type UseCallback_remove = <T>(field: ControllerRenderProps<any>, setPreview: Dispatch<SetStateAction<T | null>>) => () => void;
+
+export interface UseCallbackProps extends ImageFieldHandlers { }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Layout--------------------------------------------------*/

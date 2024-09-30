@@ -1,28 +1,26 @@
-import { UseCallback_handler, UseCallback_remove, UseCallbackProps } from "@/interfaces/props.interface";
-import { useCallback, ChangeEvent, SetStateAction } from "react";
+import { UseCallbackProps } from '@/interfaces/props.interface'
+import { useCallback } from 'react'
 
-const useCall = (): UseCallbackProps => {
+const useImageField = (): UseCallbackProps => {
 
-  const handler: UseCallback_handler = (field, setPreview) =>
-    useCallback((e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) return
+  const handler: UseCallbackProps['handler'] = useCallback((field, setPreview) => (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreview(reader.result as SetStateAction<any>)
-        field.onChange(file)
-      }
-      reader.readAsDataURL(file)
-    }, [field])
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result as string)
+      field.onChange(file)
+    }
+    reader.readAsDataURL(file)
+  }, [])
 
-  const remove: UseCallback_remove = (field, setPreview) =>
-    useCallback(() => {
-      setPreview(null)
-      field.onChange(null)
-    }, [field])
+  const remove: UseCallbackProps['remove'] = useCallback((field, setPreview) => () => {
+    setPreview(null)
+    field.onChange(null)
+  }, [])
 
   return { handler, remove }
 }
 
-export default useCall
+export default useImageField;
