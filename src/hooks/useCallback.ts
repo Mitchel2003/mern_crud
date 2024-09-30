@@ -1,26 +1,32 @@
 import { UseCallbackProps } from '@/interfaces/props.interface'
-import { useCallback } from 'react'
+import { useCallback, ChangeEvent } from 'react'
 
-const useImageField = (): UseCallbackProps => {
+export default (props: UseCallbackProps) => {
+  if (!props) return;
+  const { field, setPreview } = props
 
-  const handler: UseCallbackProps['handler'] = useCallback((field, setPreview) => (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  //handler to process a file input
+  const handler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    processFile(file)
+  }, [field])
 
-    const reader = new FileReader();
+  //handler to remove a file input
+  const remove = useCallback(() => {
+    setPreview(null)
+    field.onChange(null)
+  }, [field])
+
+  //process file and set the preview
+  const processFile = (file: File) => {
+    const reader = new FileReader()
     reader.onloadend = () => {
       setPreview(reader.result as string)
       field.onChange(file)
     }
     reader.readAsDataURL(file)
-  }, [])
-
-  const remove: UseCallbackProps['remove'] = useCallback((field, setPreview) => () => {
-    setPreview(null)
-    field.onChange(null)
-  }, [])
+  }
 
   return { handler, remove }
 }
-
-export default useImageField;

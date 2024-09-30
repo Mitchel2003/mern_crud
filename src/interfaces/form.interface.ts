@@ -41,7 +41,6 @@ export interface IterableCardFieldProps {//type card (IterableCardField)
   fields: FieldFormat[];
   addButtonText: string;
 }
-export type ImagePreview = string | null
 export interface ImageFieldProps {//type file (image equipment)
   name: string;
   label: string;
@@ -59,7 +58,7 @@ export interface LogoImageFieldProps {//file (logo entity)
 
 /*--------------------------------------------------Section--------------------------------------------------*/
 //ChangeEventProps
-export type Image = File | null
+export type Image = string | null
 
 //Entity Reference Section
 export type OfficeAreaProps = {

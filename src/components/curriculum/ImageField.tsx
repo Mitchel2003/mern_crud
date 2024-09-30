@@ -2,15 +2,16 @@ import { FormControl, FormField, FormItem, FormLabel } from "#/ui/form"
 import { Button } from "#/ui/button"
 
 import { ImageFieldProps } from "@/interfaces/form.interface"
-import { useState } from 'react'
 import { useController } from "react-hook-form"
+import useCallback from "@/hooks/useCallback"
 import { Camera, X } from "lucide-react"
-import useImageField from "@/hooks/useCallback"
+import { useState } from 'react'
 
 const ImageField = ({ name, label, control }: ImageFieldProps) => {
   const [preview, setPreview] = useState<string | null>(null)
   const { field } = useController({ name, control, defaultValue: null })
-  const { handler, remove } = useImageField()
+  const callback = useCallback({ field, setPreview })
+
   return (
     <FormField
       name={name}
@@ -32,7 +33,7 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2"
-                    onClick={remove(field, setPreview)}
+                    onClick={callback?.remove}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -42,17 +43,17 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
                   <Camera className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
                   <div className="mt-4 flex text-sm leading-6 text-gray-600">
                     <label
-                      htmlFor="file-upload"
+                      htmlFor={`file-upload-${name}`}
                       className="relative cursor-pointer rounded-md bg-white font-semibold text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
                     >
                       <span>Subir imagen</span>
                       <input
-                        id="file-upload"
+                        id={`file-upload-${name}`}
                         name={name}
                         type="file"
                         className="sr-only"
                         accept="image/*"
-                        onChange={handler(field, setPreview)}
+                        onChange={callback?.handler}
                       />
                     </label>
                   </div>
