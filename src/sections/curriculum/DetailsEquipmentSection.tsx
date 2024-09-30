@@ -1,12 +1,46 @@
 import SelectField from "#/curriculum/SelectField";
 import DateField from "#/curriculum/DateField";
 import InputField from "#/curriculum/Field";
+import IterableCardCustom from "#/curriculum/IterableCardCustom";
 
-import { DetailsEquipmentProps } from '@/interfaces/form.interface';
+import { DetailsEquipmentProps, CustomFieldProps } from '@/interfaces/form.interface';
 import { FormProvider, useForm } from "react-hook-form";
 
 const DetailsEquipmentSection = () => {
-  const methods = useForm<DetailsEquipmentProps>()
+  const methods = useForm<DetailsEquipmentProps>();
+
+  const supplierFields: CustomFieldProps[] = [
+    {
+      name: "name",
+      label: "Nombre",
+      placeholder: "Nombre del proveedor",
+      component: <InputField control={methods.control} name="name" />
+    },
+    {
+      name: "city",
+      label: "Ciudad",
+      placeholder: "Ciudad del proveedor",
+      component: <InputField control={methods.control} name="city" />
+    },
+    {
+      name: "phone",
+      label: "Teléfono",
+      placeholder: "Teléfono del proveedor",
+      component: <InputField control={methods.control} name="phone" />
+    },
+    {
+      name: "type",
+      label: "Tipo",
+      placeholder: "Seleccionar tipo",
+      component: (
+        <SelectField
+          name="type"
+          control={methods.control}
+          options={["distributor", "manufacturer"]}
+        />
+      )
+    }
+  ]
 
   return (
     <FormProvider {...methods}>
@@ -95,49 +129,14 @@ const DetailsEquipmentSection = () => {
             />
           </div>
 
-          {/* info about the distributor */}
-          <div className="grid grid-cols-1 gap-2">
-            <h3 className="text-2xl font-medium">Distribuidor</h3>
-            <InputField
-              name="distributor"
-              label="Nombre"
+          {/* info about the suppliers */}
+          <div className="grid grid-cols-2 gap-2">
+            <IterableCardCustom
+              name="suppliers"
+              title="Proveedores"
+              fields={supplierFields}
+              addButtonText="Agregar Proveedor"
               control={methods.control}
-              placeholder="Nombre del distribuidor"
-            />
-            <InputField
-              name="city_distributor"
-              label="Ciudad"
-              control={methods.control}
-              placeholder="Ciudad del distribuidor"
-            />
-            <InputField
-              name="phone_distributor"
-              label="Teléfono"
-              control={methods.control}
-              placeholder="Teléfono del distribuidor"
-            />
-          </div>
-
-          {/* info about the manufacturer */}
-          <div className="grid grid-cols-1 gap-2">
-            <h3 className="text-2xl font-medium">Fabricante</h3>
-            <InputField
-              name="manufacturer"
-              label="Nombre"
-              control={methods.control}
-              placeholder="Nombre del fabricante"
-            />
-            <InputField
-              name="country_manufacturer"
-              label="País"
-              control={methods.control}
-              placeholder="País del fabricante"
-            />
-            <InputField
-              name="phone_manufacturer"
-              label="Teléfono"
-              control={methods.control}
-              placeholder="Teléfono del fabricante"
             />
           </div>
 

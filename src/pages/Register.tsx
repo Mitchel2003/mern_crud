@@ -8,4 +8,3 @@ const Register = () => {
 
 //CV - Curriculum Vitae
 export default Register
-// Entidad, Area, Servicio, Ubicacion

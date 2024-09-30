@@ -1,20 +1,21 @@
-import { Control } from "react-hook-form";
+import { Control, UseFormRegister } from "react-hook-form";
+import { ReactElement } from 'react';
 
 /*--------------------------------------------------Component--------------------------------------------------*/
-{/* Inputs */ }
+{/*---------------------- Inputs ----------------------*/ }
 export interface FieldProps {//standard with type changeable
   name: string;
-  label: string;
+  label?: string;
   control: Control<any>;
   type?: string;
   placeholder?: string;
 }
 export interface SelectFieldProps {//type select (dropdown)
   name: string;
-  label: string;
+  label?: string;
   control: Control<any>;
   options: string[];
-  placeholder: string;
+  placeholder?: string;
 }
 export interface AreaFieldProps {//type area (textArea)
   name: string;
@@ -34,18 +35,41 @@ export interface DateFieldProps {//type date (calendar)
   control: Control<any>;
   placeholder?: string;
 }
-export interface FieldFormat { name: string; label: string; placeholder?: string }
-export interface IterableCardFieldProps {//type card (IterableCardField)
-  name: string;
-  title: string;
-  fields: FieldFormat[];
-  addButtonText: string;
-}
 export interface ImageFieldProps {//type file (image equipment)
   name: string;
   label: string;
   control: Control<any>;
 }
+
+{/*---------------------- Cards ----------------------*/ }
+export interface Field_SimpleCard { name: string; label: string; placeholder?: string }
+export interface IterableCardProps {//type card (IterableCardField)
+  name: string;
+  title: string;
+  fields: Field_SimpleCard[];
+  addButtonText: string;
+}
+
+export interface CustomFieldProps {//type card (IterableCardCustom)
+  name: string;
+  label: string;
+  placeholder?: string;
+  component: ReactElement;
+}
+export interface IterableCardCustomProps {//type card (IterableCardCustom)
+  name: string;
+  title: string;
+  fields: CustomFieldProps[];
+  addButtonText: string;
+  control: Control<any>;
+}
+export interface SupplierData {//type supplier
+  name: string;
+  city: string;
+  phone: string;
+  type: 'distributor' | 'manufacturer';
+}
+
 
 {/* Elements */ }
 export interface LogoImageFieldProps {//file (logo entity)
@@ -91,15 +115,9 @@ export type DetailsEquipmentProps = {
   representative: string;
   city_representative: string;
   phone_representative: string;
-  //fourth section
-  distributor: string;
-  city_distributor: string;
-  phone_distributor: string;
-  //fifth section
-  manufacturer: string;
-  country_manufacturer: string;
-  phone_manufacturer: string;
-  year_manufacture: number;
+
+  //extra
+  suppliers: SupplierData[];
 }
 
 //Technical Characteristics Section
@@ -159,3 +177,32 @@ export type EngineerProps = {
   engineer_image: Image;
 }
 /* --------------------------------------------------------------------------------------------------------- */
+
+/*--------------------------------------------------Temp--------------------------------------------------*/
+export type FormData = {
+  representative: {
+    name: string
+    city: string
+    phone: string
+  }
+  suppliers: {
+    name: string
+    city: string
+    phone: string
+    type: 'distributor' | 'manufacturer'
+  }[]
+}
+
+export type InputFieldProps = {
+  label: string
+  name: string
+  register: UseFormRegister<FormData>
+  placeholder: string
+}
+
+export type SupplierCardProps = {
+  index: number
+  control: Control<FormData>
+  register: UseFormRegister<FormData>
+  remove: (index: number) => void
+}

@@ -1,4 +1,4 @@
-import LogoField from '#/curriculum/LogoImageField'
+import LogoImageField from '#/curriculum/LogoImageField'
 import InputField from '#/curriculum/Field'
 
 import { EngineerProps } from '@/interfaces/form.interface'
@@ -10,23 +10,27 @@ const EngineerSection = () => {
   return (
     <div className="space-y-6">
       <h3 className="text-2xl font-bold">Referencia del Ingeniero Encargado</h3>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <InputField
-          name="service_engineer"
-          label="Ingeniero de Servicio"
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+        <div className="grid grid-cols-1 gap-6 col-span-1">
+          <InputField
+            name="service_engineer"
+            label="Ingeniero de Servicio"
+            control={form.control}
+            placeholder="Ingeniero responsable"
+          />
+          <InputField
+            name="invima_registration"
+            label="Registro INVIMA"
+            control={form.control}
+            placeholder="Ingrese el registro asociado"
+          />
+        </div>
+
+        <LogoImageField
+          name="logo_headquarter"
           control={form.control}
-          placeholder="Ingeniero responsable"
-        />
-        <InputField
-          name="invima_registration"
-          label="Registro INVIMA"
-          control={form.control}
-          placeholder="Ingrese el registro asociado"
-        />
-        <LogoField
-          name="engineer_image"
-          control={form.control}
-          label="Imagen del Ingeniero"
+          label="Logo sede"
         />
       </div>
     </div>

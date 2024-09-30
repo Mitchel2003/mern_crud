@@ -20,7 +20,7 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <div className="flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+            <div className="flex px-6 py-[8vh] justify-center rounded-lg border border-dashed border-gray-900/25">
               {preview ? (
                 <div className="relative">
                   <img
@@ -41,10 +41,11 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
               ) : (
                 <div className="text-center">
                   <Camera className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+
+                  <div className="flex w-full justify-center text-sm mt-4 leading-6 text-gray-600">
                     <label
                       htmlFor={`file-upload-${name}`}
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+                      className="relative cursor-pointer rounded-md font-semibold bg-white"
                     >
                       <span>Subir imagen</span>
                       <input

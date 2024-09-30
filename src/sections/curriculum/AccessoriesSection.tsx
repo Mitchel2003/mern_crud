@@ -1,5 +1,5 @@
 import { AccessoriesProps } from "@/interfaces/form.interface"
-import IterableCardField from "#/curriculum/IterableCardField"
+import IterableCard from "#/curriculum/IterableCard"
 import { FormProvider, useForm } from "react-hook-form"
 
 const AccessoriesSection = () => {
@@ -8,7 +8,7 @@ const AccessoriesSection = () => {
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
-        <IterableCardField
+        <IterableCard
           fields={fields}
           name="accessories"
           title="Accesorios"

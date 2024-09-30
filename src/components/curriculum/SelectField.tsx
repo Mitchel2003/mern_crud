@@ -9,7 +9,7 @@ const SelectField = ({ name, label, control, options, placeholder }: SelectField
       control={control}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}

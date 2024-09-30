@@ -4,7 +4,7 @@ import { Button } from "#/ui/button"
 import { Input } from "#/ui/input"
 
 import { useFieldArray, useFormContext, Controller } from "react-hook-form"
-import { IterableCardFieldProps } from "@/interfaces/form.interface"
+import { IterableCardProps } from "@/interfaces/form.interface"
 import { PlusCircle, X } from "lucide-react"
 
 /**
@@ -17,7 +17,7 @@ import { PlusCircle, X } from "lucide-react"
  * @param {FieldFormat[]} props.fields - Los campos que se renderizarán en cada card
  * @param {string} props.addButtonText - El texto del botón de agregar
  */
-const IterableCardField = ({ name, title, fields, addButtonText }: IterableCardFieldProps) => {
+const IterableCardField = ({ name, title, fields, addButtonText }: IterableCardProps) => {
   /**
    * @description usamos useFormContext en vez de useController porque manipulamos
    * varios elementos en este componente de cards iterables, en vez de usar uno solo

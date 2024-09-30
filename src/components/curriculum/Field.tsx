@@ -10,7 +10,7 @@ const Field = ({ name, label, control, type = "text", placeholder }: FieldProps)
       control={control}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Input type={type} placeholder={placeholder} className="bg-white" {...field} />
           </FormControl>
