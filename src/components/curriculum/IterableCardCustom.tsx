@@ -7,7 +7,7 @@ import { useFieldArray } from 'react-hook-form';
 import { PlusCircle, X } from 'lucide-react';
 import React from 'react';
 
-const IterableCardCustom = ({ name, title, fields, addButtonText, control }: IterableCardCustomProps) => {
+const IterableCardCustom = ({ name, fields, titleButton, control }: IterableCardCustomProps) => {
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
   const handleAppend = () => {
@@ -17,16 +17,18 @@ const IterableCardCustom = ({ name, title, fields, addButtonText, control }: Ite
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-2xl font-medium">{title}</h3>
+    <>
       <Button
         size="sm"
         type="button"
         variant="outline"
+        className='flex h-full'
         onClick={handleAppend}
       >
-        <PlusCircle className="mr-2 h-5 w-5" />
-        {addButtonText}
+        {titleButton ?? ''}
+        <PlusCircle
+          className={`h-auto w-auto md:h-[3vh] md:w-[3vw] ${titleButton && 'ml-2'}`}
+        />
       </Button>
 
       {items.map((item, index) => (
@@ -57,8 +59,66 @@ const IterableCardCustom = ({ name, title, fields, addButtonText, control }: Ite
           </CardContent>
         </Card>
       ))}
-    </div>
+    </>
   )
 }
 
 export default IterableCardCustom
+
+{/* to use this component you need to pass the fields as props */ }
+
+// const supplierFields: CustomFieldProps[] = [
+//     {
+//       name: "name",
+//       label: "Nombre",
+//       placeholder: "Nombre del proveedor",
+//       component: <InputField control={methods.control} name="name" />
+//     },
+//     {
+//       name: "city",
+//       label: "Ciudad",
+//       placeholder: "Ciudad del proveedor",
+//       component: <InputField control={methods.control} name="city" />
+//     },
+//     {
+//       name: "phone",
+//       label: "Teléfono",
+//       placeholder: "Teléfono del proveedor",
+//       component: <InputField control={methods.control} name="phone" />
+//     },
+//     {
+//       name: "type",
+//       label: "Tipo",
+//       placeholder: "Seleccionar tipo",
+//       component: (
+//         <SelectField
+//           name="type"
+//           control={methods.control}
+//           options={["distributor", "manufacturer"]}
+//         />
+//       )
+//     }
+//   ]
+
+
+//<IterableCardCustom
+//   name="suppliers"
+//   title="Proveedores"
+//   fields={supplierFields}
+//   addButtonText="Agregar Proveedor"
+//   control={methods.control}
+// />
+
+
+
+// export interface SupplierData {//type supplier
+//   name: string;
+//   city: string;
+//   phone: string;
+//   type: 'distributor' | 'manufacturer';
+// }
+
+// export type DetailsEquipmentProps = {
+//   . . .
+//   suppliers: SupplierData[];
+// }

@@ -1,50 +1,23 @@
-import SelectField from "#/curriculum/SelectField";
-import DateField from "#/curriculum/DateField";
-import InputField from "#/curriculum/Field";
-import IterableCardCustom from "#/curriculum/IterableCardCustom";
+import SelectField from '#/curriculum/SelectField'
+import DateField from '#/curriculum/DateField'
+import InputField from '#/curriculum/Field'
 
-import { DetailsEquipmentProps, CustomFieldProps } from '@/interfaces/form.interface';
-import { FormProvider, useForm } from "react-hook-form";
+import { DetailsEquipmentProps, CustomFieldProps } from '@/interfaces/form.interface'
+import { FormProvider, useForm } from 'react-hook-form'
+import IterableCardCustom from '@/components/curriculum/IterableCardCustom'
 
 const DetailsEquipmentSection = () => {
   const methods = useForm<DetailsEquipmentProps>();
 
   const supplierFields: CustomFieldProps[] = [
-    {
-      name: "name",
-      label: "Nombre",
-      placeholder: "Nombre del proveedor",
-      component: <InputField control={methods.control} name="name" />
-    },
-    {
-      name: "city",
-      label: "Ciudad",
-      placeholder: "Ciudad del proveedor",
-      component: <InputField control={methods.control} name="city" />
-    },
-    {
-      name: "phone",
-      label: "Teléfono",
-      placeholder: "Teléfono del proveedor",
-      component: <InputField control={methods.control} name="phone" />
-    },
-    {
-      name: "type",
-      label: "Tipo",
-      placeholder: "Seleccionar tipo",
-      component: (
-        <SelectField
-          name="type"
-          control={methods.control}
-          options={["distributor", "manufacturer"]}
-        />
-      )
-    }
+    { name: "name", label: "Nombre", component: <InputField control={methods.control} name="name" /> },
+    { name: "city", label: "Ciudad", component: <InputField control={methods.control} name="city" /> },
+    { name: "phone", label: "Teléfono", component: <InputField control={methods.control} name="phone" /> },
   ]
 
   return (
     <FormProvider {...methods}>
-      {/* first module - details about the acquisition */}
+      {/* ---------------------- first module - details about the acquisition ---------------------- */}
       <div className="space-y-6">
         <h3 className="text-2xl font-bold">Detalles del Dispositivo</h3>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -101,47 +74,63 @@ const DetailsEquipmentSection = () => {
           />
         </div>
       </div>
+      {/* --------------------------------- end first module --------------------------------- */}
 
-      {/* second module - information references */}
+      {/* ---------------------- second module - information references ---------------------- */}
       <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 
           {/* info about the representative */}
           <div className="grid grid-cols-1 gap-2">
             <h3 className="text-2xl font-medium">Representante</h3>
-            <InputField
-              name="representative"
-              label="Nombre"
+
+            <div className='grid grid-cols-2 gap-2 md:grid-cols-12'>
+              <div className='col-span-1 md:col-span-10'>
+                <SelectField
+                  name="representative"
+                  control={methods.control}
+                  options={["N/A"]}
+                  placeholder="Seleccionar representante"
+                />
+              </div>
+
+              <div className='col-span-1 md:col-span-2'>
+                <IterableCardCustom
+                  name="add-representative"
+                  control={methods.control}
+                  fields={supplierFields}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* info about the distributor */}
+          <div className="grid grid-cols-1 gap-2">
+            <h3 className="text-2xl font-medium">Proveedor</h3>
+
+            <SelectField
+              name="provider"
               control={methods.control}
-              placeholder="Nombre del representante"
-            />
-            <InputField
-              name="city_representative"
-              label="Ciudad"
-              control={methods.control}
-              placeholder="Ciudad del representante"
-            />
-            <InputField
-              name="phone_representative"
-              label="Teléfono"
-              control={methods.control}
-              placeholder="Teléfono del representante"
+              options={["N/A"]}
+              placeholder="Seleccionar proveedor"
             />
           </div>
 
-          {/* info about the suppliers */}
-          <div className="grid grid-cols-2 gap-2">
-            <IterableCardCustom
-              name="suppliers"
-              title="Proveedores"
-              fields={supplierFields}
-              addButtonText="Agregar Proveedor"
+          {/* info about the manufacturer */}
+          <div className="grid grid-cols-1 gap-2">
+            <h3 className="text-2xl font-medium">Fabricante</h3>
+
+            <SelectField
+              name="manufacturer"
               control={methods.control}
+              options={["N/A"]}
+              placeholder="Seleccionar fabricante"
             />
           </div>
 
         </div>
       </div>
+      {/* --------------------------------- end second module --------------------------------- */}
     </FormProvider >
   )
 }

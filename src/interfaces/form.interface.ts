@@ -42,13 +42,14 @@ export interface ImageFieldProps {//type file (image equipment)
 }
 
 {/*---------------------- Cards ----------------------*/ }
-export interface Field_SimpleCard { name: string; label: string; placeholder?: string }
+export interface SimpleFieldProps { name: string; label: string; placeholder?: string }
 export interface IterableCardProps {//type card (IterableCardField)
   name: string;
   title: string;
-  fields: Field_SimpleCard[];
+  fields: SimpleFieldProps[];
   addButtonText: string;
 }
+
 
 export interface CustomFieldProps {//type card (IterableCardCustom)
   name: string;
@@ -58,9 +59,8 @@ export interface CustomFieldProps {//type card (IterableCardCustom)
 }
 export interface IterableCardCustomProps {//type card (IterableCardCustom)
   name: string;
-  title: string;
   fields: CustomFieldProps[];
-  addButtonText: string;
+  titleButton?: string;
   control: Control<any>;
 }
 export interface SupplierData {//type supplier
@@ -116,8 +116,10 @@ export type DetailsEquipmentProps = {
   city_representative: string;
   phone_representative: string;
 
-  //extra
-  suppliers: SupplierData[];
+  //distributor
+  distributor: string;
+  city_distributor: string;
+  phone_distributor: string;
 }
 
 //Technical Characteristics Section
