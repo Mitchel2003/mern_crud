@@ -81,31 +81,25 @@ const DetailsEquipmentSection = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 
           {/* info about the representative */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Representante</h3>
 
-            <div className='grid grid-cols-2 gap-2 md:grid-cols-12'>
-              <div className='col-span-1 md:col-span-10'>
-                <SelectField
-                  name="representative"
-                  control={methods.control}
-                  options={["N/A"]}
-                  placeholder="Seleccionar representante"
-                />
-              </div>
-
-              <div className='col-span-1 md:col-span-2'>
-                <IterableCardCustom
-                  name="add-representative"
-                  control={methods.control}
-                  fields={supplierFields}
-                />
-              </div>
-            </div>
+            <SelectField
+              name="representative"
+              control={methods.control}
+              options={["N/A"]}
+              placeholder="Seleccionar representante"
+            />
+            <IterableCardCustom
+              name="add-representative"
+              control={methods.control}
+              fields={supplierFields}
+              titleButton="Nuevo representante"
+            />
           </div>
 
           {/* info about the distributor */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Proveedor</h3>
 
             <SelectField
@@ -114,10 +108,16 @@ const DetailsEquipmentSection = () => {
               options={["N/A"]}
               placeholder="Seleccionar proveedor"
             />
+            <IterableCardCustom
+              name="add-provider"
+              titleButton="Nuevo proveedor"
+              control={methods.control}
+              fields={supplierFields}
+            />
           </div>
 
           {/* info about the manufacturer */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Fabricante</h3>
 
             <SelectField
@@ -125,6 +125,12 @@ const DetailsEquipmentSection = () => {
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar fabricante"
+            />
+            <IterableCardCustom
+              name="add-manufacturer"
+              titleButton="Nuevo fabricante"
+              control={methods.control}
+              fields={supplierFields}
             />
           </div>
 

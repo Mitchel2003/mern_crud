@@ -7,7 +7,7 @@ import { useFieldArray } from 'react-hook-form';
 import { PlusCircle, X } from 'lucide-react';
 import React from 'react';
 
-const IterableCardCustom = ({ name, fields, titleButton, control }: IterableCardCustomProps) => {
+const IterableCardCustom = ({ name, control, fields, titleButton, limit }: IterableCardCustomProps) => {
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
   const handleAppend = () => {
@@ -18,32 +18,33 @@ const IterableCardCustom = ({ name, fields, titleButton, control }: IterableCard
 
   return (
     <>
-      <Button
-        size="sm"
-        type="button"
-        variant="outline"
-        className='flex h-full'
-        onClick={handleAppend}
-      >
-        {titleButton ?? ''}
-        <PlusCircle
-          className={`h-auto w-auto md:h-[3vh] md:w-[3vw] ${titleButton && 'ml-2'}`}
-        />
-      </Button>
+      {items.length !== (limit ?? 1) && (
+        <Button
+          size="sm"
+          type="button"
+          variant="outline"
+          className='flex text-sm h-[5vh]'
+          onClick={handleAppend}
+        >
+          {titleButton ?? "Agregar"}
+          <PlusCircle className='ml-2 h-auto w-auto md:h-[3vh] md:w-[3vw]' />
+        </Button>
+      )}
 
       {items.map((item, index) => (
         <Card key={item.id} className="bg-white relative">
           <Button
+            size="sm"
             type="button"
             variant="ghost"
-            size="sm"
             className="absolute top-2 right-2"
             onClick={() => remove(index)}
           >
             <X className="h-4 w-4" />
           </Button>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+          <CardContent className="pt-4">
+            <div className="grid grid-cols-1 gap-2">
               {fields.map((field) => (
                 <FormItem key={field.name}>
                   <FormLabel>{field.label}</FormLabel>

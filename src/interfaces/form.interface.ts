@@ -59,9 +59,10 @@ export interface CustomFieldProps {//type card (IterableCardCustom)
 }
 export interface IterableCardCustomProps {//type card (IterableCardCustom)
   name: string;
+  control: Control<any>;
   fields: CustomFieldProps[];
   titleButton?: string;
-  control: Control<any>;
+  limit?: number;
 }
 export interface SupplierData {//type supplier
   name: string;
