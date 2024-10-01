@@ -1,4 +1,4 @@
-import IterableCardCustom from "#/curriculum/IterableCardCustom"
+import IterableCustomCard from "#/curriculum/IterableCustomCard"
 import InputField from "#/curriculum/Field"
 
 import { AccessoriesProps, CustomFieldProps } from "@/interfaces/form.interface"
@@ -22,7 +22,7 @@ const AccessoriesSection = () => {
           <h3 className="text-2xl font-bold">Accesorios</h3>
           <p className="text-sm text-gray-500">Máximo 10 accesorios</p>
         </div>
-        <IterableCardCustom
+        <IterableCustomCard
           name="accessories"
           fields={supplierFields}
           control={methods.control}

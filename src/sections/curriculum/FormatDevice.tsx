@@ -53,6 +53,10 @@ const FormatDevice = () => {
   )
 }
 
+export default FormatDevice
+/* --------------------------------------------------------------------------------------------------------- */
+
+/*--------------------------------------------------tools--------------------------------------------------*/
 type CurriculumSectionProps = { section: React.ReactNode }
 const CurriculumSection = ({ section }: CurriculumSectionProps) => {
   return (
@@ -62,6 +66,3 @@ const CurriculumSection = ({ section }: CurriculumSectionProps) => {
     </>
   )
 }
-
-
-export default FormatDevice
