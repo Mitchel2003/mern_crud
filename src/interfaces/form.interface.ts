@@ -2,6 +2,14 @@ import { Control, UseFormRegister } from "react-hook-form";
 import { ReactElement } from 'react';
 
 /*--------------------------------------------------Component--------------------------------------------------*/
+{/*---------------------- Typing standard ----------------------*/ }
+export interface LogoImageFieldProps {//file (logo entity)
+  name: string
+  label: string
+  control: Control<any>
+  className?: string
+}
+
 {/*---------------------- Inputs ----------------------*/ }
 export interface FieldProps {//standard with type changeable
   name: string;
@@ -42,42 +50,19 @@ export interface ImageFieldProps {//type file (image equipment)
 }
 
 {/*---------------------- Cards ----------------------*/ }
-export interface SimpleFieldProps { name: string; label: string; placeholder?: string }
-export interface IterableCardProps {//type card (IterableCardField)
-  name: string;
-  title: string;
-  fields: SimpleFieldProps[];
-  addButtonText: string;
-}
-
-
-export interface CustomFieldProps {//type card (IterableCardCustom)
+//to cards reusables
+export interface CustomFieldProps {
   name: string;
   label: string;
   placeholder?: string;
   component: ReactElement;
 }
-export interface IterableCardCustomProps {//type card (IterableCardCustom)
+export interface IterableCardCustomProps {
   name: string;
   control: Control<any>;
   fields: CustomFieldProps[];
   titleButton?: string;
   limit?: number;
-}
-export interface SupplierData {//type supplier
-  name: string;
-  city: string;
-  phone: string;
-  type: 'distributor' | 'manufacturer';
-}
-
-
-{/* Elements */ }
-export interface LogoImageFieldProps {//file (logo entity)
-  name: string
-  label: string
-  control: Control<any>
-  className?: string
 }
 /* --------------------------------------------------------------------------------------------------------- */
 

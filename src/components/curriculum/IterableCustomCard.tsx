@@ -7,7 +7,7 @@ import { useFieldArray } from 'react-hook-form';
 import { PlusCircle, X } from 'lucide-react';
 import React from 'react';
 
-const IterableCardCustom = ({ name, control, fields, titleButton, limit }: IterableCardCustomProps) => {
+const IterableCustomCard = ({ name, control, fields, titleButton, limit }: IterableCardCustomProps) => {
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
   const handleAppend = () => {
@@ -63,24 +63,4 @@ const IterableCardCustom = ({ name, control, fields, titleButton, limit }: Itera
   )
 }
 
-export default IterableCardCustom
-
-//<IterableCardCustom
-//   name="suppliers"
-//   title="Proveedores"
-//   fields={supplierFields}
-//   addButtonText="Agregar Proveedor"
-//   control={methods.control}
-// />
-
-// export interface SupplierData {//type supplier
-//   name: string;
-//   city: string;
-//   phone: string;
-//   type: 'distributor' | 'manufacturer';
-// }
-
-// export type DetailsEquipmentProps = {
-//   . . .
-//   suppliers: SupplierData[];
-// }
+export default IterableCustomCard

@@ -4,7 +4,7 @@ import InputField from '#/curriculum/Field'
 
 import { DetailsEquipmentProps, CustomFieldProps } from '@/interfaces/form.interface'
 import { FormProvider, useForm } from 'react-hook-form'
-import IterableCardCustom from '@/components/curriculum/IterableCardCustom'
+import IterableCustomCard from '@/components/curriculum/IterableCustomCard'
 
 const DetailsEquipmentSection = () => {
   const methods = useForm<DetailsEquipmentProps>();
@@ -83,14 +83,13 @@ const DetailsEquipmentSection = () => {
           {/* info about the representative */}
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Representante</h3>
-
             <SelectField
               name="representative"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar representante"
             />
-            <IterableCardCustom
+            <IterableCustomCard
               name="add-representative"
               control={methods.control}
               fields={supplierFields}
@@ -101,14 +100,13 @@ const DetailsEquipmentSection = () => {
           {/* info about the distributor */}
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Proveedor</h3>
-
             <SelectField
               name="provider"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar proveedor"
             />
-            <IterableCardCustom
+            <IterableCustomCard
               name="add-provider"
               titleButton="Nuevo proveedor"
               control={methods.control}
@@ -119,14 +117,13 @@ const DetailsEquipmentSection = () => {
           {/* info about the manufacturer */}
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Fabricante</h3>
-
             <SelectField
               name="manufacturer"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar fabricante"
             />
-            <IterableCardCustom
+            <IterableCustomCard
               name="add-manufacturer"
               titleButton="Nuevo fabricante"
               control={methods.control}
