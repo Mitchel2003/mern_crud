@@ -18,15 +18,20 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
       control={control}
       render={() => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel htmlFor={`container-${name}`}>{label}</FormLabel>
           <FormControl>
-            <div className="flex px-6 py-[8vh] justify-center rounded-lg border border-dashed border-gray-900/25">
+            <div
+              id={`container-${name}`}
+              className={`flex px-auto justify-center rounded-lg border border-dashed border-gray-900/25
+                ${preview ? 'py-[2vh]' : 'py-[6vh]'}
+              `}
+            >
               {preview ? (
                 <div className="relative">
                   <img
                     src={preview}
                     alt="Vista previa del equipo"
-                    className="w-full h-full object-cover rounded-md"
+                    className="w-40 h-40 object-cover rounded-md"
                   />
                   <Button
                     type="button"

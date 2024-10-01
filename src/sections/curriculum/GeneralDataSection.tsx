@@ -12,7 +12,7 @@ const GeneralDataSection = () => {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-8">
 
         <div className="md:col-span-5">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
 
             {/* input of 2 columns */}
             <div className="sm:col-span-2">

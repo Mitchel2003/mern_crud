@@ -15,7 +15,6 @@ const IterableCardCustom = ({ name, control, fields, titleButton, limit }: Itera
     const newItem = fields.reduce((acc, field) => { acc[field.name] = ''; return acc }, initialValue)
     append(newItem)
   }
-
   return (
     <>
       {items.length !== (limit ?? 1) && (
@@ -66,42 +65,6 @@ const IterableCardCustom = ({ name, control, fields, titleButton, limit }: Itera
 
 export default IterableCardCustom
 
-{/* to use this component you need to pass the fields as props */ }
-
-// const supplierFields: CustomFieldProps[] = [
-//     {
-//       name: "name",
-//       label: "Nombre",
-//       placeholder: "Nombre del proveedor",
-//       component: <InputField control={methods.control} name="name" />
-//     },
-//     {
-//       name: "city",
-//       label: "Ciudad",
-//       placeholder: "Ciudad del proveedor",
-//       component: <InputField control={methods.control} name="city" />
-//     },
-//     {
-//       name: "phone",
-//       label: "Teléfono",
-//       placeholder: "Teléfono del proveedor",
-//       component: <InputField control={methods.control} name="phone" />
-//     },
-//     {
-//       name: "type",
-//       label: "Tipo",
-//       placeholder: "Seleccionar tipo",
-//       component: (
-//         <SelectField
-//           name="type"
-//           control={methods.control}
-//           options={["distributor", "manufacturer"]}
-//         />
-//       )
-//     }
-//   ]
-
-
 //<IterableCardCustom
 //   name="suppliers"
 //   title="Proveedores"
@@ -109,8 +72,6 @@ export default IterableCardCustom
 //   addButtonText="Agregar Proveedor"
 //   control={methods.control}
 // />
-
-
 
 // export interface SupplierData {//type supplier
 //   name: string;
