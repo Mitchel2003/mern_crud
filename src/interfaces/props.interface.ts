@@ -5,7 +5,7 @@ import { ControllerRenderProps } from "react-hook-form";
 import { SetStateAction, Dispatch, ReactNode } from "react";
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 export const navAuth = ['/task/new', '/tasks']
-export const navGuest = ['/login']
+export const navGuest = ['/login', '/register']
 
 //interface defautl props
 export interface Props { children?: ReactNode }
