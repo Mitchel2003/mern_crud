@@ -13,6 +13,9 @@ import {
 import { Button } from "#/ui/button";
 import ThemeToggle from "#/others/Theme";
 
+// Importa el icono como un módulo
+import gsIcon from "@/assets/gs_icon.ico";
+
 /**
  * Componente principal de la barra de navegación.
  * Muestra un título dinámico y enlaces de navegación basados en el estado de autenticación del usuario.
@@ -34,7 +37,7 @@ function Navbar(): JSX.Element {
       {/* main title + icon */}
       <div className="flex items-center gap-x-4">
         <span className="flex items-center justify-center w-8 h-8">
-          <img src="./public/gs_icon.ico" />
+          <img src={gsIcon} alt="GS Icon" />
         </span>
         <h1 className="text-2xl font-roboto-slab">
           {isAuth ? "Dashboard" : "Gestión salud"}
