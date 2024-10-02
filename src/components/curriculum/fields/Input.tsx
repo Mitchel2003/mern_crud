@@ -1,9 +1,9 @@
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
-import { Input } from "#/ui/input";
+import { FormField, FormItem, FormLabel, FormControl } from '#/ui/form'
+import { Input } from '#/ui/input'
 
-import { FieldProps } from "@/interfaces/form.interface";
+import { FieldProps } from '@/interfaces/form.interface'
 
-const Field = ({ name, label, control, type = "text", placeholder }: FieldProps) => {
+const InputField = ({ name, label, control, type = "text", placeholder }: FieldProps) => {
   return (
     <FormField
       name={name}
@@ -20,4 +20,4 @@ const Field = ({ name, label, control, type = "text", placeholder }: FieldProps)
   )
 }
 
-export default Field
+export default InputField

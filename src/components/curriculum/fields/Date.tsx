@@ -1,11 +1,11 @@
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "#/ui/popover";
-import { Calendar } from "#/ui/calendar";
-import { Button } from "#/ui/button";
+import { FormField, FormItem, FormLabel, FormControl } from '#/ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover'
+import { Calendar } from '#/ui/calendar'
+import { Button } from '#/ui/button'
 
-import { DateFieldProps } from "@/interfaces/form.interface";
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { DateFieldProps } from '@/interfaces/form.interface'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
 
 const DateField = ({ name, label, control, placeholder }: DateFieldProps) => {
 

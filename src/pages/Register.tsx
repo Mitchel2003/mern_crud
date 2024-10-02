@@ -1,8 +1,8 @@
-import FormatDevice from "@/sections/curriculum/FormatDevice"
+import Curriculum from "@/sections/Curriculum"
 
 const Register = () => {
   return (
-    <FormatDevice />
+    <Curriculum />
   )
 }
 

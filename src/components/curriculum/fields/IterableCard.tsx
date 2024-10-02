@@ -1,13 +1,13 @@
-import { FormItem, FormLabel, FormControl } from "#/ui/form";
-import { Card, CardContent } from "#/ui/card";
-import { Button } from "#/ui/button";
+import { FormItem, FormLabel, FormControl } from '#/ui/form'
+import { Card, CardContent } from '#/ui/card'
+import { Button } from '#/ui/button'
 
-import { IterableCardCustomProps } from '@/interfaces/form.interface';
-import { useFieldArray } from 'react-hook-form';
-import { PlusCircle, X } from 'lucide-react';
-import React from 'react';
+import { IterableCardFieldProps } from '@/interfaces/form.interface'
+import { useFieldArray } from 'react-hook-form'
+import { PlusCircle, X } from 'lucide-react'
+import React from 'react'
 
-const IterableCustomCard = ({ name, control, fields, titleButton, limit }: IterableCardCustomProps) => {
+const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCardFieldProps) => {
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
   const handleAppend = () => {
@@ -63,4 +63,4 @@ const IterableCustomCard = ({ name, control, fields, titleButton, limit }: Itera
   )
 }
 
-export default IterableCustomCard
+export default IterableCard

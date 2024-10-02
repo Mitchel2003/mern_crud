@@ -1,5 +1,5 @@
 import { OfficeAreaProps } from "@/interfaces/form.interface";
-import SelectField from "#/curriculum/SelectField";
+import SelectField from "@/components/curriculum/fields/Select";
 import { useForm, FormProvider } from "react-hook-form";
 
 const OfficeAreaSection = () => {

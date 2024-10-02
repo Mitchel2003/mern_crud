@@ -1,18 +1,26 @@
-import LogoImageField from '#/curriculum/LogoImageField'
-import InputField from '#/curriculum/Field'
+import HeaderText from '#/curriculum/reusables/HeaderText'
+import LogoImage from '#/curriculum/reusables/LogoImage'
+import InputField from '#/curriculum/fields/Input'
 
 import { EngineerProps } from '@/interfaces/form.interface'
 import { useForm } from 'react-hook-form'
 
-const EngineerSection = () => {
+const EngineerServiceSection = () => {
   const form = useForm<EngineerProps>()
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-bold">Referencia del Ingeniero Encargado</h3>
+
+      <HeaderText
+        to="section"
+        icon="info"
+        title="Ingeniero de Servicio"
+        description="Ingeniero y entidad asociada"
+      />
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-        <div className="grid grid-cols-1 gap-6 col-span-1">
+        <div className="grid grid-cols-1 gap-2 col-span-1">
           <InputField
             name="service_engineer"
             label="Ingeniero de Servicio"
@@ -27,14 +35,13 @@ const EngineerSection = () => {
           />
         </div>
 
-        <LogoImageField
+        <LogoImage
           name="logo_headquarter"
           control={form.control}
-          label="Logo sede"
         />
       </div>
     </div>
   )
 }
 
-export default EngineerSection
+export default EngineerServiceSection

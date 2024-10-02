@@ -1,13 +1,14 @@
-import IterableCustomCard from "#/curriculum/IterableCustomCard"
-import InputField from "#/curriculum/Field"
+import IterableCustomCard from "#/curriculum/fields/IterableCard"
+import HeaderText from "#/curriculum/reusables/HeaderText"
+import InputField from "#/curriculum/fields/Input"
 
-import { AccessoriesProps, CustomFieldProps } from "@/interfaces/form.interface"
+import { AccessoriesProps, CardFieldProps } from "@/interfaces/form.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
 const AccessoriesSection = () => {
   const methods = useForm<AccessoriesProps>()
 
-  const supplierFields: CustomFieldProps[] = [
+  const supplierFields: CardFieldProps[] = [
     { name: "name", label: "Nombre", placeholder: "Nombre del accesorio", component: <InputField control={methods.control} name="name" /> },
     { name: "type", label: "Tipo", placeholder: "Tipo del accesorio", component: <InputField control={methods.control} name="type" /> },
     { name: "series", label: "Serie", placeholder: "Serie del accesorio", component: <InputField control={methods.control} name="series" /> },
@@ -18,10 +19,13 @@ const AccessoriesSection = () => {
     <FormProvider {...methods}>
 
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-2xl font-bold">Accesorios</h3>
-          <p className="text-sm text-gray-500">Máximo 10 accesorios</p>
-        </div>
+        <HeaderText
+          to="section"
+          title="Accesorios"
+          description="Máximo 10 accesorios"
+          icon="alert"
+        />
+
         <IterableCustomCard
           name="accessories"
           fields={supplierFields}

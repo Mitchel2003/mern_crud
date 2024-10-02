@@ -1,7 +1,7 @@
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form"
-import { Textarea } from "#/ui/textarea"
+import { FormField, FormItem, FormLabel, FormControl } from '#/ui/form'
+import { Textarea } from '#/ui/textarea'
 
-import { AreaFieldProps } from "@/interfaces/form.interface"
+import { AreaFieldProps } from '@/interfaces/form.interface'
 
 const AreaField = ({ name, label, control, placeholder }: AreaFieldProps) => {
   return (

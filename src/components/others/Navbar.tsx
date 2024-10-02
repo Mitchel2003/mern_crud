@@ -12,8 +12,6 @@ import {
 } from "#/ui/dropdown-menu";
 import { Button } from "#/ui/button";
 import ThemeToggle from "#/others/Theme";
-
-// Importa el icono como un módulo
 import gsIcon from "@/assets/gs_icon.ico";
 
 /**

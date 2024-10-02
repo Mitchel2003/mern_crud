@@ -1,10 +1,11 @@
-import CheckboxField from "@/components/curriculum/CheckboxField";
+import HeaderText from "#/curriculum/reusables/HeaderText"
+import CheckboxField from "#/curriculum/fields/Checkbox"
+import SelectField from "#/curriculum/fields/Select"
 
-import { EquipmentProps } from "@/interfaces/form.interface";
-import SelectField from "@/components/curriculum/SelectField";
-import { FormProvider, useForm } from "react-hook-form";
+import { EquipmentProps } from "@/interfaces/form.interface"
+import { FormProvider, useForm } from "react-hook-form"
 
-const EquipmentSection = () => {
+const EquipmentClassificationSection = () => {
   const methods = useForm<EquipmentProps>()
 
   return (
@@ -12,8 +13,14 @@ const EquipmentSection = () => {
       <div className="space-y-6">
 
         {/* Classification */}
-        <h3 className="text-2xl font-bold">Clasificación del Equipo</h3>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <HeaderText
+          to="section"
+          icon="warn"
+          title="Clasificación del Equipo"
+          description="Informacion sensible"
+        />
+
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <SelectField
             name="type_device"
             control={methods.control}
@@ -38,15 +45,7 @@ const EquipmentSection = () => {
         </div>
 
         {/* technology and risk*/}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-          <div className="col-span-8">
-            <CheckboxField
-              name="technology_predominant"
-              control={methods.control}
-              label="Tecnología Predominante"
-              options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
-            />
-          </div>
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-12">
           <div className="col-span-4">
             <SelectField
               name="risk"
@@ -56,6 +55,15 @@ const EquipmentSection = () => {
               options={['muy_alto', 'alto', 'moderado', 'bajo']}
             />
           </div>
+          <div className="col-span-8">
+            <CheckboxField
+              isMultiple={true}
+              name="technology_predominant"
+              label="Tecnología Predominante"
+              control={methods.control}
+              options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
+            />
+          </div>
         </div>
 
       </div>
@@ -63,4 +71,4 @@ const EquipmentSection = () => {
   )
 }
 
-export default EquipmentSection
+export default EquipmentClassificationSection

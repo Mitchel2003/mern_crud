@@ -1,8 +1,13 @@
-import { LogoImageFieldProps } from '@/interfaces/form.interface'
-import { useController } from 'react-hook-form'
+import { Control, useController } from 'react-hook-form'
 import { Building2 } from 'lucide-react'
 
-const LogoImageField = ({ name, control, label }: LogoImageFieldProps) => {
+export interface LogoImageProps {//file (logo entity)
+  name: string
+  label?: string
+  control: Control<any>
+  className?: string
+}
+const LogoImage = ({ name, control, label }: LogoImageProps) => {
   const { field } = useController({ name, control, defaultValue: null })
 
   return (
@@ -28,4 +33,4 @@ const LogoImageField = ({ name, control, label }: LogoImageFieldProps) => {
   )
 }
 
-export default LogoImageField
+export default LogoImage

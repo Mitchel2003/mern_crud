@@ -1,15 +1,16 @@
-import SelectField from '#/curriculum/SelectField'
-import DateField from '#/curriculum/DateField'
-import InputField from '#/curriculum/Field'
+import IterableCustomCard from '#/curriculum/fields/IterableCard'
+import HeaderText from '#/curriculum/reusables/HeaderText'
+import SelectField from '#/curriculum/fields/Select'
+import InputField from '#/curriculum/fields/Input'
+import DateField from '#/curriculum/fields/Date'
 
-import { DetailsEquipmentProps, CustomFieldProps } from '@/interfaces/form.interface'
+import { DetailsEquipmentProps, CardFieldProps } from '@/interfaces/form.interface'
 import { FormProvider, useForm } from 'react-hook-form'
-import IterableCustomCard from '@/components/curriculum/IterableCustomCard'
 
 const DetailsEquipmentSection = () => {
   const methods = useForm<DetailsEquipmentProps>();
 
-  const supplierFields: CustomFieldProps[] = [
+  const supplierFields: CardFieldProps[] = [
     { name: "name", label: "Nombre", component: <InputField control={methods.control} name="name" /> },
     { name: "city", label: "Ciudad", component: <InputField control={methods.control} name="city" /> },
     { name: "phone", label: "Teléfono", component: <InputField control={methods.control} name="phone" /> },
@@ -19,7 +20,12 @@ const DetailsEquipmentSection = () => {
     <FormProvider {...methods}>
       {/* ---------------------- first module - details about the acquisition ---------------------- */}
       <div className="space-y-6">
-        <h3 className="text-2xl font-bold">Detalles del Dispositivo</h3>
+
+        <HeaderText
+          title="Detalles Asociados"
+          description="Campos obligatorios"
+          icon="warn"
+        />
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <DateField
             name="purchase_date"

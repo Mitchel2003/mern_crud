@@ -1,16 +1,8 @@
-import { Control, UseFormRegister } from "react-hook-form";
+import { Control } from 'react-hook-form'
 import { ReactElement } from 'react';
 
 /*--------------------------------------------------Component--------------------------------------------------*/
-{/*---------------------- Typing standard ----------------------*/ }
-export interface LogoImageFieldProps {//file (logo entity)
-  name: string
-  label: string
-  control: Control<any>
-  className?: string
-}
-
-{/*---------------------- Inputs ----------------------*/ }
+{/*---------------------- Fields ----------------------*/ }
 export interface FieldProps {//standard with type changeable
   name: string;
   label?: string;
@@ -32,10 +24,10 @@ export interface AreaFieldProps {//type area (textArea)
   placeholder?: string;
 }
 export interface CheckboxFieldProps {//type checkbox
-  name: string;
   label: string;
   control: Control<any>;
   options: string[];
+  isMultiple?: boolean;
 }
 export interface DateFieldProps {//type date (calendar)
   name: string;
@@ -51,16 +43,16 @@ export interface ImageFieldProps {//type file (image equipment)
 
 {/*---------------------- Cards ----------------------*/ }
 //to cards reusables
-export interface CustomFieldProps {
+export interface CardFieldProps {
   name: string;
   label: string;
   placeholder?: string;
   component: ReactElement;
 }
-export interface IterableCardCustomProps {
+export interface IterableCardFieldProps {
   name: string;
   control: Control<any>;
-  fields: CustomFieldProps[];
+  fields: CardFieldProps[];
   titleButton?: string;
   limit?: number;
 }
@@ -165,32 +157,3 @@ export type EngineerProps = {
   engineer_image: Image;
 }
 /* --------------------------------------------------------------------------------------------------------- */
-
-/*--------------------------------------------------Temp--------------------------------------------------*/
-export type FormData = {
-  representative: {
-    name: string
-    city: string
-    phone: string
-  }
-  suppliers: {
-    name: string
-    city: string
-    phone: string
-    type: 'distributor' | 'manufacturer'
-  }[]
-}
-
-export type InputFieldProps = {
-  label: string
-  name: string
-  register: UseFormRegister<FormData>
-  placeholder: string
-}
-
-export type SupplierCardProps = {
-  index: number
-  control: Control<FormData>
-  register: UseFormRegister<FormData>
-  remove: (index: number) => void
-}

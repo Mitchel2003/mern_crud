@@ -1,10 +1,10 @@
-import { FormControl, FormField, FormItem, FormLabel } from "#/ui/form"
-import { Button } from "#/ui/button"
+import { FormControl, FormField, FormItem, FormLabel } from '#/ui/form'
+import { Button } from '#/ui/button'
 
-import { ImageFieldProps } from "@/interfaces/form.interface"
-import { useController } from "react-hook-form"
-import useCallback from "@/hooks/useCallback"
-import { Camera, X } from "lucide-react"
+import { ImageFieldProps } from '@/interfaces/form.interface'
+import { useController } from 'react-hook-form'
+import useCallback from '@/hooks/useCallback'
+import { Camera, X } from 'lucide-react'
 import { useState } from 'react'
 
 const ImageField = ({ name, label, control }: ImageFieldProps) => {

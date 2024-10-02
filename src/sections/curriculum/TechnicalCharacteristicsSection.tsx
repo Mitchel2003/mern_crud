@@ -1,7 +1,8 @@
 import { TechnicalCharacteristicsProps } from "@/interfaces/form.interface";
 
+import InputField from "#/curriculum/fields/Input";
+import HeaderText from "#/curriculum/reusables/HeaderText";
 import { useForm, FormProvider } from "react-hook-form";
-import InputField from "#/curriculum/Field";
 
 const TechnicalCharacteristicsSection = () => {
   const methods = useForm<TechnicalCharacteristicsProps>()
@@ -10,8 +11,13 @@ const TechnicalCharacteristicsSection = () => {
     <FormProvider {...methods}>
       <div className="space-y-6">
 
-        <h3 className="text-2xl font-bold">Características Técnicas</h3>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <HeaderText
+          icon="info"
+          to="section"
+          title="Características Técnicas"
+          description="Campos opcionales"
+        />
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
             name="voltage"
             label="Voltaje"
@@ -32,7 +38,7 @@ const TechnicalCharacteristicsSection = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
             name="frequency"
             label="Frecuencia"
@@ -53,7 +59,7 @@ const TechnicalCharacteristicsSection = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
             name="speed"
             label="Velocidad"
@@ -61,23 +67,25 @@ const TechnicalCharacteristicsSection = () => {
             placeholder="Velocidad"
           />
           <InputField
-            name="temperature"
-            label="Temp (C°)"
-            control={methods.control}
-            placeholder="Temp (C°)"
-          />
-          <InputField
-            name="weight"
-            label="Peso (kg)"
-            control={methods.control}
-            placeholder="Peso (kg)"
-          />
-          <InputField
             name="humidity"
             label="Humedad"
             control={methods.control}
             placeholder="Humedad"
           />
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <InputField
+              name="temperature"
+              label="Temp (C°)"
+              control={methods.control}
+              placeholder="Temp (C°)"
+            />
+            <InputField
+              name="weight"
+              label="Peso (kg)"
+              control={methods.control}
+              placeholder="Peso (kg)"
+            />
+          </div>
         </div>
 
       </div>
