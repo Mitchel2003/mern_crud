@@ -1,6 +1,6 @@
-import Footer from '@/components/login/Footer';
-import Header from '@/components/login/Header';
-import Form from '@/components/login/Form';
+// import Footer from '#/login/Footer';
+// import Header from '#/login/Header';
+// import Form from '#/login/Form';
 import { Card } from '#/ui/card';
 
 import { useThemeContext } from "@/context/ThemeContext";
@@ -26,9 +26,9 @@ const Login = () => {
           : 'bg-white hover:shadow-purple-500/60'
         }`}
       >
-        <Header theme={theme} />
+        {/* <Header theme={theme} />
         <Form theme={theme} />
-        <Footer theme={theme} />
+        <Footer theme={theme} /> */}
       </Card>
     </div>
   )
