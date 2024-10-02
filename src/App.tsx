@@ -8,7 +8,7 @@ import RootLayout from "@/layouts/Root";
 
 import TaskForm from "@/pages/TaskForm";
 import Profile from "@/pages/Profile";
-import Tasks from "@/pages/Tasks";
+// import Tasks from "@/pages/Tasks";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -29,7 +29,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/task/:id" element={<TaskForm />} />
-                  <Route path="/tasks" element={<Tasks />} />
+                  {/* <Route path="/tasks" element={<Tasks />} /> */}
                 </Route>
               </Route>
             </Routes>
