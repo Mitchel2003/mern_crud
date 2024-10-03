@@ -1,5 +1,5 @@
+import HeaderText from "#/curriculum/reusables/HeaderText"
 import AreaField from "#/curriculum/fields/Area"
-import HeaderText from "@/components/curriculum/reusables/HeaderText"
 
 import { CharacteristicsProps } from "@/interfaces/form.interface"
 import { useForm } from "react-hook-form"

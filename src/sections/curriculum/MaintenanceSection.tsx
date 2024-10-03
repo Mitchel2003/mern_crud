@@ -1,6 +1,6 @@
-import CheckboxField from "@/components/curriculum/fields/Checkbox";
-import SelectField from "@/components/curriculum/fields/Select";
-import HeaderText from "@/components/curriculum/reusables/HeaderText";
+import HeaderText from "#/curriculum/reusables/HeaderText";
+import CheckboxField from "#/curriculum/fields/Checkbox";
+import SelectField from "#/curriculum/fields/Select";
 
 import { MaintenanceProps } from "@/interfaces/form.interface";
 import { FormProvider, useForm } from "react-hook-form";

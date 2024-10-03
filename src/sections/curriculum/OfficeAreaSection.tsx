@@ -1,6 +1,7 @@
-import { OfficeAreaProps } from "@/interfaces/form.interface";
-import SelectField from "@/components/curriculum/fields/Select";
-import { useForm, FormProvider } from "react-hook-form";
+import { OfficeAreaProps } from "@/interfaces/form.interface"
+import { useForm, FormProvider } from "react-hook-form"
+
+import SelectField from "#/curriculum/fields/Select"
 
 const OfficeAreaSection = () => {
   const methods = useForm<OfficeAreaProps>();

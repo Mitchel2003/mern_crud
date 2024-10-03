@@ -15,7 +15,7 @@ const EngineerServiceSection = () => {
         to="section"
         icon="info"
         title="Ingeniero de Servicio"
-        description="Ingeniero y entidad asociada"
+        description="Logotipo de la entidad asociada"
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
