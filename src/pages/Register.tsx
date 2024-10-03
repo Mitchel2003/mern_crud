@@ -1,4 +1,4 @@
-import Curriculum from "@/sections/Curriculum"
+import Curriculum from "@/sections/curriculum"
 
 const Register = () => {
   return (
@@ -6,5 +6,4 @@ const Register = () => {
   )
 }
 
-//CV - Curriculum Vitae
 export default Register

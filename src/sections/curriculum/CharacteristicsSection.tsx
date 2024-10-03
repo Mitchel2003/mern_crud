@@ -1,15 +1,18 @@
-import HeaderText from "#/curriculum/reusables/HeaderText"
+import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
 import AreaField from "#/curriculum/fields/Area"
-
-import { CharacteristicsProps } from "@/interfaces/form.interface"
 import { useForm } from "react-hook-form"
+
+type CharacteristicsProps = {
+  characteristics: string;
+  recommendations_manufacturer: string;
+}
 
 const CharacteristicsSection = () => {
   const form = useForm<CharacteristicsProps>()
   return (
     <div className="space-y-6">
 
-      <HeaderText
+      <HeaderCustom
         to="section"
         title="Características"
         description="Maximo 100 caracteres"

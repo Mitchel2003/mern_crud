@@ -1,22 +1,22 @@
 import { InfoIcon, SirenIcon, TriangleAlertIcon } from "lucide-react"
 import { FormLabel } from "#/ui/form"
 
-type HeaderTextProps = {
+type HeaderCustomProps = {
   to: 'section' | 'component';
   title: string;
   description?: string;
   icon?: 'info' | 'warn' | 'alert';
 }
 /**
- * HeaderText is a component that displays a header text with an optional description and an icon.
+ * This component is a "Header" that use a title at left side and an optional description with respective icon.
  * It can be used as a section header or as a component header.
- * @param {HeaderTextProps} props - The properties of the component.
+ * @param {HeaderCustomProps} props - The properties of the component.
  * @param {string} props.to - Correspond where the header will be placed, it can be 'section' or 'component'.
  * @param {string} props.title - Corresponds to the label of the field.
  * @param {string} props.description - Its posicionated at the right of the title and are acompanied by an icon.
  * @param {string} props.icon - The icon that acompanie the description of the header, it can be ('info' | 'warn' | 'alert').
  */
-const HeaderText = ({ to = 'section', title, description, icon }: HeaderTextProps) => {
+const HeaderCustom = ({ to = 'section', title, description, icon }: HeaderCustomProps) => {
   return (
     <div className="flex items-center justify-between">
 
@@ -44,4 +44,4 @@ const HeaderText = ({ to = 'section', title, description, icon }: HeaderTextProp
     </div>
   )
 }
-export default HeaderText
+export default HeaderCustom

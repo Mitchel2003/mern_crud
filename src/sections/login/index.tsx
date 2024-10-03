@@ -1,6 +1,6 @@
-import Header from "./login/Header"
-import Footer from "./login/Footer"
-import Form from "./login/Form"
+import HeaderText from "#/login/reusables/HeaderText"
+import Footer from "./Footer"
+import Form from "./Form"
 
 import { Card } from "#/ui/card"
 import { LoginComponentsProps } from "@/interfaces/props.interface"
@@ -13,7 +13,11 @@ const Login = ({ theme }: LoginComponentsProps) => {
         : 'bg-white hover:shadow-purple-500/60'
       }`}
     >
-      <Header theme={theme} />
+      <HeaderText
+        title="Bienvenido"
+        description="Ingresa tus credenciales para acceder"
+        theme={theme}
+      />
       <Form theme={theme} />
       <Footer theme={theme} />
     </Card >

@@ -1,18 +1,26 @@
-import HeaderText from '#/curriculum/reusables/HeaderText'
+import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import ImageField from '#/curriculum/fields/Image'
 import InputField from '#/curriculum/fields/Input'
-
-import { GeneralDataProps } from '@/interfaces/form.interface'
 import { useForm, FormProvider } from 'react-hook-form'
 
+type Image = string | null
+type BasicDataProps = {
+  name: string;
+  brand: string;
+  model: string;
+  serie: string;
+  healthRecord: string;
+  equipmentImage: Image;
+}
+
 const BasicDataSection = () => {
-  const methods = useForm<GeneralDataProps>();
+  const methods = useForm<BasicDataProps>();
 
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
 
-        <HeaderText
+        <HeaderCustom
           to="section"
           icon="info"
           title="Información General"

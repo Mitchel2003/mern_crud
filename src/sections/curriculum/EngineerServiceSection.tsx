@@ -1,9 +1,14 @@
-import HeaderText from '#/curriculum/reusables/HeaderText'
+import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import LogoImage from '#/curriculum/reusables/LogoImage'
 import InputField from '#/curriculum/fields/Input'
-
-import { EngineerProps } from '@/interfaces/form.interface'
 import { useForm } from 'react-hook-form'
+
+type Image = string | null
+type EngineerProps = {
+  service_engineer: string;
+  invima_registration: string;
+  engineer_image: Image;
+}
 
 const EngineerServiceSection = () => {
   const form = useForm<EngineerProps>()
@@ -11,7 +16,7 @@ const EngineerServiceSection = () => {
   return (
     <div className="space-y-6">
 
-      <HeaderText
+      <HeaderCustom
         to="section"
         icon="info"
         title="Ingeniero de Servicio"

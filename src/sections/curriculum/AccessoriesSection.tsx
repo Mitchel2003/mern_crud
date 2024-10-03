@@ -1,9 +1,18 @@
 import IterableCustomCard from "#/curriculum/fields/IterableCard"
-import HeaderText from "#/curriculum/reusables/HeaderText"
+import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
 import InputField from "#/curriculum/fields/Input"
 
-import { AccessoriesProps, CardFieldProps } from "@/interfaces/form.interface"
+import { CardFieldProps } from "@/interfaces/form.interface"
 import { FormProvider, useForm } from "react-hook-form"
+
+type AccessoriesProps = {
+  accessories: {
+    name: string;
+    type: string;
+    series: string;
+    model: string;
+  }[];
+}
 
 const AccessoriesSection = () => {
   const methods = useForm<AccessoriesProps>()
@@ -19,7 +28,7 @@ const AccessoriesSection = () => {
     <FormProvider {...methods}>
 
       <div className="space-y-6">
-        <HeaderText
+        <HeaderCustom
           to="section"
           title="Accesorios"
           description="Máximo 10 accesorios"

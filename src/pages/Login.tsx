@@ -3,16 +3,16 @@ import { useAuthContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 
-import LoginSection from "@/sections/Login"
+import LoginSection from "@/sections/login"
 
 const Login = () => {
-  const { theme } = useThemeContext();
-  const { isAuth } = useAuthContext();
-  const navigate = useNavigate();
+  const { theme } = useThemeContext()
+  const { isAuth } = useAuthContext()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (isAuth) navigate('/tasks');
-  }, [isAuth, navigate]);
+    if (isAuth) navigate('/tasks')
+  }, [isAuth, navigate])
 
   return (
     <div className="w-full max-w-md relative">

@@ -1,11 +1,31 @@
 import IterableCustomCard from '#/curriculum/fields/IterableCard'
-import HeaderText from '#/curriculum/reusables/HeaderText'
+import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import SelectField from '#/curriculum/fields/Select'
 import InputField from '#/curriculum/fields/Input'
 import DateField from '#/curriculum/fields/Date'
 
-import { DetailsEquipmentProps, CardFieldProps } from '@/interfaces/form.interface'
+import { CardFieldProps } from '@/interfaces/form.interface'
 import { FormProvider, useForm } from 'react-hook-form'
+
+type DetailsEquipmentProps = {
+  //first module
+  purchase_date: Date;
+  installation_date: Date;
+  start_operation_date: Date;
+  //second module
+  price: number;
+  type_acquisition: string;
+  warranty: string;
+  //third module
+  representative: string;
+  city_representative: string;
+  phone_representative: string;
+
+  //distributor
+  distributor: string;
+  city_distributor: string;
+  phone_distributor: string;
+}
 
 const DetailsEquipmentSection = () => {
   const methods = useForm<DetailsEquipmentProps>();
@@ -21,7 +41,7 @@ const DetailsEquipmentSection = () => {
       {/* ---------------------- first module - details about the acquisition ---------------------- */}
       <div className="space-y-6">
 
-        <HeaderText
+        <HeaderCustom
           to="section"
           icon="warn"
           title="Detalles Asociados"

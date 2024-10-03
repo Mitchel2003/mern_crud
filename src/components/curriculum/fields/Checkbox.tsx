@@ -1,5 +1,5 @@
 import { FormField, FormItem, FormControl } from '#/ui/form'
-import HeaderText from '#/curriculum/reusables/HeaderText'
+import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import { Checkbox } from '#/ui/checkbox'
 
 import { CheckboxFieldProps } from '@/interfaces/form.interface'
@@ -26,14 +26,14 @@ const CheckboxField = ({ label, control, options, isMultiple = false }: Checkbox
 
           {/* Header of component */}
           {isMultiple ? (
-            <HeaderText
+            <HeaderCustom
               icon="info"
               to="component"
               title={label}
               description="Seleccion multiple"
             />
           ) : (
-            <HeaderText
+            <HeaderCustom
               to="component"
               title={label}
             />

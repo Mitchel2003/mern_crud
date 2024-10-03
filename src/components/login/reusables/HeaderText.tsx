@@ -1,10 +1,14 @@
-import { CardHeader, CardTitle, CardDescription } from "#/ui/card";
-import { LoginComponentsProps } from '@/interfaces/props.interface';
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 
-const Header = ({ theme }: LoginComponentsProps) => {
+interface HeaderTextProps extends ThemeContextProps {
+  title: string,
+  description: string
+}
+
+const HeaderText = ({ title, description, theme }: HeaderTextProps) => {
   return (
     <CardHeader className="space-y-1">
-
       <CardTitle
         className={`text-2xl font-bold text-center
           ${theme === 'dark'
@@ -12,7 +16,7 @@ const Header = ({ theme }: LoginComponentsProps) => {
             : 'text-gray-900'
           }`}
       >
-        Bienvenido
+        {title}
       </CardTitle>
 
       <CardDescription
@@ -22,11 +26,10 @@ const Header = ({ theme }: LoginComponentsProps) => {
             : 'text-gray-500'
           }`}
       >
-        Ingresa tus credenciales para acceder
+        {description}
       </CardDescription>
-
     </CardHeader>
   )
 }
 
-export default Header
+export default HeaderText

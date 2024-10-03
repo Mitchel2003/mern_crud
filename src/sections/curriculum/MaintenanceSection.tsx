@@ -1,9 +1,14 @@
-import HeaderText from "#/curriculum/reusables/HeaderText";
-import CheckboxField from "#/curriculum/fields/Checkbox";
-import SelectField from "#/curriculum/fields/Select";
+import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
+import CheckboxField from "#/curriculum/fields/Checkbox"
+import SelectField from "#/curriculum/fields/Select"
+import { FormProvider, useForm } from "react-hook-form"
 
-import { MaintenanceProps } from "@/interfaces/form.interface";
-import { FormProvider, useForm } from "react-hook-form";
+type MaintenanceProps = {
+  maintenance: string;
+  type_maintenance: string[];
+  frequency_maintenance: string;
+  manual: string[];
+}
 
 const MaintenanceSection = () => {
   const methods = useForm<MaintenanceProps>()
@@ -12,7 +17,7 @@ const MaintenanceSection = () => {
     <FormProvider {...methods}>
       <div className="space-y-6">
 
-        <HeaderText
+        <HeaderCustom
           to="section"
           title="Mantenimiento"
         />

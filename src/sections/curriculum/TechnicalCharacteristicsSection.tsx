@@ -1,8 +1,19 @@
-import { TechnicalCharacteristicsProps } from "@/interfaces/form.interface";
-
 import InputField from "#/curriculum/fields/Input";
-import HeaderText from "#/curriculum/reusables/HeaderText";
+import HeaderCustom from "#/curriculum/reusables/HeaderCustom";
 import { useForm, FormProvider } from "react-hook-form";
+
+type TechnicalCharacteristicsProps = {
+  voltage: number;
+  amperage: number;
+  power: number;
+  frequency: number;
+  capacity: number;
+  pressure: number;
+  speed: number;
+  temperature: number;
+  weight: number;
+  humidity: number;
+}
 
 const TechnicalCharacteristicsSection = () => {
   const methods = useForm<TechnicalCharacteristicsProps>()
@@ -11,7 +22,7 @@ const TechnicalCharacteristicsSection = () => {
     <FormProvider {...methods}>
       <div className="space-y-6">
 
-        <HeaderText
+        <HeaderCustom
           icon="info"
           to="section"
           title="Características Técnicas"

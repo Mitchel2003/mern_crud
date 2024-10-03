@@ -1,19 +1,27 @@
-import HeaderText from "#/curriculum/reusables/HeaderText"
+import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
 import CheckboxField from "#/curriculum/fields/Checkbox"
 import SelectField from "#/curriculum/fields/Select"
-
-import { EquipmentProps } from "@/interfaces/form.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
+type EquipmentClassProps = {
+  //first module
+  type_device: string;
+  classification_by_use: string;
+  classification_biomedical: string;
+  //second module
+  technology_predominant: string;
+  risk: string;
+}
+
 const EquipmentClassificationSection = () => {
-  const methods = useForm<EquipmentProps>()
+  const methods = useForm<EquipmentClassProps>()
 
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
 
         {/* Classification */}
-        <HeaderText
+        <HeaderCustom
           to="section"
           icon="warn"
           title="Clasificación del Equipo"
