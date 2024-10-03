@@ -58,7 +58,6 @@ const EquipmentClassificationSection = () => {
           <div className="col-span-8">
             <CheckboxField
               isMultiple={true}
-              name="technology_predominant"
               label="Tecnología Predominante"
               control={methods.control}
               options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
