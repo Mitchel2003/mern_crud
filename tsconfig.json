@@ -8,9 +8,6 @@
   /* shadcn/ui */
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "#/*": ["./src/components/*"]
-    }
+    "paths": { "@/*": ["./src/*"] }
   }
 }
