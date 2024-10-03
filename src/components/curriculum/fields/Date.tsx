@@ -3,12 +3,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover'
 import { Calendar } from '#/ui/calendar'
 import { Button } from '#/ui/button'
 
-import { DateFieldProps } from '@/interfaces/form.interface'
+import { ControlProps } from '@/interfaces/form.interface'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
 
-const DateField = ({ name, label, control, placeholder }: DateFieldProps) => {
+interface DateFieldProps extends ControlProps {
+  name: string;
+  label: string;
+  placeholder?: string;
+}
 
+const DateField = ({ name, label, control, placeholder }: DateFieldProps) => {
   return (
     <FormField
       name={name}

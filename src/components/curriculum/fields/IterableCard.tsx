@@ -2,10 +2,17 @@ import { FormItem, FormLabel, FormControl } from '#/ui/form'
 import { Card, CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 
-import { IterableCardFieldProps } from '@/interfaces/form.interface'
+import { CardFieldProps, ControlProps } from '@/interfaces/form.interface'
 import { useFieldArray } from 'react-hook-form'
 import { PlusCircle, X } from 'lucide-react'
 import React from 'react'
+
+interface IterableCardFieldProps extends ControlProps {
+  name: string;
+  fields: CardFieldProps[];
+  titleButton?: string;
+  limit?: number;
+}
 
 const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCardFieldProps) => {
   const { fields: items, append, remove } = useFieldArray({ control, name })

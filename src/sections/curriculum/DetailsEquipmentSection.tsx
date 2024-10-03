@@ -4,36 +4,19 @@ import SelectField from '#/curriculum/fields/Select'
 import InputField from '#/curriculum/fields/Input'
 import DateField from '#/curriculum/fields/Date'
 
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { CardFieldProps } from '@/interfaces/form.interface'
 import { FormProvider, useForm } from 'react-hook-form'
 
-type DetailsEquipmentProps = {
-  //first module
-  purchase_date: Date;
-  installation_date: Date;
-  start_operation_date: Date;
-  //second module
-  price: number;
-  type_acquisition: string;
-  warranty: string;
-  //third module
-  representative: string;
-  city_representative: string;
-  phone_representative: string;
+interface DetailsEquipmentProps extends ThemeContextProps { }
 
-  //distributor
-  distributor: string;
-  city_distributor: string;
-  phone_distributor: string;
-}
-
-const DetailsEquipmentSection = () => {
+const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const methods = useForm<DetailsEquipmentProps>();
 
   const supplierFields: CardFieldProps[] = [
-    { name: "name", label: "Nombre", component: <InputField control={methods.control} name="name" /> },
-    { name: "city", label: "Ciudad", component: <InputField control={methods.control} name="city" /> },
-    { name: "phone", label: "Teléfono", component: <InputField control={methods.control} name="phone" /> },
+    { name: "name", label: "Nombre", component: <InputField control={methods.control} name="name" theme={theme} /> },
+    { name: "city", label: "Ciudad", component: <InputField control={methods.control} name="city" theme={theme} /> },
+    { name: "phone", label: "Teléfono", component: <InputField control={methods.control} name="phone" theme={theme} /> },
   ]
 
   return (
@@ -88,6 +71,7 @@ const DetailsEquipmentSection = () => {
           <InputField
             name="price"
             label="Valor"
+            theme={theme}
             type="number"
             control={methods.control}
             placeholder="Valor del equipo"
@@ -95,8 +79,9 @@ const DetailsEquipmentSection = () => {
           <InputField
             name="year_manufacture"
             label="Año de fabricación"
-            control={methods.control}
+            theme={theme}
             type="number"
+            control={methods.control}
             placeholder="Año de fabricación del equipo"
           />
         </div>

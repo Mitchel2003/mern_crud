@@ -1,11 +1,16 @@
 import { FormControl, FormField, FormItem, FormLabel } from '#/ui/form'
 import { Button } from '#/ui/button'
 
-import { ImageFieldProps } from '@/interfaces/form.interface'
+import { ControlProps } from '@/interfaces/form.interface'
 import { useController } from 'react-hook-form'
 import useCallback from '@/hooks/useCallback'
 import { Camera, X } from 'lucide-react'
 import { useState } from 'react'
+
+interface ImageFieldProps extends ControlProps {
+  name: string;
+  label: string;
+}
 
 const ImageField = ({ name, label, control }: ImageFieldProps) => {
   const [preview, setPreview] = useState<string | null>(null)

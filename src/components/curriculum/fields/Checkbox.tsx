@@ -2,7 +2,13 @@ import { FormField, FormItem, FormControl } from '#/ui/form'
 import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import { Checkbox } from '#/ui/checkbox'
 
-import { CheckboxFieldProps } from '@/interfaces/form.interface'
+import { ControlProps } from '@/interfaces/form.interface'
+
+interface CheckboxFieldProps extends ControlProps {
+  label: string;
+  options: string[];
+  isMultiple?: boolean;
+}
 
 /**
  * Its a component that receive a list of options and display a checkbox for each option.

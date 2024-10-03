@@ -1,6 +1,13 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select";
 import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
-import { SelectFieldProps } from "@/interfaces/form.interface";
+import { ControlProps } from "@/interfaces/form.interface";
+
+interface SelectFieldProps extends ControlProps {
+  name: string;
+  label?: string;
+  options: string[];
+  placeholder?: string;
+}
 
 const SelectField = ({ name, label, control, options, placeholder }: SelectFieldProps) => {
   return (

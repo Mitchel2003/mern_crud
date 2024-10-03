@@ -14,8 +14,10 @@ import BasicDataSection from "./BasicDataSection"
 
 import { useForm } from "react-hook-form"
 import { Form } from "#/ui/form"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 
-const Curriculum = () => {
+interface CurriculumProps extends ThemeContextProps { }
+const Curriculum = ({ theme }: CurriculumProps) => {
   const form = useForm()
 
   return (
@@ -30,11 +32,11 @@ const Curriculum = () => {
           <CardContent className="space-y-8 pt-6">
             <CurriculumSection section={<OfficeAreaSection />} />
             <CurriculumSection section={<BasicDataSection />} />
-            <CurriculumSection section={<DetailsEquipmentSection />} />
+            <CurriculumSection section={<DetailsEquipmentSection theme={theme} />} />
             <CurriculumSection section={<EquipmentClassificationSection />} />
             <CurriculumSection section={<TechnicalCharacteristicsSection />} />
             <CurriculumSection section={<MaintenanceSection />} />
-            <CurriculumSection section={<AccessoriesSection />} />
+            <CurriculumSection section={<AccessoriesSection theme={theme} />} />
             <CurriculumSection section={<CharacteristicsSection />} />
             <CurriculumSection section={<EngineerServiceSection />} />
           </CardContent>
