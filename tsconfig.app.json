@@ -28,5 +28,8 @@
       "#/*": ["./src/components/*"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/components"
+  ]
 }

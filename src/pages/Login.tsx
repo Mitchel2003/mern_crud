@@ -1,12 +1,9 @@
-import Footer from '@/components/login/Footer'
-import Header from '@/components/login/Header'
-import { Card } from '@/components/ui/card'
-import Form from '@/components/login/Form'
-
 import { useThemeContext } from "@/context/ThemeContext"
 import { useAuthContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
+
+import LoginSection from "@/sections/Login"
 
 const Login = () => {
   const { theme } = useThemeContext();
@@ -19,17 +16,7 @@ const Login = () => {
 
   return (
     <div className="w-full max-w-md relative">
-      {/* card */}
-      <Card className={`relative w-full transition-all duration-300 backdrop-filter backdrop-blur-lg
-        ${theme === 'dark'
-          ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-          : 'bg-white hover:shadow-purple-500/60'
-        }`}
-      >
-        <Header theme={theme} />
-        <Form theme={theme} />
-        <Footer theme={theme} />
-      </Card>
+      <LoginSection theme={theme} />
     </div>
   )
 }
