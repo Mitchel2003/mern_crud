@@ -13,9 +13,10 @@ const BasicDataSection = () => {
       <div className="space-y-6">
 
         <HeaderText
+          to="section"
+          icon="info"
           title="Información General"
           description="Propocione los datos basicos del equipo"
-          icon="info"
         />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">

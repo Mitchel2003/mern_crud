@@ -22,9 +22,10 @@ const DetailsEquipmentSection = () => {
       <div className="space-y-6">
 
         <HeaderText
+          to="section"
+          icon="warn"
           title="Detalles Asociados"
           description="Campos obligatorios"
-          icon="warn"
         />
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <DateField
