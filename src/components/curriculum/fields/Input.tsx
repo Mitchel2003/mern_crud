@@ -7,7 +7,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '#/ui/f
 import { Input } from '#/ui/input'
 
 interface InputFieldProps extends ControlProps, ThemeContextProps {
-  error?: string;
+  name: string;
   label: string;
   icon?: LucideIcon;
   placeholder?: string;
@@ -18,7 +18,7 @@ interface InputFieldProps extends ControlProps, ThemeContextProps {
  * Allow us use a input field type generic, represent a basic input, with a label and placeholder optional.
  * This is a component reusable 
  * @param {InputFieldProps} props - The properties of the component
- * @param {string} props.error - Is optional and represent an error to the input field in context; this is renderized
+ * @param {string} props.name - Its to define the property name of the FormField
  * @param {string} props.theme - Correspond to the theme in context; could be "light" or "dark"
  * @param {string} props.label - Its a label according to the input
  * @param {Control<any>} props.control - Represent the useForm controller
@@ -28,7 +28,7 @@ interface InputFieldProps extends ControlProps, ThemeContextProps {
  * @returns 
  */
 const InputField = ({
-  error,
+  name,
   theme,
   label,
   control,
@@ -36,15 +36,13 @@ const InputField = ({
   placeholder,
   type = "text"
 }: InputFieldProps) => {
-
   const [showPassword, setShowPassword] = useState(false)
-  const name = label.toLowerCase().replace(/ /g, '_')
 
   return (
     <FormField
       name={name}
       control={control}
-      render={({ field }) => (
+      render={({ field, fieldState: { error } }) => (
         <FormItem>
           {/* Title of input */}
           <FormLabel className={`${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-800'}`}>
@@ -88,7 +86,7 @@ const InputField = ({
           </FormControl>
 
           {/* render error */}
-          {error && <FormMessage>{error}</FormMessage>}
+          {error && <FormMessage>{error.message}</FormMessage>}
         </FormItem>
       )}
     />

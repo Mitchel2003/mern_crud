@@ -9,7 +9,7 @@ import { LogIn, Lock, UserPlus, ChevronRight } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 
 const Form = ({ theme }: LoginComponentsProps) => {
-  const { control, formState: { errors } } = useFormContext<LoginFormProps>()
+  const { control } = useFormContext<LoginFormProps>()
 
   return (
     <CardContent className="space-y-6">
@@ -22,9 +22,7 @@ const Form = ({ theme }: LoginComponentsProps) => {
         placeholder="@example.com"
         icon={LogIn}
         theme={theme}
-        error={errors.email?.message}
       />
-      {/* Password section */}
       <InputField
         name="password"
         type="password"
@@ -32,7 +30,6 @@ const Form = ({ theme }: LoginComponentsProps) => {
         control={control}
         icon={Lock}
         theme={theme}
-        error={errors.password?.message}
       />
       {/* Submit section */}
       <Button
@@ -45,6 +42,7 @@ const Form = ({ theme }: LoginComponentsProps) => {
       >
         Iniciar sesión <ChevronRight className="ml-2 h-4 w-4" />
       </Button>
+
       {/* Register section */}
       <Button
         type="button"
