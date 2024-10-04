@@ -3,20 +3,18 @@ import LogoImage from '#/curriculum/reusables/LogoImage'
 import InputField from '#/curriculum/fields/Input'
 import { useForm } from 'react-hook-form'
 
-type Image = string | null
-type EngineerProps = {
-  service_engineer: string;
-  invima_registration: string;
-  engineer_image: Image;
-}
+import { ThemeContextProps } from '@/interfaces/context.interface'
 
-const EngineerServiceSection = () => {
-  const form = useForm<EngineerProps>()
+interface EngineerServiceProps extends ThemeContextProps { }
+
+const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
+  const form = useForm<EngineerServiceProps>()
 
   return (
     <div className="space-y-6">
 
       <HeaderCustom
+        theme={theme}
         to="section"
         icon="info"
         title="Ingeniero de Servicio"
@@ -27,12 +25,14 @@ const EngineerServiceSection = () => {
 
         <div className="grid grid-cols-1 gap-2 col-span-1">
           <InputField
+            theme={theme}
             name="service_engineer"
             label="Ingeniero de Servicio"
             control={form.control}
             placeholder="Ingeniero responsable"
           />
           <InputField
+            theme={theme}
             name="invima_registration"
             label="Registro INVIMA"
             control={form.control}
@@ -41,6 +41,7 @@ const EngineerServiceSection = () => {
         </div>
 
         <LogoImage
+          theme={theme}
           name="logo_headquarter"
           control={form.control}
         />

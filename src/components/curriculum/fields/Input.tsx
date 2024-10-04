@@ -59,7 +59,7 @@ const InputField = ({
                 className={`${(type === 'email' || type === 'password') && 'pl-10'}
                   ${theme === 'dark'
                     ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
-                    : 'bg-white'
+                    : 'bg-white border-gray-300'
                   }`}
                 {...field}
               />

@@ -1,16 +1,13 @@
 import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
 import CheckboxField from "#/curriculum/fields/Checkbox"
 import SelectField from "#/curriculum/fields/Select"
+
+import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
-type MaintenanceProps = {
-  maintenance: string;
-  type_maintenance: string[];
-  frequency_maintenance: string;
-  manual: string[];
-}
+interface MaintenanceProps extends ThemeContextProps { }
 
-const MaintenanceSection = () => {
+const MaintenanceSection = ({ theme }: MaintenanceProps) => {
   const methods = useForm<MaintenanceProps>()
 
   return (
@@ -18,11 +15,13 @@ const MaintenanceSection = () => {
       <div className="space-y-6">
 
         <HeaderCustom
+          theme={theme}
           to="section"
           title="Mantenimiento"
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <SelectField
+            theme={theme}
             name="maintenance"
             control={methods.control}
             label="Mantenimiento"
@@ -30,6 +29,7 @@ const MaintenanceSection = () => {
             options={['Propio', 'Contratado']}
           />
           <CheckboxField
+            theme={theme}
             isMultiple={true}
             label="Tipo de Mantenimiento"
             control={methods.control}
@@ -39,6 +39,7 @@ const MaintenanceSection = () => {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <SelectField
+            theme={theme}
             name="frequency_maintenance"
             control={methods.control}
             label="Frecuencia de Mantenimiento"
@@ -46,6 +47,7 @@ const MaintenanceSection = () => {
             options={['3 meses', '4 meses', '6 meses', '12 meses']}
           />
           <CheckboxField
+            theme={theme}
             label="Manuales"
             control={methods.control}
             options={['servicio', 'componentes', 'usuario', 'despiece']}

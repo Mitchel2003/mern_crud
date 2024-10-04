@@ -14,19 +14,19 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
   const accessoriesFields: CardFieldProps[] = [
     {
       name: "name",
-      component: <InputField theme={theme} label="Nombre" control={methods.control} />
+      component: <InputField name="name" theme={theme} label="Nombre" control={methods.control} />
     },
     {
       name: "type",
-      component: <InputField theme={theme} label="Tipo" control={methods.control} />
+      component: <InputField name="type" theme={theme} label="Tipo" control={methods.control} />
     },
     {
       name: "series",
-      component: <InputField theme={theme} label="Serie" control={methods.control} />
+      component: <InputField name="series" theme={theme} label="Serie" control={methods.control} />
     },
     {
       name: "model",
-      component: <InputField theme={theme} label="Modelo" control={methods.control} />
+      component: <InputField name="model" theme={theme} label="Modelo" control={methods.control} />
     }
   ]
 
@@ -34,6 +34,7 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
     <FormProvider {...methods}>
       <div className="space-y-6">
         <HeaderCustom
+          theme={theme}
           to="section"
           icon="alert"
           title="Accesorios"
@@ -42,6 +43,7 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
 
         <IterableCard
           limit={10}
+          theme={theme}
           name="accessories"
           fields={accessoriesFields}
           control={methods.control}

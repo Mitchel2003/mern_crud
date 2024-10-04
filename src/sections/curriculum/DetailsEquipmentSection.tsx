@@ -14,17 +14,17 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const methods = useForm<DetailsEquipmentProps>();
 
   const supplierFields: CardFieldProps[] = [
-    {
+    {/* working here... */
       name: "name",
-      component: <InputField control={methods.control} label="Nombre" theme={theme} />
+      component: <InputField name="name" control={methods.control} label="Nombre" theme={theme} />
     },
     {
       name: "city",
-      component: <InputField control={methods.control} label="Ciudad" theme={theme} />
+      component: <InputField name="city" control={methods.control} label="Ciudad" theme={theme} />
     },
     {
       name: "phone",
-      component: <InputField control={methods.control} label="Teléfono" theme={theme} />
+      component: <InputField name="phone" control={methods.control} label="Teléfono" theme={theme} />
     }
   ]
 
@@ -34,6 +34,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
       <div className="space-y-6">
 
         <HeaderCustom
+          theme={theme}
           to="section"
           icon="warn"
           title="Detalles Asociados"
@@ -63,6 +64,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
             <SelectField
+              theme={theme}
               name="type_acquisition"
               label="Tipo de Adquisición"
               control={methods.control}
@@ -70,6 +72,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               placeholder="Seleccionar tipo"
             />
             <SelectField
+              theme={theme}
               name="warranty"
               label="Garantía"
               control={methods.control}
@@ -78,6 +81,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
           </div>
           <InputField
+            name="value"
             label="Valor"
             theme={theme}
             type="number"
@@ -85,6 +89,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             placeholder="Valor del equipo"
           />
           <InputField
+            name="manufacturing_year"
             label="Año de fabricación"
             theme={theme}
             type="number"
@@ -103,12 +108,14 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Representante</h3>
             <SelectField
+              theme={theme}
               name="representative"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar representante"
             />
             <IterableCustomCard
+              theme={theme}
               name="add-representative"
               control={methods.control}
               fields={supplierFields}
@@ -120,12 +127,14 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Proveedor</h3>
             <SelectField
+              theme={theme}
               name="provider"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar proveedor"
             />
             <IterableCustomCard
+              theme={theme}
               name="add-provider"
               titleButton="Nuevo proveedor"
               control={methods.control}
@@ -137,12 +146,14 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <h3 className="text-2xl font-medium">Fabricante</h3>
             <SelectField
+              theme={theme}
               name="manufacturer"
               control={methods.control}
               options={["N/A"]}
               placeholder="Seleccionar fabricante"
             />
             <IterableCustomCard
+              theme={theme}
               name="add-manufacturer"
               titleButton="Nuevo fabricante"
               control={methods.control}

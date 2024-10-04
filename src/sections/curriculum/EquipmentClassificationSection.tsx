@@ -2,18 +2,11 @@ import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
 import CheckboxField from "#/curriculum/fields/Checkbox"
 import SelectField from "#/curriculum/fields/Select"
 import { FormProvider, useForm } from "react-hook-form"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 
-type EquipmentClassProps = {
-  //first module
-  type_device: string;
-  classification_by_use: string;
-  classification_biomedical: string;
-  //second module
-  technology_predominant: string;
-  risk: string;
-}
+interface EquipmentClassProps extends ThemeContextProps { }
 
-const EquipmentClassificationSection = () => {
+const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
   const methods = useForm<EquipmentClassProps>()
 
   return (
@@ -24,28 +17,32 @@ const EquipmentClassificationSection = () => {
         <HeaderCustom
           to="section"
           icon="warn"
+          theme={theme}
           title="Clasificación del Equipo"
           description="Informacion sensible"
         />
 
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <SelectField
-            name="type_device"
+            theme={theme}
             control={methods.control}
             label="Tipo"
+            name="type_device"
             placeholder="Seleccionar tipo"
             options={['fijo', 'movil']}
           />
           <SelectField
-            name="classification_by_use"
+            theme={theme}
             control={methods.control}
+            name="classification_by_use"
             label="Clasificación por Uso"
             placeholder="Seleccionar clasificación"
             options={['medico', 'basico', 'apoyo']}
           />
           <SelectField
-            name="classification_biomedical"
+            theme={theme}
             control={methods.control}
+            name="classification_biomedical"
             label="Clasificación Biomédica"
             placeholder="Seleccionar clasificación"
             options={['diagnostico', 'tratamiento', 'prevencion', 'rehabilitacion', 'analisis']}
@@ -56,8 +53,9 @@ const EquipmentClassificationSection = () => {
         <div className="grid grid-cols-1 gap-2 md:grid-cols-12">
           <div className="col-span-4">
             <SelectField
-              name="risk"
+              theme={theme}
               control={methods.control}
+              name="risk"
               label="Riesgo"
               placeholder="Seleccionar riesgo"
               options={['muy_alto', 'alto', 'moderado', 'bajo']}
@@ -65,9 +63,10 @@ const EquipmentClassificationSection = () => {
           </div>
           <div className="col-span-8">
             <CheckboxField
+              theme={theme}
               isMultiple={true}
-              label="Tecnología Predominante"
               control={methods.control}
+              label="Tecnología Predominante"
               options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
             />
           </div>

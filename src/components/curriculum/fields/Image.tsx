@@ -1,18 +1,19 @@
 import { FormControl, FormField, FormItem, FormLabel } from '#/ui/form'
 import { Button } from '#/ui/button'
 
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { ControlProps } from '@/interfaces/form.interface'
 import { useController } from 'react-hook-form'
 import useCallback from '@/hooks/useCallback'
 import { Camera, X } from 'lucide-react'
 import { useState } from 'react'
 
-interface ImageFieldProps extends ControlProps {
+interface ImageFieldProps extends ControlProps, ThemeContextProps {
   name: string;
   label: string;
 }
 
-const ImageField = ({ name, label, control }: ImageFieldProps) => {
+const ImageField = ({ name, label, control, theme }: ImageFieldProps) => {
   const [preview, setPreview] = useState<string | null>(null)
   const { field } = useController({ name, control, defaultValue: null })
   const callback = useCallback({ field, setPreview })
@@ -27,8 +28,12 @@ const ImageField = ({ name, label, control }: ImageFieldProps) => {
           <FormControl>
             <div
               id={`container-${name}`}
-              className={`flex px-auto justify-center rounded-lg border border-dashed border-gray-900/25
+              className={`flex px-auto justify-center rounded-lg border border-dashed
                 ${preview ? 'py-[2vh]' : 'py-[6vh]'}
+                ${theme === 'dark'
+                  ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                  : 'bg-white border-gray-900/25'
+                }
               `}
             >
               {preview ? (

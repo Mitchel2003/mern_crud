@@ -2,9 +2,10 @@ import { FormField, FormItem, FormControl } from '#/ui/form'
 import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import { Checkbox } from '#/ui/checkbox'
 
+import { ThemeContextProps } from '@/interfaces/context.interface';
 import { ControlProps } from '@/interfaces/form.interface'
 
-interface CheckboxFieldProps extends ControlProps {
+interface CheckboxFieldProps extends ControlProps, ThemeContextProps {
   label: string;
   options: string[];
   isMultiple?: boolean;
@@ -19,7 +20,7 @@ interface CheckboxFieldProps extends ControlProps {
  * @param {string[]} props.options - Contains the list of options to display on differents checkboxes.
  * @param {boolean} props.isMultiple - Helps us to know if the field is a multiple selection, by default is false.
  */
-const CheckboxField = ({ label, control, options, isMultiple = false }: CheckboxFieldProps) => {
+const CheckboxField = ({ label, control, options, isMultiple = false, theme }: CheckboxFieldProps) => {
   // Convert the label to a name (replace spaces with underscores)
   const name = label.toLowerCase().replace(/ /g, '_');
 
@@ -33,6 +34,7 @@ const CheckboxField = ({ label, control, options, isMultiple = false }: Checkbox
           {/* Header of component */}
           {isMultiple ? (
             <HeaderCustom
+              theme={theme}
               icon="info"
               to="component"
               title={label}
@@ -40,6 +42,7 @@ const CheckboxField = ({ label, control, options, isMultiple = false }: Checkbox
             />
           ) : (
             <HeaderCustom
+              theme={theme}
               to="component"
               title={label}
             />

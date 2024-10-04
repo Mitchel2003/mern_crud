@@ -2,18 +2,11 @@ import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
 import ImageField from '#/curriculum/fields/Image'
 import InputField from '#/curriculum/fields/Input'
 import { useForm, FormProvider } from 'react-hook-form'
+import { ThemeContextProps } from '@/interfaces/context.interface'
 
-type Image = string | null
-type BasicDataProps = {
-  name: string;
-  brand: string;
-  model: string;
-  serie: string;
-  healthRecord: string;
-  equipmentImage: Image;
-}
+interface BasicDataProps extends ThemeContextProps { }
 
-const BasicDataSection = () => {
+const BasicDataSection = ({ theme }: BasicDataProps) => {
   const methods = useForm<BasicDataProps>();
 
   return (
@@ -37,6 +30,7 @@ const BasicDataSection = () => {
                 <InputField
                   name="name"
                   label="Nombre"
+                  theme={theme}
                   control={methods.control}
                   placeholder="Nombre del equipo"
                 />
@@ -44,24 +38,28 @@ const BasicDataSection = () => {
               <InputField
                 name="brand"
                 label="Marca"
+                theme={theme}
                 control={methods.control}
                 placeholder="Marca del equipo"
               />
               <InputField
                 name="model"
                 label="Modelo"
+                theme={theme}
                 control={methods.control}
                 placeholder="Modelo del equipo"
               />
               <InputField
                 name="serie"
                 label="Serie"
+                theme={theme}
                 control={methods.control}
                 placeholder="Número de serie"
               />
               <InputField
                 name="healthRecord"
                 label="Registro Sanitario"
+                theme={theme}
                 control={methods.control}
                 placeholder="Número de registro sanitario"
               />
@@ -70,6 +68,7 @@ const BasicDataSection = () => {
 
           <div className="md:col-span-3">
             <ImageField
+              theme={theme}
               name="equipmentImage"
               label="Imagen del Equipo"
               control={methods.control}

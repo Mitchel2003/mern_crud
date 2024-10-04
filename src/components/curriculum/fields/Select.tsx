@@ -1,15 +1,16 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select";
 import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
+import { ThemeContextProps } from "@/interfaces/context.interface";
 import { ControlProps } from "@/interfaces/form.interface";
 
-interface SelectFieldProps extends ControlProps {
+interface SelectFieldProps extends ControlProps, ThemeContextProps {
   name: string;
   label?: string;
   options: string[];
   placeholder?: string;
 }
 
-const SelectField = ({ name, label, control, options, placeholder }: SelectFieldProps) => {
+const SelectField = ({ name, label, control, options, placeholder, theme }: SelectFieldProps) => {
   return (
     <FormField
       name={name}
@@ -22,7 +23,12 @@ const SelectField = ({ name, label, control, options, placeholder }: SelectField
             defaultValue={field.value}
           >
             <FormControl>
-              <SelectTrigger className="bg-white">
+              <SelectTrigger className={`
+                ${theme === 'dark'
+                  ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                  : 'bg-white border-gray-300'
+                }`}
+              >
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

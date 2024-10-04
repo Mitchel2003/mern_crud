@@ -1,14 +1,16 @@
 import { FormField, FormItem, FormLabel, FormControl } from '#/ui/form'
-import { ControlProps } from '@/interfaces/form.interface'
 import { Textarea } from '#/ui/textarea'
 
-interface AreaFieldProps extends ControlProps {
+import { ThemeContextProps } from '@/interfaces/context.interface';
+import { ControlProps } from '@/interfaces/form.interface'
+
+interface AreaFieldProps extends ControlProps, ThemeContextProps {
   name: string;
   label: string;
   placeholder?: string;
 }
 
-const AreaField = ({ name, label, control, placeholder }: AreaFieldProps) => {
+const AreaField = ({ name, label, control, placeholder, theme }: AreaFieldProps) => {
   return (
     <FormField
       name={name}
@@ -19,7 +21,11 @@ const AreaField = ({ name, label, control, placeholder }: AreaFieldProps) => {
           <FormControl>
             <Textarea
               placeholder={placeholder}
-              className="bg-white min-h-[100px]"
+              className={`min-h-[100px]
+                ${theme === 'dark'
+                  ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                  : 'bg-white border-gray-300'
+                }`}
               {...field}
             />
           </FormControl>

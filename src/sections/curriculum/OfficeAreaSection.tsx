@@ -1,19 +1,17 @@
 import { useForm, FormProvider } from "react-hook-form"
 import SelectField from "#/curriculum/fields/Select"
+import { ThemeContextProps } from "@/interfaces/context.interface";
 
-type OfficeAreaProps = {
-  entity: string;
-  area: string;
-  office: string;
-}
+interface OfficeAreaProps extends ThemeContextProps { }
 
-const OfficeAreaSection = () => {
+const OfficeAreaSection = ({ theme }: OfficeAreaProps) => {
   const methods = useForm<OfficeAreaProps>();
 
   return (
     <FormProvider {...methods}>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <SelectField
+          theme={theme}
           name="entity"
           label="Entidad"
           control={methods.control}
@@ -21,6 +19,7 @@ const OfficeAreaSection = () => {
           placeholder="Seleccionar entidad"
         />
         <SelectField
+          theme={theme}
           name="area"
           label="Area"
           control={methods.control}
@@ -28,6 +27,7 @@ const OfficeAreaSection = () => {
           placeholder="Seleccionar área"
         />
         <SelectField
+          theme={theme}
           name="office"
           label="Consultorio"
           control={methods.control}

@@ -30,15 +30,15 @@ const Curriculum = ({ theme }: CurriculumProps) => {
           </CardHeader>
 
           <CardContent className="space-y-8 pt-6">
-            <CurriculumSection section={<OfficeAreaSection />} />
-            <CurriculumSection section={<BasicDataSection />} />
+            <CurriculumSection section={<OfficeAreaSection theme={theme} />} />
+            <CurriculumSection section={<BasicDataSection theme={theme} />} />
             <CurriculumSection section={<DetailsEquipmentSection theme={theme} />} />
-            <CurriculumSection section={<EquipmentClassificationSection />} />
-            <CurriculumSection section={<TechnicalCharacteristicsSection />} />
-            <CurriculumSection section={<MaintenanceSection />} />
+            <CurriculumSection section={<EquipmentClassificationSection theme={theme} />} />
+            <CurriculumSection section={<TechnicalCharacteristicsSection theme={theme} />} />
+            <CurriculumSection section={<MaintenanceSection theme={theme} />} />
             <CurriculumSection section={<AccessoriesSection theme={theme} />} />
-            <CurriculumSection section={<CharacteristicsSection />} />
-            <CurriculumSection section={<EngineerServiceSection />} />
+            <CurriculumSection section={<CharacteristicsSection theme={theme} />} />
+            <CurriculumSection section={<EngineerServiceSection theme={theme} />} />
           </CardContent>
 
           <CardFooter className="flex justify-between">

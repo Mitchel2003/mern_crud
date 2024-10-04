@@ -1,21 +1,11 @@
 import InputField from "#/curriculum/fields/Input";
 import HeaderCustom from "#/curriculum/reusables/HeaderCustom";
 import { useForm, FormProvider } from "react-hook-form";
+import { ThemeContextProps } from "@/interfaces/context.interface";
 
-type TechnicalCharacteristicsProps = {
-  voltage: number;
-  amperage: number;
-  power: number;
-  frequency: number;
-  capacity: number;
-  pressure: number;
-  speed: number;
-  temperature: number;
-  weight: number;
-  humidity: number;
-}
+interface TechnicalCharacteristicsProps extends ThemeContextProps { }
 
-const TechnicalCharacteristicsSection = () => {
+const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProps) => {
   const methods = useForm<TechnicalCharacteristicsProps>()
 
   return (
@@ -23,6 +13,7 @@ const TechnicalCharacteristicsSection = () => {
       <div className="space-y-6">
 
         <HeaderCustom
+          theme={theme}
           icon="info"
           to="section"
           title="Características Técnicas"
@@ -30,18 +21,21 @@ const TechnicalCharacteristicsSection = () => {
         />
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
+            theme={theme}
             name="voltage"
             label="Voltaje"
             control={methods.control}
             placeholder="Voltaje"
           />
           <InputField
+            theme={theme}
             name="amperage"
             label="Amperaje"
             control={methods.control}
             placeholder="Amperaje"
           />
           <InputField
+            theme={theme}
             name="power"
             label="Potencia"
             control={methods.control}
@@ -51,18 +45,21 @@ const TechnicalCharacteristicsSection = () => {
 
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
+            theme={theme}
             name="frequency"
             label="Frecuencia"
             control={methods.control}
             placeholder="Frecuencia"
           />
           <InputField
+            theme={theme}
             name="capacity"
             label="Capacidad"
             control={methods.control}
             placeholder="Capacidad"
           />
           <InputField
+            theme={theme}
             name="pressure"
             label="Presión (PSI)"
             control={methods.control}
@@ -72,12 +69,14 @@ const TechnicalCharacteristicsSection = () => {
 
         <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
           <InputField
+            theme={theme}
             name="speed"
             label="Velocidad"
             control={methods.control}
             placeholder="Velocidad"
           />
           <InputField
+            theme={theme}
             name="humidity"
             label="Humedad"
             control={methods.control}
@@ -85,12 +84,14 @@ const TechnicalCharacteristicsSection = () => {
           />
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
             <InputField
+              theme={theme}
               name="temperature"
               label="Temp (C°)"
               control={methods.control}
               placeholder="Temp (C°)"
             />
             <InputField
+              theme={theme}
               name="weight"
               label="Peso (kg)"
               control={methods.control}

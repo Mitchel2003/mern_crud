@@ -1,7 +1,8 @@
 import { InfoIcon, SirenIcon, TriangleAlertIcon } from "lucide-react"
 import { FormLabel } from "#/ui/form"
+import { ThemeContextProps } from "@/interfaces/context.interface";
 
-type HeaderCustomProps = {
+interface HeaderCustomProps extends ThemeContextProps {
   to: 'section' | 'component';
   title: string;
   description?: string;
@@ -16,19 +17,40 @@ type HeaderCustomProps = {
  * @param {string} props.description - Its posicionated at the right of the title and are acompanied by an icon.
  * @param {string} props.icon - The icon that acompanie the description of the header, it can be ('info' | 'warn' | 'alert').
  */
-const HeaderCustom = ({ to = 'section', title, description, icon }: HeaderCustomProps) => {
+const HeaderCustom = ({ to = 'section', title, description, icon, theme }: HeaderCustomProps) => {
   return (
     <div className="flex items-center justify-between">
 
-      {/* Header of section or component */}
-      {to === 'section'
-        ? <h3 className="text-2xl font-bold">{title}</h3>
-        : <FormLabel className="mt-2 mb-3">{title}</FormLabel>
-      }
+      {/* -------------------- Header of section or component -------------------- */}
+      {to === 'section' ? (
+        <h3 className={`text-2xl font-bold
+          ${theme === 'dark'
+            ? 'text-zinc-300'
+            : 'text-gray-700'
+          }`}
+        >
+          {title}
+        </h3>
+      ) : (
+        <FormLabel className={`mt-2 mb-3
+          ${theme === 'dark'
+            ? 'text-zinc-300'
+            : 'text-gray-700'
+          }`}
+        >
+          {title}
+        </FormLabel>
+      )}
+      {/* ---------------------------------------------------------------- */}
 
-      {/* Description of section or component - remember that this is optional */}
+      {/* -------------------- Description of section or component - remember that this is optional -------------------- */}
       {description && (
-        <span className="text-sm flex items-center gap-2 text-gray-500">
+        <span className={`text-sm flex items-center gap-2
+          ${theme === 'dark'
+            ? 'text-zinc-300'
+            : 'text-gray-500'
+          }`}
+        >
           {description}
 
           {icon === 'info'
@@ -40,6 +62,7 @@ const HeaderCustom = ({ to = 'section', title, description, icon }: HeaderCustom
           }
         </span>
       )}
+      {/* ---------------------------------------------------------------- */}
 
     </div>
   )
