@@ -1,5 +1,5 @@
-import IterableCustomCard from "#/curriculum/fields/IterableCard"
 import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
+import IterableCard from "#/curriculum/fields/IterableCard"
 import InputField from "#/curriculum/fields/Input"
 
 import { CardFieldProps } from "@/interfaces/form.interface"
@@ -14,47 +14,38 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
   const accessoriesFields: CardFieldProps[] = [
     {
       name: "name",
-      label: "Nombre",
-      placeholder: "Nombre del accesorio",
-      component: <InputField control={methods.control} name="name" theme={theme} />
+      component: <InputField theme={theme} label="Nombre" control={methods.control} />
     },
     {
       name: "type",
-      label: "Tipo",
-      placeholder: "Tipo del accesorio",
-      component: <InputField control={methods.control} name="type" theme={theme} />
+      component: <InputField theme={theme} label="Tipo" control={methods.control} />
     },
     {
       name: "series",
-      label: "Serie",
-      placeholder: "Serie del accesorio",
-      component: <InputField control={methods.control} name="series" theme={theme} />
+      component: <InputField theme={theme} label="Serie" control={methods.control} />
     },
     {
       name: "model",
-      label: "Modelo",
-      placeholder: "Modelo del accesorio",
-      component: <InputField control={methods.control} name="model" theme={theme} />
+      component: <InputField theme={theme} label="Modelo" control={methods.control} />
     }
   ]
 
   return (
     <FormProvider {...methods}>
-
       <div className="space-y-6">
         <HeaderCustom
           to="section"
+          icon="alert"
           title="Accesorios"
           description="Máximo 10 accesorios"
-          icon="alert"
         />
 
-        <IterableCustomCard
+        <IterableCard
+          limit={10}
           name="accessories"
           fields={accessoriesFields}
           control={methods.control}
           titleButton="Agregar accesorio"
-          limit={10}
         />
       </div>
     </FormProvider>

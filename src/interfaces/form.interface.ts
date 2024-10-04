@@ -8,10 +8,5 @@ export interface ControlProps {
 }
 /*---------------------- Cards ----------------------*/
 //to cards reusables
-export interface CardFieldProps {
-  name: string;
-  label: string;
-  placeholder?: string;
-  component: ReactElement;
-}
+export interface CardFieldProps { name: string, component: ReactElement }
 /* --------------------------------------------------------------------------------------------------------- */

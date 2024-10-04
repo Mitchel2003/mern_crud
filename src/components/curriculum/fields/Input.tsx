@@ -7,26 +7,38 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '#/ui/f
 import { Input } from '#/ui/input'
 
 interface InputFieldProps extends ControlProps, ThemeContextProps {
-  name: string;
-  label?: string;
+  error?: string;
+  label: string;
   icon?: LucideIcon;
   placeholder?: string;
   type?: 'text' | 'number' | 'email' | 'password';
-  error?: string;
 }
 
 /**
  * Allow us use a input field type generic, represent a basic input, with a label and placeholder optional.
  * This is a component reusable 
  * @param {InputFieldProps} props - The properties of the component
- * @param {string} props.name - Correspond to name to reference the form field
+ * @param {string} props.error - Is optional and represent an error to the input field in context; this is renderized
+ * @param {string} props.theme - Correspond to the theme in context; could be "light" or "dark"
  * @param {string} props.label - Its a label according to the input
  * @param {Control<any>} props.control - Represent the useForm controller
+ * @param {string} props.icon - Contain an Icon to use in the input field
+ * @param {string} props.placeholder - Represent the placeholder
  * @param {string} props.type - Helps us to define the type of input
  * @returns 
  */
-const InputField = ({ name, label, control, type = "text", placeholder, icon: Icon, theme, error }: InputFieldProps) => {
+const InputField = ({
+  error,
+  theme,
+  label,
+  control,
+  icon: Icon,
+  placeholder,
+  type = "text"
+}: InputFieldProps) => {
+
   const [showPassword, setShowPassword] = useState(false)
+  const name = label.toLowerCase().replace(/ /g, '_')
 
   return (
     <FormField
@@ -34,31 +46,32 @@ const InputField = ({ name, label, control, type = "text", placeholder, icon: Ic
       control={control}
       render={({ field }) => (
         <FormItem>
-          {label && (
-            <FormLabel
-              className={`${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-800'}`}
-            >
-              {label}
-            </FormLabel>
-          )}
+          {/* Title of input */}
+          <FormLabel className={`${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-800'}`}>
+            {label}
+          </FormLabel>
 
+          {/* Field component */}
           <FormControl>
             <div className='relative'>
+              {/* Input with type mutable */}
               <Input
-                {...field}
                 type={showPassword ? 'text' : type}
                 placeholder={placeholder}
-                className={`
-                  ${(type === 'email' || type === 'password') && 'pl-10'}
+                className={`${(type === 'email' || type === 'password') && 'pl-10'}
                   ${theme === 'dark'
                     ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
                     : 'bg-white hover:shadow-purple-500/60'
-                  }
-                `}
+                  }`}
+                {...field}
               />
+
+              {/* Icon decorative (side left) */}
               {Icon && (
                 <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               )}
+
+              {/* Toggle to input type password (especific case) */}
               {type === 'password' && (
                 <button
                   type="button"
@@ -74,6 +87,7 @@ const InputField = ({ name, label, control, type = "text", placeholder, icon: Ic
             </div>
           </FormControl>
 
+          {/* render error */}
           {error && <FormMessage>{error}</FormMessage>}
         </FormItem>
       )}

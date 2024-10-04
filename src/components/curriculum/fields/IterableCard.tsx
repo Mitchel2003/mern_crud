@@ -1,4 +1,4 @@
-import { FormItem, FormLabel, FormControl } from '#/ui/form'
+import { FormItem, FormControl } from '#/ui/form'
 import { Card, CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 
@@ -14,7 +14,14 @@ interface IterableCardFieldProps extends ControlProps {
   limit?: number;
 }
 
-const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCardFieldProps) => {
+const IterableCard = ({
+  name,
+  fields,
+  control,
+  limit = 1,
+  titleButton = 'Agregar'
+}: IterableCardFieldProps) => {
+
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
   const handleAppend = () => {
@@ -24,7 +31,8 @@ const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCar
   }
   return (
     <>
-      {items.length !== (limit ?? 1) && (
+      {/* Button add card */}
+      {items.length !== limit && (
         <Button
           size="sm"
           type="button"
@@ -32,13 +40,16 @@ const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCar
           className='flex text-sm h-[5vh]'
           onClick={handleAppend}
         >
-          {titleButton ?? "Agregar"}
+          {titleButton}
           <PlusCircle className='ml-2 h-auto w-auto md:h-[3vh] md:w-[3vw]' />
         </Button>
       )}
 
+      {/* Card */}
       {items.map((item, index) => (
         <Card key={item.id} className="bg-white relative">
+
+          {/* Button delete card */}
           <Button
             size="sm"
             type="button"
@@ -49,21 +60,19 @@ const IterableCard = ({ name, control, fields, titleButton, limit }: IterableCar
             <X className="h-4 w-4" />
           </Button>
 
+          {/* Component input */}
           <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-2">
-              {fields.map((field) => (
-                <FormItem key={field.name}>
-                  <FormLabel>{field.label}</FormLabel>
+              {fields.map((field, index) => (
+                <FormItem key={`${name}-${index}`}>
                   <FormControl>
-                    {React.cloneElement(field.component, {
-                      name: `${name}.${index}.${field.name}`,
-                      placeholder: field.placeholder,
-                    })}
+                    {React.cloneElement(field.component)}
                   </FormControl>
                 </FormItem>
               ))}
             </div>
           </CardContent>
+
         </Card>
       ))}
     </>

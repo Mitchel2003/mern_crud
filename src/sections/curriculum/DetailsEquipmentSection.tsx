@@ -14,9 +14,18 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const methods = useForm<DetailsEquipmentProps>();
 
   const supplierFields: CardFieldProps[] = [
-    { name: "name", label: "Nombre", component: <InputField control={methods.control} name="name" theme={theme} /> },
-    { name: "city", label: "Ciudad", component: <InputField control={methods.control} name="city" theme={theme} /> },
-    { name: "phone", label: "Teléfono", component: <InputField control={methods.control} name="phone" theme={theme} /> },
+    {
+      name: "name",
+      component: <InputField control={methods.control} label="Nombre" theme={theme} />
+    },
+    {
+      name: "city",
+      component: <InputField control={methods.control} label="Ciudad" theme={theme} />
+    },
+    {
+      name: "phone",
+      component: <InputField control={methods.control} label="Teléfono" theme={theme} />
+    }
   ]
 
   return (
@@ -69,7 +78,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
           </div>
           <InputField
-            name="price"
             label="Valor"
             theme={theme}
             type="number"
@@ -77,7 +85,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             placeholder="Valor del equipo"
           />
           <InputField
-            name="year_manufacture"
             label="Año de fabricación"
             theme={theme}
             type="number"
