@@ -18,14 +18,13 @@ interface InputFieldProps extends ControlProps, ThemeContextProps {
  * Allow us use a input field type generic, represent a basic input, with a label and placeholder optional.
  * This is a component reusable 
  * @param {InputFieldProps} props - The properties of the component
- * @param {string} props.name - Its to define the property name of the FormField
+ * @param {string} props.name - Its to define the property name of the FormField, is important control the field
  * @param {string} props.theme - Correspond to the theme in context; could be "light" or "dark"
  * @param {string} props.label - Its a label according to the input
  * @param {Control<any>} props.control - Represent the useForm controller
- * @param {string} props.icon - Contain an Icon to use in the input field
+ * @param {LucideIcon} props.icon - Contain an Icon to use in the input field
  * @param {string} props.placeholder - Represent the placeholder
  * @param {string} props.type - Helps us to define the type of input
- * @returns 
  */
 const InputField = ({
   name,
@@ -45,31 +44,34 @@ const InputField = ({
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           {/* Title of input */}
-          <FormLabel className={`${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-800'}`}>
+          <FormLabel className={`${theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'}`}>
             {label}
           </FormLabel>
 
           {/* Field component */}
           <FormControl>
             <div className='relative'>
-              {/* Input with type mutable */}
+
+              {/* -------------------- Input with type mutable -------------------- */}
               <Input
                 type={showPassword ? 'text' : type}
                 placeholder={placeholder}
                 className={`${(type === 'email' || type === 'password') && 'pl-10'}
                   ${theme === 'dark'
-                    ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-                    : 'bg-white hover:shadow-purple-500/60'
+                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                    : 'bg-white'
                   }`}
                 {...field}
               />
+              {/* ---------------------------------------------------------------- */}
 
-              {/* Icon decorative (side left) */}
+              {/* -------------------- Icon decorative (side left) -------------------- */}
               {Icon && (
                 <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               )}
+              {/* ---------------------------------------------------------------- */}
 
-              {/* Toggle to input type password (especific case) */}
+              {/* -------------------- Toggle to change input type password (side right) -------------------- */}
               {type === 'password' && (
                 <button
                   type="button"
@@ -82,6 +84,8 @@ const InputField = ({
                   }
                 </button>
               )}
+              {/* ---------------------------------------------------------------- */}
+
             </div>
           </FormControl>
 

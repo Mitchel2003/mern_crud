@@ -8,7 +8,7 @@ import { Button } from '#/ui/button'
 import { LogIn, Lock, UserPlus, ChevronRight } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 
-const Form = ({ theme }: LoginComponentsProps) => {
+const FormSection = ({ theme }: LoginComponentsProps) => {
   const { control } = useFormContext<LoginFormProps>()
 
   return (
@@ -23,6 +23,8 @@ const Form = ({ theme }: LoginComponentsProps) => {
         icon={LogIn}
         theme={theme}
       />
+
+      {/* Password section */}
       <InputField
         name="password"
         type="password"
@@ -31,7 +33,8 @@ const Form = ({ theme }: LoginComponentsProps) => {
         icon={Lock}
         theme={theme}
       />
-      {/* Submit section */}
+
+      {/* Submit */}
       <Button
         type="submit"
         className={`w-full mt-6 transition-all duration-300 transform hover:scale-105 text-white
@@ -43,7 +46,7 @@ const Form = ({ theme }: LoginComponentsProps) => {
         Iniciar sesión <ChevronRight className="ml-2 h-4 w-4" />
       </Button>
 
-      {/* Register section */}
+      {/* Register */}
       <Button
         type="button"
         className={`w-full mt-3 transition-all duration-300 transform hover:scale-105 text-white
@@ -58,4 +61,4 @@ const Form = ({ theme }: LoginComponentsProps) => {
   )
 }
 
-export default Form
+export default FormSection

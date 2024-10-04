@@ -1,7 +1,7 @@
 import { LoginComponentsProps } from "@/interfaces/props.interface";
 import { CardFooter } from "#/ui/card";
 
-const Footer = ({ theme }: LoginComponentsProps) => {
+const FooterSection = ({ theme }: LoginComponentsProps) => {
   return (
     <CardFooter className="flex flex-col space-y-4">
       <div className="text-sm text-center">
@@ -20,4 +20,4 @@ const Footer = ({ theme }: LoginComponentsProps) => {
   )
 }
 
-export default Footer
+export default FooterSection
