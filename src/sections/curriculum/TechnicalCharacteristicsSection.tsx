@@ -14,11 +14,11 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
       <div className="space-y-6">
 
         <HeaderCustom
-          theme={theme}
-          icon="info"
           to="section"
+          theme={theme}
           title="Características Técnicas"
-          description="Campos opcionales"
+          iconSpan="info"
+          span="Campos opcionales"
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField

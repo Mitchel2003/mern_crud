@@ -1,21 +1,30 @@
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
 import HeaderText from "#/reusables/elements/HeaderText"
 import { Card, CardContent, CardFooter } from "#/ui/card"
 import { Button } from "#/ui/button"
 import { Form } from "#/ui/form"
 
+import ReferenceEquipmentSection from "./ReferenceEquipmentSection"
+import MaintenanceSection from "./MaintenanceSection"
+import InspectionSection from "./InspectionSection"
+import EquipmentSection from "./EquipmentSection"
+import ClientSection from "./ClientSection"
+
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { RenderFormat, SectionProps } from "@/utils/RenderFormat"
 import { CheckSquare, Ban } from "lucide-react"
 import { useForm } from "react-hook-form"
-import HeaderCustom from "@/components/reusables/elements/HeaderCustom"
 
 interface MaintenanceProps extends ThemeContextProps { }
 const Maintenance = ({ theme }: MaintenanceProps) => {
   const form = useForm()
 
   const renderMaintenance: SectionProps[] = [
-    { component: <></> }
-
+    { component: <ClientSection theme={theme} /> },
+    { component: <ReferenceEquipmentSection theme={theme} /> },
+    { component: <EquipmentSection theme={theme} /> },
+    { component: <MaintenanceSection theme={theme} /> },
+    { component: <InspectionSection theme={theme} /> },
   ]
 
   return (
@@ -28,23 +37,31 @@ const Maintenance = ({ theme }: MaintenanceProps) => {
         >
           {/* Header form */}
           <Card className={`border-none rounded-lg rounded-b-none shadow-none
-            ${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-300/30'}`}
+            ${theme === 'dark' ? 'bg-zinc-950/40' : 'bg-zinc-300/30'}`}
           >
             <HeaderText
               theme={theme}
               title="Proceso de calidad - Equipos biomedicos"
               description="Formato de mantenimiento preventivo y correctivo"
             />
-            <HeaderCustom
-              theme={theme}
-              to="component"
-              title="Codigo formato: FMP-RL-01"
-            />
-            <HeaderCustom
-              theme={theme}
-              to="component"
-              title="Versión: 02"
-            />
+          </Card>
+
+          {/* information breadcrumbs */}
+          <Card className={`border-none rounded-none shadow-none
+            ${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-200/30'}`}
+          >
+            <div className="flex p-2 justify-between">
+              <HeaderCustom
+                to="component"
+                theme={theme}
+                title="Codigo formato: FMP-RL-01"
+              />
+              <HeaderCustom
+                to="component"
+                theme={theme}
+                title="Versión: 02"
+              />
+            </div>
           </Card>
 
           {/* Sections form */}

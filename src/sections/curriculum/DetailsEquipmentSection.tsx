@@ -2,7 +2,7 @@ import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import IterableCustomCard from '#/reusables/fields/Card'
 import SelectField from '#/reusables/fields/Select'
 import InputField from '#/reusables/fields/Input'
-import DateField from '#/curriculum/Date'
+import DateField from '#/reusables/fields/Date'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { CardFieldProps } from '@/interfaces/form.interface'
@@ -34,11 +34,11 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
       <div className="space-y-6">
 
         <HeaderCustom
-          theme={theme}
           to="section"
-          icon="warn"
+          theme={theme}
           title="Detalles Asociados"
-          description="Campos obligatorios"
+          iconSpan="warn"
+          span="Campos obligatorios"
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <DateField

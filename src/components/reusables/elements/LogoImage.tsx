@@ -1,39 +1,40 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Control, useController } from 'react-hook-form'
+import { ControlProps } from '@/interfaces/form.interface'
+
+import { useController } from 'react-hook-form'
 import { Building2 } from 'lucide-react'
 
-interface LogoImageProps extends ThemeContextProps {
+interface LogoImageProps extends ThemeContextProps, ControlProps {
   name: string
   label?: string
-  control: Control<any>
   className?: string
 }
-const LogoImage = ({ name, control, label, theme }: LogoImageProps) => {
+const LogoImage = ({
+  theme,
+  name,
+  label,
+  control,
+  className
+}: LogoImageProps) => {
+
   const { field } = useController({ name, control, defaultValue: null })
 
   return (
-    <div className="flex flex-col items-center space-y-2 w-full max-w-md mx-auto">
-      {/* -------------------- Label -------------------- */}
+    <div className="flex flex-col items-center w-full h-full max-w-md mx-auto">
+      {/* -------------------- label -------------------- */}
       {label && (
-        <label
-          htmlFor={name}
-          className={`text-sm font-medium
-            ${theme === 'dark'
-              ? 'text-gray-300'
-              : 'text-zinc-700'
-            }`}
-        >
-          {label}
-        </label>
+        <div className="flex justify-end w-full">
+          <p className={`text-xs ${theme === 'dark' ? 'text-zinc-300' : 'text-gray-500'}`}>
+            {label}
+          </p>
+        </div>
       )}
-      {/* ---------------------------------------------------------------- */}
+      {/* ------------------------------------------------*/}
 
-      {/* -------------------- Logo Image -------------------- */}
-      <div className={`relative w-full aspect-[3/1] rounded-md overflow-hidden border shadow-sm
-        ${theme === 'dark'
-          ? 'border-zinc-600'
-          : 'border-gray-200'
-        }`}
+      {/* --------------------- Logo --------------------- */}
+      <div className={`flex w-full h-full items-center justify-center overflow-hidden border rounded-md shadow-sm
+        ${theme === 'dark' ? 'border-zinc-600' : 'border-gray-200'}
+        ${className ?? 'mt-1'}`}
       >
         {field.value ? (
           <img
@@ -57,16 +58,9 @@ const LogoImage = ({ name, control, label, theme }: LogoImageProps) => {
           </div>
         )}
       </div>
-      {/* ---------------------------------------------------------------- */}
+      {/* ------------------------------------------------*/}
 
-      <p className={`text-xs
-        ${theme === 'dark'
-          ? 'text-zinc-300'
-          : 'text-gray-500'
-        }`}
-      >
-        Recomendado: imagen PNG o SVG con fondo transparente, proporción 3:1
-      </p>
+
     </div >
   )
 }

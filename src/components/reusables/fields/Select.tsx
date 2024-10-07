@@ -3,29 +3,42 @@ import { FormField, FormItem, FormControl } from "#/ui/form";
 
 import { ThemeContextProps } from "@/interfaces/context.interface";
 import HeaderCustom from "#/reusables/elements/HeaderCustom";
-import { ControlProps } from "@/interfaces/form.interface";
+import { ControlProps, HeaderCustomSpanProps } from "@/interfaces/form.interface";
 
-interface SelectFieldProps extends ControlProps, ThemeContextProps {
+interface SelectFieldProps extends ControlProps, ThemeContextProps, HeaderCustomSpanProps {
   name: string;
   label?: string;
   options: string[];
   placeholder?: string;
 }
 
-const SelectField = ({ name, label, control, options, placeholder, theme }: SelectFieldProps) => {
+const SelectField = ({ name, label, control, options, placeholder, theme, span, iconSpan }: SelectFieldProps) => {
   return (
     <FormField
       name={name}
       control={control}
       render={({ field }) => (
         <FormItem>
+
           {/* Header label */}
           {label && (
-            <HeaderCustom
-              theme={theme}
-              to='component'
-              title={label}
-            />
+            <>
+              {span ? (
+                <HeaderCustom
+                  to='component'
+                  theme={theme}
+                  title={label}
+                  span={span}
+                  iconSpan={iconSpan}
+                />
+              ) : (
+                <HeaderCustom
+                  to='component'
+                  theme={theme}
+                  title={label}
+                />
+              )}
+            </>
           )}
 
           {/* Input select customizable */}

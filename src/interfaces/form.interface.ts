@@ -6,8 +6,14 @@ import { ReactElement } from 'react';
 export interface ControlProps {
   control: Control<any>;
 }
+/*---------------------- Reusables ----------------------*/
+// HeaderCustom
+export interface HeaderCustomSpanProps {
+  span?: string;
+  iconSpan?: 'info' | 'warn' | 'alert';
+}
+
 /*---------------------- Cards ----------------------*/
-//to cards reusables
 /**
  * @name name - Corresponde como tal al nombre del campo, hace las veces de un identificador para el correcto control del formulario
  * @name component - Es el componente personalizado que se renderiza en el campo

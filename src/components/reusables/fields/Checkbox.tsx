@@ -34,16 +34,16 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
           {/* Header of component */}
           {isMultiple ? (
             <HeaderCustom
-              theme={theme}
-              icon="info"
               to="component"
+              theme={theme}
               title={label}
-              description="Seleccion multiple"
+              iconSpan="info"
+              span="Seleccion multiple"
             />
           ) : (
             <HeaderCustom
-              theme={theme}
               to="component"
+              theme={theme}
               title={label}
             />
           )}

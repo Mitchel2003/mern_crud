@@ -1,13 +1,13 @@
-import { ThemeContextProps } from '@/interfaces/context.interface';
-import { ControlProps } from '@/interfaces/form.interface'
-import { Eye, EyeOff, LucideIcon } from 'lucide-react'
-import { useState } from 'react';
-
 import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import { Input } from '#/ui/input'
-import HeaderCustom from '#/reusables/elements/HeaderCustom';
 
-interface InputFieldProps extends ControlProps, ThemeContextProps {
+import { ControlProps, HeaderCustomSpanProps } from '@/interfaces/form.interface'
+import { ThemeContextProps } from '@/interfaces/context.interface'
+import { Eye, EyeOff, LucideIcon } from 'lucide-react'
+import { useState } from 'react'
+
+interface InputFieldProps extends ControlProps, ThemeContextProps, HeaderCustomSpanProps {
   name: string;
   label: string;
   icon?: LucideIcon;
@@ -34,7 +34,10 @@ const InputField = ({
   control,
   icon: Icon,
   placeholder,
-  type = "text"
+  type = "text",
+  //to span
+  span,
+  iconSpan
 }: InputFieldProps) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -45,11 +48,21 @@ const InputField = ({
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           {/* Title of input */}
-          <HeaderCustom
-            theme={theme}
-            to='component'
-            title={label}
-          />
+          {span ? (
+            <HeaderCustom
+              to='component'
+              theme={theme}
+              title={label}
+              span={span}
+              iconSpan={iconSpan}
+            />
+          ) : (
+            <HeaderCustom
+              to='component'
+              theme={theme}
+              title={label}
+            />
+          )}
 
           {/* Field component */}
           <FormControl>

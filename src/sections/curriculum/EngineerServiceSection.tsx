@@ -14,11 +14,11 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
     <div className="space-y-6">
 
       <HeaderCustom
-        theme={theme}
         to="section"
-        icon="info"
+        theme={theme}
         title="Ingeniero de Servicio"
-        description="Logotipo de la entidad asociada"
+        iconSpan="info"
+        span="Ingeniero asociado a la creacion del formato"
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -42,8 +42,9 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
 
         <LogoImage
           theme={theme}
-          name="logo_headquarter"
           control={form.control}
+          name="logo_client"
+          label="Logotipo del cliente asociado"
         />
       </div>
     </div>

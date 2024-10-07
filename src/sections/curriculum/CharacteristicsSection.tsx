@@ -12,11 +12,11 @@ const CharacteristicsSection = ({ theme }: CharacteristicsProps) => {
     <div className="space-y-6">
 
       <HeaderCustom
-        theme={theme}
         to="section"
+        theme={theme}
         title="Características"
-        description="Maximo 100 caracteres"
-        icon="warn"
+        iconSpan="warn"
+        span="Maximo 100 caracteres"
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

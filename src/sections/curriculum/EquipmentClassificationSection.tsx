@@ -17,10 +17,10 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
         {/* Classification */}
         <HeaderCustom
           to="section"
-          icon="warn"
           theme={theme}
           title="Clasificación del Equipo"
-          description="Informacion sensible"
+          iconSpan="warn"
+          span="Informacion sensible"
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

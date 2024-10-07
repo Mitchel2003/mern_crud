@@ -24,8 +24,8 @@ const DateField = ({ name, label, control, placeholder, theme }: DateFieldProps)
         <FormItem>
 
           <HeaderCustom
-            theme={theme}
             to='component'
+            theme={theme}
             title={label}
           />
 

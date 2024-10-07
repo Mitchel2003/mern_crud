@@ -15,8 +15,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
       <div className="space-y-6">
 
         <HeaderCustom
-          theme={theme}
           to="section"
+          theme={theme}
           title="Mantenimiento"
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

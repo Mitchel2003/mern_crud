@@ -15,11 +15,11 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
       <div className="space-y-6">
 
         <HeaderCustom
-          theme={theme}
           to="section"
-          icon="info"
+          theme={theme}
           title="Información General"
-          description="Propocione los datos basicos del equipo"
+          iconSpan="info"
+          span="Propocione los datos basicos del equipo"
         />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">

@@ -34,11 +34,11 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
     <FormProvider {...methods}>
       <div className="space-y-6">
         <HeaderCustom
-          theme={theme}
           to="section"
-          icon="alert"
+          theme={theme}
           title="Accesorios"
-          description="Máximo 10 accesorios"
+          iconSpan="alert"
+          span="Máximo 10 accesorios"
         />
 
         <IterableCard
