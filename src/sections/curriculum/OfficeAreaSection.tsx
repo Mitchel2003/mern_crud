@@ -1,6 +1,7 @@
-import { useForm, FormProvider } from "react-hook-form"
-import SelectField from "#/curriculum/fields/Select"
 import { ThemeContextProps } from "@/interfaces/context.interface";
+import { useForm, FormProvider } from "react-hook-form"
+
+import SelectField from "#/reusables/fields/Select"
 
 interface OfficeAreaProps extends ThemeContextProps { }
 

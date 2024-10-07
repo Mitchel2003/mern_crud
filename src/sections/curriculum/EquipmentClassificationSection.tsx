@@ -1,8 +1,9 @@
-import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
-import CheckboxField from "#/curriculum/fields/Checkbox"
-import SelectField from "#/curriculum/fields/Select"
-import { FormProvider, useForm } from "react-hook-form"
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
+import CheckboxField from "#/reusables/fields/Checkbox"
+import SelectField from "#/reusables/fields/Select"
+
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { FormProvider, useForm } from "react-hook-form"
 
 interface EquipmentClassProps extends ThemeContextProps { }
 
@@ -22,7 +23,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           description="Informacion sensible"
         />
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <SelectField
             theme={theme}
             control={methods.control}
@@ -50,7 +51,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
         </div>
 
         {/* technology and risk*/}
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           <div className="col-span-4">
             <SelectField
               theme={theme}

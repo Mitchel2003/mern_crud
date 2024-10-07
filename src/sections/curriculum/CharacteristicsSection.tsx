@@ -1,6 +1,7 @@
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
+import AreaField from "#/curriculum/Area"
+
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
-import AreaField from "#/curriculum/fields/Area"
 import { useForm } from "react-hook-form"
 
 interface CharacteristicsProps extends ThemeContextProps { }

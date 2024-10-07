@@ -3,8 +3,9 @@ import { ControlProps } from '@/interfaces/form.interface'
 import { Eye, EyeOff, LucideIcon } from 'lucide-react'
 import { useState } from 'react';
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '#/ui/form'
+import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
 import { Input } from '#/ui/input'
+import HeaderCustom from '#/reusables/elements/HeaderCustom';
 
 interface InputFieldProps extends ControlProps, ThemeContextProps {
   name: string;
@@ -44,9 +45,11 @@ const InputField = ({
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           {/* Title of input */}
-          <FormLabel className={`${theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'}`}>
-            {label}
-          </FormLabel>
+          <HeaderCustom
+            theme={theme}
+            to='component'
+            title={label}
+          />
 
           {/* Field component */}
           <FormControl>
@@ -58,8 +61,8 @@ const InputField = ({
                 placeholder={placeholder}
                 className={`${(type === 'email' || type === 'password') && 'pl-10'}
                   ${theme === 'dark'
-                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
-                    : 'bg-white border-gray-300'
+                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+                    : 'bg-white border-gray-300 text-gray-900'
                   }`}
                 {...field}
               />

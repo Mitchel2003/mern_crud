@@ -1,8 +1,9 @@
-import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
-import ImageField from '#/curriculum/fields/Image'
-import InputField from '#/curriculum/fields/Input'
-import { useForm, FormProvider } from 'react-hook-form'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
+import InputField from '#/reusables/fields/Input'
+import ImageField from '#/curriculum/Image'
+
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useForm, FormProvider } from 'react-hook-form'
 
 interface BasicDataProps extends ThemeContextProps { }
 
@@ -14,6 +15,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
       <div className="space-y-6">
 
         <HeaderCustom
+          theme={theme}
           to="section"
           icon="info"
           title="Información General"
@@ -23,7 +25,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">
 
           <div className="md:col-span-5">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
               {/* input of 2 columns */}
               <div className="md:col-span-2">

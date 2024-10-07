@@ -1,9 +1,9 @@
-import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
-import LogoImage from '#/curriculum/reusables/LogoImage'
-import InputField from '#/curriculum/fields/Input'
-import { useForm } from 'react-hook-form'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
+import LogoImage from '#/reusables/elements/LogoImage'
+import InputField from '#/reusables/fields/Input'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useForm } from 'react-hook-form'
 
 interface EngineerServiceProps extends ThemeContextProps { }
 
@@ -21,7 +21,7 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
         description="Logotipo de la entidad asociada"
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
         <div className="grid grid-cols-1 gap-2 col-span-1">
           <InputField

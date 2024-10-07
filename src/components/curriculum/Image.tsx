@@ -31,10 +31,10 @@ const ImageField = ({ name, label, control, theme }: ImageFieldProps) => {
               className={`flex px-auto justify-center rounded-lg border border-dashed
                 ${preview ? 'py-[2vh]' : 'py-[6vh]'}
                 ${theme === 'dark'
-                  ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
-                  : 'bg-white border-gray-900/25'
-                }
-              `}
+                  ? 'bg-zinc-800 border-zinc-600'
+                  : 'bg-gray-50 border-gray-900/25'
+                }`
+              }
             >
               {preview ? (
                 <div className="relative">
@@ -55,30 +55,34 @@ const ImageField = ({ name, label, control, theme }: ImageFieldProps) => {
                 </div>
               ) : (
                 <div className="text-center">
-                  <Camera className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+                  <Camera className="mx-auto h-10 w-10 text-gray-300" aria-hidden="true" />
 
-                  <div className="flex w-full justify-center text-sm mt-4 leading-6 text-gray-600">
+                  <div className="flex w-full mt-4 text-sm justify-center leading-6">
                     <label
                       htmlFor={`file-upload-${name}`}
-                      className="relative cursor-pointer rounded-md font-semibold bg-white"
+                      className={`relative font-semibold rounded-md cursor-pointer
+                        ${theme === 'dark' ? 'bg-zinc-800' : 'bg-white'}
+                      `}
                     >
-                      <span>Subir imagen</span>
+                      <span className={`${theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'}`} >Subir imagen</span>
                       <input
                         id={`file-upload-${name}`}
                         name={name}
                         type="file"
-                        className="sr-only"
                         accept="image/*"
+                        className="sr-only"
                         onChange={callback?.handler}
                       />
                     </label>
                   </div>
-                  <p className="text-xs leading-5 text-gray-600">PNG, JPG, JPEG hasta 5MB</p>
+                  <p className={`text-xs leading-5 ${theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'}`}>
+                    PNG, JPG, JPEG hasta 5MB
+                  </p>
                 </div>
               )}
             </div>
           </FormControl>
-        </FormItem>
+        </FormItem >
       )}
     />
   )

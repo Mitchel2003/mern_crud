@@ -1,7 +1,8 @@
-import InputField from "#/curriculum/fields/Input";
-import HeaderCustom from "#/curriculum/reusables/HeaderCustom";
-import { useForm, FormProvider } from "react-hook-form";
+import HeaderCustom from "#/reusables/elements/HeaderCustom";
+import InputField from "#/reusables/fields/Input";
+
 import { ThemeContextProps } from "@/interfaces/context.interface";
+import { useForm, FormProvider } from "react-hook-form";
 
 interface TechnicalCharacteristicsProps extends ThemeContextProps { }
 
@@ -19,7 +20,7 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
           title="Características Técnicas"
           description="Campos opcionales"
         />
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField
             theme={theme}
             name="voltage"
@@ -43,7 +44,7 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField
             theme={theme}
             name="frequency"
@@ -67,7 +68,7 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField
             theme={theme}
             name="speed"

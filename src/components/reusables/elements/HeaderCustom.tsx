@@ -9,13 +9,14 @@ interface HeaderCustomProps extends ThemeContextProps {
   icon?: 'info' | 'warn' | 'alert';
 }
 /**
- * This component is a "Header" that use a title at left side and an optional description with respective icon.
+ * This component is a customizable "Header" that use a title at left side and an optional description with respective icon.
  * It can be used as a section header or as a component header.
  * @param {HeaderCustomProps} props - The properties of the component.
  * @param {string} props.to - Correspond where the header will be placed, it can be 'section' or 'component'.
  * @param {string} props.title - Corresponds to the label of the field.
  * @param {string} props.description - Its posicionated at the right of the title and are acompanied by an icon.
  * @param {string} props.icon - The icon that acompanie the description of the header, it can be ('info' | 'warn' | 'alert').
+ * @param {string} props.theme - Have the current theme, could be 'ligth' or 'dark'
  */
 const HeaderCustom = ({ to = 'section', title, description, icon, theme }: HeaderCustomProps) => {
   return (
@@ -25,18 +26,16 @@ const HeaderCustom = ({ to = 'section', title, description, icon, theme }: Heade
       {to === 'section' ? (
         <h3 className={`text-2xl font-bold
           ${theme === 'dark'
-            ? 'text-zinc-300'
+            ? 'text-zinc-200'
             : 'text-gray-700'
           }`}
         >
           {title}
         </h3>
       ) : (
-        <FormLabel className={`mt-2 mb-3
-          ${theme === 'dark'
-            ? 'text-zinc-300'
-            : 'text-gray-700'
-          }`}
+        <FormLabel className={`${theme === 'dark'
+          ? 'text-zinc-200'
+          : 'text-gray-700'}`}
         >
           {title}
         </FormLabel>

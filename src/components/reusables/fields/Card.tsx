@@ -8,21 +8,21 @@ import { useFieldArray } from 'react-hook-form'
 import { PlusCircle, X } from 'lucide-react'
 import React from 'react'
 
-interface IterableCardFieldProps extends ThemeContextProps, ControlProps {
+interface CardIterableFieldProps extends ThemeContextProps, ControlProps {
   name: string;
   fields: CardFieldProps[];
   titleButton?: string;
   limit?: number;
 }
 
-const IterableCard = ({
+const CardIterable = ({
   theme,
   name,
   fields,
   control,
   limit = 1,
   titleButton = 'Agregar'
-}: IterableCardFieldProps) => {
+}: CardIterableFieldProps) => {
 
   const { fields: items, append, remove } = useFieldArray({ control, name })
 
@@ -42,16 +42,17 @@ const IterableCard = ({
           onClick={handleAppend}
           className={`flex text-sm h-[5vh]
             ${theme === 'dark'
-              ? 'border-gray-700'
-              : 'border-gray-300'
+              ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+              : 'bg-white border-gray-300 text-gray-900'
             }`}
         >
           {titleButton}
           <PlusCircle className={`ml-2 h-auto w-auto md:h-[3vh] md:w-[3vw]
             ${theme === 'dark'
-              ? 'text-gray-500'
-              : 'text-gray-700'
-            }`} />
+              ? 'text-gray-300'
+              : 'text-zinc-600'
+            }`}
+          />
         </Button>
       )}
 
@@ -97,4 +98,4 @@ const IterableCard = ({
   )
 }
 
-export default IterableCard
+export default CardIterable

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import HeaderSection from "#/login/reusables/HeaderText"
+import HeaderSection from "#/reusables/elements/HeaderText"
 import FooterSection from "./FooterSection"
 import FormSection from "./FormSection"
 import { Card } from "#/ui/card"

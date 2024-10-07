@@ -1,8 +1,8 @@
-import IterableCustomCard from '#/curriculum/fields/IterableCard'
-import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
-import SelectField from '#/curriculum/fields/Select'
-import InputField from '#/curriculum/fields/Input'
-import DateField from '#/curriculum/fields/Date'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
+import IterableCustomCard from '#/reusables/fields/Card'
+import SelectField from '#/reusables/fields/Select'
+import InputField from '#/reusables/fields/Input'
+import DateField from '#/curriculum/Date'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { CardFieldProps } from '@/interfaces/form.interface'
@@ -40,20 +40,23 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           title="Detalles Asociados"
           description="Campos obligatorios"
         />
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <DateField
+            theme={theme}
             name="purchase_date"
             label="Fecha de Compra"
             control={methods.control}
             placeholder="Seleccionar fecha"
           />
           <DateField
+            theme={theme}
             name="installation_date"
             label="Fecha de Instalación"
             control={methods.control}
             placeholder="Seleccionar fecha"
           />
           <DateField
+            theme={theme}
             name="start_operation_date"
             label="Fecha de Inicio de Operación"
             control={methods.control}
@@ -61,7 +64,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
             <SelectField
               theme={theme}
@@ -102,7 +105,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
       {/* ---------------------- second module - information references ---------------------- */}
       <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
           {/* info about the representative */}
           <div className="flex flex-col gap-2">

@@ -1,5 +1,5 @@
 import { FormField, FormItem, FormControl } from '#/ui/form'
-import HeaderCustom from '#/curriculum/reusables/HeaderCustom'
+import HeaderCustom from '@/components/reusables/elements/HeaderCustom'
 import { Checkbox } from '#/ui/checkbox'
 
 import { ThemeContextProps } from '@/interfaces/context.interface';

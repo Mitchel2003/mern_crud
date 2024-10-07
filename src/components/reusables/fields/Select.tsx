@@ -1,6 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select";
-import { FormField, FormItem, FormLabel, FormControl } from "#/ui/form";
+import { FormField, FormItem, FormControl } from "#/ui/form";
+
 import { ThemeContextProps } from "@/interfaces/context.interface";
+import HeaderCustom from "#/reusables/elements/HeaderCustom";
 import { ControlProps } from "@/interfaces/form.interface";
 
 interface SelectFieldProps extends ControlProps, ThemeContextProps {
@@ -17,7 +19,16 @@ const SelectField = ({ name, label, control, options, placeholder, theme }: Sele
       control={control}
       render={({ field }) => (
         <FormItem>
-          {label && <FormLabel>{label}</FormLabel>}
+          {/* Header label */}
+          {label && (
+            <HeaderCustom
+              theme={theme}
+              to='component'
+              title={label}
+            />
+          )}
+
+          {/* Input select customizable */}
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}

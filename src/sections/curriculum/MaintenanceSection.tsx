@@ -1,6 +1,6 @@
-import HeaderCustom from "#/curriculum/reusables/HeaderCustom"
-import CheckboxField from "#/curriculum/fields/Checkbox"
-import SelectField from "#/curriculum/fields/Select"
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
+import CheckboxField from "#/reusables/fields/Checkbox"
+import SelectField from "#/reusables/fields/Select"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
@@ -19,7 +19,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
           to="section"
           title="Mantenimiento"
         />
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SelectField
             theme={theme}
             name="maintenance"
@@ -37,7 +37,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SelectField
             theme={theme}
             name="frequency_maintenance"
