@@ -38,6 +38,15 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
             iconSpan="none"
           />
 
+          {/* working here... */}
+          {/* presta atencion a este componente, la responsividad es perfecta porque como tal
+          porque el StatusCheck es el encargado de manejar el comportamiento y asociados, mientras
+          que el headerCustom anida el titulo y span respectivamente */}
+
+          {/* lo que digo es: deberia ser este modelo para con todos los componentes reutilizables,
+          si miras bien, los componentes se extienden con tipografias como HeaderCustomSpanProps, para
+          poder manejar el uso de iconos, colores, etc; convirtiendolo en un componente complejo.
+          quizas pueda yo volver un poco mas ligeros los componentes reutilizables */}
           <div className="space-y-2">
             <HeaderCustom
               to="component"
