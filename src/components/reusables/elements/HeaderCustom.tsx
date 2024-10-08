@@ -6,7 +6,7 @@ import { FormLabel } from "#/ui/form"
 
 interface HeaderCustomProps extends ThemeContextProps, HeaderCustomSpanProps {
   to: 'section' | 'component';
-  title: string;
+  title?: string;
   className?: string;
 }
 /**
@@ -19,7 +19,14 @@ interface HeaderCustomProps extends ThemeContextProps, HeaderCustomSpanProps {
  * @param {string} props.icon - The icon that acompanie the description of the header, it can be ('info' | 'warn' | 'alert').
  * @param {string} props.theme - Have the current theme, could be 'ligth' or 'dark'
  */
-const HeaderCustom = ({ theme, to = 'section', title, className, span, iconSpan }: HeaderCustomProps) => {
+const HeaderCustom = ({
+  theme,
+  to = 'section',
+  className = '',
+  title = '',
+  iconSpan,
+  span,
+}: HeaderCustomProps) => {
   return (
     <div className="flex items-center justify-between">
 
@@ -27,7 +34,7 @@ const HeaderCustom = ({ theme, to = 'section', title, className, span, iconSpan 
       {to === 'section' ? (
         <h3 className={`text-2xl font-bold
           ${theme === 'dark' ? 'text-zinc-200' : 'text-gray-700'}
-          ${className ?? ''}
+          ${className}
           `}
         >
           {title}
@@ -35,7 +42,7 @@ const HeaderCustom = ({ theme, to = 'section', title, className, span, iconSpan 
       ) : (
         <FormLabel className={`
           ${theme === 'dark' ? 'text-zinc-200' : 'text-gray-700'}
-          ${className ?? ''}
+          ${className}
           `}
         >
           {title}

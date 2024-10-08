@@ -32,7 +32,7 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="space-y-6">
+      <div className="space-y-4">
         <HeaderCustom
           to="section"
           theme={theme}
@@ -41,14 +41,24 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
           span="Máximo 10 accesorios"
         />
 
-        <IterableCard
-          limit={10}
-          theme={theme}
-          name="accessories"
-          fields={accessoriesFields}
-          control={methods.control}
-          titleButton="Agregar accesorio"
-        />
+        <div className="grid grid-cols-1 gap-2">
+          <HeaderCustom
+            to="component"
+            theme={theme}
+            title="Crea accesorios para este equipo"
+            span="Referencia periféricos, herramientas, etc."
+            iconSpan="info"
+          />
+
+          <IterableCard
+            limit={10}
+            theme={theme}
+            name="accessories"
+            fields={accessoriesFields}
+            control={methods.control}
+            titleButton="Añadir accesorio para este equipo"
+          />
+        </div>
       </div>
     </FormProvider>
   )

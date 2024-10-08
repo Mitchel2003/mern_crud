@@ -14,11 +14,18 @@ const InspectionSection = ({ theme }: InspectionProps) => {
 
   const inspectionFields: CardFieldProps[] = [
     {
-      name: "name_preset",
-      component: <InputField name="name_preset" label="Nombre del preset" theme={theme} control={methods.control} />
+      name: "name_inspection",
+      component:
+        <InputField
+          theme={theme}
+          name="name_inspection"
+          label="Nombre de la configuración"
+          control={methods.control}
+          placeholder="Digite un nombre distintivo"
+        />
     },
     {
-      name: "preset",
+      name: "inspection",
       component:
         <div className="mt-4">
           <CheckboxField
@@ -39,26 +46,31 @@ const InspectionSection = ({ theme }: InspectionProps) => {
           to="section"
           theme={theme}
           title="Inspección"
-          iconSpan="alert"
+          iconSpan="warn"
           span="Establece las inspecciones correspondientes a este equipo"
         />
 
-        <SelectField
-          theme={theme}
-          name="inspectionPreset"
-          label="Lista de configuraciones preestablecidas - presets"
-          control={methods.control}
-          options={['N/A']}
-          placeholder="Seleccione un preset"
-        />
+        <div className="grid grid-cols-1 gap-4">
+          <SelectField
+            theme={theme}
+            name="inspectionPreset"
+            label="Lista de configuraciones preestablecidas"
+            control={methods.control}
+            options={['N/A']}
+            placeholder="Seleccione una configuración"
+            //span
+            iconSpan="info"
+            span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
+          />
 
-        <IterableCard
-          theme={theme}
-          name="inspection"
-          fields={inspectionFields}
-          control={methods.control}
-          titleButton="Agregar preset"
-        />
+          <IterableCard
+            theme={theme}
+            name="inspection"
+            fields={inspectionFields}
+            control={methods.control}
+            titleButton="Agregar configuración"
+          />
+        </div>
       </div>
     </FormProvider>
   )
