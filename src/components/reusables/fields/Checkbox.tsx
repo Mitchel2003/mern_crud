@@ -30,7 +30,6 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
       control={control}
       render={({ field }) => (
         <FormItem>
-
           {/* Header of component */}
           {isMultiple ? (
             <HeaderCustom
@@ -50,7 +49,7 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
 
           {/* Checkbox list */}
           <FormControl>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-6 pt-2">
               {options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <Checkbox

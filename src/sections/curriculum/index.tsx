@@ -11,6 +11,7 @@ import CharacteristicsSection from "./CharacteristicsSection"
 import MaintenanceSection from "./MaintenanceSection"
 import AccessoriesSection from "./AccessoriesSection"
 import OfficeAreaSection from "./OfficeAreaSection"
+import InspectionSection from "./InspectionSection"
 import BasicDataSection from "./BasicDataSection"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
@@ -29,6 +30,7 @@ const Curriculum = ({ theme }: CurriculumProps) => {
     { component: <EquipmentClassificationSection theme={theme} /> },
     { component: <TechnicalCharacteristicsSection theme={theme} /> },
     { component: <MaintenanceSection theme={theme} /> },
+    { component: <InspectionSection theme={theme} /> },
     { component: <AccessoriesSection theme={theme} /> },
     { component: <CharacteristicsSection theme={theme} /> },
     { component: <EngineerServiceSection theme={theme} /> }
