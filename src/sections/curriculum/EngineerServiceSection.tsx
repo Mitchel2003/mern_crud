@@ -1,5 +1,5 @@
+import ImagePreview from '@/components/reusables/elements/ImagePreview'
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
-import LogoImage from '#/reusables/elements/LogoImage'
 import InputField from '#/reusables/fields/Input'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
@@ -40,7 +40,7 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
           />
         </div>
 
-        <LogoImage
+        <ImagePreview
           theme={theme}
           control={form.control}
           name="logo_client"

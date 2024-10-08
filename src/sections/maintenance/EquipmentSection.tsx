@@ -1,5 +1,5 @@
+import ImagePreview from "@/components/reusables/elements/ImagePreview"
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import EquipmentImage from "@/components/reusables/elements/LogoImage"
 import InputField from "@/components/reusables/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
@@ -74,7 +74,7 @@ const EquipmentSection = ({ theme }: EquipmentProps) => {
 
           {/* -------------------- Image -------------------- */}
           <div className="md:col-span-3">
-            <EquipmentImage
+            <ImagePreview
               theme={theme}
               control={methods.control}
               name="equipmentImage"

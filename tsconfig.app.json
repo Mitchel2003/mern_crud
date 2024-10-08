@@ -31,5 +31,5 @@
   "include": [
     "src",
     "src/components"
-, "src/components/reusables/fields/AreaToggleable.tsx"  ]
+  ]
 }

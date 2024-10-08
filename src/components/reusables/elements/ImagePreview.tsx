@@ -4,18 +4,19 @@ import { ControlProps } from '@/interfaces/form.interface'
 import { useController } from 'react-hook-form'
 import { Building2 } from 'lucide-react'
 
-interface LogoImageProps extends ThemeContextProps, ControlProps {
+interface ImagePreviewProps extends ThemeContextProps, ControlProps {
   name: string
   label?: string
   className?: string
 }
-const LogoImage = ({
+
+const ImagePreview = ({
   theme,
   name,
   label,
   control,
   className
-}: LogoImageProps) => {
+}: ImagePreviewProps) => {
 
   const { field } = useController({ name, control, defaultValue: null })
 
@@ -65,4 +66,4 @@ const LogoImage = ({
   )
 }
 
-export default LogoImage
+export default ImagePreview

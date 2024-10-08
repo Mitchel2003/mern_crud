@@ -1,5 +1,5 @@
+import ImagePreview from "@/components/reusables/elements/ImagePreview"
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import LogoImage from "#/reusables/elements/LogoImage"
 import SelectField from "#/reusables/fields/Select"
 import InputField from "#/reusables/fields/Input"
 
@@ -52,7 +52,7 @@ const ClientSection = ({ theme }: ClientProps) => {
 
           {/* -------------------- Logo -------------------- */}
           <div className="md:col-span-3">
-            <LogoImage
+            <ImagePreview
               theme={theme}
               control={methods.control}
               name="logo_client"
