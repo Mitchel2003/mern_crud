@@ -19,8 +19,8 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           to="section"
           theme={theme}
           title="Clasificación del Equipo"
-          iconSpan="warn"
           span="Informacion sensible"
+          iconSpan="warn"
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

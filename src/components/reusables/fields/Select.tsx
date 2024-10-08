@@ -1,18 +1,28 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select";
-import { FormField, FormItem, FormControl } from "#/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
+import { FormField, FormItem, FormControl } from "#/ui/form"
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
 
-import { ThemeContextProps } from "@/interfaces/context.interface";
-import HeaderCustom from "#/reusables/elements/HeaderCustom";
-import { ControlProps, HeaderCustomSpanProps } from "@/interfaces/form.interface";
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import { ControlProps, HeaderSpanProps } from "@/interfaces/form.interface"
 
-interface SelectFieldProps extends ControlProps, ThemeContextProps, HeaderCustomSpanProps {
+interface SelectFieldProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
   name: string;
   label?: string;
   options: string[];
   placeholder?: string;
 }
 
-const SelectField = ({ name, label, control, options, placeholder, theme, span, iconSpan }: SelectFieldProps) => {
+const SelectField = ({
+  theme,
+  name,
+  label,
+  control,
+  options,
+  placeholder,
+  span,
+  iconSpan
+}: SelectFieldProps) => {
+
   return (
     <FormField
       name={name}

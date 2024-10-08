@@ -1,10 +1,10 @@
 import { ThemeContextProps } from "@/interfaces/context.interface";
-import { HeaderCustomSpanProps } from "@/interfaces/form.interface";
+import { HeaderSpanProps } from "@/interfaces/form.interface";
 
 import { InfoIcon, SirenIcon, TriangleAlertIcon } from "lucide-react"
 import { FormLabel } from "#/ui/form"
 
-interface HeaderCustomProps extends ThemeContextProps, HeaderCustomSpanProps {
+interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps {
   to: 'section' | 'component';
   title?: string;
   className?: string;
@@ -21,10 +21,10 @@ interface HeaderCustomProps extends ThemeContextProps, HeaderCustomSpanProps {
  */
 const HeaderCustom = ({
   theme,
+  title,
+  className,
   to = 'section',
-  className = '',
-  title = '',
-  iconSpan,
+  iconSpan = 'none',
   span,
 }: HeaderCustomProps) => {
   return (
@@ -59,19 +59,27 @@ const HeaderCustom = ({
           }`}
         >
           {span}
-
-          {iconSpan === 'info'
-            ? <InfoIcon className="w-4 h-4 text-sky-300" />
-            : (iconSpan === 'warn'
-              ? <TriangleAlertIcon className="w-4 h-4 text-yellow-300" />
-              : <SirenIcon className="w-4 h-4 text-red-300" />
-            )
-          }
+          {iconSpan !== 'none' ? (<RenderIconSpan iconSpan={iconSpan} />) : (<></>)}
         </span>
       )}
       {/* ---------------------------------------------------------------- */}
 
-    </div>
+    </div >
   )
 }
 export default HeaderCustom
+
+interface RenderIconSpanProps extends HeaderSpanProps { }
+const RenderIconSpan = ({ iconSpan }: RenderIconSpanProps) => {
+  return (
+    <>
+      {iconSpan === 'info'
+        ? <InfoIcon className="w-4 h-4 text-sky-300" />
+        : (iconSpan === 'warn'
+          ? <TriangleAlertIcon className="w-4 h-4 text-yellow-300" />
+          : <SirenIcon className="w-4 h-4 text-red-300" />
+        )
+      }
+    </>
+  )
+}

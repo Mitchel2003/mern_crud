@@ -8,8 +8,17 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CardFieldProps } from "@/interfaces/form.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
-interface InspectionProps extends ThemeContextProps { }
-const InspectionSection = ({ theme }: InspectionProps) => {
+const inspectionOptions = [
+  "Pedal", "Reles", "On/off", "Agujas", "Teclado", "Jeringas", "Sensores", "Pantalla", "Objetivos", "Aperturas",
+  "Inspección física", "Manómetro", "Líneas de reactivos", "Manómetros", "Pieza de alta", "Transductores", "Jeringa triple",
+  "Instrumentos del equipo", "Líneas de desecho", "Prueba de baterías", "Pruebas de seguridad", "Pruebas de funcionamiento",
+  "Revisión y ajustes hidráulicos", "Revisión y ajustes eléctricos", "Revisión y ajustes mecánicos", "Revisión y ajustes neumáticos",
+  "Sensores", "Cámaras de wbc/rbc", "Desempeño del equipo", "Revoluciones y/o velocidad", "Ventilación de fuga a tierra",
+  "Verificación de polo a tierra", "Verificación de presión", "Verificación de temperatura"
+]
+
+interface PresetInspectionProps extends ThemeContextProps { }
+const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
   const methods = useForm()
 
   const inspectionFields: CardFieldProps[] = [
@@ -46,8 +55,8 @@ const InspectionSection = ({ theme }: InspectionProps) => {
           to="section"
           theme={theme}
           title="Inspección"
-          iconSpan="warn"
           span="Establece las inspecciones correspondientes a este equipo"
+          iconSpan="warn"
         />
 
         <div className="grid grid-cols-1 gap-4">
@@ -59,8 +68,8 @@ const InspectionSection = ({ theme }: InspectionProps) => {
             options={['N/A']}
             placeholder="Seleccione una configuración"
             //span
-            iconSpan="info"
             span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
+            iconSpan="info"
           />
 
           <IterableCard
@@ -76,31 +85,4 @@ const InspectionSection = ({ theme }: InspectionProps) => {
   )
 }
 
-export default InspectionSection
-
-const inspectionOptions = [
-  "Pedal",
-  "Reles",
-  "On/off",
-  "Agujas",
-  "Teclado",
-  "Jeringas",
-  "Sensores",
-  "Pantalla",
-  "Objetivos",
-  "Aperturas",
-  "Revisión y ajustes eléctricos",
-  "Revisión y ajustes neumáticos",
-  "Verificación de polo a tierra",
-  "Revisión y ajustes hidráulicos",
-  "Pieza de alta",
-  "Transductores",
-  "Jeringa triple",
-  "Líneas de desecho",
-  "Inspeccion fisica",
-  "Cámaras de wbc/rbc",
-  "Linea de reactivos",
-  "Desempeño del equipo",
-  "Revoluciones y/o velocidad",
-  "Revisión y ajustes mecánicos",
-]
+export default PresetInspectionSection

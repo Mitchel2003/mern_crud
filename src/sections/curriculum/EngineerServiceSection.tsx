@@ -17,8 +17,8 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
         to="section"
         theme={theme}
         title="Ingeniero de Servicio"
-        iconSpan="info"
         span="Ingeniero asociado a la creacion del formato"
+        iconSpan="info"
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

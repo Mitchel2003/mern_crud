@@ -8,11 +8,16 @@ export interface ControlProps {
 }
 /*---------------------- Reusables ----------------------*/
 // HeaderCustom
-export interface HeaderCustomSpanProps {
+export interface HeaderSpanProps {
   span?: string;
-  iconSpan?: 'info' | 'warn' | 'alert';
+  iconSpan?: 'info' | 'warn' | 'alert' | 'none';
 }
-
+// StatusCheck
+export interface OptionsCheckProps {
+  name: string
+  label: string
+  color: string
+}
 /*---------------------- Cards ----------------------*/
 /**
  * @name name - Corresponde como tal al nombre del campo, hace las veces de un identificador para el correcto control del formulario

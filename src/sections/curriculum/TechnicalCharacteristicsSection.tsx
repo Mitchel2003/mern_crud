@@ -17,8 +17,8 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
           to="section"
           theme={theme}
           title="Características Técnicas"
-          iconSpan="info"
           span="Campos opcionales"
+          iconSpan="info"
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField

@@ -2,6 +2,16 @@
 export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  safelist: [//Caution with the optimization, this not is recomended
+    //bg button status => maintenance (ObservationSection.tsx)
+    'bg-green-400', 'bg-green-600',
+    'bg-yellow-400', 'bg-yellow-600',
+    'bg-red-400', 'bg-red-600',
+    //ring button status => maintenance (ObservationSection.tsx)
+    'focus:ring-green-500',
+    'focus:ring-yellow-500',
+    'focus:ring-red-500',
+  ],
   theme: {
     extend: {
       // Permite a Tailwind generar las clases de utilidad para las fuentes,
@@ -27,7 +37,7 @@ export default {
         'middle3': '#e9d5ff', // purple-200
       },
 
-      
+
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -73,7 +83,7 @@ export default {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
-        }        
+        }
       }
     }
   },

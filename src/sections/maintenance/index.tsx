@@ -1,12 +1,13 @@
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import HeaderText from "#/reusables/elements/HeaderText"
 import { Card, CardContent, CardFooter } from "#/ui/card"
+import HeaderText from "#/reusables/elements/HeaderText"
 import { Button } from "#/ui/button"
 import { Form } from "#/ui/form"
 
 import ReferenceEquipmentSection from "./ReferenceEquipmentSection"
 import MaintenanceSection from "./MaintenanceSection"
-import PresetInspectionSection from "./PresetInspectionSection"
+import ObservationSection from "./ObservationSection"
+import InspectionSection from "./InspectionSection"
 import EquipmentSection from "./EquipmentSection"
 import ClientSection from "./ClientSection"
 
@@ -24,7 +25,8 @@ const Maintenance = ({ theme }: MaintenanceProps) => {
     { component: <ReferenceEquipmentSection theme={theme} /> },
     { component: <EquipmentSection theme={theme} /> },
     { component: <MaintenanceSection theme={theme} /> },
-    { component: <PresetInspectionSection theme={theme} /> }
+    { component: <InspectionSection theme={theme} /> },
+    { component: <ObservationSection theme={theme} /> }
   ]
 
   return (

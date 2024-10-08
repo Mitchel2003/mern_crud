@@ -1,6 +1,6 @@
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import InputField from '#/reusables/fields/Input'
-import ImageField from '#/curriculum/Image'
+import ImageField from '#/reusables/fields/Image'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useForm, FormProvider } from 'react-hook-form'
@@ -18,8 +18,8 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
           to="section"
           theme={theme}
           title="Información General"
-          iconSpan="info"
           span="Propocione los datos basicos del equipo"
+          iconSpan="info"
         />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">

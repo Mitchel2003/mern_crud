@@ -19,6 +19,8 @@ const ClientSection = ({ theme }: ClientProps) => {
           to="section"
           theme={theme}
           title="Datos del cliente"
+          span="Cliente asociado al formato de mantenimiento"
+          iconSpan="info"
         />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">

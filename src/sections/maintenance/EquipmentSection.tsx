@@ -17,8 +17,8 @@ const EquipmentSection = ({ theme }: EquipmentProps) => {
           to="section"
           theme={theme}
           title="Datos del equipo"
-          iconSpan="info"
           span="Seccion auto-completada"
+          iconSpan="info"
         />
 
         {/* -------------------- Form -------------------- */}

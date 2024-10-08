@@ -32,8 +32,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
                 options={['preventivo', 'correctivo']}
                 placeholder="Seleccione el tipo de mantenimiento"
                 //to span
-                iconSpan="alert"
                 span="Obligatorio"
+                iconSpan="alert"
               />
               <AreaToggleableField
                 theme={theme}
@@ -63,8 +63,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
                 control={methods.control}
                 placeholder="Indique el voltaje"
                 //to span
-                iconSpan="info"
                 span="Coleccion de datos"
+                iconSpan="info"
               />
               <InputField
                 theme={theme}

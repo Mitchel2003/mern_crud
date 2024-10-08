@@ -2,12 +2,12 @@ import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import { Input } from '#/ui/input'
 
-import { ControlProps, HeaderCustomSpanProps } from '@/interfaces/form.interface'
+import { ControlProps, HeaderSpanProps } from '@/interfaces/form.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Eye, EyeOff, LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 
-interface InputFieldProps extends ControlProps, ThemeContextProps, HeaderCustomSpanProps {
+interface InputFieldProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
   name: string;
   label: string;
   icon?: LucideIcon;

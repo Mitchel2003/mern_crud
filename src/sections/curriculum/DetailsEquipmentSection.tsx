@@ -37,8 +37,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           to="section"
           theme={theme}
           title="Detalles Asociados"
-          iconSpan="warn"
           span="Campos obligatorios"
+          iconSpan="warn"
         />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <DateField
