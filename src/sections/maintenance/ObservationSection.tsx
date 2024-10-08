@@ -28,15 +28,22 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
         />
 
         <div className="grid grid-cols-1 gap-6">
-          <AreaField
-            theme={theme}
-            name="description"
-            label="Descripción"
-            control={methods.control}
-            placeholder="Describa la rutina del mantenimiento"
-            span="Informe sobre actividades u observaciones realizadas"
-            iconSpan="none"
-          />
+
+          <div className="space-y-2">
+            <HeaderCustom
+              to="component"
+              theme={theme}
+              title="Descripción"
+              span="Informe sobre actividades u observaciones realizadas"
+              iconSpan="none"
+            />
+            <AreaField
+              theme={theme}
+              name="description"
+              control={methods.control}
+              placeholder="Describa la rutina del mantenimiento"
+            />
+          </div>
 
           {/* working here... */}
           {/* presta atencion a este componente, la responsividad es perfecta porque como tal

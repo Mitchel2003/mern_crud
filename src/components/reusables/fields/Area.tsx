@@ -1,25 +1,19 @@
 import { FormField, FormItem, FormControl } from '#/ui/form'
 import { Textarea } from '#/ui/textarea'
 
-import HeaderCustom from '#/reusables/elements/HeaderCustom'
-
-import { ControlProps, HeaderSpanProps } from '@/interfaces/form.interface'
+import { ControlProps } from '@/interfaces/form.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 
-interface AreaFieldProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
+interface AreaFieldProps extends ControlProps, ThemeContextProps {
   name: string;
-  label?: string;
   placeholder?: string;
 }
 
 const AreaField = ({
   theme,
   name,
-  label,
   control,
-  placeholder,
-  iconSpan,
-  span
+  placeholder
 }: AreaFieldProps) => {
 
   return (
@@ -28,27 +22,6 @@ const AreaField = ({
       control={control}
       render={({ field }) => (
         <FormItem>
-          {/* Header label */}
-          {label && (
-            <>
-              {span ? (
-                <HeaderCustom
-                  to='component'
-                  theme={theme}
-                  title={label}
-                  span={span}
-                  iconSpan={iconSpan}
-                />
-              ) : (
-                <HeaderCustom
-                  to='component'
-                  theme={theme}
-                  title={label}
-                />
-              )}
-            </>
-          )}
-
           <FormControl>
             <Textarea
               placeholder={placeholder}
