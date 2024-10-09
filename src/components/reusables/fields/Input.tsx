@@ -1,11 +1,12 @@
 import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
-import FormHeader from '#/reusables/elements/FormHeader'
+import HeaderCustom from "#/reusables/elements/HeaderCustom"
 import { Input } from '#/ui/input'
 
 import { ControlProps, HeaderSpanProps } from '@/interfaces/form.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Eye, EyeOff, LucideIcon } from 'lucide-react'
 import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface InputFieldProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
   name: string;
@@ -47,27 +48,29 @@ const InputField = ({
       render={({ field, fieldState: { error } }) => (
         <FormItem>
           {/* -------------------- Header label -------------------- */}
-          <FormHeader
-            to="component"
-            span={span}
+          <HeaderCustom
+            to="input"
             theme={theme}
-            label={label}
+            title={label}
+            span={span}
             iconSpan={iconSpan}
+            htmlFor={`${name}-input`}
           />
 
           {/* -------------------- Input with type mutable -------------------- */}
-          {/* working here... */}
-          {/* remember use cn in dinamic class */}
           <FormControl>
             <div className='relative'>
               <Input
+                id={`${name}-input`}
                 type={showPassword ? 'text' : type}
+                autoComplete='off'
                 placeholder={placeholder}
-                className={`${(type === 'email' || type === 'password') && 'pl-10'}
-                  ${theme === 'dark'
+                className={cn(
+                  (type === 'email' || type === 'password') && 'pl-10',
+                  theme === 'dark'
                     ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
                     : 'bg-white border-gray-300 text-gray-900'
-                  }`}
+                )}
                 {...field}
               />
 
@@ -83,10 +86,17 @@ const InputField = ({
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword
-                    ? <EyeOff className={`h-5 w-5 ${theme === 'dark' ? 'text-zinc-400' : 'text-gray-400'}`} aria-hidden="true" />
-                    : <Eye className={`h-5 w-5 ${theme === 'dark' ? 'text-zinc-400' : 'text-gray-400'}`} aria-hidden="true" />
-                  }
+                  {showPassword ? (
+                    <EyeOff
+                      className={cn('h-5 w-5', theme === 'dark' ? 'text-zinc-400' : 'text-gray-400')}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Eye
+                      className={cn('h-5 w-5', theme === 'dark' ? 'text-zinc-400' : 'text-gray-400')}
+                      aria-hidden="true"
+                    />
+                  )}
                 </button>
               )}
             </div>

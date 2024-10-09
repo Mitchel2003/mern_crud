@@ -1,4 +1,4 @@
-import ImagePreview from '@/components/reusables/elements/ImagePreview'
+import ImagePreview from '#/reusables/elements/ImagePreview'
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import InputField from '#/reusables/fields/Input'
 
@@ -12,17 +12,17 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
 
   return (
     <div className="space-y-6">
-
+      {/* -------------------- Header -------------------- */}
       <HeaderCustom
-        to="section"
+        to="component"
         theme={theme}
         title="Ingeniero de Servicio"
         span="Ingeniero asociado a la creacion del formato"
         iconSpan="info"
       />
 
+      {/* -------------------- Engineer service -------------------- */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
         <div className="grid grid-cols-1 gap-2 col-span-1">
           <InputField
             theme={theme}
@@ -40,6 +40,7 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
           />
         </div>
 
+        {/* -------------------- Image preview -------------------- */}
         <ImagePreview
           theme={theme}
           control={form.control}

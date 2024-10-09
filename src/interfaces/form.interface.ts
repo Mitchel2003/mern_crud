@@ -1,5 +1,5 @@
+import { ReactElement, LabelHTMLAttributes } from 'react';
 import { Control } from 'react-hook-form'
-import { ReactElement } from 'react';
 
 /*--------------------------------------------------Component--------------------------------------------------*/
 /*---------------------- Fields ----------------------*/
@@ -7,6 +7,9 @@ export interface ControlProps {
   control: Control<any>;
 }
 /*---------------------- Reusables ----------------------*/
+// HeaderForm
+export interface HeaderBreadcrumbProps { description: string }
+
 // HeaderCustom
 export interface HeaderSpanProps {
   span?: string;
@@ -18,6 +21,12 @@ export interface CheckProps {
   label: string
   color: string
 }
+/*---------------------- htmlFor ----------------------*/
+/**
+ * @description Pick<> se utiliza para extraer solo la propiedad 'htmlFor'.
+ * Esto es más preciso y eficiente que extender todo el tipo LabelHTMLAttributes
+ */
+export interface HtmlForProps extends Pick<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> { }
 /*---------------------- Cards ----------------------*/
 /**
  * @name name - Corresponde como tal al nombre del campo, hace las veces de un identificador para el correcto control del formulario

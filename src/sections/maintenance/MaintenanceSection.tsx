@@ -15,9 +15,10 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
     <FormProvider {...methods}>
       <div className="space-y-4">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Mantenimiento"
+          className="text-2xl font-bold"
         />
 
         <div className="grid grid-cols-1 gap-y-4 md:grid-cols-12">

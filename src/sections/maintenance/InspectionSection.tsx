@@ -17,9 +17,10 @@ const InspectionSection = ({ theme }: InspectionProps) => {
     <FormProvider {...methods}>
       <div className="space-y-4">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Inspección"
+          className="text-2xl font-bold"
           span="Seleccione las inspecciones realizadas"
           iconSpan="warn"
         />

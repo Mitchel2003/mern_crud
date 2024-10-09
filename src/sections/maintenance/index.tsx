@@ -1,6 +1,5 @@
-import HeaderCustom from "#/reusables/elements/HeaderCustom"
+import HeaderForm from "#/reusables/elements/HeaderForm"
 import { Card, CardContent, CardFooter } from "#/ui/card"
-import HeaderText from "#/reusables/elements/HeaderText"
 import { Button } from "#/ui/button"
 import { Form } from "#/ui/form"
 
@@ -15,6 +14,7 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { RenderFormat, SectionProps } from "@/utils/RenderFormat"
 import { CheckSquare, Ban } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { cn } from "@/lib/utils"
 
 interface MaintenanceProps extends ThemeContextProps { }
 const Maintenance = ({ theme }: MaintenanceProps) => {
@@ -33,45 +33,29 @@ const Maintenance = ({ theme }: MaintenanceProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit((data) => console.log(data))}>
 
-        {/* Component curriculum */}
-        <Card className={`w-full max-w-6xl mx-auto shadow-lg backdrop-filter backdrop-blur-lg
-          ${theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-50'}`}
-        >
-          {/* Header form */}
-          <Card className={`border-none rounded-lg rounded-b-none shadow-none
-            ${theme === 'dark' ? 'bg-zinc-950/40' : 'bg-zinc-300/30'}`}
-          >
-            <HeaderText
-              theme={theme}
-              title="Proceso de calidad - Equipos biomedicos"
-              description="Formato de mantenimiento preventivo y correctivo"
-            />
-          </Card>
+        {/* Component maintenance */}
+        <Card className={cn(
+          'w-full max-w-6xl mx-auto shadow-lg backdrop-filter backdrop-blur-lg',
+          theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-50'
+        )}>
 
-          {/* information breadcrumbs */}
-          <Card className={`border-none rounded-none shadow-none
-            ${theme === 'dark' ? 'bg-zinc-900/50' : 'bg-zinc-200/30'}`}
-          >
-            <div className="flex p-2 justify-between">
-              <HeaderCustom
-                to="component"
-                theme={theme}
-                title="Codigo formato: FMP-RL-01"
-              />
-              <HeaderCustom
-                to="component"
-                theme={theme}
-                title="Versión: 02"
-              />
-            </div>
-          </Card>
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title="Proceso de calidad - Equipos biomedicos"
+            description="Formato de mantenimiento preventivo y correctivo"
+            breadcrumbs={[
+              { description: "Codigo Formato: FMP-RL-01" },
+              { description: "Versión: 02" }
+            ]}
+          />
 
-          {/* Sections form */}
+          {/* -------------------- Content form -------------------- */}
           <CardContent className="space-y-8 pt-6">
             <RenderFormat format={renderMaintenance} theme={theme} />
           </CardContent>
 
-          {/* Footer form (Buttons submit) */}
+          {/* -------------------- Footer form (Buttons submit) -------------------- */}
           <CardFooter className="flex justify-between">
             <Button
               variant="outline"

@@ -4,7 +4,7 @@ import InputField from "@/components/reusables/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
-//working here... inspecting
+
 interface EquipmentProps extends ThemeContextProps { }
 const EquipmentSection = ({ theme }: EquipmentProps) => {
   const methods = useForm()
@@ -14,9 +14,10 @@ const EquipmentSection = ({ theme }: EquipmentProps) => {
       <div className="space-y-4">
         {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Datos del equipo"
+          className="text-2xl font-bold"
           span="Seccion auto-completada"
           iconSpan="info"
         />

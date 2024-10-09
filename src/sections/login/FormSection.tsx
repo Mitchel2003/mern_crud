@@ -13,7 +13,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
 
   return (
     <CardContent className="space-y-6">
-      {/* Email section */}
+      {/* -------------------- Email section -------------------- */}
       <InputField
         name="email"
         type="email"
@@ -24,7 +24,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         theme={theme}
       />
 
-      {/* Password section */}
+      {/* -------------------- Password section -------------------- */}
       <InputField
         name="password"
         type="password"
@@ -34,7 +34,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         theme={theme}
       />
 
-      {/* Submit */}
+      {/* -------------------- Submit -------------------- */}
       <Button
         type="submit"
         className={`w-full mt-6 transition-all duration-300 transform hover:scale-105 text-white
@@ -46,7 +46,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         Iniciar sesión <ChevronRight className="ml-2 h-4 w-4" />
       </Button>
 
-      {/* Register */}
+      {/* -------------------- go to register -------------------- */}
       <Button
         type="button"
         className={`w-full mt-3 transition-all duration-300 transform hover:scale-105 text-white

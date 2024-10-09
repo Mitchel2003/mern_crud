@@ -1,4 +1,4 @@
-import ImagePreview from "@/components/reusables/elements/ImagePreview"
+import ImagePreview from "#/reusables/elements/ImagePreview"
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
 import SelectField from "#/reusables/fields/Select"
 import InputField from "#/reusables/fields/Input"
@@ -16,9 +16,10 @@ const ClientSection = ({ theme }: ClientProps) => {
       <div className="space-y-4">
         {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Datos del cliente"
+          className="text-2xl font-bold"
           span="Cliente asociado al formato de mantenimiento"
           iconSpan="info"
         />
@@ -29,7 +30,7 @@ const ClientSection = ({ theme }: ClientProps) => {
             <div className="grid grid-cols-1 gap-4">
               <SelectField
                 theme={theme}
-                name="client"
+                name="name_client"
                 label="Cliente"
                 control={methods.control}
                 options={['IPS Sanitas', 'EDS Nueva esperanza']}
@@ -37,14 +38,14 @@ const ClientSection = ({ theme }: ClientProps) => {
               />
               <InputField
                 theme={theme}
-                name="contact"
+                name="contact_client"
                 label="Contacto"
                 control={methods.control}
                 placeholder="Numero de contacto"
               />
               <InputField
                 theme={theme}
-                name="address"
+                name="address_client"
                 label="Dirección"
                 control={methods.control}
                 placeholder="Dirección del cliente"

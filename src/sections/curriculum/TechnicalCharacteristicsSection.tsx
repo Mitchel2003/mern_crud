@@ -12,14 +12,15 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
-
+        {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Características Técnicas"
           span="Campos opcionales"
           iconSpan="info"
         />
+
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <InputField
             theme={theme}

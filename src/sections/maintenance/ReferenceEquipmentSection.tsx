@@ -18,9 +18,12 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
     <FormProvider {...methods}>
       <div className="space-y-4">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Referencia al equipo"
+          className="text-2xl font-bold"
+          span={'Equipo asociado al formato'}
+          iconSpan='warn'
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

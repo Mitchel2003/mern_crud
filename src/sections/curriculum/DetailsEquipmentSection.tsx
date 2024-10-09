@@ -14,7 +14,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const methods = useForm<DetailsEquipmentProps>();
 
   const supplierFields: CardFieldProps[] = [
-    {/* working here... */
+    {
       name: "name",
       component: <InputField name="name" control={methods.control} label="Nombre" theme={theme} />
     },
@@ -30,16 +30,17 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
   return (
     <FormProvider {...methods}>
-      {/* ---------------------- first module - details about the acquisition ---------------------- */}
-      <div className="space-y-6">
-
+      <div className='space-y-6'>
+        {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Detalles Asociados"
           span="Campos obligatorios"
           iconSpan="warn"
         />
+
+        {/* ---------------------- details about the acquisition ---------------------- */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <DateField
             theme={theme}
@@ -84,37 +85,35 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
           </div>
           <InputField
-            name="value"
-            label="Valor"
             theme={theme}
             type="number"
+            name="value"
+            label="Valor"
             control={methods.control}
             placeholder="Valor del equipo"
           />
           <InputField
-            name="manufacturing_year"
-            label="Año de fabricación"
             theme={theme}
             type="number"
+            name="manufacturing_year"
+            label="Año de fabricación"
             control={methods.control}
             placeholder="Año de fabricación del equipo"
           />
         </div>
-      </div>
-      {/* --------------------------------- end first module --------------------------------- */}
 
-      {/* ---------------------- second module - information references ---------------------- */}
-      <div className="space-y-6">
+        {/* ---------------------- information references ---------------------- */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
           {/* info about the representative */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-2xl font-medium">Representante</h3>
             <SelectField
               theme={theme}
-              name="representative"
-              control={methods.control}
               options={["N/A"]}
+              name="representative"
+              label="Representante"
+              control={methods.control}
+              className='text-3xl font-light'
               placeholder="Seleccionar representante"
             />
             <IterableCustomCard
@@ -128,12 +127,13 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
           {/* info about the distributor */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-2xl font-medium">Proveedor</h3>
             <SelectField
               theme={theme}
-              name="provider"
-              control={methods.control}
               options={["N/A"]}
+              name="provider"
+              label="Proveedor"
+              control={methods.control}
+              className='text-3xl font-light'
               placeholder="Seleccionar proveedor"
             />
             <IterableCustomCard
@@ -147,12 +147,13 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
           {/* info about the manufacturer */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-2xl font-medium">Fabricante</h3>
             <SelectField
               theme={theme}
-              name="manufacturer"
-              control={methods.control}
               options={["N/A"]}
+              name="manufacturer"
+              label="Fabricante"
+              control={methods.control}
+              className='text-3xl font-light'
               placeholder="Seleccionar fabricante"
             />
             <IterableCustomCard
@@ -166,7 +167,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
         </div>
       </div>
-      {/* --------------------------------- end second module --------------------------------- */}
     </FormProvider >
   )
 }

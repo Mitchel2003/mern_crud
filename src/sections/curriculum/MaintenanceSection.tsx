@@ -13,12 +13,13 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
-
+        {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Mantenimiento"
         />
+
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SelectField
             theme={theme}

@@ -6,7 +6,8 @@ import { CardFieldProps, ControlProps } from '@/interfaces/form.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useFieldArray } from 'react-hook-form'
 import { PlusCircle, X } from 'lucide-react'
-import React from 'react'
+import { cloneElement } from 'react'
+import { cn } from '@/lib/utils'
 
 interface CardIterableFieldProps extends ThemeContextProps, ControlProps {
   name: string;
@@ -33,59 +34,66 @@ const CardIterable = ({
   }
   return (
     <>
-      {/* Button add card */}
+      {/* -------------------- Button add card -------------------- */}
       {items.length !== limit && (
         <Button
           size="sm"
           type="button"
           variant="outline"
           onClick={handleAppend}
-          className={`flex text-sm h-[5vh]
-            ${theme === 'dark'
+          className={cn(
+            'flex text-sm h-[5vh]',
+            theme === 'dark'
               ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
               : 'bg-white border-gray-300 text-gray-900'
-            }`}
+          )}
         >
           {titleButton}
-          <PlusCircle className={`ml-2 h-auto w-auto md:h-[3vh] md:w-[3vw]
-            ${theme === 'dark'
-              ? 'text-gray-300'
-              : 'text-zinc-600'
-            }`}
+          <PlusCircle
+            className={cn(
+              'ml-2 h-auto w-auto md:h-[3vh] md:w-[3vw]',
+              theme === 'dark'
+                ? 'text-gray-300'
+                : 'text-zinc-600'
+            )}
           />
         </Button>
       )}
 
-      {/* Card */}
+      {/* -------------------- Card -------------------- */}
       {items.map((item, index) => (
-        <Card key={item.id} className={`relative
-          ${theme === 'dark'
-            ? 'bg-zinc-900 border-zinc-700'
-            : 'bg-white border-gray-300'
-          }`}>
-
-          {/* Button delete card */}
+        <Card
+          key={item.id}
+          className={cn(
+            'relative',
+            theme === 'dark'
+              ? 'bg-zinc-900 border-zinc-700'
+              : 'bg-white border-gray-300'
+          )}
+        >
+          {/* -------------------- Button delete card -------------------- */}
           <Button
             size="sm"
             type="button"
             variant="ghost"
             onClick={() => remove(index)}
-            className={`absolute top-2 right-2
-              ${theme === 'dark'
+            className={cn(
+              'absolute top-2 right-2',
+              theme === 'dark'
                 ? 'text-zinc-300'
                 : 'text-gray-800'
-              }`}
+            )}
           >
             <X className="h-4 w-4" />
           </Button>
 
-          {/* Component input */}
+          {/* -------------------- Component input -------------------- */}
           <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-2">
               {fields.map((field, index) => (
                 <FormItem key={`${name}-${index}`}>
                   <FormControl>
-                    {React.cloneElement(field.component)}
+                    {cloneElement(field.component)}
                   </FormControl>
                 </FormItem>
               ))}

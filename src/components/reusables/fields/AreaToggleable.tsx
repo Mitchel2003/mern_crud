@@ -1,9 +1,11 @@
-import { FormField, FormItem, FormControl, FormLabel } from '#/ui/form';
-import { Checkbox } from '#/ui/checkbox';
-import { Textarea } from '#/ui/textarea';
+import { FormField, FormItem, FormControl, FormLabel } from '#/ui/form'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
+import { Checkbox } from '#/ui/checkbox'
+import { Textarea } from '#/ui/textarea'
 
-import { ThemeContextProps } from '@/interfaces/context.interface';
-import { ControlProps } from '@/interfaces/form.interface';
+import { ThemeContextProps } from '@/interfaces/context.interface'
+import { ControlProps } from '@/interfaces/form.interface'
+import { cn } from '@/lib/utils'
 
 interface AreaToggleableProps extends ControlProps, ThemeContextProps {
   name: string;
@@ -42,15 +44,17 @@ const AreaToggleable = ({
           {/* -------------------- Checkbox trigger -------------------- */}
           <FormControl>
             <div className="flex space-x-2 items-center mt-2">
-              <FormLabel
+              {/* recomended use htmlFor */}
+              <HeaderCustom
+                to="input"
+                theme={theme}
+                title={label}
                 htmlFor={`${name}-checkbox`}
-                className={`font-medium text-sm ${theme === 'dark' ? 'text-zinc-200' : 'text-gray-700'}`}
-              >
-                {label}
-              </FormLabel>
+              />
 
               <Checkbox
                 id={`${name}-checkbox`}
+                name={`${name}-checkbox`}
                 checked={field.value?.checked || false}
                 onCheckedChange={(checked) => {
                   field.onChange({
@@ -76,12 +80,12 @@ const AreaToggleable = ({
                   placeholder={placeholder}
                   value={field.value.details || ''}
                   onChange={(e) => field.onChange({ ...field.value, details: e.target.value })}
-                  className={`
-                    ${className ?? 'min-h-[95px]'}
-                    ${theme === 'dark'
+                  className={cn(
+                    className ?? 'min-h-[95px]',
+                    theme === 'dark'
                       ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
                       : 'bg-white border-gray-300 text-gray-900'
-                    }`}
+                  )}
                 />
               </div>
             </FormControl>

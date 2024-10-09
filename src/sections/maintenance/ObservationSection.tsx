@@ -6,23 +6,24 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/form.interface"
 import { useForm, FormProvider } from 'react-hook-form'
 
+const statusOptions: CheckProps[] = [
+  { name: 'good', label: 'Buen estado', color: 'green' },
+  { name: 'wait', label: 'En espera de repuestos', color: 'yellow' },
+  { name: 'out', label: 'Fuera de servicio', color: 'red' },
+]
+
 interface ObservationSectionProps extends ThemeContextProps { }
 const ObservationSection = ({ theme }: ObservationSectionProps) => {
   const methods = useForm()
-
-  const statusOptions: CheckProps[] = [
-    { name: 'good', label: 'Buen estado', color: 'green' },
-    { name: 'wait', label: 'En espera de repuestos', color: 'yellow' },
-    { name: 'out', label: 'Fuera de servicio', color: 'red' },
-  ]
 
   return (
     <FormProvider {...methods}>
       <div className="space-y-4">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Observaciones"
+          className="text-2xl font-bold"
           span="Detalles de la revisión"
           iconSpan="info"
         />

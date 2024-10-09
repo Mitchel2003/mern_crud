@@ -1,9 +1,10 @@
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
+
 import { ControlProps, HeaderSpanProps, CheckProps } from '@/interfaces/form.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useController } from 'react-hook-form'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import FormHeader from './FormHeader'
 
 interface StatusCheckProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
   name: string;
@@ -24,9 +25,10 @@ const StatusCheck = ({
   return (
     <div className="space-y-2">
       {/* Header */}
-      <FormHeader
+      <HeaderCustom
+        to='component'
         theme={theme}
-        label={label}
+        title={label}
         span={span}
         iconSpan={iconSpan}
       />
@@ -48,12 +50,7 @@ const StatusCheck = ({
                 : (theme === 'dark' ? `bg-${option.color}-600` : `bg-${option.color}-400`)
             )}
           >
-            <Check
-              className={cn(
-                'w-6 h-6 mr-2',
-                field.value === option.name ? 'block' : 'hidden'
-              )}
-            />
+            <Check className={cn('w-6 h-6 mr-2', field.value === option.name ? 'block' : 'hidden')} />
             {option.label}
           </button>
         ))}

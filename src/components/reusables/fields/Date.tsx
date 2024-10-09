@@ -1,20 +1,29 @@
 import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover'
 import { FormField, FormItem, FormControl } from '#/ui/form'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import { Calendar } from '#/ui/calendar'
 import { Button } from '#/ui/button'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import { ControlProps } from '@/interfaces/form.interface'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 interface DateFieldProps extends ControlProps, ThemeContextProps {
   name: string;
   label: string;
   placeholder?: string;
 }
-
+/**
+ * Is a component that allows to select a date.
+ * @param {DateFieldProps} props - The properties of the component.
+ * @param {string} props.name - The attribute name of define the FormField component.
+ * @param {string} props.label - Is the label of the component.
+ * @param {Control<any>} props.control - To use the form control in the field.
+ * @param {string} props.placeholder - Is the placeholder of the component.
+ * @param {string} props.theme - Is the theme of the component.
+ */
 const DateField = ({ name, label, control, placeholder, theme }: DateFieldProps) => {
   return (
     <FormField
@@ -22,27 +31,30 @@ const DateField = ({ name, label, control, placeholder, theme }: DateFieldProps)
       control={control}
       render={({ field }) => (
         <FormItem>
-
+          {/* -------------------- Header label -------------------- */}
           <HeaderCustom
-            to='component'
+            to='input'
             theme={theme}
             title={label}
+            htmlFor={`${name}-date`}
           />
 
           <Popover>
-            {/* trigger calendar */}
+            {/* -------------------- Trigger calendar -------------------- */}
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
+                  id={`${name}-date`}
                   variant={"outline"}
-                  className={`w-full pl-3 font-normal
-                    ${!field.value && 'text-muted-foreground'}
-                    ${theme === 'dark'
+                  className={cn(
+                    'w-full pl-3 font-normal',
+                    !field.value && 'text-muted-foreground',
+                    theme === 'dark'
                       ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
                       : 'bg-white border-gray-300 hover:bg-white'
-                    }
-                  `}
+                  )}
                 >
+                  {/* -------------------- Date value -------------------- */}
                   {field.value
                     ? (format(field.value, "PPP"))
                     : (<span>{placeholder}</span>)
@@ -52,7 +64,7 @@ const DateField = ({ name, label, control, placeholder, theme }: DateFieldProps)
               </FormControl>
             </PopoverTrigger>
 
-            {/* calendar */}
+            {/* -------------------- Calendar -------------------- */}
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"

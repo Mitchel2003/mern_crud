@@ -32,9 +32,9 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Accesorios"
           iconSpan="alert"

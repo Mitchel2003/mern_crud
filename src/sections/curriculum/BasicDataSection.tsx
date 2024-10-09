@@ -13,17 +13,17 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
-
+        {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Información General"
           span="Propocione los datos basicos del equipo"
           iconSpan="info"
         />
 
+        {/* -------------------- Basic data -------------------- */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-8">
-
           <div className="md:col-span-5">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
@@ -76,7 +76,6 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
               control={methods.control}
             />
           </div>
-
         </div>
       </div>
     </FormProvider>

@@ -50,9 +50,9 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Inspección"
           span="Establece las inspecciones correspondientes a este equipo"

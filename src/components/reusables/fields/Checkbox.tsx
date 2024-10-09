@@ -1,9 +1,10 @@
 import { FormField, FormItem, FormControl } from '#/ui/form'
-import HeaderCustom from '@/components/reusables/elements/HeaderCustom'
+import HeaderCustom from '#/reusables/elements/HeaderCustom'
 import { Checkbox } from '#/ui/checkbox'
 
 import { ThemeContextProps } from '@/interfaces/context.interface';
 import { ControlProps } from '@/interfaces/form.interface'
+import { cn } from '@/lib/utils';
 
 interface CheckboxFieldProps extends ControlProps, ThemeContextProps {
   label: string;
@@ -30,7 +31,7 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
       control={control}
       render={({ field }) => (
         <FormItem>
-          {/* Header of component */}
+          {/* -------------------- Header of component -------------------- */}
           {isMultiple ? (
             <HeaderCustom
               to="component"
@@ -47,13 +48,14 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
             />
           )}
 
-          {/* Checkbox list */}
+          {/* -------------------- Checkbox list -------------------- */}
           <FormControl>
             <div className="flex flex-wrap gap-6 pt-2">
               {options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <Checkbox
                     id={`${name}-${option}`}
+                    name={`${name}-${option}`}
                     checked={field.value?.includes(option)}
                     onCheckedChange={(checked) => {
                       const updatedValue = checked
@@ -64,7 +66,7 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
                   />
                   <label
                     htmlFor={`${name}-${option}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className={cn('text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70')}
                   >
                     {option.charAt(0).toUpperCase() + option.slice(1)}
                   </label>

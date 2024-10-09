@@ -9,9 +9,9 @@ interface CharacteristicsProps extends ThemeContextProps { }
 const CharacteristicsSection = ({ theme }: CharacteristicsProps) => {
   const form = useForm<CharacteristicsProps>()
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <HeaderCustom
-        to="section"
+        to="component"
         theme={theme}
         title="Características"
         span="Maximo 100 caracteres"

@@ -14,9 +14,9 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
     <FormProvider {...methods}>
       <div className="space-y-6">
 
-        {/* Classification */}
+        {/* -------------------- Header -------------------- */}
         <HeaderCustom
-          to="section"
+          to="component"
           theme={theme}
           title="Clasificación del Equipo"
           span="Informacion sensible"
