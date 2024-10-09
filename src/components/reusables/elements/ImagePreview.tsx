@@ -30,7 +30,6 @@ const ImagePreview = ({
           </p>
         </div>
       )}
-      {/* ------------------------------------------------*/}
 
       {/* --------------------- Logo --------------------- */}
       <div className={`flex w-full h-full items-center justify-center overflow-hidden border rounded-md shadow-sm
@@ -60,7 +59,6 @@ const ImagePreview = ({
         )}
       </div>
       {/* ------------------------------------------------*/}
-
 
     </div >
   )

@@ -1,5 +1,5 @@
 import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
-import HeaderCustom from '#/reusables/elements/HeaderCustom'
+import FormHeader from '#/reusables/elements/FormHeader'
 import { Input } from '#/ui/input'
 
 import { ControlProps, HeaderSpanProps } from '@/interfaces/form.interface'
@@ -28,16 +28,15 @@ interface InputFieldProps extends ControlProps, ThemeContextProps, HeaderSpanPro
  * @param {string} props.type - Helps us to define the type of input
  */
 const InputField = ({
-  name,
   theme,
+  name,
   label,
   control,
   icon: Icon,
   placeholder,
   type = "text",
-  //to span
-  span,
-  iconSpan
+  iconSpan,
+  span
 }: InputFieldProps) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -47,28 +46,20 @@ const InputField = ({
       control={control}
       render={({ field, fieldState: { error } }) => (
         <FormItem>
-          {/* Title of input */}
-          {span ? (
-            <HeaderCustom
-              to='component'
-              theme={theme}
-              title={label}
-              span={span}
-              iconSpan={iconSpan}
-            />
-          ) : (
-            <HeaderCustom
-              to='component'
-              theme={theme}
-              title={label}
-            />
-          )}
+          {/* -------------------- Header label -------------------- */}
+          <FormHeader
+            to="component"
+            span={span}
+            theme={theme}
+            label={label}
+            iconSpan={iconSpan}
+          />
 
-          {/* Field component */}
+          {/* -------------------- Input with type mutable -------------------- */}
+          {/* working here... */}
+          {/* remember use cn in dinamic class */}
           <FormControl>
             <div className='relative'>
-
-              {/* -------------------- Input with type mutable -------------------- */}
               <Input
                 type={showPassword ? 'text' : type}
                 placeholder={placeholder}
@@ -79,13 +70,11 @@ const InputField = ({
                   }`}
                 {...field}
               />
-              {/* ---------------------------------------------------------------- */}
 
               {/* -------------------- Icon decorative (side left) -------------------- */}
               {Icon && (
                 <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               )}
-              {/* ---------------------------------------------------------------- */}
 
               {/* -------------------- Toggle to change input type password (side right) -------------------- */}
               {type === 'password' && (
@@ -100,8 +89,6 @@ const InputField = ({
                   }
                 </button>
               )}
-              {/* ---------------------------------------------------------------- */}
-
             </div>
           </FormControl>
 

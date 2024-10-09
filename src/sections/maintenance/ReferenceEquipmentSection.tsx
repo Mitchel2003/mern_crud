@@ -5,8 +5,12 @@ import InputField from "#/reusables/fields/Input"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
-interface EquipmentProps extends ThemeContextProps { }
+const optionsEquipment = [
+  'Compac Q - servicio recepcion - salon 12 - odontologia',
+  'Taladro metalico - servicio dental - salon 12 - odontologia'
+]
 
+interface EquipmentProps extends ThemeContextProps { }
 const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
   const methods = useForm()
 
@@ -25,10 +29,7 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
             name="equipment"
             label="Equipo para mantenimiento"
             control={methods.control}
-            options={[
-              'Compac Q - servicio recepcion - salon 12 - odontologia',
-              'Taladro metalico - servicio dental - salon 12 - odontologia'
-            ]}
+            options={optionsEquipment}
             placeholder="Seleccionar el equipo"
           />
 
@@ -48,7 +49,6 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
             placeholder="Ubicación del equipo"
           />
         </div>
-
       </div>
     </FormProvider>
   )

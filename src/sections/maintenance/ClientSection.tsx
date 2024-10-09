@@ -36,16 +36,16 @@ const ClientSection = ({ theme }: ClientProps) => {
                 placeholder="Selecciona un cliente"
               />
               <InputField
+                theme={theme}
                 name="contact"
                 label="Contacto"
-                theme={theme}
                 control={methods.control}
                 placeholder="Numero de contacto"
               />
               <InputField
+                theme={theme}
                 name="address"
                 label="Dirección"
-                theme={theme}
                 control={methods.control}
                 placeholder="Dirección del cliente"
               />
@@ -56,8 +56,8 @@ const ClientSection = ({ theme }: ClientProps) => {
           <div className="md:col-span-3">
             <ImagePreview
               theme={theme}
-              control={methods.control}
               name="logo_client"
+              control={methods.control}
               label="Logotipo del cliente asociado"
             />
           </div>

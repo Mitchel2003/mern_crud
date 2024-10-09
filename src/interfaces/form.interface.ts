@@ -13,7 +13,7 @@ export interface HeaderSpanProps {
   iconSpan?: 'info' | 'warn' | 'alert' | 'none';
 }
 // StatusCheck
-export interface OptionsCheckProps {
+export interface CheckProps {
   name: string
   label: string
   color: string

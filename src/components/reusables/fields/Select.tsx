@@ -1,9 +1,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
 import { FormField, FormItem, FormControl } from "#/ui/form"
-import HeaderCustom from "#/reusables/elements/HeaderCustom"
 
-import { ThemeContextProps } from "@/interfaces/context.interface"
 import { ControlProps, HeaderSpanProps } from "@/interfaces/form.interface"
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import FormHeader from "#/reusables/elements/FormHeader"
 
 interface SelectFieldProps extends ControlProps, ThemeContextProps, HeaderSpanProps {
   name: string;
@@ -30,28 +30,16 @@ const SelectField = ({
       render={({ field }) => (
         <FormItem>
 
-          {/* Header label */}
-          {label && (
-            <>
-              {span ? (
-                <HeaderCustom
-                  to='component'
-                  theme={theme}
-                  title={label}
-                  span={span}
-                  iconSpan={iconSpan}
-                />
-              ) : (
-                <HeaderCustom
-                  to='component'
-                  theme={theme}
-                  title={label}
-                />
-              )}
-            </>
-          )}
+          {/* -------------------- Header label -------------------- */}
+          <FormHeader
+            to="component"
+            theme={theme}
+            label={label}
+            span={span}
+            iconSpan={iconSpan}
+          />
 
-          {/* Input select customizable */}
+          {/* -------------------- Input select customizable -------------------- */}
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
@@ -75,6 +63,8 @@ const SelectField = ({
               ))}
             </SelectContent>
           </Select>
+          {/* ---------------------------------------------------------------- */}
+
         </FormItem>
       )}
     />
