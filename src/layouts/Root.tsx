@@ -1,6 +1,7 @@
-import { useThemeContext } from '@/context/ThemeContext';
-import Navbar from '@/components/others/Navbar';
-import { Outlet } from 'react-router-dom';
+import { useThemeContext } from '@/context/ThemeContext'
+import Navbar from '#/others/Navbar'
+import Sidebar from '#/others/Sidebar'
+import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => {
   const { theme } = useThemeContext();
@@ -14,6 +15,7 @@ const RootLayout = () => {
           : 'from-white via-purple-100 to-white'
         }`}
       >
+        <Sidebar />
         <Navbar />
         <main className="flex flex-grow items-center justify-center p-4">
           <Outlet />
