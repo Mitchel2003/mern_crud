@@ -1,15 +1,19 @@
-import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
-import { Task, ThemeContextProps } from "./context.interface";
-import { ControllerRenderProps } from "react-hook-form";
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query"
+import { Task, ThemeContextProps } from "./context.interface"
+import { ControllerRenderProps } from "react-hook-form"
 
-import { SetStateAction, Dispatch, ReactNode } from "react";
+import { SetStateAction, Dispatch, ReactNode } from "react"
+
+/*--------------------------------------------------Layout--------------------------------------------------*/
+export type LayoutProps = (children: ReactNode) => JSX.Element
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 export const navAuth = ['/task/new', '/tasks']
 export const navGuest = ['/login', '/register']
 
 //interface defautl props
 export interface Props { children?: ReactNode }
-export type TaskCardProps = { task: Task, isFavorite: boolean }
 
 //navbar
 export type NavbarProps = {
@@ -41,10 +45,6 @@ export type UseCallbackProps = {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------Layout--------------------------------------------------*/
-export type LayoutProps = (children: ReactNode) => JSX.Element
-/*---------------------------------------------------------------------------------------------------------*/
-
 /*--------------------------------------------------Task--------------------------------------------------*/
 export type TaskFunction = (tasks: Task[], favorite: string[]) => ReactNode
 
@@ -53,4 +53,5 @@ export type FavoriteTaskState = {
   addFavoriteTask: (id: string) => void;
   removeFavoriteTask: (id: string) => void;
 }
+export type TaskCardProps = { task: Task, isFavorite: boolean }
 /*---------------------------------------------------------------------------------------------------------*/
