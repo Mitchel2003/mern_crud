@@ -18,6 +18,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
           to="component"
           theme={theme}
           title="Mantenimiento"
+          className="text-2xl font-bold"
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

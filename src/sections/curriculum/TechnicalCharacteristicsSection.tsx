@@ -17,6 +17,7 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
           to="component"
           theme={theme}
           title="Características Técnicas"
+          className="text-2xl font-bold"
           span="Campos opcionales"
           iconSpan="info"
         />

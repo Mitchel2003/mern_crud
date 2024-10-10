@@ -37,8 +37,9 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
           to="component"
           theme={theme}
           title="Accesorios"
-          iconSpan="alert"
+          className="text-2xl font-bold"
           span="Máximo 10 accesorios"
+          iconSpan="alert"
         />
 
         <div className="grid grid-cols-1 gap-2">

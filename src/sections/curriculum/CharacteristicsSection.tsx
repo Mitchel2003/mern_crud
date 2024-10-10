@@ -14,6 +14,7 @@ const CharacteristicsSection = ({ theme }: CharacteristicsProps) => {
         to="component"
         theme={theme}
         title="Características"
+        className="text-2xl font-bold"
         span="Maximo 100 caracteres"
         iconSpan="warn"
       />

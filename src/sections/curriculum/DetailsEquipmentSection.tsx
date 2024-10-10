@@ -36,6 +36,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           to="component"
           theme={theme}
           title="Detalles Asociados"
+          className="text-2xl font-bold"
           span="Campos obligatorios"
           iconSpan="warn"
         />
@@ -113,7 +114,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               name="representative"
               label="Representante"
               control={methods.control}
-              className='text-3xl font-light'
+              className='text-2xl font-light'
               placeholder="Seleccionar representante"
             />
             <IterableCustomCard
@@ -133,7 +134,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               name="provider"
               label="Proveedor"
               control={methods.control}
-              className='text-3xl font-light'
+              className='text-2xl font-light'
               placeholder="Seleccionar proveedor"
             />
             <IterableCustomCard
@@ -153,7 +154,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               name="manufacturer"
               label="Fabricante"
               control={methods.control}
-              className='text-3xl font-light'
+              className='text-2xl font-light'
               placeholder="Seleccionar fabricante"
             />
             <IterableCustomCard

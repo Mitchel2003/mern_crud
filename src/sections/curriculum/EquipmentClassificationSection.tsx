@@ -19,6 +19,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           to="component"
           theme={theme}
           title="Clasificación del Equipo"
+          className="text-2xl font-bold"
           span="Informacion sensible"
           iconSpan="warn"
         />

@@ -4,6 +4,7 @@ import { Button } from "#/ui/button"
 import { Form } from "#/ui/form"
 
 import ReferenceEquipmentSection from "./ReferenceEquipmentSection"
+import EngineerServiceSection from "./EngineerServiceSection"
 import MaintenanceSection from "./MaintenanceSection"
 import ObservationSection from "./ObservationSection"
 import InspectionSection from "./InspectionSection"
@@ -26,7 +27,8 @@ const Maintenance = ({ theme }: MaintenanceProps) => {
     { component: <EquipmentSection theme={theme} /> },
     { component: <MaintenanceSection theme={theme} /> },
     { component: <InspectionSection theme={theme} /> },
-    { component: <ObservationSection theme={theme} /> }
+    { component: <ObservationSection theme={theme} /> },
+    { component: <EngineerServiceSection theme={theme} /> }
   ]
 
   return (

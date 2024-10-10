@@ -1,6 +1,6 @@
-import ImagePreview from "@/components/reusables/elements/ImagePreview"
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import InputField from "@/components/reusables/fields/Input"
+import ImagePreview from "#/reusables/elements/ImagePreview"
+import InputField from "#/reusables/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"

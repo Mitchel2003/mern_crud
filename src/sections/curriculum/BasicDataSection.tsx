@@ -18,6 +18,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
           to="component"
           theme={theme}
           title="Información General"
+          className="text-2xl font-bold"
           span="Propocione los datos basicos del equipo"
           iconSpan="info"
         />

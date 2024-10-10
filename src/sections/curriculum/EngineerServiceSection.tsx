@@ -17,6 +17,7 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => {
         to="component"
         theme={theme}
         title="Ingeniero de Servicio"
+        className='text-2xl font-bold'
         span="Ingeniero asociado a la creacion del formato"
         iconSpan="info"
       />

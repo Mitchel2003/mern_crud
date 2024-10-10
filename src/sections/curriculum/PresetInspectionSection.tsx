@@ -55,6 +55,7 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
           to="component"
           theme={theme}
           title="Inspección"
+          className="text-2xl font-bold"
           span="Establece las inspecciones correspondientes a este equipo"
           iconSpan="warn"
         />

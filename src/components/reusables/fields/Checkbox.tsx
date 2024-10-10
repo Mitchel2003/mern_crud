@@ -37,14 +37,16 @@ const CheckboxField = ({ label, control, options, isMultiple = false, theme }: C
               to="component"
               theme={theme}
               title={label}
-              iconSpan="info"
+              className='text-sm'
               span="Seleccion multiple"
+              iconSpan="info"
             />
           ) : (
             <HeaderCustom
               to="component"
               theme={theme}
               title={label}
+              className='text-sm'
             />
           )}
 
