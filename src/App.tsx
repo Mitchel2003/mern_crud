@@ -6,12 +6,12 @@ import { TaskProvider } from "@/context/TaskContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
+import Maintenance from "@/pages/Maintenance";
 import TaskForm from "@/pages/TaskForm";
-import Profile from "@/pages/Profile";
-// import Tasks from "@/pages/Tasks";
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import Profile from "@/pages/Profile";
+import Login from "@/pages/Login";
+import Home from "@/pages/Home";
 
 function App() {
   return (
@@ -25,6 +25,7 @@ function App() {
                 <Route path="/" index element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/maintenance" element={<Maintenance />} />
 
                 <Route element={<ProtectedRoute />}>
                   <Route path="/profile" element={<Profile />} />

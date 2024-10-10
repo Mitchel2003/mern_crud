@@ -1,6 +1,7 @@
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
 import CheckboxField from "#/reusables/fields/Checkbox"
 import SelectField from "#/reusables/fields/Select"
+import { Separator } from "#/ui/separator"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
@@ -13,7 +14,6 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
   return (
     <FormProvider {...methods}>
       <div className="space-y-6">
-
         {/* -------------------- Header -------------------- */}
         <HeaderCustom
           to="component"
@@ -24,7 +24,8 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           iconSpan="warn"
         />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* classification */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <SelectField
             theme={theme}
             control={methods.control}
@@ -49,29 +50,50 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
             placeholder="Seleccionar clasificación"
             options={['diagnostico', 'tratamiento', 'prevencion', 'rehabilitacion', 'analisis']}
           />
+          <SelectField
+            theme={theme}
+            control={methods.control}
+            name="risk"
+            label="Riesgo"
+            placeholder="Seleccionar riesgo"
+            options={['muy_alto', 'alto', 'moderado', 'bajo']}
+          />
         </div>
 
-        {/* technology and risk*/}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-          <div className="col-span-4">
-            <SelectField
-              theme={theme}
-              control={methods.control}
-              name="risk"
-              label="Riesgo"
-              placeholder="Seleccionar riesgo"
-              options={['muy_alto', 'alto', 'moderado', 'bajo']}
+        {/* technology and power supply */}
+        <div className="flex flex-col md:flex-row">
+          <CheckboxField
+            theme={theme}
+            isMultiple={true}
+            control={methods.control}
+            label="Fuentes de alimentacion"
+            options={['agua', 'aire', 'gas', 'vapor', 'electricidad']}
+          />
+
+          {/* separator vertial to md */}
+          <div className="hidden md:flex justify-center items-center px-6 mx-auto">
+            <Separator
+              orientation="vertical"
+              className={`h-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}
             />
           </div>
-          <div className="col-span-8">
-            <CheckboxField
-              theme={theme}
-              isMultiple={true}
-              control={methods.control}
-              label="Tecnología Predominante"
-              options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
+
+          {/* separator horizontal to sm */}
+          <div className="flex md:hidden justify-center items-center py-6">
+            <Separator
+              orientation="horizontal"
+              className={`w-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}
             />
           </div>
+
+
+          <CheckboxField
+            theme={theme}
+            isMultiple={true}
+            control={methods.control}
+            label="Tecnología Predominante"
+            options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
+          />
         </div>
 
       </div>
