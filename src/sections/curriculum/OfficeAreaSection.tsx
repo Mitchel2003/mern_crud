@@ -9,14 +9,14 @@ const OfficeAreaSection = ({ theme }: OfficeAreaProps) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <SelectField
           theme={theme}
-          name="entity"
-          label="Entidad"
+          name="headquarter"
+          label="Sede"
           control={methods.control}
-          options={["Entidad 1", "Entidad 2", "Entidad 3"]}
-          placeholder="Seleccionar entidad"
+          options={["Sede 1", "Sede 2", "Sede 3"]}
+          placeholder="Seleccionar sede"
         />
         <SelectField
           theme={theme}
@@ -34,6 +34,15 @@ const OfficeAreaSection = ({ theme }: OfficeAreaProps) => {
           options={["Consultorio 1", "Consultorio 2", "Consultorio 3"]}
           placeholder="Seleccionar consultorio"
         />
+        <SelectField
+          theme={theme}
+          name="service"
+          label="Servicio"
+          control={methods.control}
+          options={["Servicio 1", "Servicio 2", "Servicio 3"]}
+          placeholder="Seleccionar servicio"
+        />
+
       </div>
     </FormProvider>
   )
