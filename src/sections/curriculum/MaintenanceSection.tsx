@@ -24,9 +24,9 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SelectField
             theme={theme}
-            name="maintenance"
             control={methods.control}
-            label="Mantenimiento"
+            name="performing_maintenance"
+            label="Realización de Mantenimiento"
             placeholder="Seleccionar tipo"
             options={['Propio', 'Contratado']}
           />
@@ -42,8 +42,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SelectField
             theme={theme}
-            name="frequency_maintenance"
             control={methods.control}
+            name="frequency_maintenance"
             label="Frecuencia de Mantenimiento"
             placeholder="Seleccionar frecuencia"
             options={['3 meses', '4 meses', '6 meses', '12 meses']}
