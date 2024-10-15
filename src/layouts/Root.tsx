@@ -1,6 +1,7 @@
-import { useThemeContext } from '@/context/ThemeContext'
-import Navbar from '#/others/Navbar'
 import Sidebar from '#/others/Sidebar'
+import Navbar from '#/others/Navbar'
+
+import { useThemeContext } from '@/context/ThemeContext'
 import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => {
