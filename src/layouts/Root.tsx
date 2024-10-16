@@ -1,4 +1,3 @@
-import Sidebar from '#/others/Sidebar'
 import Navbar from '#/others/Navbar'
 
 import { useThemeContext } from '@/context/ThemeContext'
@@ -16,7 +15,6 @@ const RootLayout = () => {
           : 'from-white via-purple-100 to-white'
         }`}
       >
-        <Sidebar />
         <Navbar />
         <main className="flex flex-grow items-center justify-center p-4">
           <Outlet />

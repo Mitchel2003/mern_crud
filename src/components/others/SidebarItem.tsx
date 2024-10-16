@@ -1,7 +1,6 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
+import { Link, useLocation } from 'react-router-dom'
+import { Button } from "#/ui/button"
 
 export interface NavItem {
   icon: React.ReactNode
@@ -16,12 +15,19 @@ interface SidebarItemProps {
   depth?: number
 }
 
-export const SidebarItem: React.FC<SidebarItemProps> = ({
-  item,
-  isCollapsed,
-  depth = 0
-}) => {
+export const SidebarItem = ({ item, isCollapsed, depth = 0 }: SidebarItemProps) => {
   const location = useLocation()
+  const isActive = location.pathname === item.href
+
+  const content = (
+    <Button
+      variant={isActive ? "secondary" : "ghost"}
+      className={`w-full justify-start ${depth > 0 ? 'pl-8' : ''}`}
+    >
+      {item.icon}
+      {!isCollapsed && <span className="ml-2">{item.label}</span>}
+    </Button>
+  )
 
   return (
     <div>
@@ -29,14 +35,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Link to={item.href}>
-              <Button
-                variant="ghost"
-                className={`w-full justify-start ${location.pathname === item.href ? 'bg-muted' : ''
-                  } ${depth > 0 ? 'pl-8' : ''}`}
-              >
-                {item.icon}
-                {!isCollapsed && <span className="ml-2">{item.label}</span>}
-              </Button>
+              {isCollapsed ? content : <div className="w-full">{content}</div>}
             </Link>
           </TooltipTrigger>
           {isCollapsed && (
