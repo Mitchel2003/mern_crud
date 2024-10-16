@@ -1,25 +1,29 @@
+import { Menu, ChevronLeft, ChevronRight, Home, FileText, Settings, HelpCircle } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '#/ui/dropdown-menu'
 import { SidebarItem, NavItem } from '#/others/SidebarItem'
 import { ScrollArea } from '#/ui/scroll-area'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
 
-import { Menu, ChevronLeft, ChevronRight, Home, LayoutDashboardIcon } from 'lucide-react'
 import { useThemeContext } from '@/context/ThemeContext'
+import { useState } from 'react'
 
 const CollapsibleSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { theme } = useThemeContext()
 
-  // const toggleSidebar = () => setIsOpen(!isOpen)
-  const toggleCollapse = () => setIsCollapsed(!isCollapsed)
-
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsOpen(!isOpen)}
+        >
           <Menu className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
@@ -41,27 +45,29 @@ const CollapsibleSidebar = () => {
             <nav className="space-y-2">
               {navItems.map((item) => (
                 <SidebarItem
+                  isCollapsed={isCollapsed}
                   key={item.href}
                   item={item}
-                  isCollapsed={isCollapsed}
                 />
               ))}
             </nav>
           </ScrollArea>
+
           <Button
             variant="ghost"
             className={cn(
-              'absolute bottom-4 left-1/2 transform -translate-x-1/2',
-              'bg-background border border-input'
+              'hidden md:block absolute bottom-4 transform',
+              'bg-background border border-input',
+              'left-1/2 -translate-x-1/2'
             )}
-            onClick={toggleCollapse}
+            onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            {isCollapsed ? (
-              <ChevronLeft className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            {isCollapsed
+              ? (<ChevronLeft className="h-4 w-4" />)
+              : (<ChevronRight className="h-4 w-4" />)
+            }
           </Button>
+
         </aside>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -73,12 +79,26 @@ export default CollapsibleSidebar
 const navItems: NavItem[] = [
   {
     href: '/',
-    icon: <Home />,
-    label: 'Inicio',
+    label: 'Home',
+    icon: <Home className="w-5 h-5" />
   },
   {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
+    href: '/documents',
+    label: 'Documents',
+    icon: <FileText className="w-5 h-5" />,
+    subItems: [
+      { icon: <FileText className="w-4 h-4" />, label: 'Reports', href: '/documents/reports' },
+      { icon: <FileText className="w-4 h-4" />, label: 'Invoices', href: '/documents/invoices' },
+    ]
+  },
+  {
+    href: '/settings',
+    label: 'Settings',
+    icon: <Settings className="w-5 h-5" />
+  },
+  {
+    href: '/help',
+    label: 'Help',
+    icon: <HelpCircle className="w-5 h-5" />
   }
 ]
