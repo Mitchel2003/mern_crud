@@ -57,9 +57,9 @@ const CollapsibleSidebar = () => {
             onClick={toggleCollapse}
           >
             {isCollapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
               <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
             )}
           </Button>
         </aside>
@@ -80,75 +80,5 @@ const navItems: NavItem[] = [
     href: '/dashboard',
     icon: <LayoutDashboardIcon />,
     label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard', 
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
-  {
-    href: '/dashboard',
-    icon: <LayoutDashboardIcon />,
-    label: 'Dashboard',
-  },
+  }
 ]
