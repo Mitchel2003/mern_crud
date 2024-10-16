@@ -14,30 +14,6 @@ export default {
   ],
   theme: {
     extend: {
-      // Permite a Tailwind generar las clases de utilidad para las fuentes,
-      // ayuda a integrar las fuentes con el sistema de Tailwind, permitiendo su uso en variantes.
-      // asegura que estas clases estén disponibles en toda la aplicación sin definirlas manualmente en CSS.
-      fontFamily: {
-        'montserrat': ['Montserrat', 'sans-serif'],
-        'roboto-slab': ['Roboto Slab', 'serif']
-      },
-
-      animation: {
-        'gradient-shift': 'gradient-shift 15s ease infinite',
-      },
-      keyframes: {
-        'gradient-shift': {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-        },
-      },
-      gradient: {
-        'middle1': '#faf5ff', // purple-50
-        'middle2': '#f3e8ff', // purple-100
-        'middle3': '#e9d5ff', // purple-200
-      },
-
-
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -84,7 +60,32 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
         }
-      }
+      },
+
+      /*--------------------------------------------------tools--------------------------------------------------*/
+      // Permite a Tailwind generar las clases de utilidad para las fuentes,
+      // ayuda a integrar las fuentes con el sistema de Tailwind, permitiendo su uso en variantes.
+      // asegura que estas clases estén disponibles en toda la aplicación sin definirlas manualmente en CSS.
+      fontFamily: {
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'roboto-slab': ['Roboto Slab', 'serif']
+      },
+
+      //animations (disable)
+      // animation: {
+      //   'gradient-shift': 'gradient-shift 15s ease infinite',
+      // },
+      // keyframes: {
+      //   'gradient-shift': {
+      //     '0%, 100%': { backgroundPosition: '0% 50%' },
+      //     '50%': { backgroundPosition: '100% 50%' },
+      //   },
+      // },
+      // gradient: {
+      //   'middle1': '#faf5ff', // purple-50
+      //   'middle2': '#f3e8ff', // purple-100
+      //   'middle3': '#e9d5ff', // purple-200
+      // },
     }
   },
   plugins: [require("tailwindcss-animate")],

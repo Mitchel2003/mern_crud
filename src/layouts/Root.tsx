@@ -10,7 +10,7 @@ const RootLayout = () => {
   return (
     <>
       {/* background animation */}
-      <div className={`min-h-screen flex flex-col bg-gradient-to-br bg-[length:400%_200%] animate-gradient-shift
+      <div className={`min-h-screen flex flex-col bg-gradient-to-br
         ${theme === 'dark'
           ? 'from-zinc-800/60 via-purple-800/40 to-purple-950/70'
           : 'from-white via-purple-100 to-white'
