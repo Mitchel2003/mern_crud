@@ -1,4 +1,4 @@
-import { loginRequest, registerRequest, tokenCredentialsRequest } from "@/api/auth";
+import { loginRequest, registerRequest, verifyAuthRequest } from "@/api/auth";
 import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
 import { User, AuthContext } from "@/interfaces/context.interface";
 import { Props } from "@/interfaces/props.interface";
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const verifyToken = async () => {
     if (!Cookies.get().token) return setAuthStatus()
     try {
-      const res = await tokenCredentialsRequest();
+      const res = await verifyAuthRequest();
       setAuthStatus(res);
     } catch (e: unknown) {
       if (isAxiosResponse(e)) setErrors([e.response?.data])
