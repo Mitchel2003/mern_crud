@@ -1,13 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { CurriculumProvider } from "@/context/CurriculumContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
-import { TaskProvider } from "@/context/TaskContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
+import CurriculumForm from "@/pages/CurriculumForm";
+import Curriculums from "@/pages/Curriculums";
 import Maintenance from "@/pages/Maintenance";
-import TaskForm from "@/pages/TaskForm";
 import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import Login from "@/pages/Login";
@@ -17,26 +18,29 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <TaskProvider>
+        <CurriculumProvider>
 
           <BrowserRouter>
             <Routes>
               <Route element={<RootLayout />}>
+                {/* home and auth */}
                 <Route path="/" index element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/maintenance" element={<Maintenance />} />
 
                 <Route element={<ProtectedRoute />}>
+                  {/* user routes */}
                   <Route path="/profile" element={<Profile />} />
-                  <Route path="/task/:id" element={<TaskForm />} />
-                  {/* <Route path="/tasks" element={<Tasks />} /> */}
+                  {/* formats */}
+                  <Route path="/cvs" element={<Curriculums />} />
+                  <Route path="/cv/:id" element={<CurriculumForm />} />
+                  <Route path="/maintenance/:id" element={<Maintenance />} />
                 </Route>
               </Route>
             </Routes>
           </BrowserRouter>
 
-        </TaskProvider>
+        </CurriculumProvider>
       </AuthProvider>
     </ThemeProvider >
   )

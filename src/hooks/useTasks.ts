@@ -1,17 +1,17 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { CustomMutation, QueryReact } from "../interfaces/props.interface";
+import { CustomMutation_Task, QueryReact_Task } from "../interfaces/props.interface";
 import { useTaskContext } from "../context/TaskContext";
 
 /*--------------------------------------------------useQuery--------------------------------------------------*/
 /**
  * Con este método podemos usar el hook "ReactQuery" para manejar consultas y mutaciones de datos de forma reactiva; usamos axios para operar las solicitudes
- * @returns {QueryReact} proporciona métodos que implementan useQueryResult
+ * @returns {QueryReact_Task} proporciona métodos que implementan useQueryResult
  * @example
  *  const { fetchTask } = useQueryReact();
  *  const { data: task, error, isLoading } = fetchTask(id_task);
  * @description a través de una clave "queryKey" podemos manejar el estado;
  */
-export function useQueryReact(): QueryReact {
+export function useQueryReact(): QueryReact_Task {
   /**
    * Ejecuta una solicitud de una tarea por su id
    * @param id - Corresponde al "_id" de la tarea en el contexto
@@ -44,7 +44,7 @@ export function useQueryReact(): QueryReact {
  *  const mutation = useCustomMutation().create();
  *  mutation.mutate(id);
  */
-export function useCustomMutation(): CustomMutation {
+export function useCustomMutation(): CustomMutation_Task {
   // para usar QueryClientProvider
   const queryClient = useQueryClient();
   /**

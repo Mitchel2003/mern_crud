@@ -2,8 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 
-import { useQueryReact, useCustomMutation } from "../hooks/useTasks";
-import { useTaskContext } from "../context/TaskContext";
+import { useQueryReact, useCustomMutation } from "@/hooks/useTasks";
+import { useTaskContext } from "@/context/TaskContext";
 import { FieldValues } from 'react-hook-form';
 import utc from "dayjs/plugin/utc"
 import dayjs from "dayjs";
@@ -21,7 +21,7 @@ function TaskForm() {
   useEffect(() => { if (mutation.isSuccess) navigate('/tasks') }, [mutation.isSuccess])
   useEffect(() => { setInputValues() }, [task]);
 
-  /** Function to handle onClick */
+  /** Función para manejar onClick */
   const onSubmit = handleSubmit(async (values) => mutation.mutate(schemaTask(values)));
   const setInputValues = () => {
     if (!task || id === 'new') return;
@@ -29,7 +29,6 @@ function TaskForm() {
     setValue('description', task.description);
     setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
   }
-
   if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
   if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
 
@@ -40,33 +39,33 @@ function TaskForm() {
 
       <form onSubmit={onSubmit}>
 
-        <label> Title </label>
+        <label> Título </label>
         <input
           type="text"
-          placeholder="Title"
+          placeholder="Título"
           className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
           {...register('title', { required: true })}
         />
 
-        {errsForm.title && (<p className="text-red-500">Title is required</p>)}
+        {errsForm.title && (<p className="text-red-500">El título es requerido</p>)}
 
-        <label> Description </label>
+        <label> Descripción </label>
         <textarea
-          placeholder="Description"
+          placeholder="Descripción"
           className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
           {...register('description', { required: true })}
         />
 
-        {errsForm.description && (<p className="text-red-500">Description is required</p>)}
+        {errsForm.description && (<p className="text-red-500">La descripción es requerida</p>)}
 
-        <label> Date </label>
+        <label> Fecha </label>
         <input
           type="date"
           className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
           {...register('date')}
         />
 
-        <button type="submit" className="bg-indigo-500 px-3 py-2 mt-3 rounded-md"> Save </button>
+        <button type="submit" className="bg-indigo-500 px-3 py-2 mt-3 rounded-md"> Guardar </button>
 
       </form>
     </div>
@@ -74,16 +73,17 @@ function TaskForm() {
 }
 
 export default TaskForm
+
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Helps us to build a task format and send request like create or update
- * @param values its a data object that represent the fields on form context
- * @returns {object} a object that mean the task schema to use on request
+ * Nos ayuda a construir un formato de tarea y enviar solicitudes como crear o actualizar
+ * @param values es un objeto de datos que representa los campos en el contexto del formulario
+ * @returns {object} un objeto que significa el esquema de tarea a utilizar en la solicitud
  */
 function schemaTask(values: FieldValues): object { return { ...values, date: dateFormat(values.date) } }
 /**
- * Allows us obtain the date formated from client side (<input type="date"/>)
- * @param date Correspond to date in string format (DD/MM/YYYY)
- * @returns {Date} its a date; if the input dont have something this method returns the current date 
+ * Nos permite obtener la fecha formateada desde el lado del cliente (<input type="date"/>)
+ * @param date Corresponde a la fecha en formato de cadena (DD/MM/YYYY)
+ * @returns {Date} es una fecha; si la entrada no tiene algo, este método devuelve la fecha actual 
  */
 function dateFormat(date?: string): Date { return new Date(dayjs.utc(date || undefined).format()) }

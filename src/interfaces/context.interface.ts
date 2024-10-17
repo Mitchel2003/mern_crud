@@ -23,6 +23,37 @@ export type AuthContext = {
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------CurriculumContext--------------------------------------------------*/
+export type Curriculum = {
+  _id: string;
+} | undefined
+
+export type TypeCurriculum = {
+  (id: string): Promise<Curriculum>
+}
+export type TypeCurriculums = {
+  (): Promise<Curriculum[]>
+}
+export type CreateCurriculum = {
+  (Curriculum: object): Promise<Curriculum>
+}
+export type UpdateCurriculum = {
+  (id: string, Curriculum: object): Promise<Curriculum>
+}
+export type DeleteCurriculum = {
+  (id: string): Promise<Curriculum>
+}
+
+export type CurriculumContext = {
+  errors: string[];
+  getCV: TypeCurriculum;
+  getCVs: TypeCurriculums;
+  createCV: CreateCurriculum;
+  updateCV: UpdateCurriculum;
+  deleteCV: DeleteCurriculum;
+} | undefined
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------TaskContext--------------------------------------------------*/
 export type Task = {
   _id: string;

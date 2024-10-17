@@ -12,8 +12,8 @@ const Theme = () => {
       onClick={toggleTheme}
       className={`rounded-full transition-colors duration-300 
         ${theme === 'dark'
-          ? 'bg-zinc-700 text-yellow-500 hover:bg-zinc-600'
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          ? 'bg-zinc-700/40 text-yellow-500 hover:bg-zinc-600'
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
     >
       {theme === 'dark'

@@ -1,14 +1,15 @@
-import { Menu, ChevronLeft, ChevronRight, Home, FileText, Settings, HelpCircle } from 'lucide-react'
+import { Menu, ChevronLeft, ChevronRight, Home, FileText, LogIn } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '#/ui/dropdown-menu'
-import { SidebarItem, NavItem } from '#/others/SidebarItem'
 import { ScrollArea } from '#/ui/scroll-area'
+import SidebarItem from '#/sidebar/Items'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'
 
+import { NavItemProps } from '@/interfaces/props.interface'
 import { useThemeContext } from '@/context/ThemeContext'
 import { useState } from 'react'
 
-const CollapsibleSidebar = () => {
+const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const { theme } = useThemeContext()
@@ -74,31 +75,22 @@ const CollapsibleSidebar = () => {
   )
 }
 
-export default CollapsibleSidebar
+export default Sidebar
 
-const navItems: NavItem[] = [
+const navItems: NavItemProps[] = [
   {
     href: '/',
     label: 'Home',
     icon: <Home className="w-5 h-5" />
   },
   {
-    href: '/documents',
-    label: 'Documents',
-    icon: <FileText className="w-5 h-5" />,
-    subItems: [
-      { icon: <FileText className="w-4 h-4" />, label: 'Reports', href: '/documents/reports' },
-      { icon: <FileText className="w-4 h-4" />, label: 'Invoices', href: '/documents/invoices' },
-    ]
+    href: '/login',
+    label: 'Iniciar sesión',
+    icon: <LogIn className="w-5 h-5" />
   },
   {
-    href: '/settings',
-    label: 'Settings',
-    icon: <Settings className="w-5 h-5" />
-  },
-  {
-    href: '/help',
-    label: 'Help',
-    icon: <HelpCircle className="w-5 h-5" />
+    href: '/register',
+    label: 'Curriculum',
+    icon: <FileText className="w-5 h-5" />
   }
 ]

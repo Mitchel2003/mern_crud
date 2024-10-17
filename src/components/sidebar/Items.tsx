@@ -1,21 +1,16 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
-import { Link, useLocation } from 'react-router-dom'
 import { Button } from "#/ui/button"
 
-export interface NavItem {
-  icon: React.ReactNode
-  label: string
-  href: string
-  subItems?: NavItem[]
-}
+import { NavItemProps } from "@/interfaces/props.interface"
+import { Link, useLocation } from 'react-router-dom'
 
-interface SidebarItemProps {
-  item: NavItem
+interface SidebarItemsProps {
+  item: NavItemProps
   isCollapsed: boolean
   depth?: number
 }
 
-export const SidebarItem = ({ item, isCollapsed, depth = 0 }: SidebarItemProps) => {
+const SidebarItems = ({ item, isCollapsed, depth = 0 }: SidebarItemsProps) => {
   const location = useLocation()
   const isActive = location.pathname === item.href
 
@@ -30,7 +25,7 @@ export const SidebarItem = ({ item, isCollapsed, depth = 0 }: SidebarItemProps) 
   )
 
   return (
-    <div>
+    <>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -45,10 +40,11 @@ export const SidebarItem = ({ item, isCollapsed, depth = 0 }: SidebarItemProps) 
           )}
         </Tooltip>
       </TooltipProvider>
+
       {item.subItems && !isCollapsed && (
         <div className="ml-4">
           {item.subItems.map(subItem => (
-            <SidebarItem
+            <SidebarItems
               key={subItem.href}
               item={subItem}
               isCollapsed={isCollapsed}
@@ -57,6 +53,8 @@ export const SidebarItem = ({ item, isCollapsed, depth = 0 }: SidebarItemProps) 
           ))}
         </div>
       )}
-    </div>
+    </>
   )
 }
+
+export default SidebarItems

@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isAuth) navigate('/tasks')
+    if (isAuth) navigate('/cvs')
   }, [isAuth, navigate])
 
   return (

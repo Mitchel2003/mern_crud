@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 import gsIcon from '@/assets/gs_icon.ico'
 import ThemeToggle from '#/others/Theme'
-import Sidebar from '#/others/Sidebar'
+import Sidebar from '#/sidebar'
 
 const Navbar = () => {
   const { isAuth } = useAuthContext()
