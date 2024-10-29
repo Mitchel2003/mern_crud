@@ -14,6 +14,9 @@ import Profile from "@/pages/Profile";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 
+import VerifyEmail from "@/pages/auth/VerifyEmail";
+import ResetPassword from "@/pages/auth/ResetPassword";
+
 function App() {
   return (
     <ThemeProvider>
@@ -27,6 +30,8 @@ function App() {
                 <Route path="/" index element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email/:email/:token" element={<VerifyEmail />} />
 
                 <Route element={<ProtectedRoute />}>
                   {/* user routes */}
