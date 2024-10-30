@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "https://mern-crud-mitchels-projects-e79670f5.vercel.app/"
     }
   ]
 }
