@@ -31,16 +31,16 @@ function App() {
                 <Route path="/auth/login" element={<Login />} />
                 <Route path="/auth/register" element={<Register />} />
                 <Route path="/auth/verify-action" element={<VerifyAction />} />
-                
+
                 {/* mean while */}
                 <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                <Route path="/form/maintenance/:id" element={<Maintenance />} />
 
                 <Route element={<ProtectedRoute />}>
                   {/* user routes */}
                   <Route path="/user/profile" element={<Profile />} />
                   {/* forms routes */}
                   <Route path="/form/cvs" element={<Curriculums />} />
-                  <Route path="/form/maintenance/:id" element={<Maintenance />} />
                 </Route>
               </Route>
             </Routes>
