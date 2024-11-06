@@ -64,7 +64,6 @@ const Sidebar = () => {
           </ScrollArea>
 
           <Button
-            size="icon"
             variant="ghost"
             className={cn(
               'hidden md:block absolute bottom-4 transform',
