@@ -33,7 +33,7 @@ const StatusCheck = ({
         iconSpan={iconSpan}
       />
 
-      <div className="flex flex-row gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {options.map((option) => (
           <button
             type="button"
