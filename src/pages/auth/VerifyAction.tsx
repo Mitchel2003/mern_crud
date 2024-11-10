@@ -15,6 +15,10 @@ function VerifyAction() {
 
   const validateAction = async () => {
     const userCredentials = getParams(continueUrl)
+
+    console.log(mode);
+    console.log(oobCode);
+    console.log(userCredentials);
     const res = await verifyActionRequest(mode || '', { ...userCredentials, oobCode })
     toast({
       title: 'request success',
