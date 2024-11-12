@@ -20,7 +20,7 @@ export default function VerifyEmail() {
     setLoading(false);
   }
   if (loading) return <div>Verificando email...</div>
-  if (data) return <div>{JSON.stringify(data)}</div>
-  
+  if (data) console.log(data)
+
   return <div>Email verificado correctamente</div>
 }
