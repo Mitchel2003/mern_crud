@@ -1,31 +1,13 @@
 import { useSearchParams } from 'react-router-dom'
-import { verifyActionRequest } from '@/api/auth'
-import { getParams } from '@/utils/urlParser'
-import { useToast } from '@/hooks/use-toast'
-import { useEffect } from 'react'
+import ResetPassword from './ResetPassword'
+import VerifyEmail from './VerifyEmail'
 
 function VerifyAction() {
-  const [searchParams] = useSearchParams()
-  const continueUrl = searchParams.get('continueUrl')
-  const oobCode = searchParams.get('oobCode')
+  const [searchParams] = useSearchParams()  
   const mode = searchParams.get('mode')
-  const { toast } = useToast();
 
-  useEffect(() => { validateAction() }, [])
-
-  const validateAction = async () => {
-    const userCredentials = getParams(continueUrl)
-
-    console.log(mode);
-    console.log(oobCode);
-    console.log(userCredentials);
-    const res = await verifyActionRequest(mode || '', { ...userCredentials, oobCode })
-    toast({
-      title: 'request success',
-      description: `${res.data}`,
-      variant: 'default'
-    })
-  }
+  if (mode === 'verifyEmail') return <VerifyEmail />
+  if (mode === 'resetPassword') return <ResetPassword />
 
   return <div>Verificando acción...</div>
 }
