@@ -10,7 +10,13 @@ export type ThemeContextProps = { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
-export type User = { _id: string, username: string, email: string } | undefined
+export type User = {
+  _id: string,
+  role: string,
+  email: string,
+  username: string,
+  permissions: object
+} | undefined
 
 export type AuthContext = {
   user: User;
