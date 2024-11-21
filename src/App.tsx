@@ -6,9 +6,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
-import CurriculumForm from "@/pages/CurriculumForm";
 import VerifyAction from "@/pages/auth/VerifyAction";
-import Curriculums from "@/pages/Curriculums";
+import CurriculumForm from "@/pages/CurriculumForm";
 import Maintenance from "@/pages/Maintenance";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
@@ -34,14 +33,13 @@ function App() {
                 <Route path="/auth/verify-action" element={<VerifyAction />} />
 
                 {/* mean while */}
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/form/cv/:id" element={<CurriculumForm />} />
                 <Route path="/form/maintenance/:id" element={<Maintenance />} />
-                <Route path="/dashboard" element={<Dashboard />} />
 
                 <Route element={<ProtectedRoute />}>
                   {/* forms routes */}
-                  <Route path="/form/cvs" element={<Curriculums />} />
                 </Route>
               </Route>
             </Routes>

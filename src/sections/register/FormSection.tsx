@@ -1,18 +1,24 @@
 import { LoginComponentsProps } from '@/interfaces/props.interface'
-
+import SelectField from '#/reusables/fields/Select'
 import InputField from '#/reusables/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
-import { cn } from '@/lib/utils'
 
-import { LogIn, Lock, UserPlus, ChevronRight } from 'lucide-react'
+import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { cn } from '@/lib/utils'
 
 const FormSection = ({ theme }: LoginComponentsProps) => {
   const navigate = useNavigate()
 
   return (
     <CardContent className="space-y-6">
+      <InputField
+        name="username"
+        label="Nombre de usuario"
+        placeholder="Nombre de usuario"
+        theme={theme}
+      />
       <InputField
         name="email"
         type="email"
@@ -28,6 +34,13 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         icon={Lock}
         theme={theme}
       />
+      <SelectField
+        name='role'
+        label='Rol del usuario'
+        theme={theme}
+        options={['admin', 'engineer']}
+        placeholder='Seleccionar rol'
+      />
 
       {/* -------------------- Submit -------------------- */}
       <Button
@@ -40,13 +53,13 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
             : 'bg-purple-800 hover:bg-purple-900'
         )}
       >
-        Iniciar sesión <ChevronRight className="ml-2 h-4 w-4" />
+        Registrar cuenta <UserPlus className="ml-2 h-4 w-4" />
       </Button>
 
-      {/* -------------------- go to register -------------------- */}
+      {/* -------------------- go to login -------------------- */}
       <Button
         type="button"
-        onClick={() => navigate('/auth/register')}
+        onClick={() => navigate('/auth/login')}
         className={cn(
           'text-white w-full',
           'transition-all duration-300 transform hover:scale-105',
@@ -55,7 +68,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
             : 'bg-purple-400 hover:bg-purple-500'
         )}
       >
-        Registrarse <UserPlus className="ml-2 h-4 w-4" />
+        Ya tengo una cuenta <LogIn className="ml-2 h-4 w-4" />
       </Button>
     </CardContent>
   )

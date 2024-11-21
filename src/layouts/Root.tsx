@@ -1,8 +1,10 @@
 import { AnimatedBackground } from '#/others/background/AnimatedBackground'
-import { useThemeContext } from '@/context/ThemeContext'
-import { Outlet } from 'react-router-dom'
+import { Toaster } from '#/ui/toaster'
 import Navbar from '#/others/Navbar'
 import Footer from '#/others/Footer'
+
+import { useThemeContext } from '@/context/ThemeContext'
+import { Outlet } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 const RootLayout = () => {
@@ -18,6 +20,7 @@ const RootLayout = () => {
       >
         <Outlet />
       </main>
+      <Toaster />
       <Footer theme={theme} />
     </AnimatedBackground>
   )

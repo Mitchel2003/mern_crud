@@ -40,7 +40,7 @@ const HeaderNavbar = ({ isAuth }: HeaderNavbarProps) => {
       <span className="flex items-center justify-center w-14 h-14 mr-2">
         <img src={gsIcon} alt="GS Icon" />
       </span>
-      <h1 className="text-2xl font-roboto-slab">
+      <h1 className="text-2xl">
         {isAuth ? 'Dashboard' : 'Gestión salud'}
       </h1>
     </Link>

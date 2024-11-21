@@ -9,12 +9,12 @@ const Register = () => {
   const { isAuth } = useAuthContext()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (isAuth) navigate('/cvs')
-  }, [isAuth, navigate])
+  useEffect(() => { if (isAuth) navigate('/dashboard') }, [isAuth])
 
   return (
-    <RegisterSection theme={theme} />
+    <div className="w-full max-w-md relative">
+      <RegisterSection theme={theme} />
+    </div>
   )
 }
 

@@ -1,11 +1,12 @@
-import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
 import { AuthContext, User } from "@/interfaces/context.interface";
+import { isAxiosResponse } from "@/interfaces/response.interface";
 import { Props } from "@/interfaces/props.interface";
 
 import { loginRequest, registerRequest, verifyAuthRequest } from "@/api/auth";
 import { createContext, useContext, useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
+import { useNotification } from "@/hooks/useNotification"
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -26,6 +27,7 @@ export const useAuthContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de autenticación.
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
+  const { notifySuccess, notifyError, notifyInfo } = useNotification()
   const [errors, setErrors] = useState<string[]>([]);
   const [user, setUser] = useState<User>(undefined);
   const [loading, setLoading] = useState(true);
@@ -43,26 +45,42 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /** Verifica el token de autenticación almacenado en las cookies */
   const verifyToken = async () => {
-    if (!Cookies.get().token) return setAuthStatus()
+    if (!Cookies.get().token) return setStatus()
     try {
       const res = await verifyAuthRequest();
-      setAuthStatus(res);
+      setStatus(res);
     } catch (e: unknown) {
-      if (isAxiosResponse(e)) setErrors([e.response?.message])
-      if (isApiResponse(e)) setErrors([e.message])
-      setAuthStatus()
+      if (isAxiosResponse(e)) {
+        notifyError({
+          title: "Error de autenticación",
+          message: e.response?.message
+        })
+      }
+      setStatus()
     }
   }
 
   /**
    * Inicia sesión con las credenciales del usuario.
-   * @param {object} credentials - Las credenciales del usuario.
+   * @param {object} data - Las credenciales del usuario.
    */
-  const signin = async (credentials: object) => {
+  const signin = async (data: object) => {
+    setLoading(true)
     try {
-      const res = await loginRequest(credentials);
-      setAuthStatus(res)
-    } catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
+      const res = await loginRequest(data);
+      setStatus(res)
+      notifySuccess({
+        title: "¡Bienvenido!",
+        message: "Has iniciado sesión correctamente"
+      })
+    } catch (e: unknown) {
+      if (isAxiosResponse(e)) {
+        notifyError({
+          title: "Error al iniciar sesión",
+          message: e.response.message
+        })
+      }
+    } finally { setLoading(false) }
   }
 
   /**
@@ -70,20 +88,39 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Los datos del nuevo usuario.
    */
   const signup = async (data: object) => {
+    setLoading(true)
     try {
       const res = await registerRequest(data);
-      setAuthStatus(res)
-    } catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
+      setStatus(res)
+      notifySuccess({
+        title: "¡Registro exitoso!",
+        message: "Tu cuenta ha sido creada correctamente"
+      })
+    } catch (e: unknown) {
+      if (isAxiosResponse(e)) {
+        notifyError({
+          title: "Error en el registro",
+          message: e.response.message
+        })
+      }
+    } finally { setLoading(false) }
   }
 
   /** Cierra la sesión del usuario actual */
-  const logout = () => { Cookies.remove('token'); setAuthStatus() }
+  const logout = () => {
+    Cookies.remove('token')
+    setStatus()
+    notifyInfo({
+      title: "Sesión cerrada",
+      message: "Has cerrado sesión correctamente"
+    })
+  }
 
   /**
    * Actualiza el estado de autenticación basado en la respuesta del servidor.
    * @param {AxiosResponse} [res] - La respuesta del servidor.
    */
-  const setAuthStatus = (res?: AxiosResponse) => {
+  const setStatus = (res?: AxiosResponse) => {
     setIsAuth(Boolean(res?.data))
     setUser(res?.data ?? {})
     setLoading(false)
