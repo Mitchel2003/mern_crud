@@ -69,7 +69,6 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
               theme={theme}
               name="equipmentImage"
               label="Imagen del Equipo"
-              control={methods.control}
             />
           </div>
         </div>
