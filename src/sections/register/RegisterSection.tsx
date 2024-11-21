@@ -6,25 +6,14 @@ import FormSection from "./FormSection"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useRegisterForm } from "@/hooks/auth/useRegisterForm"
-import { useAuthContext } from "@/context/AuthContext"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
 const RegisterSection = ({ theme }: ThemeContextProps) => {
-  const { errors: authErrors = [] } = useAuthContext()
   const { methods, onSubmit } = useRegisterForm()
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={onSubmit}>
-        {/* -------------------- Render errors -------------------- */}
-        {authErrors.map((error, index) => (
-          <div key={index} className="bg-red-500 text-white text-center my-2 p-2 rounded">
-            {error}
-          </div>
-        ))}
-
-        {/* -------------------- Container card -------------------- */}
         <Card
           className={cn(
             'relative w-full my-10',

@@ -94,7 +94,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   }
 
   return (
-    <Curriculum.Provider value={{ errors, getCV, getCVs, createCV, updateCV, deleteCV }}>
+    <Curriculum.Provider value={{ getCV, getCVs, createCV, updateCV, deleteCV }}>
       {children}
     </Curriculum.Provider>
   )

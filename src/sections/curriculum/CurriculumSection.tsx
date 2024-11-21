@@ -16,7 +16,6 @@ import BasicDataSection from "./BasicDataSection"
 
 import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCurriculumContext } from "@/context/CurriculumContext"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { cn } from "@/lib/utils"
 
@@ -28,7 +27,6 @@ import { useEffect } from "react"
 interface CurriculumSectionProps extends ThemeContextProps { }
 
 const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
-  const { errors } = useCurriculumContext()
   const { id = 'new' } = useParams()
   const navigate = useNavigate()
   const form = useForm()
@@ -53,11 +51,6 @@ const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit}>
-
-        {/* Render errors */}
-        {errors.map((e, i) => (<div key={i} className="bg-red-500 text-white"> {e} </div>))}
-
-        {/* Component curriculum */}
         <Card
           id="curriculum-form"
           className={cn(
