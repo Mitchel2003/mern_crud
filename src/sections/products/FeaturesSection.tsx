@@ -1,7 +1,11 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { FeatureItem } from '@/types/form/product.type'
-import { features } from '@/utils/constants'
 import { cn } from '@/lib/utils'
+
+interface FeatureItem {
+  icon: string
+  title: string
+  description: string
+} 
 
 export const FeaturesSection = ({ theme }: ThemeContextProps) => {
   return (
@@ -36,4 +40,27 @@ const FeatureCard = ({ theme, feature }: FeatureCardProps) => (
       )}
     > {feature.description} </p>
   </div >
-) 
+)
+
+const features: FeatureItem[] = [
+  {
+    title: '¡Novedad para ti!',
+    icon: '/assets/features/novedad.png',
+    description: 'Descubre los últimos productos',
+  },
+  {
+    icon: '/assets/features/emprendedor.png',
+    title: 'Emprendedores',
+    description: 'Por nuestros emprendedores',
+  },
+  {
+    title: 'Más vendidos',
+    icon: '/assets/features/mas-vendidos.png',
+    description: 'Los favoritos de nuestros clientes',
+  },
+  {
+    title: 'Garantía',
+    icon: '/assets/features/garantia.png',
+    description: '30 días de garantía en productos seleccionados',
+  },
+]

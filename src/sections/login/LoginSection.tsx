@@ -4,7 +4,7 @@ import { Card } from '#/ui/card'
 import FooterSection from './FooterSection'
 import FormSection from './FormSection'
 
-import { loginSchema, LoginFormProps } from '@/schemas/auth/login.schema'
+import { loginSchema, LoginFormProps } from '@/schemas/auth/auth.schema'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useAuthContext } from '@/context/AuthContext'

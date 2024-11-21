@@ -7,9 +7,9 @@ export const loginSchema = z.object({
 
 export const registerSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
   username: z.string().min(3),
-  role: z.enum(["admin", "engineer"])
+  password: z.string().min(6),
+  role: z.string().optional().default("engineer")
 })
 
 export type LoginFormProps = z.infer<typeof loginSchema>

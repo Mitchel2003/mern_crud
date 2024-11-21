@@ -1,23 +1,13 @@
-import { RegisterFormProps, registerSchema } from "@/schemas/auth/register.schema"
+import { registerSchema, RegisterFormProps } from "@/schemas/auth/auth.schema"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 const defaultValues = {
-  accessCredentials: {
-    email: '',
-    password: ''
-  },
-  businessData: {
-    name: '',
-    phone: '',
-    address: '',
-    description: '',
-  },
-  references: {
-    photoUrl: { place: [] },
-    socialNetworks: []
-  }
+  role: '',
+  email: '',
+  username: '',
+  password: ''
 }
 
 export const useRegisterForm = () => {
@@ -29,6 +19,6 @@ export const useRegisterForm = () => {
     defaultValues
   })
 
-  const onSubmit = methods.handleSubmit(async (data: RegisterFormProps) => await signup(data))
+  const onSubmit = methods.handleSubmit(async (data: object) => await signup(data))
   return { methods, onSubmit }
 }

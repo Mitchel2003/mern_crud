@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { CurriculumProvider } from "@/context/CurriculumContext";
-import { ProductProvider } from "@/context/ProductContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
@@ -21,36 +20,34 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <ProductProvider>
-          <CurriculumProvider>
+        <CurriculumProvider>
 
-            <BrowserRouter>
-              <Routes>
-                <Route element={<RootLayout />}>
-                  {/* home index */}
-                  <Route path="/" index element={<Home />} />
+          <BrowserRouter>
+            <Routes>
+              <Route element={<RootLayout />}>
+                {/* home index */}
+                <Route path="/" index element={<Home />} />
 
-                  {/* auth routes */}
-                  <Route path="/auth/login" element={<Login />} />
-                  <Route path="/auth/register" element={<Register />} />
-                  <Route path="/auth/verify-action" element={<VerifyAction />} />
+                {/* auth routes */}
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/register" element={<Register />} />
+                <Route path="/auth/verify-action" element={<VerifyAction />} />
 
-                  {/* mean while */}
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                  <Route path="/form/maintenance/:id" element={<Maintenance />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
+                {/* mean while */}
+                <Route path="/products" element={<Products />} />
+                <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                <Route path="/form/maintenance/:id" element={<Maintenance />} />
+                <Route path="/dashboard" element={<Dashboard />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    {/* forms routes */}
-                    <Route path="/form/cvs" element={<Curriculums />} />
-                  </Route>
+                <Route element={<ProtectedRoute />}>
+                  {/* forms routes */}
+                  <Route path="/form/cvs" element={<Curriculums />} />
                 </Route>
-              </Routes>
-            </BrowserRouter>
+              </Route>
+            </Routes>
+          </BrowserRouter>
 
-          </CurriculumProvider>
-        </ProductProvider>
+        </CurriculumProvider>
       </AuthProvider>
     </ThemeProvider >
   )
