@@ -4,9 +4,9 @@ import { Props } from "@/interfaces/props.interface";
 
 import { loginRequest, registerRequest, verifyAuthRequest } from "@/api/auth";
 import { createContext, useContext, useState, useEffect } from "react";
+import { useNotification } from "@/hooks/toast/useNotification"
 import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { useNotification } from "@/hooks/useNotification"
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -27,21 +27,12 @@ export const useAuthContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de autenticación.
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
-  const { notifySuccess, notifyError, notifyInfo } = useNotification()
-  const [errors, setErrors] = useState<string[]>([]);
-  const [user, setUser] = useState<User>(undefined);
-  const [loading, setLoading] = useState(true);
-  const [isAuth, setIsAuth] = useState(false);
+  const { Success, Error, Info } = useNotification()
+  const [user, setUser] = useState<User>(undefined)
+  const [loading, setLoading] = useState(true)
+  const [isAuth, setIsAuth] = useState(false)
 
-  useEffect(() => timeAlert(), [errors])
   useEffect(() => { verifyToken() }, [])
-
-  /** Configura un temporizador para limpiar los errores después de 5 segundos */
-  const timeAlert = () => {
-    if (errors.length === 0) return;
-    const timer = setTimeout(() => setErrors([]), 5000);
-    return () => clearTimeout(timer);
-  }
 
   /** Verifica el token de autenticación almacenado en las cookies */
   const verifyToken = async () => {
@@ -50,13 +41,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       const res = await verifyAuthRequest();
       setStatus(res);
     } catch (e: unknown) {
-      if (isAxiosResponse(e)) {
-        notifyError({
-          title: "Error de autenticación",
-          message: e.response?.message
-        })
-      }
       setStatus()
+      isAxiosResponse(e) &&
+        Error({ title: "Error de autenticación", message: e.response.data.message })
     }
   }
 
@@ -69,18 +56,12 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     try {
       const res = await loginRequest(data);
       setStatus(res)
-      notifySuccess({
-        title: "¡Bienvenido!",
-        message: "Has iniciado sesión correctamente"
-      })
+      Success({ title: "¡Bienvenido!", message: "Has iniciado sesión correctamente" })
     } catch (e: unknown) {
-      if (isAxiosResponse(e)) {
-        notifyError({
-          title: "Error al iniciar sesión",
-          message: e.response.message
-        })
-      }
-    } finally { setLoading(false) }
+      setStatus()
+      isAxiosResponse(e) &&
+        Error({ title: "Error al iniciar sesión", message: e.response.data.message })
+    }
   }
 
   /**
@@ -90,35 +71,24 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const signup = async (data: object) => {
     setLoading(true)
     try {
-      const res = await registerRequest(data);
-      setStatus(res)
-      notifySuccess({
-        title: "¡Registro exitoso!",
-        message: "Tu cuenta ha sido creada correctamente"
-      })
+      await registerRequest(data);
+      Success({ title: "¡Registro exitoso!", message: "Mira tu correo y activa tu cuenta" })
     } catch (e: unknown) {
-      if (isAxiosResponse(e)) {
-        notifyError({
-          title: "Error en el registro",
-          message: e.response.message
-        })
-      }
-    } finally { setLoading(false) }
+      isAxiosResponse(e) &&
+        Error({ title: "Error en el registro", message: e.response.data.message })
+    } finally { setStatus() }
   }
 
   /** Cierra la sesión del usuario actual */
   const logout = () => {
-    Cookies.remove('token')
     setStatus()
-    notifyInfo({
-      title: "Sesión cerrada",
-      message: "Has cerrado sesión correctamente"
-    })
+    Cookies.remove('token')
+    Info({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
   }
 
   /**
    * Actualiza el estado de autenticación basado en la respuesta del servidor.
-   * @param {AxiosResponse} [res] - La respuesta del servidor.
+   * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setStatus = (res?: AxiosResponse) => {
     setIsAuth(Boolean(res?.data))
@@ -127,7 +97,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
 
   return (
-    <Auth.Provider value={{ isAuth, user, loading, errors, signin, signup, logout }}>
+    <Auth.Provider value={{ isAuth, user, loading, signin, signup, logout }}>
       {children}
     </Auth.Provider>
   )

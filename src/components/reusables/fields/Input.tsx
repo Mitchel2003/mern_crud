@@ -78,7 +78,11 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
             </div>
           </FormControl>
 
-          {error && <FormMessage>{error.message}</FormMessage>}
+          {error && (
+            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+              {error.message}
+            </FormMessage>
+          )}
         </FormItem>
       )}
     />

@@ -55,7 +55,11 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
             />
           </FormControl>
 
-          {error && <FormMessage>{error.message}</FormMessage>}
+          {error && (
+            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+              {error.message}
+            </FormMessage>
+          )}
         </FormItem>
       )}
     />
@@ -89,8 +93,8 @@ const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectWrapperProps>(
             : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
         )}
       >
-        <SelectValue 
-          placeholder={placeholder} 
+        <SelectValue
+          placeholder={placeholder}
           className={cn(
             theme === 'dark' ? 'text-zinc-100' : 'text-gray-900'
           )}
@@ -99,8 +103,8 @@ const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectWrapperProps>(
 
       <SelectContent>
         {options.map((option, index) => (
-          <SelectItem 
-            key={`${option}-${index}`} 
+          <SelectItem
+            key={`${option}-${index}`}
             value={option}
             className={cn(
               theme === 'dark'

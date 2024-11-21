@@ -22,7 +22,6 @@ export type AuthContext = {
   user: User;
   isAuth: boolean;
   loading: boolean;
-  errors: string[];
   signin: (data: object) => Promise<void>;
   signup: (data: object) => Promise<void>;
   logout: () => void;
@@ -33,7 +32,6 @@ export type AuthContext = {
 export type Curriculum = { _id: string } | undefined
 
 export type CurriculumContext = {
-  errors: string[];
   getCV: (id: string) => Promise<Curriculum>;
   getCVs: () => Promise<Curriculum[]>;
   createCV: (Curriculum: object) => Promise<Curriculum>;

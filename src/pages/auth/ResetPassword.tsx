@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/hooks/toast/use-toast'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, Lock } from 'lucide-react'

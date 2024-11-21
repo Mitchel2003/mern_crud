@@ -78,7 +78,7 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
           </FormControl>
 
           {error && (
-            <FormMessage className="text-red-500">
+            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
               {error.message}
             </FormMessage>
           )}

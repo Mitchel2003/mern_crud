@@ -6,3 +6,9 @@ const instance = axios.create({
 })
 
 export default instance
+
+//node_env: development
+// http://localhost:5173
+
+// node_env: production
+// https://mern-crud-three-lemon.vercel.app
