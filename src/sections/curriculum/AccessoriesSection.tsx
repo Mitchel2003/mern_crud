@@ -1,9 +1,9 @@
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import IterableCard from "#/reusables/fields/Card"
+import IterableCard from "#/reusables/fields/CardIterable"
 import InputField from "#/reusables/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { CardFieldProps } from "@/interfaces/form.interface"
+import { CardFieldProps } from "@/interfaces/props.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
 interface AccessoriesProps extends ThemeContextProps { }
@@ -14,19 +14,19 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
   const accessoriesFields: CardFieldProps[] = [
     {
       name: "name",
-      component: <InputField name="name" theme={theme} label="Nombre" control={methods.control} />
+      component: <InputField name="name" theme={theme} label="Nombre" />
     },
     {
       name: "type",
-      component: <InputField name="type" theme={theme} label="Tipo" control={methods.control} />
+      component: <InputField name="type" theme={theme} label="Tipo" />
     },
     {
       name: "series",
-      component: <InputField name="series" theme={theme} label="Serie" control={methods.control} />
+      component: <InputField name="series" theme={theme} label="Serie" />
     },
     {
       name: "model",
-      component: <InputField name="model" theme={theme} label="Modelo" control={methods.control} />
+      component: <InputField name="model" theme={theme} label="Modelo" />
     }
   ]
 
@@ -56,7 +56,6 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
             theme={theme}
             name="accessories"
             fields={accessoriesFields}
-            control={methods.control}
             titleButton="Añadir accesorio para este equipo"
           />
         </div>

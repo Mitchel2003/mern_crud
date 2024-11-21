@@ -1,5 +1,5 @@
-import { useThemeContext } from "@/context/ThemeContext"
-import MaintenanceSection from "@/sections/maintenance"
+import MaintenanceSection from '@/sections/maintenance/MaintenanceSection'
+import { useThemeContext } from '@/context/ThemeContext'
 
 const Maintenance = () => {
   const { theme } = useThemeContext()

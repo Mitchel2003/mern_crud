@@ -1,93 +1,92 @@
-import AreaToggleableField from "#/reusables/fields/AreaToggleable"
-import HeaderCustom from "#/reusables/elements/HeaderCustom"
-import SelectField from "#/reusables/fields/Select"
-import InputField from "#/reusables/fields/Input"
-import { Separator } from "#/ui/separator"
+import { Card, CardContent, CardFooter } from '#/ui/card'
+import HeaderForm from '#/reusables/elements/HeaderForm'
+import { Button } from '#/ui/button'
+import { Form } from '#/ui/form'
 
-import { ThemeContextProps } from "@/interfaces/context.interface"
-import { FormProvider, useForm } from "react-hook-form"
+import ReferenceEquipmentSection from './ReferenceEquipmentSection'
+import BuildMaintenanceSection from './BuildMaintenanceSection'
+import EngineerServiceSection from './EngineerServiceSection'
+import ObservationSection from './ObservationSection'
+import InspectionSection from './InspectionSection'
+import EquipmentSection from './EquipmentSection'
+import ClientSection from './ClientSection'
 
-interface MaintenanceProps extends ThemeContextProps { }
-const MaintenanceSection = ({ theme }: MaintenanceProps) => {
-  const methods = useForm()
+import { ThemeContextProps } from '@/interfaces/context.interface'
+import { RenderFormat } from '@/utils/RenderFormat'
+import { CheckSquare, Ban } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { cn } from '@/lib/utils'
+
+interface MaintenanceSectionProps extends ThemeContextProps { }
+const MaintenanceSection = ({ theme }: MaintenanceSectionProps) => {
+  const form = useForm()
 
   return (
-    <FormProvider {...methods}>
-      <div className="space-y-4">
-        <HeaderCustom
-          to="component"
-          theme={theme}
-          title="Mantenimiento"
-          className="text-2xl font-bold"
-        />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit((data) => console.log(data))}>
 
-        <div className="grid grid-cols-1 gap-y-4 md:grid-cols-12">
+        {/* Component maintenance */}
+        <Card className={cn(
+          'w-full max-w-6xl mx-auto shadow-lg backdrop-filter backdrop-blur-lg',
+          theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-50'
+        )}>
 
-          <div className="md:col-span-6">
-            <div className="grid grid-cols-1 items-center gap-2">
-              <SelectField
-                theme={theme}
-                name="tipoMantenimiento"
-                label="Tipo de mantenimiento"
-                control={methods.control}
-                options={['preventivo', 'correctivo']}
-                placeholder="Seleccione el tipo de mantenimiento"
-                //to span
-                span="Obligatorio"
-                iconSpan="alert"
-              />
-              <AreaToggleableField
-                theme={theme}
-                name="equipmentFault"
-                className="min-h-[55px]"
-                label="¿Equipo presenta falla?"
-                inputLabel="Descripción"
-                placeholder="Ingrese los detalles"
-                control={methods.control}
-              />
-            </div>
-          </div>
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title="Proceso de calidad - Equipos biomedicos"
+            description="Formato de mantenimiento preventivo y correctivo"
+            breadcrumbs={[
+              { description: "Codigo Formato: FMP-RL-01" },
+              { description: "Versión: 02" }
+            ]}
+          />
 
-          <div className="md:col-span-1 hidden md:flex justify-center items-center">
-            <Separator
-              orientation="vertical"
-              className={`h-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}
-            />
-          </div>
+          {/* -------------------- Content form -------------------- */}
+          <CardContent className="space-y-8 pt-6">
+            <RenderFormat format={[
+              <ClientSection theme={theme} />,
+              <ReferenceEquipmentSection theme={theme} />,
+              <EquipmentSection theme={theme} />,
+              <BuildMaintenanceSection theme={theme} />,
+              <InspectionSection theme={theme} />,
+              <ObservationSection theme={theme} />,
+              <EngineerServiceSection theme={theme} />
+            ]} />
+          </CardContent>
 
-          <div className="md:col-span-5">
-            <div className="grid grid-cols-1 items-center gap-2">
-              <InputField
-                theme={theme}
-                name="voltage"
-                label="Voltaje"
-                control={methods.control}
-                placeholder="Indique el voltaje"
-                //to span
-                span="Coleccion de datos"
-                iconSpan="info"
-              />
-              <InputField
-                theme={theme}
-                name="power"
-                label="Potencia"
-                control={methods.control}
-                placeholder="Indique la potencia"
-              />
-              <InputField
-                theme={theme}
-                name="current"
-                label="Corriente"
-                control={methods.control}
-                placeholder="Indique la corriente electrica"
-              />
-            </div>
-          </div>
+          {/* -------------------- Footer form (Buttons submit) -------------------- */}
+          <CardFooter className="flex justify-between">
+            <Button
+              variant="outline"
+              className={cn(
+                'hover:scale-105',
+                theme === 'dark'
+                  ? 'bg-zinc-700 border border-zinc-600 text-zinc-100 hover:bg-zinc-900'
+                  : 'bg-white border border-gray-200 text-gray-900 hover:bg-white'
+              )}
+            >
+              <Ban className="text-red-600 mr-2 h-4 w-4" /> Cancelar
+            </Button>
 
-        </div>
-      </div>
-    </FormProvider>
+            <Button
+              type="submit"
+              className={cn(
+                'hover:scale-105',
+                theme === 'dark'
+                  ? 'bg-zinc-700 border border-zinc-600 text-zinc-100 hover:bg-zinc-900'
+                  : 'bg-white border border-gray-200 text-gray-900 hover:bg-white'
+              )}
+            >
+              <CheckSquare className="text-green-600 mr-2 h-4 w-4" /> Guardar
+            </Button>
+          </CardFooter>
+
+        </Card>
+      </form>
+    </Form >
   )
 }
 
 export default MaintenanceSection
+/*---------------------------------------------------------------------------------------------------------*/

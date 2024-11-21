@@ -1,15 +1,19 @@
 import { useSearchParams } from 'react-router-dom'
-import ResetPassword from './ResetPassword'
-import VerifyEmail from './VerifyEmail'
+import { getUid } from '@/utils/urlParser'
+import { useEffect } from 'react'
 
-function VerifyAction() {
-  const [searchParams] = useSearchParams()  
+export default function VerifyAction() {
+  const [searchParams] = useSearchParams()
+  const continueUrl = searchParams.get('continueUrl')
+  const oobCode = searchParams.get('oobCode')
   const mode = searchParams.get('mode')
 
-  if (mode === 'verifyEmail') return <VerifyEmail />
-  if (mode === 'resetPassword') return <ResetPassword />
+  useEffect(() => { validateAction() }, [])
+  const validateAction = async () => {
+    const uid = getUid(continueUrl)
+    console.log(mode, oobCode)
+    console.log(uid)
+  }
 
   return <div>Verificando acción...</div>
 }
-
-export default VerifyAction

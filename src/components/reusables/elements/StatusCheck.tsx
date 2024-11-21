@@ -1,6 +1,6 @@
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
 
-import { ControlProps, HeaderSpanProps, CheckProps } from '@/interfaces/form.interface'
+import { ControlProps, HeaderSpanProps, CheckProps } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useController } from 'react-hook-form'
 import { Check } from 'lucide-react'
@@ -33,7 +33,7 @@ const StatusCheck = ({
         iconSpan={iconSpan}
       />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="flex flex-row gap-4">
         {options.map((option) => (
           <button
             type="button"

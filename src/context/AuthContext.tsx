@@ -1,8 +1,8 @@
-import { loginRequest, registerRequest, verifyAuthRequest } from "@/api/auth";
 import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
-import { User, AuthContext } from "@/interfaces/context.interface";
+import { AuthContext, User } from "@/interfaces/context.interface";
 import { Props } from "@/interfaces/props.interface";
 
+import { loginRequest, registerRequest, verifyAuthRequest } from "@/api/auth";
 import { createContext, useContext, useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
@@ -27,9 +27,9 @@ export const useAuthContext = () => {
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
   const [errors, setErrors] = useState<string[]>([]);
+  const [user, setUser] = useState<User>(undefined);
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
-  const [user, setUser] = useState<User>(undefined);
 
   useEffect(() => timeAlert(), [errors])
   useEffect(() => { verifyToken() }, [])
@@ -56,20 +56,24 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Inicia sesión con las credenciales del usuario.
-   * @param {object} user - Las credenciales del usuario.
+   * @param {object} credentials - Las credenciales del usuario.
    */
-  const signin = async (user: object) => {
-    try { const res = await loginRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
+  const signin = async (credentials: object) => {
+    try {
+      const res = await loginRequest(credentials);
+      setAuthStatus(res)
+    } catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
   }
 
   /**
-   * Registra un nuevo usuario.
-   * @param {object} user - Los datos del nuevo usuario.
+   * Registra un nuevo usuario con los datos proporcionados.
+   * @param {object} data - Los datos del nuevo usuario.
    */
-  const signup = async (user: object) => {
-    try { const res = await registerRequest(user); setAuthStatus(res) }
-    catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
+  const signup = async (data: object) => {
+    try {
+      const res = await registerRequest(data);
+      setAuthStatus(res)
+    } catch (e: unknown) { if (isAxiosResponse(e)) setErrors([e.response.message]) }
   }
 
   /** Cierra la sesión del usuario actual */
@@ -86,7 +90,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
 
   return (
-    <Auth.Provider value={{ isAuth, loading, user, errors, signin, signup, logout }}>
+    <Auth.Provider value={{ isAuth, user, loading, errors, signin, signup, logout }}>
       {children}
     </Auth.Provider>
   )

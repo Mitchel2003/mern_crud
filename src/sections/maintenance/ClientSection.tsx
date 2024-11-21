@@ -30,9 +30,8 @@ const ClientSection = ({ theme }: ClientProps) => {
             <div className="grid grid-cols-1 gap-4">
               <SelectField
                 theme={theme}
-                name="name_client"
                 label="Cliente"
-                control={methods.control}
+                name="name_client"
                 options={['IPS Sanitas', 'EDS Nueva esperanza']}
                 placeholder="Selecciona un cliente"
               />
@@ -40,14 +39,12 @@ const ClientSection = ({ theme }: ClientProps) => {
                 theme={theme}
                 name="contact_client"
                 label="Contacto"
-                control={methods.control}
                 placeholder="Numero de contacto"
               />
               <InputField
                 theme={theme}
                 name="address_client"
                 label="Dirección"
-                control={methods.control}
                 placeholder="Dirección del cliente"
               />
             </div>

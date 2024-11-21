@@ -17,7 +17,7 @@ import BasicDataSection from "./BasicDataSection"
 import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumContext } from "@/context/CurriculumContext"
-import { RenderFormat, SectionProps } from "@/utils/RenderFormat"
+import { RenderFormat } from "@/utils/RenderFormat"
 import { cn } from "@/lib/utils"
 
 import { useNavigate, useParams } from "react-router-dom"
@@ -25,10 +25,9 @@ import { CheckSquare, Ban } from "lucide-react"
 import { FieldValues, useForm } from "react-hook-form"
 import { useEffect } from "react"
 
-interface CVFormProps extends ThemeContextProps { }
+interface CurriculumSectionProps extends ThemeContextProps { }
 
-const CVForm = ({ theme }: CVFormProps) => {
-  const render = renderCVForm({ theme })
+const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
   const { errors } = useCurriculumContext()
   const { id = 'new' } = useParams()
   const navigate = useNavigate()
@@ -62,8 +61,11 @@ const CVForm = ({ theme }: CVFormProps) => {
         <Card
           id="curriculum-form"
           className={cn(
-            'w-full max-w-6xl mx-auto shadow-lg backdrop-filter backdrop-blur-lg',
-            theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-50'
+            'w-full mx-auto shadow-lg',
+            'transition-all duration-200 backdrop-filter backdrop-blur-lg',
+            theme === 'dark'
+              ? 'bg-zinc-800 hover:shadow-gray-900'
+              : 'bg-purple-50 hover:shadow-purple-500/60'
           )}
         >
 
@@ -80,8 +82,19 @@ const CVForm = ({ theme }: CVFormProps) => {
           />
 
           {/* -------------------- Content form -------------------- */}
-          <CardContent className="space-y-8 pt-6">
-            <RenderFormat format={render} theme={theme} />
+          <CardContent className="pt-6 space-y-8">
+            <RenderFormat format={[
+              <OfficeAreaSection theme={theme} />,
+              <BasicDataSection theme={theme} />,
+              <DetailsEquipmentSection theme={theme} />,
+              <EquipmentClassificationSection theme={theme} />,
+              <TechnicalCharacteristicsSection theme={theme} />,
+              <MaintenanceSection theme={theme} />,
+              <InspectionSection theme={theme} />,
+              <AccessoriesSection theme={theme} />,
+              <CharacteristicsSection theme={theme} />,
+              <EngineerServiceSection theme={theme} />
+            ]} />
           </CardContent>
 
           {/* -------------------- Footer form (Buttons submit) -------------------- */}
@@ -117,32 +130,12 @@ const CVForm = ({ theme }: CVFormProps) => {
   )
 }
 
-export default CVForm
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Nos ayuda a renderizar el curriculum
- * @param {string} theme Corresponde al tema en contexto
- * @returns {SectionProps[]} Arreglo de secciones del curriculum
- */
-const renderCVForm = ({ theme }: ThemeContextProps): SectionProps[] => {
-  return [
-    { component: <OfficeAreaSection theme={theme} /> },
-    { component: <BasicDataSection theme={theme} /> },
-    { component: <DetailsEquipmentSection theme={theme} /> },
-    { component: <EquipmentClassificationSection theme={theme} /> },
-    { component: <TechnicalCharacteristicsSection theme={theme} /> },
-    { component: <MaintenanceSection theme={theme} /> },
-    { component: <InspectionSection theme={theme} /> },
-    { component: <AccessoriesSection theme={theme} /> },
-    { component: <CharacteristicsSection theme={theme} /> },
-    { component: <EngineerServiceSection theme={theme} /> }
-  ]
-}
+export default CurriculumSection
 
 /**
  * Nos ayuda a construir un formato de tarea y enviar solicitudes como crear o actualizar
  * @param values es un objeto de datos que representa los campos en el contexto del formulario
  * @returns {object} un objeto que significa el esquema de tarea a utilizar en la solicitud
  */
-function schemaCV(values: FieldValues): object { return { ...values } }
+const schemaCV = (values: FieldValues): object => ({ ...values })
+/*---------------------------------------------------------------------------------------------------------*/

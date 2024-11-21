@@ -23,75 +23,21 @@ export type AuthContext = {
   isAuth: boolean;
   loading: boolean;
   errors: string[];
-  signin: (user: object) => Promise<void>;
-  signup: (user: object) => Promise<void>;
+  signin: (data: object) => Promise<void>;
+  signup: (data: object) => Promise<void>;
   logout: () => void;
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------CurriculumContext--------------------------------------------------*/
-export type Curriculum = {
-  _id: string;
-} | undefined
-
-export type TypeCurriculum = {
-  (id: string): Promise<Curriculum>
-}
-export type TypeCurriculums = {
-  (): Promise<Curriculum[]>
-}
-export type CreateCurriculum = {
-  (Curriculum: object): Promise<Curriculum>
-}
-export type UpdateCurriculum = {
-  (id: string, Curriculum: object): Promise<Curriculum>
-}
-export type DeleteCurriculum = {
-  (id: string): Promise<Curriculum>
-}
+export type Curriculum = { _id: string } | undefined
 
 export type CurriculumContext = {
   errors: string[];
-  getCV: TypeCurriculum;
-  getCVs: TypeCurriculums;
-  createCV: CreateCurriculum;
-  updateCV: UpdateCurriculum;
-  deleteCV: DeleteCurriculum;
-} | undefined
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------TaskContext--------------------------------------------------*/
-export type Task = {
-  _id: string;
-  title: string;
-  description: string;
-  date?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-} | undefined
-
-export type TypeTask = {
-  (id: string): Promise<Task>
-}
-export type TypeTasks = {
-  (): Promise<Task[]>
-}
-export type CreateTask = {
-  (task: object): Promise<Task>
-}
-export type UpdateTask = {
-  (id: string, task: object): Promise<Task>
-}
-export type DeleteTask = {
-  (id: string): Promise<Task>
-}
-
-export type TaskContext = {
-  errors: string[];
-  getTask: TypeTask;
-  getTasks: TypeTasks;
-  createTask: CreateTask;
-  updateTask: UpdateTask;
-  deleteTask: DeleteTask;
+  getCV: (id: string) => Promise<Curriculum>;
+  getCVs: () => Promise<Curriculum[]>;
+  createCV: (Curriculum: object) => Promise<Curriculum>;
+  updateCV: (id: string, Curriculum: object) => Promise<Curriculum>;
+  deleteCV: (id: string) => Promise<Curriculum>;
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/

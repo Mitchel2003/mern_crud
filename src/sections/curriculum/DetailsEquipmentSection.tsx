@@ -1,12 +1,12 @@
+import IterableCustomCard from '#/reusables/fields/CardIterable'
 import HeaderCustom from '#/reusables/elements/HeaderCustom'
-import IterableCustomCard from '#/reusables/fields/Card'
 import SelectField from '#/reusables/fields/Select'
 import InputField from '#/reusables/fields/Input'
 import DateField from '#/reusables/fields/Date'
 import { Button } from '#/ui/button'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { CardFieldProps } from '@/interfaces/form.interface'
+import { CardFieldProps } from '@/interfaces/props.interface'
 import { FormProvider, useForm } from 'react-hook-form'
 
 interface DetailsEquipmentProps extends ThemeContextProps { }
@@ -14,7 +14,7 @@ interface DetailsEquipmentProps extends ThemeContextProps { }
 const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const methods = useForm()
 
-  {/* -------------------- Fields for the supplier -------------------- */}
+  {/* -------------------- Fields for the supplier -------------------- */ }
   {/* Contexto del problema; lo que pasa es que estoy tratando de  usar un form dentro de un iterableCard
     el detalle es que como tal se arroja este error "Warning: validateDOMNesting(...): <form> cannot appear as a descendant of <form>."
     esto sugiere que no se puede usar un form dentro de otro form, entonces ¿cómo le hago para que se pueda usar un form dentro de un iterableCard?
@@ -40,15 +40,14 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
     o mejor dicho datos que no necesariamente esten dentro de un iterable, si no que puedan ser creados en cualquier momento durante el llenado del formulario, quiero emplear
     los mecanismos mas profesionales para lograrlo, ya sea si uso useController o alguna otra herramienta
   */}
-  type SupplierFieldsProps = (name: string) => CardFieldProps[]
-  const supplierFields: SupplierFieldsProps = (name) => [
+  const supplierFields = (name: string): CardFieldProps[] => [
     {
       name: name,
       component:
         <form className='flex flex-col gap-2' onSubmit={methods.handleSubmit(data => console.log(data))}>
-          <InputField name="name" control={methods.control} label="Nombre" theme={theme} />
-          <InputField name="city" control={methods.control} label="Ciudad" theme={theme} />
-          <InputField name="phone" control={methods.control} label="Teléfono" theme={theme} />
+          <InputField name="name" label="Nombre" theme={theme} />
+          <InputField name="city" label="Ciudad" theme={theme} />
+          <InputField name="phone" label="Teléfono" theme={theme} />
           <Button variant="outline" type="submit">Guardar</Button>
         </form>
     }
@@ -98,7 +97,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="type_acquisition"
               label="Tipo de Adquisición"
-              control={methods.control}
               options={["compra", "comodato", "alquiler", "otro"]}
               placeholder="Seleccionar tipo"
             />
@@ -106,7 +104,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="warranty"
               label="Garantía"
-              control={methods.control}
               options={["N/A", "6 months", "1 year", "2 years"]}
               placeholder="Seleccionar garantía"
             />
@@ -116,7 +113,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             type="number"
             name="value"
             label="Valor"
-            control={methods.control}
             placeholder="Valor del equipo"
           />
           <InputField
@@ -124,7 +120,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             type="number"
             name="manufacturing_year"
             label="Año de fabricación"
-            control={methods.control}
             placeholder="Año de fabricación del equipo"
           />
         </div>
@@ -139,14 +134,12 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               options={["N/A"]}
               name="representative"
               label="Representante"
-              control={methods.control}
               className='text-2xl font-light'
               placeholder="Seleccionar representante"
             />
             <IterableCustomCard
               theme={theme}
               name="add-representative"
-              control={methods.control}
               fields={supplierFields("representative")}
               titleButton="Nuevo representante"
             />
@@ -159,7 +152,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               options={["N/A"]}
               name="provider"
               label="Proveedor"
-              control={methods.control}
               className='text-2xl font-light'
               placeholder="Seleccionar proveedor"
             />
@@ -167,7 +159,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="add-provider"
               titleButton="Nuevo proveedor"
-              control={methods.control}
               fields={supplierFields("provider")}
             />
           </div>
@@ -179,7 +170,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               options={["N/A"]}
               name="manufacturer"
               label="Fabricante"
-              control={methods.control}
               className='text-2xl font-light'
               placeholder="Seleccionar fabricante"
             />
@@ -187,7 +177,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="add-manufacturer"
               titleButton="Nuevo fabricante"
-              control={methods.control}
               fields={supplierFields("manufacturer")}
             />
           </div>

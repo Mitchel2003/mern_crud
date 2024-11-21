@@ -1,10 +1,10 @@
-import { createCVRequest, getCVRequest, getCVsRequest, updateCVRequest, deleteCVRequest } from "@/api/curriculum";
+import { getCVRequest, getCVsRequest, createCVRequest, updateCVRequest, deleteCVRequest } from "@/api/curriculum";
 import { Curriculum as TypeCurriculum, CurriculumContext } from "@/interfaces/context.interface";
 import { isApiResponse, isAxiosResponse } from "@/interfaces/response.interface";
 import { Props } from "@/interfaces/props.interface";
 
 import { useState, useContext, createContext, useEffect } from "react";
-
+ 
 const Curriculum = createContext<CurriculumContext>(undefined)
 
 /**
@@ -90,8 +90,8 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
    * @param {unknown} e - El error capturado.
    */
   const setCurriculumStatus = (e: unknown) => {
-    if (isAxiosResponse(e)) setErrors([e.response.data])
-    if (isApiResponse(e)) setErrors([e.data])
+    if (isAxiosResponse(e)) setErrors([e.response.message])
+    if (isApiResponse(e)) setErrors([e.message])
   }
 
   return (

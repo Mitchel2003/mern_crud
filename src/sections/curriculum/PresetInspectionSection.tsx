@@ -1,11 +1,11 @@
 import HeaderCustom from "#/reusables/elements/HeaderCustom"
+import IterableCard from "#/reusables/fields/CardIterable"
 import CheckboxField from "#/reusables/fields/Checkbox"
 import SelectField from "#/reusables/fields/Select"
-import IterableCard from "#/reusables/fields/Card"
 import InputField from "#/reusables/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { CardFieldProps } from "@/interfaces/form.interface"
+import { CardFieldProps } from "@/interfaces/props.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
 const inspectionOptions = [
@@ -29,7 +29,6 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
           theme={theme}
           name="name_inspection"
           label="Nombre de la configuración"
-          control={methods.control}
           placeholder="Digite un nombre distintivo"
         />
     },
@@ -65,9 +64,8 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
             theme={theme}
             name="inspectionPreset"
             label="Lista de configuraciones preestablecidas"
-            control={methods.control}
-            options={['N/A']}
             placeholder="Seleccione una configuración"
+            options={['N/A']}
             //span
             span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
             iconSpan="info"
@@ -77,7 +75,6 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
             theme={theme}
             name="inspection"
             fields={inspectionFields}
-            control={methods.control}
             titleButton="Agregar configuración"
           />
         </div>

@@ -31,16 +31,14 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
             theme={theme}
             name="equipment"
             label="Equipo para mantenimiento"
-            control={methods.control}
-            options={optionsEquipment}
             placeholder="Seleccionar el equipo"
+            options={optionsEquipment}
           />
 
           <InputField
             theme={theme}
             name="service"
             label="Servicio"
-            control={methods.control}
             placeholder="Servicio del equipo"
           />
 
@@ -48,7 +46,6 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
             theme={theme}
             name="address"
             label="Ubicación"
-            control={methods.control}
             placeholder="Ubicación del equipo"
           />
         </div>

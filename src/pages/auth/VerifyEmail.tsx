@@ -1,26 +1,16 @@
-import { useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-
-import { verifyActionRequest } from '@/api/auth'
-import { getParams } from '@/utils/urlParser'
+import { useParams } from 'react-router-dom'
 
 export default function VerifyEmail() {
-  const [searchParams] = useSearchParams()
-  const continueUrl = searchParams.get('continueUrl')
-
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState({})
-
-  useEffect(() => { validateEmail() }, [continueUrl])
+  const { email, token } = useParams()
+  useEffect(() => { validateEmail() }, [email, token])
 
   const validateEmail = async () => {
-    const userCredentials = getParams(continueUrl)
-    const res = await verifyActionRequest('verifyEmail', { ...userCredentials })
-    setData(res.data)
+    console.log(email, token)
     setLoading(false);
   }
-  if (loading) return <div>Verificando email...</div>
-  if (data) console.log(data)
 
+  if (loading) return <div>Verificando email...</div>
   return <div>Email verificado correctamente</div>
 }
