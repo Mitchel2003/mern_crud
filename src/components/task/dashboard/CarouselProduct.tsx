@@ -2,7 +2,7 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { ShoppingBag, PlusCircle } from 'lucide-react'
 import Carousel from '#/reusables/elements/Carousel'
 import { Product } from '@/types/form/product.type'
-import ItemProduct from '#/dashboard/ItemProduct'
+import ItemProduct from '@/components/task/dashboard/ItemProduct'
 
 import { Card, CardContent, CardFooter, CardHeader } from '#/ui/card'
 import { Skeleton } from '#/ui/skeleton'

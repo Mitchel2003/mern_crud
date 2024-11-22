@@ -1,7 +1,7 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { ShoppingBag, TrendingUp, Users } from 'lucide-react'
 import { motion, Variants } from 'framer-motion'
-import StatCard from '#/dashboard/StatsCard'
+import StatCard from '#/task/dashboard/StatsCard'
 
 interface StatisticsSectionProps extends ThemeContextProps { variants: Variants }
 

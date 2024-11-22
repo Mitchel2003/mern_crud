@@ -27,13 +27,13 @@ export const useNotification = () => {
   }, [toast])
 
   return {
-    Success: (props: Omit<NotificationProps, "type">) =>
+    notifySuccess: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "success" }),
-    Error: (props: Omit<NotificationProps, "type">) =>
+    notifyError: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "error" }),
-    Warning: (props: Omit<NotificationProps, "type">) =>
+    notifyWarning: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "warning" }),
-    Info: (props: Omit<NotificationProps, "type">) =>
+    notifyInfo: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "info" })
   }
 } 

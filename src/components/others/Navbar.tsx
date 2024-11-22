@@ -1,11 +1,11 @@
 import { useThemeContext } from '@/context/ThemeContext'
+import { useAuthContext } from '@/context/AuthContext'
+import Sidebar from '#/others/sidebar/Sidebar'
+import ThemeToggle from '#/others/Theme'
+
+import gsIcon from '/assets/gs_icon.ico'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-
-import { useAuthContext } from '@/context/AuthContext'
-import gsIcon from '/assets/gs_icon.ico'
-import ThemeToggle from '#/others/Theme'
-import Sidebar from '#/sidebar/Sidebar'
 
 const Navbar = () => {
   const { isAuth } = useAuthContext()

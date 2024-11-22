@@ -1,6 +1,6 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Props } from "@/interfaces/props.interface"
-import SidebarItem from '#/sidebar/ItemSidebar'
+import SidebarItem from '@/components/others/sidebar/ItemSidebar'
 import { Button } from '#/ui/button'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '#/ui/dropdown-menu'

@@ -1,4 +1,5 @@
 import { AnimatedBackground } from '#/others/background/AnimatedBackground'
+import { LoadingScreen } from "#/ui/loading-screen"
 import { Toaster } from '#/ui/toaster'
 import Navbar from '#/others/Navbar'
 import Footer from '#/others/Footer'
@@ -21,6 +22,7 @@ const RootLayout = () => {
         <Outlet />
       </main>
       <Toaster />
+      <LoadingScreen />
       <Footer theme={theme} />
     </AnimatedBackground>
   )

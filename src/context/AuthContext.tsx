@@ -2,7 +2,9 @@ import { loginRequest, registerRequest, logoutRequest, verifyActionRequest, veri
 import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/toast/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface";
+import { useLoadingScreen } from "@/hooks/toast/useLoading";
 import { Props } from "@/interfaces/props.interface";
+
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
@@ -27,7 +29,8 @@ export const useAuthContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de autenticación.
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
-  const { Success, Error, Info } = useNotification()
+  const { show: showLoading, hide: hideLoading } = useLoadingScreen()
+  const { notifySuccess, notifyError } = useNotification()
   const [user, setUser] = useState<User>(undefined)
   const [loading, setLoading] = useState(true)
   const [isAuth, setIsAuth] = useState(false)
@@ -37,60 +40,55 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /** Verifica el token de autenticación almacenado en las cookies */
   const verifyToken = async () => {
-    if (!Cookies.get().token) return setStatus()
+    if (!Cookies.get().token) return setAuthStatus()
     try {
-      const res = await verifyAuthRequest();
-      setStatus(res);
+      await verifyAuthRequest().then(res => setAuthStatus(res))
     } catch (e: unknown) {
-      setStatus()
+      setAuthStatus()
       isAxiosResponse(e) &&
-        Error({ title: "Error de autenticación", message: e.response.data.message })
+        notifyError({ title: "Error de autenticación", message: e.response.data.message })
     }
   }
   /**
    * Inicia sesión con las credenciales del usuario.
-   * @param {object} data - Las credenciales del usuario.
+   * @param {object} credentials - Las credenciales del usuario.
    */
-  const signin = async (data: object) => {
-    setLoading(true)
+  const signin = async (credentials: object) => {
+    setLoadingStatus("Iniciando sesión...")
     try {
-      const res = await loginRequest(data);
-      setStatus(res)
-      Success({ title: "¡Bienvenido!", message: "Has iniciado sesión correctamente" })
+      await loginRequest(credentials).then(res => setAuthStatus(res))
+      notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión correctamente" })
     } catch (e: unknown) {
-      setStatus()
-      isAxiosResponse(e) &&
-        Error({ title: "Error al iniciar sesión", message: e.response.data.message })
-    }
+      isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
+    } finally { setLoadingStatus() }
   }
   /**
    * Registra un nuevo usuario con los datos proporcionados.
    * @param {object} data - Los datos del nuevo usuario.
    */
   const signup = async (data: object) => {
-    setLoading(true)
+    setLoadingStatus("Registrando usuario...")
     try {
-      await registerRequest(data);
-      Success({ title: "¡Registro exitoso!", message: "Mira tu correo y activa tu cuenta" })
+      await registerRequest(data)
+      notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
     } catch (e: unknown) {
       isAxiosResponse(e) &&
-        Error({ title: "Error en el registro", message: e.response.data.message })
-    } finally { setStatus() }
+        notifyError({ title: "Error en el registro", message: e.response.data.message })
+    } finally { setLoadingStatus() }
   }
   /**
    * Cierra la sesión del usuario actual
    * permite cerrar el user.current de firebase/auth
    */
   const logout = async () => {
-    setLoading(true)
+    setLoadingStatus("Cerrando sesión...")
     try {
-      await logoutRequest()
-      Cookies.remove('token')
-      Info({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
+      await logoutRequest().then(() => Cookies.remove('token'))
+      notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
     } catch (e: unknown) {
       isAxiosResponse(e) &&
-        Error({ title: "Error en el registro", message: e.response.data.message })
-    } finally { setStatus() }
+        notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
+    } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
@@ -102,27 +100,37 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Los datos complementarios para la ejecucion
    */
   const verifyAction = async (mode: string, data: object) => {
-    setLoading(true)
+    setLoadingStatus("Validando solicitud...")
     try {
-      await verifyActionRequest(mode, data).then(async () => await logout())
-      Success({
-        title: `Exito al ${mode !== 'verifyEmail' ? 'restabler contraseña' : 'verificar email'}`,
+      await verifyActionRequest(mode, data).then(async () => await logoutRequest())
+      notifySuccess({
+        title: `Exito al ${mode !== 'verifyEmail' ? 'restablecer contraseña' : 'verificar email'}`,
         message: "La solicitud se ha completado"
       })
     } catch (e: unknown) {
       isAxiosResponse(e) &&
-        Error({ title: "Error en la solicitud", message: e.response.data.message })
-    } finally { setStatus() }
+        notifyError({ title: "Error en la solicitud", message: e.response.data.message })
+    } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------tools--------------------------------------------------*/
   /**
    * Actualiza el estado de autenticación basado en la respuesta del servidor.
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
-  const setStatus = (res?: AxiosResponse) => {
+  const setAuthStatus = (res?: AxiosResponse) => {
     setIsAuth(Boolean(res?.data))
     setUser(res?.data ?? {})
-    setLoading(false)
+  }
+  /**
+   * Actualiza el estado de carga basado en un parametro opcional
+   * si valor del param es distinto a undefined, se muestra el loading
+   * @param {string | undefined} status - El estado de carga.
+   */
+  const setLoadingStatus = (status?: string) => {
+    setLoading(Boolean(status))
+    status ? showLoading(status) : hideLoading()
   }
 
   return (
