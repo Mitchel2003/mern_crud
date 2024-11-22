@@ -1,10 +1,9 @@
 import { loginRequest, registerRequest, logoutRequest, verifyActionRequest, verifyAuthRequest } from "@/api/auth";
 import { AuthContext, User } from "@/interfaces/context.interface";
-import { useNotification } from "@/hooks/toast/useNotification"
+import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
-import { useLoadingScreen } from "@/hooks/store/useLoading";
+import { useLoadingScreen } from "@/hooks/ui/useLoading";
 import { Props } from "@/interfaces/props.interface";
-
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { AxiosResponse } from "axios";

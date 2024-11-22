@@ -1,6 +1,6 @@
-import { useAnimatedBackground } from '@/hooks/useAnimatedBackground'
+import { useAnimatedBackground } from '@/hooks/others/useAnimatedBackground'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { AnimatedParticles } from '@/components/others/background/ParticlesBackground'
+import { AnimatedParticles } from './ParticlesBackground'
 import { Props } from '@/interfaces/props.interface'
 import { animated } from '@react-spring/web'
 import { cn } from '@/lib/utils'

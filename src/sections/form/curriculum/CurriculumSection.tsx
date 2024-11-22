@@ -14,7 +14,7 @@ import AccessoriesSection from "./AccessoriesSection"
 import OfficeAreaSection from "./OfficeAreaSection"
 import BasicDataSection from "./BasicDataSection"
 
-import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
+import { useQueryReact, useCustomMutation } from "@/hooks/form/useCurriculum"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { cn } from "@/lib/utils"

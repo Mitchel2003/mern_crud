@@ -23,7 +23,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-x-2 md:gap-x-4">
         <ThemeToggle />
-        <Sidebar theme={theme} />
+        <Sidebar isAuth={isAuth} theme={theme} />
       </div>
     </nav>
   )

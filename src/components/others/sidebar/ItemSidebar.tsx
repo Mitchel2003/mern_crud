@@ -29,7 +29,7 @@ const ItemSidebar = ({ item, isCollapsed, depth = 0 }: ItemSidebarProps) => {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Link to={item.href}>
+            <Link to={item.href ?? '#'}>
               {isCollapsed ? content : <div className="w-full">{content}</div>}
             </Link>
           </TooltipTrigger>
