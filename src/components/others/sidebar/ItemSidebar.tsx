@@ -1,16 +1,18 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
-import { Button } from "#/ui/button"
-
 import { NavItemProps } from "@/interfaces/props.interface"
 import { Link, useLocation } from 'react-router-dom'
+import ItemAction from './ItemAction'
+import { Button } from "#/ui/button"
 
 interface ItemSidebarProps {
-  item: NavItemProps
   isCollapsed: boolean
+  item: NavItemProps
   depth?: number
 }
 
 const ItemSidebar = ({ item, isCollapsed, depth = 0 }: ItemSidebarProps) => {
+  if (item.action) return <ItemAction item={item} isCollapsed={isCollapsed} depth={depth} />
+
   const location = useLocation()
   const isActive = location.pathname === item.href
 

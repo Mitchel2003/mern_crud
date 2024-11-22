@@ -1,5 +1,5 @@
+import { FileText, Calendar, FileSpreadsheet, ShoppingBag } from 'lucide-react'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { ShoppingBag, Coffee, Film, Music } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -21,7 +21,7 @@ const DiscoverSection = ({ theme }: ThemeContextProps) => {
             theme === 'dark' ? 'text-zinc-200' : 'text-white'
           )}
         >
-          ¡Descubre lo nuestro!
+          ¡Nuestros servicios!
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -74,8 +74,8 @@ interface Feature {
 }
 
 const features: Feature[] = [
-  { icon: ShoppingBag, title: 'Compras', description: 'Explora nuestras tiendas' },
-  { icon: Coffee, title: 'Restaurantes', description: 'Disfruta de la mejor gastronomía' },
-  { icon: Film, title: 'Cine', description: 'Vive la magia del séptimo arte' },
-  { icon: Music, title: 'Eventos', description: 'Participa en nuestras actividades' },
+  { icon: ShoppingBag, title: 'Almacenamiento', description: 'Almacena formatos de manera segura' },
+  { icon: FileSpreadsheet, title: 'Presentaciones', description: 'Accede a hojas de vida y entregables para auditorias' },
+  { icon: Calendar, title: 'Administración', description: 'Gestiona equipos biomédicos con nuestro sistema de calendarios' },
+  { icon: FileText, title: 'Documentación', description: 'Genera informes y accede a ellos de manera flexible' },
 ]

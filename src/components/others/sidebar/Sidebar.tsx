@@ -1,17 +1,18 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '#/ui/dropdown-menu'
+import { NavItemProps, Props } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Props } from "@/interfaces/props.interface"
 import SidebarItem from '#/others/sidebar/ItemSidebar'
 import { Button } from '#/ui/button'
 
-import { navUserItems, navGuestItems } from '@/utils/constants'
 import { Menu, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useNavItems } from '@/utils/constants'
 import { ScrollArea } from '#/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
 interface SidebarProps extends ThemeContextProps { isAuth: boolean }
 const Sidebar = ({ theme, isAuth }: SidebarProps) => {
+  const { navUserItems, navGuestItems } = useNavItems()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -26,7 +27,10 @@ const Sidebar = ({ theme, isAuth }: SidebarProps) => {
       {/* Content */}
       <DropdownContent isCollapsed={isCollapsed} >
         <AsideArea theme={theme}>
-          <Items isCollapsed={isCollapsed} isAuth={isAuth} />
+          <Items
+            isCollapsed={isCollapsed}
+            items={isAuth ? navUserItems : navGuestItems}
+          />
           <ButtonCollapse isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
         </AsideArea>
       </DropdownContent>
@@ -94,21 +98,19 @@ const AsideArea = ({ children, theme }: AsideAreaProps) => {
   )
 }
 
-/** Items: items of the sidebar */
-interface ItemsProps { isCollapsed: boolean, isAuth: boolean }
-const Items = ({ isCollapsed, isAuth }: ItemsProps) => {
+/** Items: this component render the items of the sidebar */
+interface ItemsProps { items: NavItemProps[], isCollapsed: boolean }
+const Items = ({ items, isCollapsed }: ItemsProps) => {
   return (
     <ScrollArea className="h-full px-3 py-4">
       <nav className="space-y-2">
-        {
-          (isAuth ? navUserItems : navGuestItems).map((item) => (
-            <SidebarItem
-              isCollapsed={isCollapsed}
-              key={item.href}
-              item={item}
-            />
-          ))
-        }
+        {items.map((item) => (
+          <SidebarItem
+            item={item}
+            key={item.href || item.label}
+            isCollapsed={isCollapsed}
+          />
+        ))}
       </nav>
     </ScrollArea>
   )

@@ -12,6 +12,7 @@ export interface NavItemProps {
   label: string
   href?: string
   subItems?: NavItemProps[]
+  action?: () => Promise<void>
 }
 
 //theme components

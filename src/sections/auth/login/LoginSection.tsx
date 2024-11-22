@@ -13,7 +13,7 @@ const LoginSection = ({ theme }: ThemeContextProps) => {
   const { methods, onSubmit } = useLoginForm()
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit}>
+      <form className="relative w-full max-w-md" onSubmit={onSubmit}>
         <Card
           className={cn(
             'relative w-full my-10',

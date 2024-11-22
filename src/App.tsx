@@ -32,14 +32,12 @@ function App() {
                 <Route path="/auth/register" element={<Register />} />
                 <Route path="/auth/verify-action" element={<VerifyAction />} />
 
-                {/* mean while */}
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
-
+                {/* protected routes */}
                 <Route element={<ProtectedRoute />}>
-                  {/* forms routes */}
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                  <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                 </Route>
               </Route>
             </Routes>

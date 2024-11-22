@@ -11,11 +11,7 @@ const Login = () => {
 
   useEffect(() => { if (isAuth) navigate('/dashboard') }, [isAuth])
 
-  return (
-    <div className="w-full max-w-md relative">
-      <LoginSection theme={theme} />
-    </div>
-  )
+  return <LoginSection theme={theme} />
 }
 
 export default Login

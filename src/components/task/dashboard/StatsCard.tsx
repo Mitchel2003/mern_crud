@@ -1,5 +1,4 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { scaleVariants } from '@/utils/animations'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -7,6 +6,18 @@ interface StatCardProps extends ThemeContextProps {
   icon: React.ReactNode
   title: string
   value: string
+}
+
+const scaleVariants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeInOut"
+    }
+  }
 }
 
 const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {

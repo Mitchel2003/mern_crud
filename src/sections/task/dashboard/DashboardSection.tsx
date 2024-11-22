@@ -1,24 +1,24 @@
-import { containerVariants, itemVariants } from '@/utils/animations'
+import { EventMaintenance, Equipment } from '@/types/task/dashboard.type'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { motion } from 'framer-motion'
+import EquipmentSection from '@/sections/task/dashboard/EquipmentSection'
+import StatisticsSection from '@/sections/task/dashboard/StatisticsSection'
+import MaintenanceCalendar from '@/sections/task/dashboard/CalendarSection'
 
-import StatisticsSection from './StatisticsSection'
-import ProductsSection from './ProductsSection'
-import InfoSection from './InfoSection'
+// Estos datos deberían venir de una API o un estado global en una aplicación real
+const mockEvents: EventMaintenance[] = [
+  // ... añadir eventos de ejemplo
+]
+
+const mockEquipments: Equipment[] = [
+  // ... añadir equipos de ejemplo
+]
 
 const DashboardSection = ({ theme }: ThemeContextProps) => {
   return (
     <div className="container p-0 mx-auto">
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="space-y-8"
-      >
-        <InfoSection theme={theme} variants={itemVariants} />
-        <StatisticsSection theme={theme} variants={itemVariants} />
-        <ProductsSection theme={theme} variants={itemVariants} />
-      </motion.div>
+      <StatisticsSection theme={theme} />
+      <MaintenanceCalendar events={mockEvents} />
+      <EquipmentSection equipments={mockEquipments} />
     </div>
   )
 }

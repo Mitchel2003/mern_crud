@@ -11,11 +11,7 @@ const Register = () => {
 
   useEffect(() => { if (isAuth) navigate('/dashboard') }, [isAuth])
 
-  return (
-    <div className="w-full max-w-md relative">
-      <RegisterSection theme={theme} />
-    </div>
-  )
+  return <RegisterSection theme={theme} />
 }
 
 export default Register
