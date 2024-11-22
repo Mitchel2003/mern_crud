@@ -1,6 +1,6 @@
 import { getCVRequest, getCVsRequest, createCVRequest, updateCVRequest, deleteCVRequest } from "@/api/curriculum";
 import { Curriculum as TypeCurriculum, CurriculumContext } from "@/interfaces/context.interface";
-import { isAxiosResponse } from "@/interfaces/response.interface";
+import { isAxiosResponse } from "@/interfaces/db.interface";
 import { Props } from "@/interfaces/props.interface";
 
 import { useState, useContext, createContext, useEffect } from "react";

@@ -1,4 +1,4 @@
-import DashboardSection from '@/sections/dashboard/DashboardSection'
+import DashboardSection from '@/sections/task/dashboard/DashboardSection'
 import { useThemeContext } from '@/context/ThemeContext'
 
 const Dashboard = () => {

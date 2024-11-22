@@ -1,8 +1,8 @@
-import ProductSection from '@/sections/products/ProductSection'
+import ProductSection from '@/sections/task/products/ProductSection'
 import { useThemeContext } from '@/context/ThemeContext'
 import { useEffect } from 'react'
 
-const ProductsPage = () => {
+const Products = () => {
   const { theme } = useThemeContext()
   useEffect(() => { document.title = 'Productos' }, [])
 
@@ -11,4 +11,4 @@ const ProductsPage = () => {
   )
 }
 
-export default ProductsPage
+export default Products

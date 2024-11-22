@@ -22,7 +22,7 @@ export const useNotification = () => {
       title: title,
       description: message,
       variant: variants[type],
-      duration: 10000,
+      duration: 5000,
     })
   }, [toast])
 

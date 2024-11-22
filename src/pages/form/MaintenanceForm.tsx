@@ -1,7 +1,7 @@
-import MaintenanceSection from '@/sections/maintenance/MaintenanceSection'
+import MaintenanceSection from '@/sections/form/maintenance/MaintenanceSection'
 import { useThemeContext } from '@/context/ThemeContext'
 
-const Maintenance = () => {
+const MaintenanceForm = () => {
   const { theme } = useThemeContext()
 
   return (
@@ -9,4 +9,4 @@ const Maintenance = () => {
   )
 }
 
-export default Maintenance
+export default MaintenanceForm

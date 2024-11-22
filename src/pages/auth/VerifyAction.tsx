@@ -1,19 +1,17 @@
+import ResetPassword from '@/sections/auth/verify/VerifyResetSection'
+import VerifyEmail from '@/sections/auth/verify/VerifyEmailSection'
+import { useThemeContext } from '@/context/ThemeContext'
 import { useSearchParams } from 'react-router-dom'
-import { getUid } from '@/utils/urlParser'
-import { useEffect } from 'react'
 
-export default function VerifyAction() {
+const VerifyAction = () => {
   const [searchParams] = useSearchParams()
-  const continueUrl = searchParams.get('continueUrl')
-  const oobCode = searchParams.get('oobCode')
   const mode = searchParams.get('mode')
+  const { theme } = useThemeContext()
 
-  useEffect(() => { validateAction() }, [])
-  const validateAction = async () => {
-    const uid = getUid(continueUrl)
-    console.log(mode, oobCode)
-    console.log(uid)
-  }
+  if (mode === 'verifyEmail') return <VerifyEmail theme={theme} />
+  if (mode === 'resetPassword') return <ResetPassword theme={theme} />
 
   return <div>Verificando acción...</div>
 }
+
+export default VerifyAction

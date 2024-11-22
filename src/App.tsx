@@ -6,14 +6,14 @@ import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
+import MaintenanceForm from "@/pages/form/MaintenanceForm";
+import CurriculumForm from "@/pages/form/CurriculumForm";
 import VerifyAction from "@/pages/auth/VerifyAction";
-import CurriculumForm from "@/pages/CurriculumForm";
-import Maintenance from "@/pages/Maintenance";
-import Dashboard from "@/pages/Dashboard";
-import Products from "@/pages/Products";
-import Register from "@/pages/Register";
-import Login from "@/pages/Login";
-import Home from "@/pages/Home";
+import Dashboard from "@/pages/task/Dashboard";
+import Products from "@/pages/task/Products";
+import Register from "@/pages/auth/Register";
+import Login from "@/pages/auth/Login";
+import Home from "@/pages/home/Home";
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                <Route path="/form/maintenance/:id" element={<Maintenance />} />
+                <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
 
                 <Route element={<ProtectedRoute />}>
                   {/* forms routes */}
