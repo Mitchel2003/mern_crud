@@ -11,20 +11,24 @@ import { cn } from '@/lib/utils'
 const RootLayout = () => {
   const { theme } = useThemeContext()
   return (
-    <AnimatedBackground theme={theme}>
-      <Navbar />
-      <main
-        className={cn(
-          'flex flex-grow z-10',
-          'items-center justify-center'
-        )}
-      >
-        <Outlet />
-      </main>
+    <>
+      <AnimatedBackground theme={theme}>
+        <Navbar />
+        <main
+          className={cn(
+            'flex flex-grow z-10',
+            'items-center justify-center'
+          )}
+        >
+          <Outlet />
+        </main>
+        <Footer theme={theme} />
+      </AnimatedBackground>
+
+      {/* Componentes UI globales */}
       <Toaster />
       <LoadingScreen />
-      <Footer theme={theme} />
-    </AnimatedBackground>
+    </>
   )
 }
 

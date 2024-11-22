@@ -2,7 +2,7 @@ import { loginRequest, registerRequest, logoutRequest, verifyActionRequest, veri
 import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/toast/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface";
-import { useLoadingScreen } from "@/hooks/toast/useLoading";
+import { useLoadingScreen } from "@/hooks/store/useLoading";
 import { Props } from "@/interfaces/props.interface";
 
 
