@@ -1,4 +1,4 @@
-import { CarouselHeader, CarouselCard } from '#/products/CarouselProduct'
+import { CarouselHeader, CarouselCard } from '#/task/products/CarouselProduct'
 import { CarouselProductsProps } from '@/types/form/product.type'
 import { cn } from '@/lib/utils'
 

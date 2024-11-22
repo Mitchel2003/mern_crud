@@ -1,14 +1,8 @@
+import { Carousel, CarouselItem, CarouselNext, CarouselContent, CarouselPrevious } from '#/ui/carousel'
 import { CarouselProductsProps } from '@/types/form/product.type'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { CardProduct } from '#/products/CardProduct'
+import { CardProduct } from './CardProduct'
 import { Button } from '#/ui/button'
-import {
-  Carousel,
-  CarouselItem,
-  CarouselNext,
-  CarouselContent,
-  CarouselPrevious,
-} from '#/ui/carousel'
 
 export const CarouselHeader = ({ title }: { title: string }) => (
   <div className="flex items-center justify-between">
