@@ -44,8 +44,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       await verifyAuthRequest().then(res => setAuthStatus(res))
     } catch (e: unknown) {
       setAuthStatus()
-      isAxiosResponse(e) &&
-        notifyError({ title: "Error de autenticación", message: e.response.data.message })
+      isAxiosResponse(e) && notifyError({ title: "Error de autenticación", message: e.response.data.message })
     }
   }
   /**
@@ -58,6 +57,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       await loginRequest(credentials).then(res => setAuthStatus(res))
       notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión correctamente" })
     } catch (e: unknown) {
+      setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
@@ -71,8 +71,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       await registerRequest(data)
       notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
     } catch (e: unknown) {
-      isAxiosResponse(e) &&
-        notifyError({ title: "Error en el registro", message: e.response.data.message })
+      setAuthStatus()
+      isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
   /**
@@ -82,11 +82,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const logout = async () => {
     setLoadingStatus("Cerrando sesión...")
     try {
-      await logoutRequest().then(() => Cookies.remove('token'))
+      await logoutRequest().then(() => Cookies.remove('token')).finally(() => setAuthStatus())
       notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
     } catch (e: unknown) {
-      isAxiosResponse(e) &&
-        notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
+      isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -101,14 +100,16 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const verifyAction = async (mode: string, data: object) => {
     setLoadingStatus("Validando solicitud...")
     try {
-      await verifyActionRequest(mode, data).then(async () => await logoutRequest())
+      await verifyActionRequest(mode, data)
+      Cookies.remove('token')
+      await logoutRequest()
+      setAuthStatus()
       notifySuccess({
         title: `Exito al ${mode !== 'verifyEmail' ? 'restablecer contraseña' : 'verificar email'}`,
         message: "La solicitud se ha completado"
       })
     } catch (e: unknown) {
-      isAxiosResponse(e) &&
-        notifyError({ title: "Error en la solicitud", message: e.response.data.message })
+      isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/
