@@ -1,4 +1,4 @@
-import { registerSchema, RegisterFormProps } from "@/schemas/auth/auth.schema"
+import { registerSchema, RegisterFormProps } from "@/schemas/auth.schema"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"

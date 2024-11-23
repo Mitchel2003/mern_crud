@@ -1,8 +1,9 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import DiscoverSection from '@/sections/home/DiscoverSection'
-import StoreSection from '@/sections/home/StoreSection'
-import InfoSection from '@/sections/home/InfoSection'
 import { Store } from '@/types/form/home.type'
+
+import DiscoverSection from './DiscoverSection'
+import StoreSection from './StoreSection'
+import InfoSection from './InfoSection'
 
 const HomeSection = ({ theme }: ThemeContextProps) => {
   return (

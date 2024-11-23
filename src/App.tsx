@@ -6,14 +6,14 @@ import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
-import MaintenanceForm from "@/pages/form/MaintenanceForm";
-import CurriculumForm from "@/pages/form/CurriculumForm";
-import VerifyAction from "@/pages/auth/VerifyAction";
-import Dashboard from "@/pages/task/Dashboard";
-import Products from "@/pages/task/Products";
-import Register from "@/pages/auth/Register";
-import Login from "@/pages/auth/Login";
-import Home from "@/pages/home/Home";
+import MaintenanceForm from "@/pages/MaintenanceForm";
+import CurriculumForm from "@/pages/CurriculumForm";
+import VerifyAction from "@/pages/VerifyAction";
+import Dashboard from "@/pages/Dashboard";
+import Products from "@/pages/Products";
+import Register from "@/pages/Register";
+import Login from "@/pages/Login";
+import Home from "@/pages/Home";
 
 function App() {
   return (

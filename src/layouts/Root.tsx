@@ -1,8 +1,8 @@
-import { AnimatedBackground } from '#/others/background/AnimatedBackground'
+import { AnimatedBackground } from '#/layout/AnimatedBackground'
 import { LoadingScreen } from "#/ui/loading-screen"
 import { Toaster } from '#/ui/toaster'
-import Navbar from '#/others/Navbar'
-import Footer from '#/others/Footer'
+import Navbar from '#/layout/Navbar'
+import Footer from '#/layout/Footer'
 
 import { useThemeContext } from '@/context/ThemeContext'
 import { Outlet } from 'react-router-dom'
