@@ -1,13 +1,13 @@
-import { DayCard, MaintenanceEvent } from '@/types/task/dashboard.type'
+import { CardDay, EventMaintenance } from '@/types/task/dashboard.type'
 import { useState, useMemo } from 'react'
 
-const useCalendar = (events: MaintenanceEvent[]) => {
+const useCalendar = (events: EventMaintenance[]) => {
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
   const daysInMonth = useMemo(() => {
     const year = currentMonth.getFullYear()
     const month = currentMonth.getMonth()
-    const daysArray: DayCard[] = []
+    const daysArray: CardDay[] = []
 
     for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) {
       const date = new Date(year, month, day)
