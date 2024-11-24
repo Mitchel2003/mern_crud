@@ -28,6 +28,8 @@ const Sidebar = ({ theme, isAuth }: SidebarProps) => {
       <DropdownContent isCollapsed={isCollapsed} >
         <AsideArea theme={theme}>
           <Items
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
             isCollapsed={isCollapsed}
             items={isAuth ? navUserItems : navGuestItems}
           />
@@ -43,16 +45,17 @@ export default Sidebar
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /** Items: this component render the items of the sidebar */
-interface ItemsProps { items: NavItemProps[], isCollapsed: boolean }
-const Items = ({ items, isCollapsed }: ItemsProps) => {
+interface ItemsProps { isOpen: boolean, isCollapsed: boolean, items: NavItemProps[], setIsOpen: (isOpen: boolean) => void }
+const Items = ({ items, isCollapsed, isOpen, setIsOpen }: ItemsProps) => {
   return (
     <ScrollArea className="h-full px-3 py-4">
       <nav className="space-y-2">
         {items.map((item) => (
           <SidebarItem
             item={item}
-            key={item.href || item.label}
             isCollapsed={isCollapsed}
+            key={item.href || item.label}
+            collapse={() => setIsOpen(!isOpen)}
           />
         ))}
       </nav>

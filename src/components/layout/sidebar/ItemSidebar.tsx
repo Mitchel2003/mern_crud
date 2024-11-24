@@ -5,12 +5,13 @@ import ItemAction from './ItemAction'
 import { Button } from "#/ui/button"
 
 interface ItemSidebarProps {
+  collapse: React.MouseEventHandler
   isCollapsed: boolean
   item: NavItemProps
   depth?: number
 }
 
-const ItemSidebar = ({ item, isCollapsed, depth = 0 }: ItemSidebarProps) => {
+const ItemSidebar = ({ item, isCollapsed, depth = 0, collapse }: ItemSidebarProps) => {
   if (item.action) return <ItemAction item={item} isCollapsed={isCollapsed} depth={depth} />
   const isActive = useLocation().pathname === item.href
 
@@ -20,7 +21,7 @@ const ItemSidebar = ({ item, isCollapsed, depth = 0 }: ItemSidebarProps) => {
         <Tooltip>
           {/* Show item collapsable */}
           <TooltipTrigger asChild>
-            <Link to={item.href ?? '#'}>
+            <Link to={item.href ?? '#'} onClick={() => collapse}>
               <div className="w-full">
                 <Content item={item} isCollapsed={isCollapsed} depth={depth} isActive={isActive} />
               </div>
@@ -39,8 +40,9 @@ const ItemSidebar = ({ item, isCollapsed, depth = 0 }: ItemSidebarProps) => {
           <div className="ml-4">
             {item.subItems.map(subItem => (
               <ItemSidebar
-                key={subItem.href}
                 item={subItem}
+                key={subItem.href}
+                collapse={() => collapse}
                 isCollapsed={isCollapsed}
                 depth={depth + 1}
               />
@@ -56,7 +58,7 @@ export default ItemSidebar
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-interface ContentProps extends ItemSidebarProps { isActive: boolean }
+interface ContentProps extends Pick<ItemSidebarProps, 'depth' | 'item' | 'isCollapsed'> { isActive: boolean }
 const Content = ({ isActive, item, isCollapsed, depth = 0 }: ContentProps) => (
   <Button
     variant={isActive ? "secondary" : "ghost"}
