@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 interface StatCardProps extends ThemeContextProps { icon: React.ReactNode, title: string, value: string }
 const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {
   return (
+    //explorando la posibilidad de convertir esto en una sola sección
+    //pero quizas lo necesite reutilizar asi que quizas pueda dejarlo así
     <motion.div
       variants={scaleVariants}
       className={cn(
