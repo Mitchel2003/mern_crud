@@ -26,10 +26,16 @@ const MaintenanceSection = ({ theme }: MaintenanceSectionProps) => {
       <form onSubmit={form.handleSubmit((data) => console.log(data))}>
 
         {/* Component maintenance */}
-        <Card className={cn(
-          'w-full max-w-6xl mx-auto shadow-lg backdrop-filter backdrop-blur-lg',
-          theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-50'
-        )}>
+        <Card
+          id="maintenance-form"
+          className={cn(
+            'w-full py-5 mx-auto shadow-lg',
+            'transition-all duration-200 backdrop-filter backdrop-blur-lg',
+            theme === 'dark'
+              ? 'bg-zinc-800 hover:shadow-gray-900'
+              : 'bg-gray-50 hover:shadow-purple-500/60'
+          )}
+        >
 
           {/* -------------------- Header form -------------------- */}
           <HeaderForm

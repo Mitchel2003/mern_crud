@@ -1,4 +1,4 @@
-import EquipmentCard from '@/components/pages/dashboard/CardEquipment'
+import EquipmentCard from '#/pages/dashboard/CardEquipment'
 import { Equipment } from '@/types/task/dashboard.type'
 import React, { useState } from 'react'
 import { Button } from '#/ui/button'

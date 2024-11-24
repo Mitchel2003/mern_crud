@@ -2,24 +2,7 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-interface StatCardProps extends ThemeContextProps {
-  icon: React.ReactNode
-  title: string
-  value: string
-}
-
-const scaleVariants = {
-  hidden: { scale: 0.8, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut"
-    }
-  }
-}
-
+interface StatCardProps extends ThemeContextProps { icon: React.ReactNode, title: string, value: string }
 const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {
   return (
     <motion.div
@@ -58,3 +41,17 @@ const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {
 }
 
 export default StatsCard
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const scaleVariants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeInOut"
+    }
+  }
+}

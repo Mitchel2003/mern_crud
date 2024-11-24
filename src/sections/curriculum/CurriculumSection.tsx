@@ -54,7 +54,7 @@ const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
         <Card
           id="curriculum-form"
           className={cn(
-            'w-full mx-auto shadow-lg',
+            'w-full py-5 mx-auto shadow-lg',
             'transition-all duration-200 backdrop-filter backdrop-blur-lg',
             theme === 'dark'
               ? 'bg-zinc-800 hover:shadow-gray-900'
