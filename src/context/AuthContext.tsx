@@ -39,13 +39,14 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /** Verifica el token de autenticación almacenado en las cookies */
   const verifyToken = async () => {
-    if (!Cookies.get().token) return setAuthStatus()
+    setLoading(true);
+    if (!Cookies.get().token) { setLoading(false); return setAuthStatus() }
     try {
       await verifyAuthRequest().then(res => setAuthStatus(res))
     } catch (e: unknown) {
       setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error de autenticación", message: e.response.data.message })
-    }
+    } finally { setLoading(false) }
   }
   /**
    * Inicia sesión con las credenciales del usuario.
