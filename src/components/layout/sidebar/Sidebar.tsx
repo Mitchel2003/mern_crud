@@ -53,9 +53,10 @@ const Items = ({ items, isCollapsed, isOpen, setIsOpen }: ItemsProps) => {
         {items.map((item) => (
           <SidebarItem
             item={item}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
             isCollapsed={isCollapsed}
             key={item.href || item.label}
-            collapse={() => setIsOpen(!isOpen)}
           />
         ))}
       </nav>

@@ -5,13 +5,14 @@ import ItemAction from './ItemAction'
 import { Button } from "#/ui/button"
 
 interface ItemSidebarProps {
-  collapse: React.MouseEventHandler
+  setIsOpen: (isOpen: boolean) => void
   isCollapsed: boolean
   item: NavItemProps
+  isOpen: boolean
   depth?: number
 }
 
-const ItemSidebar = ({ item, isCollapsed, depth = 0, collapse }: ItemSidebarProps) => {
+const ItemSidebar = ({ item, isCollapsed, depth = 0, isOpen, setIsOpen }: ItemSidebarProps) => {
   if (item.action) return <ItemAction item={item} isCollapsed={isCollapsed} depth={depth} />
   const isActive = useLocation().pathname === item.href
 
@@ -21,7 +22,7 @@ const ItemSidebar = ({ item, isCollapsed, depth = 0, collapse }: ItemSidebarProp
         <Tooltip>
           {/* Show item collapsable */}
           <TooltipTrigger asChild>
-            <Link to={item.href ?? '#'} onClick={() => collapse}>
+            <Link to={item.href ?? '#'} onClick={() => setIsOpen(!isOpen)}>
               <div className="w-full">
                 <Content item={item} isCollapsed={isCollapsed} depth={depth} isActive={isActive} />
               </div>
@@ -41,8 +42,9 @@ const ItemSidebar = ({ item, isCollapsed, depth = 0, collapse }: ItemSidebarProp
             {item.subItems.map(subItem => (
               <ItemSidebar
                 item={subItem}
+                isOpen={isOpen}
                 key={subItem.href}
-                collapse={() => collapse}
+                setIsOpen={setIsOpen}
                 isCollapsed={isCollapsed}
                 depth={depth + 1}
               />
