@@ -3,12 +3,14 @@ import { NavItemProps } from "@/interfaces/props.interface"
 import { Button } from "#/ui/button"
 
 interface ItemActionProps {
-  depth?: number
-  item: NavItemProps
+  setIsOpen: (isOpen: boolean) => void
   isCollapsed: boolean
+  item: NavItemProps
+  isOpen: boolean
+  depth?: number
 }
 
-const ItemAction = ({ item, isCollapsed, depth = 0 }: ItemActionProps) => {
+const ItemAction = ({ item, isCollapsed, depth = 0, isOpen, setIsOpen }: ItemActionProps) => {
   const handleAction = async (e: React.MouseEvent) => { e.preventDefault(); if (item.action) await item.action() }
 
   return (
@@ -16,11 +18,11 @@ const ItemAction = ({ item, isCollapsed, depth = 0 }: ItemActionProps) => {
       <Tooltip>
         <TooltipTrigger asChild>
           {/* Show item collapsable */}
-          <div className="w-full">
+          <div className="w-full" onClick={() => setIsOpen(!isOpen)}>
             <Content item={item} isCollapsed={isCollapsed} depth={depth} handler={handleAction} />
           </div>
         </TooltipTrigger>
-        
+
         {isCollapsed && (
           <TooltipContent side="right">
             <p>{item.label}</p>
@@ -35,7 +37,7 @@ export default ItemAction
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-interface ContentProps extends ItemActionProps { handler: (e: React.MouseEvent) => Promise<void> }
+interface ContentProps extends Pick<ItemActionProps, 'item' | 'isCollapsed' | 'depth'> { handler: (e: React.MouseEvent) => Promise<void> }
 const Content = ({ handler, item, isCollapsed, depth = 0 }: ContentProps) => (
   <Button
     variant="ghost"

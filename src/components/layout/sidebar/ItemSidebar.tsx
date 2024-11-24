@@ -13,7 +13,15 @@ interface ItemSidebarProps {
 }
 
 const ItemSidebar = ({ item, isCollapsed, depth = 0, isOpen, setIsOpen }: ItemSidebarProps) => {
-  if (item.action) return <ItemAction item={item} isCollapsed={isCollapsed} depth={depth} />
+  if (item.action) return (
+    <ItemAction
+      item={item}
+      depth={depth}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      isCollapsed={isCollapsed}
+    />
+  )
   const isActive = useLocation().pathname === item.href
 
   return (
