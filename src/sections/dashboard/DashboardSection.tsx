@@ -6,16 +6,27 @@ import MaintenanceCalendar from '@/sections/dashboard/CalendarSection'
 
 // Estos datos deberían venir de una API o un estado global en una aplicación real
 const mockEvents: EventMaintenance[] = [
-  // ... añadir eventos de ejemplo
+  {
+    id: '1',
+    importance: 'critical',
+    date: new Date(Date.now() + 48 * 60 * 60 * 1000),
+    description: 'equipo en proceso de mantenimiento'
+  }
 ]
 
 const mockEquipments: Equipment[] = [
-  // ... añadir equipos de ejemplo
+  {
+    id: '1',
+    imageUrl: '',
+    status: 'bueno',
+    name: 'dental equipo',
+    nextMaintenance: new Date(Date.now() + 24 * 60 * 60 * 1000)
+  }
 ]
 
 const DashboardSection = ({ theme }: ThemeContextProps) => {
   return (
-    <div className="container p-0 mx-auto">
+    <div className="container p-10 mx-auto">
       <StatisticsSection theme={theme} />
       <MaintenanceCalendar events={mockEvents} />
       <EquipmentSection equipments={mockEquipments} />

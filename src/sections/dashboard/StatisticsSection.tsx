@@ -1,10 +1,11 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { CircleCheck, CircleX, Users } from 'lucide-react'
-import StatCard from '@/components/pages/dashboard/StatsCard'
+import StatCard from '#/pages/dashboard/StatsCard'
+import { cn } from '@/lib/utils'
 
 const StatisticsSection = ({ theme }: ThemeContextProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className={cn('grid grid-cols-1 md:grid-cols-3 gap-4')}>
       {stats.map((stat, index) => (
         <StatCard
           key={index}
