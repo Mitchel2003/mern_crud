@@ -31,10 +31,10 @@ const FooterSection = ({ theme }: FooterSectionProps) => {
           © 2024. Todos los derechos reservados.
         </p>
       </div>
-      <div className="flex space-x-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Button variant="link" size="sm">Términos de Servicio</Button>
         <Button variant="link" size="sm">Política de Privacidad</Button>
-        <Badge variant="outline">Versión 1.0.0</Badge>
+        <Badge variant="outline" className="w-fit">Versión 1.0.0</Badge>
       </div>
     </div>
   )
