@@ -1,5 +1,5 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Store } from '@/types/form/home.type'
+import { Store } from '@/types/home.type'
 
 import DiscoverSection from './DiscoverSection'
 import StoreSection from './StoreSection'

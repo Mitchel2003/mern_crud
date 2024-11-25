@@ -32,13 +32,14 @@ function App() {
                 <Route path="/auth/register" element={<Register />} />
                 <Route path="/auth/verify-action" element={<VerifyAction />} />
 
-                {/* protected routes */}
                 <Route element={<ProtectedRoute />}>
+                  {/* protected routes */}
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/form/cv/:id" element={<CurriculumForm />} />
                   <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                 </Route>
+
               </Route>
             </Routes>
           </BrowserRouter>

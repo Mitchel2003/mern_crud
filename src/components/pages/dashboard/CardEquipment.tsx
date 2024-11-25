@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '#/ui/card'
-import { Equipment } from '@/types/task/dashboard.type'
+import { Equipment } from '@/types/dashboard.type'
 import { Badge } from '#/ui/badge'
 import React from 'react'
 

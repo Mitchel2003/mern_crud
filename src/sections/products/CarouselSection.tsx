@@ -1,5 +1,5 @@
 import { CarouselHeader, CarouselCard } from '#/pages/products/CarouselProduct'
-import { CarouselProductsProps } from '@/types/form/product.type'
+import { CarouselProductsProps } from '@/types/product.type'
 import { cn } from '@/lib/utils'
 
 export const CarouselProducts = ({ title, products, className }: CarouselProductsProps) => {

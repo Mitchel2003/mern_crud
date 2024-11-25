@@ -1,4 +1,4 @@
-import { EventMaintenance, Equipment } from '@/types/task/dashboard.type'
+import { EventMaintenance, Equipment } from '@/types/dashboard.type'
 import { ThemeContextProps, User } from '@/interfaces/context.interface'
 import MaintenanceCalendar from './CalendarSection'
 import StatisticsSection from './StatisticsSection'
@@ -8,7 +8,7 @@ import InfoSection from './InfoSection'
 interface DashboardSectionProps extends ThemeContextProps { auth: User }
 const DashboardSection = ({ theme, auth }: DashboardSectionProps) => {
   return (
-    <div className="container space-y-10 p-5 mx-auto">
+    <div className="container space-y-10 p-10 mx-auto">
       <InfoSection theme={theme} auth={auth} />
       <StatisticsSection theme={theme} />
       <MaintenanceCalendar events={mockEvents} />

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { cn } from '@/lib/utils'
-import { Store } from '@/types/form/home.type'
+import { Store } from '@/types/home.type'
 import { StarIcon } from 'lucide-react'
 
 interface StoreCardProps extends ThemeContextProps {

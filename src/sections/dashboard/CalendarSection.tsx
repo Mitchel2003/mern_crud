@@ -1,4 +1,4 @@
-import { EventMaintenance } from '@/types/task/dashboard.type'
+import { EventMaintenance } from '@/types/dashboard.type'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import CardDay from '#/pages/dashboard/CardDay'
 import useCalendar from '@/hooks/useCalendar'

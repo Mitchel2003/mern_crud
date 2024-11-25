@@ -1,4 +1,4 @@
-import { CardDay as CardDayType } from '@/types/task/dashboard.type'
+import { CardDay as CardDayType } from '@/types/dashboard.type'
 import { Card, CardContent } from '#/ui/card'
 import { Badge } from '#/ui/badge'
 import React from 'react'

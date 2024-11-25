@@ -1,4 +1,4 @@
-import { CardDay, EventMaintenance } from '@/types/task/dashboard.type'
+import { CardDay, EventMaintenance } from '@/types/dashboard.type'
 import { useState, useMemo } from 'react'
 
 const useCalendar = (events: EventMaintenance[]) => {

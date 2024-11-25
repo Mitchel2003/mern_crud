@@ -1,5 +1,5 @@
 import EquipmentCard from '#/pages/dashboard/CardEquipment'
-import { Equipment } from '@/types/task/dashboard.type'
+import { Equipment } from '@/types/dashboard.type'
 import React, { useState } from 'react'
 import { Button } from '#/ui/button'
 

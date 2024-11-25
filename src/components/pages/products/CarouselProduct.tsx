@@ -1,5 +1,5 @@
 import { Carousel, CarouselItem, CarouselNext, CarouselContent, CarouselPrevious } from '#/ui/carousel'
-import { CarouselProductsProps } from '@/types/form/product.type'
+import { CarouselProductsProps } from '@/types/product.type'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { CardProduct } from './CardProduct'
 import { Button } from '#/ui/button'

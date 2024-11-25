@@ -1,14 +1,10 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps extends ThemeContextProps { icon: React.ReactNode, title: string, value: string }
 const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {
   return (
-    //explorando la posibilidad de convertir esto en una sola sección
-    //pero quizas lo necesite reutilizar asi que quizas pueda dejarlo así
-    <motion.div
-      variants={scaleVariants}
+    <div
       className={cn(
         'flex items-center space-x-4 p-6',
         'rounded-xl transition-colors duration-200',
@@ -38,22 +34,8 @@ const StatsCard = ({ theme, icon, title, value }: StatCardProps) => {
           theme === 'dark' ? 'text-zinc-100' : 'text-gray-900'
         )}> {value} </h4>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
 export default StatsCard
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const scaleVariants = {
-  hidden: { scale: 0.8, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut"
-    }
-  }
-}

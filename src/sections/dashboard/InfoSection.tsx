@@ -1,5 +1,5 @@
 import { ThemeContextProps, User } from '@/interfaces/context.interface'
-import { motion } from 'framer-motion'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 interface InfoSectionProps extends ThemeContextProps { auth: User }
@@ -8,7 +8,14 @@ const InfoSection = ({ theme, auth }: InfoSectionProps) => {
   const first = auth?.username.charAt(0).toUpperCase()
 
   return (
-    <motion.section variants={scaleVariants} className="text-center space-y-4">
+    <Card className={cn(
+      'text-center space-y-4 p-10',
+      'transition-all duration-200',
+      'backdrop-filter backdrop-blur-lg hover:shadow-md',
+      theme === 'dark'
+        ? 'bg-zinc-800/40 hover:shadow-purple-900/60'
+        : 'bg-white/50 hover:shadow-purple-500/60'
+    )}>
       <h1 className={cn(
         'text-4xl font-bold',
         theme === 'dark' ? 'text-purple-100' : 'text-purple-400'
@@ -21,22 +28,8 @@ const InfoSection = ({ theme, auth }: InfoSectionProps) => {
       )}>
         Aquí encontraras tu calendario e información relevante
       </p>
-    </motion.section>
+    </Card>
   )
 }
 
 export default InfoSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const scaleVariants = {
-  hidden: { scale: 0.8, opacity: 0 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut"
-    }
-  }
-}
