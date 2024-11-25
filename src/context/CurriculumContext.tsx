@@ -30,7 +30,6 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const { notifyError, notifySuccess } = useNotification()
   const [loading, setLoading] = useState(true)
 
-  /*--------------------------------------------------CRUD--------------------------------------------------*/
   /**
    * Obtiene un curriculum específico por su ID.
    * @param {string} id - El ID del curriculum a obtener.
@@ -49,6 +48,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
+
   /**
    * Obtiene todos los curriculums del usuario en contexto
    * @returns {Promise<TypeCurriculum[]>} Un array con los datos de todos los curriculums.
@@ -63,12 +63,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
       })
       return response.data || []
     } catch (e: unknown) {
-      if (isAxiosResponse(e)) {
-        console.log(e.response)
-        notifyError({ title: "Error en la solicitud", message: e.response.data.message })
-      }//working here
-      //response
-      //"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/form/cvs</pre>\n</body>\n</html>\n"
+      isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
       return []
     } finally { setLoadingStatus() }
   }
