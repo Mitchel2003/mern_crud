@@ -1,6 +1,7 @@
 import { CustomMutation_CV, QueryReact_CV } from "@/interfaces/hook.interface";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCurriculumContext } from "@/context/CurriculumContext";
+import { Curriculum } from "@/interfaces/context.interface";
 
 /*--------------------------------------------------useQuery--------------------------------------------------*/
 /**
@@ -27,9 +28,11 @@ export function useQueryReact(): QueryReact_CV {
   /** Ejecuta una solicitud que devuelve todos los curriculum del contexto del usuario */
   const fetchCVs = () => {
     const { getCVs } = useCurriculumContext();
-    return useQuery({
+    return useQuery<Curriculum[]>({
       queryKey: ['cvs'],
-      queryFn: () => getCVs()
+      queryFn: () => getCVs(),
+      select: (data) => data || [],
+      initialData: []
     })
   }
   return { fetchCV, fetchCVs }

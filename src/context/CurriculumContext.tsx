@@ -58,7 +58,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
     try {
       const response = await getCVsRequest()
       notifySuccess({
-        title: "Exito al obtener datos",
+        title: "Éxito al obtener datos",
         message: 'La solicitud se ha completado'
       })
       return response.data || []

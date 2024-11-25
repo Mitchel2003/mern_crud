@@ -1,15 +1,17 @@
 import { EventMaintenance, Equipment } from '@/types/dashboard.type'
-import { ThemeContextProps, User } from '@/interfaces/context.interface'
+import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useAuthContext } from '@/context/AuthContext'
 import MaintenanceCalendar from './CalendarSection'
 import StatisticsSection from './StatisticsSection'
 import EquipmentSection from './EquipmentSection'
 import InfoSection from './InfoSection'
 
-interface DashboardSectionProps extends ThemeContextProps { auth: User }
-const DashboardSection = ({ theme, auth }: DashboardSectionProps) => {
+interface DashboardSectionProps extends ThemeContextProps { }
+const DashboardSection = ({ theme }: DashboardSectionProps) => {
+  const { user } = useAuthContext()
   return (
     <div className="container space-y-10 p-10 mx-auto">
-      <InfoSection theme={theme} auth={auth} />
+      <InfoSection theme={theme} auth={user} />
       <StatisticsSection theme={theme} />
       <MaintenanceCalendar events={mockEvents} />
       <EquipmentSection equipments={mockEquipments} />

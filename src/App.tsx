@@ -8,6 +8,7 @@ import RootLayout from "@/layouts/Root";
 
 import MaintenanceForm from "@/pages/MaintenanceForm";
 import CurriculumForm from "@/pages/CurriculumForm";
+import CurriculumList from "./pages/CurriculumList";
 import VerifyAction from "@/pages/VerifyAction";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
@@ -36,6 +37,7 @@ function App() {
                   {/* protected routes */}
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/products" element={<Products />} />
+                  <Route path="/form/cvs" element={<CurriculumList />} />
                   <Route path="/form/cv/:id" element={<CurriculumForm />} />
                   <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                 </Route>
