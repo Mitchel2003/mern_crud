@@ -64,7 +64,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
       return response.data || []
     } catch (e: unknown) {
       if (isAxiosResponse(e)) {
-        console.log(e.response.data)
+        console.log(e.response)
         notifyError({ title: "Error en la solicitud", message: e.response.data.message })
       }
       return []
