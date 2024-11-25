@@ -8,7 +8,7 @@ import InfoSection from './InfoSection'
 interface DashboardSectionProps extends ThemeContextProps { auth: User }
 const DashboardSection = ({ theme, auth }: DashboardSectionProps) => {
   return (
-    <div className="container p-5 mx-auto">
+    <div className="container space-y-10 p-5 mx-auto">
       <InfoSection theme={theme} auth={auth} />
       <StatisticsSection theme={theme} />
       <MaintenanceCalendar events={mockEvents} />

@@ -1,6 +1,8 @@
 import { getCVRequest, getCVsRequest, createCVRequest, updateCVRequest, deleteCVRequest } from "@/api/curriculum";
 import { Curriculum as TypeCurriculum, CurriculumContext } from "@/interfaces/context.interface";
+import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
+import { useLoadingScreen } from "@/hooks/ui/useLoading";
 import { Props } from "@/interfaces/props.interface";
 
 import { useState, useContext, createContext, useEffect } from "react";
@@ -24,16 +26,11 @@ export const useCurriculumContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de curriculums.
  */
 export const CurriculumProvider = ({ children }: Props): JSX.Element => {
-  const [errors, setErrors] = useState<string[]>([]);
-
-  useEffect(() => timeAlert(), [errors])
-
-  /** Configura un temporizador para limpiar los errores después de 5 segundos */
-  const timeAlert = () => {
-    if (errors.length === 0) return;
-    const timer = setTimeout(() => setErrors([]), 5000);
-    return () => clearTimeout(timer);
-  }
+  // const { show: showLoading, hide: hideLoading } = useLoadingScreen()
+  // const { notifySuccess, notifyError } = useNotification()
+  // const [cvs, setCvs] = useState<TypeCurriculum>({})
+  // const [loading, setLoading] = useState(true)
+  //working abour curriculum context
 
   /**
    * Obtiene un curriculum específico por su ID.
@@ -90,7 +87,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
    * @param {unknown} e - El error capturado.
    */
   const setCurriculumStatus = (e: unknown) => {
-    if (isAxiosResponse(e)) setErrors([e.response.data.message])
+    // if (isAxiosResponse(e)) setErrors([e.response.data.message])
   }
 
   return (
