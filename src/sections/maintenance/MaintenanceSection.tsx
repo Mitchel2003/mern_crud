@@ -29,7 +29,7 @@ const MaintenanceSection = ({ theme }: MaintenanceSectionProps) => {
         <Card
           id="maintenance-form"
           className={cn(
-            'w-full py-5 mx-auto shadow-lg',
+            'w-full mx-auto shadow-lg',
             'transition-all duration-200 backdrop-filter backdrop-blur-lg',
             theme === 'dark'
               ? 'bg-zinc-800 hover:shadow-gray-900'

@@ -5,7 +5,9 @@ const MaintenanceForm = () => {
   const { theme } = useThemeContext()
 
   return (
-    <MaintenanceSection theme={theme} />
+    <div className="w-full py-10">
+      <MaintenanceSection theme={theme} />
+    </div>
   )
 }
 

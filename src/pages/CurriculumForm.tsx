@@ -5,7 +5,9 @@ const CurriculumForm = () => {
   const { theme } = useThemeContext()
 
   return (
-    <CurriculumSection theme={theme} />
+    <div className="w-full py-10">
+      <CurriculumSection theme={theme} />
+    </div>
   )
 }
 
