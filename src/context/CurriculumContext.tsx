@@ -28,33 +28,43 @@ export const useCurriculumContext = () => {
 export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifyError, notifySuccess } = useNotification()
-  const [cvs, setCvs] = useState<TypeCurriculum[]>([])
   const [loading, setLoading] = useState(true)
 
+  /*--------------------------------------------------CRUD--------------------------------------------------*/
   /**
    * Obtiene un curriculum específico por su ID.
    * @param {string} id - El ID del curriculum a obtener.
-   * @returns {Promise<void>} Los datos del curriculum o undefined en caso de error.
+   * @returns {Promise<TypeCurriculum>} Los datos del curriculum o undefined en caso de error.
    */
-  const getCV = async (id: string): Promise<void> => {
+  const getCV = async (id: string): Promise<TypeCurriculum> => {
     setLoadingStatus('Obteniendo datos...')
     try {
-      await getCVRequest(id).then(res => setCvs(res.data))
-      notifySuccess({ title: "Exito al obtener datos", message: 'La solicitud se ha completado' })
+      const response = await getCVRequest(id)
+      notifySuccess({
+        title: "Exito al obtener dato",
+        message: 'La solicitud se ha completado'
+      })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
   /**
    * Obtiene todos los curriculums del usuario en contexto
-   * @returns {Promise<void>} Un array con los datos de todos los curriculums.
+   * @returns {Promise<TypeCurriculum[]>} Un array con los datos de todos los curriculums.
    */
-  const getCVs = async (): Promise<void> => {
+  const getCVs = async (): Promise<TypeCurriculum[]> => {
     setLoadingStatus('Obteniendo datos...')
     try {
-      await getCVsRequest().then(res => setCvs(res.data))
+      const response = await getCVsRequest()
+      notifySuccess({
+        title: "Exito al obtener datos",
+        message: 'La solicitud se ha completado'
+      })
+      return response.data || []
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
+      return []
     } finally { setLoadingStatus() }
   }
 
@@ -63,11 +73,12 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
    * @param {object} curriculum - Los datos del curriculum a crear.
    * @returns {Promise<void>} Los datos del curriculum creado o undefined en caso de error.
    */
-  const createCV = async (curriculum: object): Promise<void> => {
+  const createCV = async (curriculum: object): Promise<TypeCurriculum> => {
     setLoadingStatus('Creando datos...')
     try {
-      await createCVRequest(curriculum).then(res => setCvs(res.data))
+      const response = await createCVRequest(curriculum)
       notifySuccess({ title: "Exito al crear datos", message: 'La solicitud se ha completado' })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
@@ -79,11 +90,15 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
    * @param {object} curriculum - Los nuevos datos del curriculum.
    * @returns {Promise<TypeCurriculum>} Los datos del curriculum actualizado o undefined en caso de error.
    */
-  const updateCV = async (id: string, curriculum: object): Promise<void> => {
+  const updateCV = async (id: string, curriculum: object): Promise<TypeCurriculum> => {
     setLoadingStatus('Actualizando datos...')
     try {
-      await updateCVRequest(id, curriculum).then(res => setCvs(res.data))
-      notifySuccess({ title: "Exito al actualizar datos", message: 'La solicitud se ha completado' })
+      const response = await updateCVRequest(id, curriculum)
+      notifySuccess({
+        title: "Exito al actualizar datos",
+        message: 'La solicitud se ha completado'
+      })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
@@ -94,11 +109,15 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID del curriculum a eliminar.
    * @returns {Promise<TypeCurriculum>} Los datos del curriculum eliminado o undefined en caso de error.
    */
-  const deleteCV = async (id: string): Promise<void> => {
+  const deleteCV = async (id: string): Promise<TypeCurriculum> => {
     setLoadingStatus('Eliminando datos...')
     try {
-      await deleteCVRequest(id).then(res => setCvs(res.data))
-      notifySuccess({ title: "Exito al eliminar datos", message: 'La solicitud se ha completado' })
+      const response = await deleteCVRequest(id)
+      notifySuccess({
+        title: "Exito al eliminar datos",
+        message: 'La solicitud se ha completado'
+      })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
     } finally { setLoadingStatus() }
@@ -118,7 +137,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   /*---------------------------------------------------------------------------------------------------------*/
 
   return (
-    <Curriculum.Provider value={{ cvs, loading, getCV, getCVs, createCV, updateCV, deleteCV }}>
+    <Curriculum.Provider value={{ loading, getCV, getCVs, createCV, updateCV, deleteCV }}>
       {children}
     </Curriculum.Provider>
   )

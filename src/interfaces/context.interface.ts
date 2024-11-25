@@ -73,11 +73,10 @@ export type Curriculum = {
 
 export type CurriculumContext = {
   loading: boolean
-  cvs: Curriculum[]
-  getCV: (id: string) => Promise<void>
-  getCVs: () => Promise<void>
-  createCV: (cv: object) => Promise<void>
-  updateCV: (id: string, cv: object) => Promise<void>
-  deleteCV: (id: string) => Promise<void>
+  getCV: (id: string) => Promise<Curriculum>
+  getCVs: () => Promise<Curriculum[]>
+  createCV: (cv: object) => Promise<Curriculum>
+  updateCV: (id: string, cv: object) => Promise<Curriculum>
+  deleteCV: (id: string) => Promise<Curriculum>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
