@@ -74,7 +74,6 @@ export default function CurriculumList() {
           data={cvs || []}
           columns={columns}
           filterColumn="title"
-          deleteRow={(id) => deleteMutation.mutate(id)}
         />
       </Card>
     </div>

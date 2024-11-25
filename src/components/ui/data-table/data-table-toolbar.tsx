@@ -7,7 +7,6 @@ import { X } from "lucide-react"
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
   filterColumn?: string
-  deleteRow?: (id: string) => void
 }
 
 export function DataTableToolbar<TData>({
