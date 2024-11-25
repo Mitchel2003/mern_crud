@@ -107,7 +107,7 @@ const DropdownContent = ({ children, isCollapsed }: DropdownContentProps) => {
     <DropdownMenuContent align="end" className={cn(
       'absolute p-0 w-64',
       'h-[calc(100vh-4rem)]',
-      'right-[calc(100%-40px)]',
+      'right-[calc(100%-25px)]',
       isCollapsed && 'w-16'
     )}>
       {children}
