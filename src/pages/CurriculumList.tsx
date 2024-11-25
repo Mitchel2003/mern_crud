@@ -1,18 +1,22 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "#/ui/dropdown-menu"
 import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
 import { Curriculum } from "@/interfaces/context.interface"
+import { useThemeContext } from "@/context/ThemeContext"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Button } from "#/ui/button"
 
 import { MoreHorizontal, Pencil, Trash } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
+import { Card } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 export default function CurriculumList() {
-  const { deleteCV } = useCustomMutation()
+  const { theme } = useThemeContext()
   const { fetchCVs } = useQueryReact()
-  const deleteMutation = deleteCV()
+  const { deleteCV } = useCustomMutation()
   const { data: cvs, isLoading } = fetchCVs()
+  const deleteMutation = deleteCV()
   const navigate = useNavigate()
 
   const columns: ColumnDef<Curriculum>[] = [
@@ -62,12 +66,17 @@ export default function CurriculumList() {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable
-        data={cvs || []}
-        columns={columns}
-        filterColumn="title"
-        deleteRow={(id) => deleteMutation.mutate(id)}
-      />
+      <Card className={cn(
+        "p-4 border-rounded-md shadow-md",
+        theme === "dark" ? "bg-gray-800" : "bg-white"
+      )}>
+        <DataTable
+          data={cvs || []}
+          columns={columns}
+          filterColumn="title"
+          deleteRow={(id) => deleteMutation.mutate(id)}
+        />
+      </Card>
     </div>
   )
 } 
