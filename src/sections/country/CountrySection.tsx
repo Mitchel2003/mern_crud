@@ -1,13 +1,10 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
-
-const CountrySection = ({ theme }: ThemeContextProps) => {
-  return <Table theme={theme} />
+const CountrySection = () => {
+  return <Table />
 }
 
 export default CountrySection
 
-interface TableProps extends ThemeContextProps { }
-const Table = ({ theme }: TableProps) => {
+const Table = () => {
   //aqui va el componente de la tabla tanStack table
   return (
     <>
