@@ -32,9 +32,9 @@ const mockEvents: EventMaintenance[] = [
 const mockEquipments: Equipment[] = [
   {
     id: '1',
-    imageUrl: '',
     status: 'bueno',
     name: 'dental equipo',
-    nextMaintenance: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    nextMaintenance: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/gestionsalud-2003.appspot.com/o/techno%2Fenterprise%2Fmaicolchinchilla.02%40gmail.com%2Fplace%2Fpreview_1?alt=media&token=25b33868-3a1c-4083-aa15-18addb5734be',
   }
 ]
