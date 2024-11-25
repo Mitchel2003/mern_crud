@@ -61,11 +61,12 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
         title: "Éxito al obtener datos",
         message: 'La solicitud se ha completado'
       })
-      console.log(response)
-      console.log(response.data)
       return response.data || []
     } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error en la solicitud", message: e.response.data.message })
+      if (isAxiosResponse(e)) {
+        console.log(e.response.data)
+        notifyError({ title: "Error en la solicitud", message: e.response.data.message })
+      }
       return []
     } finally { setLoadingStatus() }
   }
