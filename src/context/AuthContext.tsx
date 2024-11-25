@@ -30,9 +30,9 @@ export const useAuthContext = () => {
 export const AuthProvider = ({ children }: Props): JSX.Element => {
   const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifySuccess, notifyError } = useNotification()
-  const [user, setUser] = useState<User>(undefined)
   const [loading, setLoading] = useState(true)
   const [isAuth, setIsAuth] = useState(false)
+  const [user, setUser] = useState<User>()
 
   useEffect(() => { verifyToken() }, [])
 
@@ -133,6 +133,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     setLoading(Boolean(status))
     status ? showLoading(status) : hideLoading()
   }
+  /*---------------------------------------------------------------------------------------------------------*/
 
   return (
     <Auth.Provider value={{ isAuth, user, loading, signin, signup, logout, verifyAction }}>

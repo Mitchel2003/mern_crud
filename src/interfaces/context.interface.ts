@@ -2,8 +2,8 @@
 export type Theme = 'light' | 'dark'
 
 export type ThemeContext = {
-  theme: Theme;
-  toggleTheme: () => void;
+  theme: Theme
+  toggleTheme: () => void
 } | undefined
 
 export type ThemeContextProps = { theme: Theme }
@@ -11,21 +11,21 @@ export type ThemeContextProps = { theme: Theme }
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type User = {
-  _id: string,
-  role: string,
-  email: string,
-  username: string,
+  _id: string
+  role: string
+  email: string
+  username: string
   permissions: object
 } | undefined
 
 export type AuthContext = {
-  user: User;
-  isAuth: boolean;
-  loading: boolean;
-  signin: (data: object) => Promise<void>;
-  signup: (data: object) => Promise<void>;
-  verifyAction: (mode: string, data: object) => Promise<void>;
-  logout: () => Promise<void>;
+  user: User
+  isAuth: boolean
+  loading: boolean
+  signin: (data: object) => Promise<void>
+  signup: (data: object) => Promise<void>
+  verifyAction: (mode: string, data: object) => Promise<void>
+  logout: () => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -65,17 +65,19 @@ export type Curriculum = {
   manualsMaintenance: string
 
   //relationship
-  serviceOffice: string,
-  representative: string,
+  serviceOffice: string
+  representative: string
   manufacturer: string
-  supplier: string,
+  supplier: string
 } | undefined
 
 export type CurriculumContext = {
-  getCV: (id: string) => Promise<Curriculum>;
-  getCVs: () => Promise<Curriculum[]>;
-  createCV: (Curriculum: object) => Promise<Curriculum>;
-  updateCV: (id: string, Curriculum: object) => Promise<Curriculum>;
-  deleteCV: (id: string) => Promise<Curriculum>;
+  loading: boolean
+  cvs: Curriculum[]
+  getCV: (id: string) => Promise<void>
+  getCVs: () => Promise<void>
+  createCV: (cv: object) => Promise<void>
+  updateCV: (id: string, cv: object) => Promise<void>
+  deleteCV: (id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
