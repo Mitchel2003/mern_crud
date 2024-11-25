@@ -66,7 +66,9 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
       if (isAxiosResponse(e)) {
         console.log(e.response)
         notifyError({ title: "Error en la solicitud", message: e.response.data.message })
-      }
+      }//working here
+      //response
+      //"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/form/cvs</pre>\n</body>\n</html>\n"
       return []
     } finally { setLoadingStatus() }
   }
