@@ -18,8 +18,8 @@ const CountryList = () => {
 
   const columns: ColumnDef<Country>[] = [
     {
-      accessorKey: "title",
-      header: "Título"
+      accessorKey: "name",
+      header: "Nombre del país"
     },
     {
       accessorKey: "createdAt",
