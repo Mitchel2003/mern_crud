@@ -13,8 +13,8 @@ const DashboardSection = ({ theme }: DashboardSectionProps) => {
     <div className="container space-y-10 p-10 mx-auto">
       <InfoSection theme={theme} auth={user} />
       <StatisticsSection theme={theme} />
-      <MaintenanceCalendar events={mockEvents} />
-      <EquipmentSection equipments={mockEquipments} />
+      <MaintenanceCalendar theme={theme} events={mockEvents} />
+      <EquipmentSection theme={theme} equipments={mockEquipments} />
     </div>
   )
 }

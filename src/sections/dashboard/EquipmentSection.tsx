@@ -1,11 +1,12 @@
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import EquipmentCard from '#/pages/dashboard/CardEquipment'
 import { Equipment } from '@/types/dashboard.type'
-import React, { useState } from 'react'
 import { Button } from '#/ui/button'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
-interface EquipmentSectionProps { equipments: Equipment[] }
-
-const EquipmentSection: React.FC<EquipmentSectionProps> = ({ equipments }) => {
+interface EquipmentSectionProps extends ThemeContextProps { equipments: Equipment[] }
+const EquipmentSection = ({ equipments, theme }: EquipmentSectionProps) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6;
 
@@ -16,7 +17,14 @@ const EquipmentSection: React.FC<EquipmentSectionProps> = ({ equipments }) => {
   const totalPages = Math.ceil(equipments.length / itemsPerPage);
 
   return (
-    <div className="space-y-4">
+    <div
+      className={cn(
+        'space-y-4',
+        theme === 'dark'
+          ? 'bg-zinc-800/70 hover:bg-zinc-800/90'
+          : 'bg-purple-200/80 hover:bg-purple-300/80'
+      )}
+    >
       <h2 className="text-2xl font-bold">Equipos con Novedades</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {currentEquipments.map((equipment) => (

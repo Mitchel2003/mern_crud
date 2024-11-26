@@ -10,7 +10,7 @@ const FooterSection = ({ theme }: FooterSectionProps) => {
     <div
       className={cn(
         'p-6 z-10 border-t',
-        'flex flex-col md:flex-row',
+        'flex flex-col sm:flex-row',
         'justify-between items-center',
         theme === 'dark'
           ? 'bg-zinc-900 border-zinc-800'
@@ -34,7 +34,9 @@ const FooterSection = ({ theme }: FooterSectionProps) => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Button variant="link" size="sm">Términos de Servicio</Button>
         <Button variant="link" size="sm">Política de Privacidad</Button>
-        <Badge variant="outline" className="w-fit">Versión 1.0.0</Badge>
+        <div className="flex items-center text-center">
+          <Badge variant="outline" className="hidden md:block w-full">Versión 1.0.0</Badge>
+        </div>
       </div>
     </div>
   )
