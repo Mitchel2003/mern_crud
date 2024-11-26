@@ -80,3 +80,51 @@ export type CurriculumContext = {
   deleteCV: (id: string) => Promise<Curriculum>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------LocationContext--------------------------------------------------*/
+export type BaseLocation = {
+  _id: string
+  name: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type Country = BaseLocation & {
+  states?: State[]
+  code: string
+}
+
+export type State = BaseLocation & {
+  country: string | Country
+  cities?: City[]
+}
+
+export type City = BaseLocation & {
+  state: string | State
+  headquarters?: Headquarter[]
+}
+
+export type Headquarter = BaseLocation & {
+  city: string | City
+  address: string
+  phone: string
+  email?: string
+}
+
+export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
+
+export type LocationContext = {
+  loading: boolean
+  // Métodos genéricos
+  getOne: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
+  getAll: <T extends BaseLocation>(type: LocationType) => Promise<T[]>
+  create: <T extends BaseLocation>(type: LocationType, data: Partial<T>) => Promise<T>
+  update: <T extends BaseLocation>(type: LocationType, id: string, data: Partial<T>) => Promise<T>
+  delete: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
+
+  // Métodos específicos para relaciones
+  getStatesByCountry: (countryId: string) => Promise<State[]>
+  getCitiesByState: (stateId: string) => Promise<City[]>
+  getHeadquartersByCity: (cityId: string) => Promise<Headquarter[]>
+}
+/*---------------------------------------------------------------------------------------------------------*/

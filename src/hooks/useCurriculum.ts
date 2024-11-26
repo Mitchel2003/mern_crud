@@ -58,7 +58,9 @@ export function useCustomMutation(): CustomMutation_CV {
     const { createCV, updateCV } = useCurriculumContext();
     return useMutation({
       mutationFn: (data: object) => id !== 'new' ? updateCV(id, data) : createCV(data),
-      onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['cvs'] }) } // Invalidate and refetch
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['cvs', id] })
+      }
     })
   }
   /** Ejecuta una solicitud para eliminar un curriculum por su id */
@@ -66,7 +68,9 @@ export function useCustomMutation(): CustomMutation_CV {
     const { deleteCV } = useCurriculumContext();
     return useMutation({
       mutationFn: (id: string) => deleteCV(id),
-      onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['cvs'] }) } // Invalidate and refetch
+      onSuccess: (_, idDeleted) => {
+        queryClient.invalidateQueries({ queryKey: ['cvs', idDeleted] })
+      }
     })
   }
   return { createOrUpdateCV, deleteCV }

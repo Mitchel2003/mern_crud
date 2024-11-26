@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { CurriculumProvider } from "@/context/CurriculumContext";
+import { LocationProvider } from "@/context/LocationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
@@ -8,8 +9,9 @@ import RootLayout from "@/layouts/Root";
 
 import MaintenanceForm from "@/pages/MaintenanceForm";
 import CurriculumForm from "@/pages/CurriculumForm";
-import CurriculumList from "./pages/CurriculumList";
+import CurriculumList from "@/pages/CurriculumList";
 import VerifyAction from "@/pages/VerifyAction";
+import CountryList from "@/pages/CountryList";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
 import Register from "@/pages/Register";
@@ -20,33 +22,38 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <CurriculumProvider>
+        <LocationProvider>
+          <CurriculumProvider>
 
-          <BrowserRouter>
-            <Routes>
-              <Route element={<RootLayout />}>
-                {/* home index */}
-                <Route path="/" index element={<Home />} />
+            <BrowserRouter>
+              <Routes>
+                <Route element={<RootLayout />}>
+                  {/* home index */}
+                  <Route path="/" index element={<Home />} />
 
-                {/* auth routes */}
-                <Route path="/auth/login" element={<Login />} />
-                <Route path="/auth/register" element={<Register />} />
-                <Route path="/auth/verify-action" element={<VerifyAction />} />
+                  {/* auth routes */}
+                  <Route path="/auth/login" element={<Login />} />
+                  <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/verify-action" element={<VerifyAction />} />
 
-                <Route element={<ProtectedRoute />}>
-                  {/* protected routes */}
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/form/cvs" element={<CurriculumList />} />
-                  <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                  <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
+                  <Route element={<ProtectedRoute />}>
+                    {/* protected routes */}
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/products" element={<Products />} />
+
+                    <Route path="/form/cvs" element={<CurriculumList />} />
+                    <Route path="/location/countries" element={<CountryList />} />
+
+                    <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                    <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
+                  </Route>
+
                 </Route>
+              </Routes>
+            </BrowserRouter>
 
-              </Route>
-            </Routes>
-          </BrowserRouter>
-
-        </CurriculumProvider>
+          </CurriculumProvider>
+        </LocationProvider>
       </AuthProvider>
     </ThemeProvider >
   )
