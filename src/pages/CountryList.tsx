@@ -1,5 +1,5 @@
 import { useQueryReact, useCustomMutation } from "@/hooks/useCountry"
-import { ItemActionProps } from "@/interfaces/hook.interface"
+import { ActionProps } from "@/interfaces/hook.interface"
 import { Country } from "@/interfaces/context.interface"
 import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -43,7 +43,7 @@ const CountryList = () => {
         <DataTable
           data={countries || []}
           columns={columns}
-          filterColumn="title"
+          filterColumn="name"
         />
       </Card>
     </div>
@@ -58,7 +58,7 @@ export default CountryList
  * @param country - El país sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el país
  */
-const useCountryActions = (country: Country): ItemActionProps[] => {
+const useCountryActions = (country: Country): ActionProps[] => {
   const { deleteCountry } = useCustomMutation()
   const deleteMutation = deleteCountry()
   const navigate = useNavigate()

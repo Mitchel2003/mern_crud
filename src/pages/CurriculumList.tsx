@@ -1,6 +1,6 @@
 import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
-import { ItemActionProps } from "@/interfaces/hook.interface"
 import { Curriculum } from "@/interfaces/context.interface"
+import { ActionProps } from "@/interfaces/hook.interface"
 import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
@@ -43,7 +43,7 @@ const CurriculumList = () => {
         <DataTable
           data={cvs || []}
           columns={columns}
-          filterColumn="title"
+          filterColumn="name"
         />
       </Card>
     </div>
@@ -58,7 +58,7 @@ export default CurriculumList
  * @param cv - El currículum sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el currículum
  */
-const useCurriculumActions = (cv: Curriculum): ItemActionProps[] => {
+const useCurriculumActions = (cv: Curriculum): ActionProps[] => {
   const { deleteCV } = useCustomMutation()
   const deleteMutation = deleteCV()
   const navigate = useNavigate()

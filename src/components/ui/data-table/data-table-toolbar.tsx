@@ -9,10 +9,7 @@ interface DataTableToolbarProps<TData> {
   filterColumn?: string
 }
 
-export function DataTableToolbar<TData>({
-  table,
-  filterColumn,
-}: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({ table, filterColumn }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (

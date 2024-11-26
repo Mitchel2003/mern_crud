@@ -89,27 +89,10 @@ export type BaseLocation = {
   updatedAt: Date
 }
 
-export type Country = BaseLocation & {
-  states?: State[]
-  code: string
-}
-
-export type State = BaseLocation & {
-  country: string | Country
-  cities?: City[]
-}
-
-export type City = BaseLocation & {
-  state: string | State
-  headquarters?: Headquarter[]
-}
-
-export type Headquarter = BaseLocation & {
-  city: string | City
-  address: string
-  phone: string
-  email?: string
-}
+export type Country = BaseLocation & {}
+export type State = BaseLocation & { country: string }
+export type City = BaseLocation & { state: string }
+export type Headquarter = BaseLocation & { address: string; client: string; city: string }
 
 export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
 

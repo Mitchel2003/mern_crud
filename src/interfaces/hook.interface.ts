@@ -3,7 +3,7 @@ import { Country, Curriculum } from "@/interfaces/context.interface"
 import { LucideIcon } from "lucide-react"
 
 //items actions to dropdown (data-table)
-export interface ItemActionProps {
+export interface ActionProps {
   label: string
   icon: LucideIcon
   className?: string

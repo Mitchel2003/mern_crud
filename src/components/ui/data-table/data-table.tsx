@@ -10,15 +10,11 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({
-  data,
-  columns,
-  filterColumn
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = useState({})
+export function DataTable<TData, TValue>({ data, columns, filterColumn }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
+  const [rowSelection, setRowSelection] = useState({})
 
   const table = useReactTable({
     data,
