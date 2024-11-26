@@ -1,21 +1,16 @@
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Settings2 } from "lucide-react"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "#/ui/dropdown-menu"
 import { Table } from "@tanstack/react-table"
+import { Settings2 } from "lucide-react"
+import { Button } from "#/ui/button"
 
-interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>
-}
-
-export function DataTableViewOptions<TData>({
-  table,
-}: DataTableViewOptionsProps<TData>) {
+interface DataTableViewOptionsProps<TData> { table: Table<TData> }
+export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
           size="sm"
+          variant="outline"
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 className="mr-2 h-4 w-4" />
@@ -25,10 +20,7 @@ export function DataTableViewOptions<TData>({
       <DropdownMenuContent align="end">
         {table
           .getAllColumns()
-          .filter(
-            (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
-          )
+          .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
           .map((column) => {
             return (
               <DropdownMenuCheckboxItem
