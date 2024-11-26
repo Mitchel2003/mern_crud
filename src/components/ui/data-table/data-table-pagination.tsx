@@ -4,16 +4,15 @@ import { Table } from "@tanstack/react-table"
 import { Button } from "#/ui/button"
 
 interface DataTablePaginationProps<TData> { table: Table<TData> }
-
 export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-between px-2">
+      <div className="hidden md:block md:col-span-2 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} de{" "}
         {table.getFilteredRowModel().rows.length} fila(s) seleccionada(s).
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center space-x-6 lg:space-x-8">
+        <div className="hidden md:flex items-center space-x-2">
           <p className="text-sm font-medium">Filas por página</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
