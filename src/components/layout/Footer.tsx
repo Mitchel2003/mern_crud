@@ -42,4 +42,4 @@ const FooterSection = ({ theme }: FooterSectionProps) => {
   )
 }
 
-export default FooterSection 
+export default FooterSection

@@ -1,6 +1,6 @@
 import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
-import Sidebar from '@/components/layout/sidebar/Sidebar'
+import Sidebar from '#/layout/sidebar/Sidebar'
 import ThemeToggle from '#/layout/Theme'
 
 import gsIcon from '/assets/gs_icon.ico'
