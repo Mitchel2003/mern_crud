@@ -1,4 +1,4 @@
-import HeaderForm from "@/components/common/elements/HeaderForm"
+import HeaderForm from "#/common/elements/HeaderForm"
 import { Card } from "#/ui/card"
 
 import FooterSection from "./FooterSection"
