@@ -12,11 +12,11 @@ interface HeaderFormProps extends ThemeContextProps {
   breadcrumbs?: HeaderBreadcrumbProps[]
 }
 const HeaderForm = ({
-  theme,
-  title,
   description,
   breadcrumbs,
-  className
+  className,
+  theme,
+  title
 }: HeaderFormProps) => {
   return (
     <>

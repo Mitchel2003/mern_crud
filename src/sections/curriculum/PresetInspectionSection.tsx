@@ -5,7 +5,6 @@ import SelectField from "@/components/common/fields/Select"
 import InputField from "@/components/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { CardFieldProps } from "@/interfaces/props.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
 const inspectionOptions = [
@@ -21,7 +20,7 @@ interface PresetInspectionProps extends ThemeContextProps { }
 const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
   const methods = useForm()
 
-  const inspectionFields: CardFieldProps[] = [
+  const inspectionFields = [
     {
       name: "name_inspection",
       component:
@@ -38,9 +37,9 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
         <div className="mt-4">
           <CheckboxField
             theme={theme}
+            name="inspection"
             isMultiple={true}
             label='Lista de inspecciones'
-            control={methods.control}
             options={inspectionOptions}
           />
         </div>

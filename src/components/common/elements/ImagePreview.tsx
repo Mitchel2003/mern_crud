@@ -1,10 +1,10 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { ControlProps } from '@/interfaces/props.interface'
 
-import { useController } from 'react-hook-form'
+import { Control, useController } from 'react-hook-form'
 import { Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+type ControlProps = { control: Control<any> }
 interface ImagePreviewProps extends ThemeContextProps, ControlProps {
   name: string
   label?: string
@@ -12,11 +12,11 @@ interface ImagePreviewProps extends ThemeContextProps, ControlProps {
 }
 
 const ImagePreview = ({
-  theme,
-  name,
-  label,
+  className,
   control,
-  className
+  theme,
+  label,
+  name
 }: ImagePreviewProps) => {
 
   const { field } = useController({ name, control, defaultValue: null })

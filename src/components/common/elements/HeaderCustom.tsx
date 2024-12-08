@@ -1,11 +1,12 @@
-import { HeaderSpanProps, HtmlForProps } from "@/interfaces/props.interface";
 import { ThemeContextProps } from "@/interfaces/context.interface";
+import { HeaderSpanProps } from "@/interfaces/props.interface";
 
 import { InfoIcon, SirenIcon, TriangleAlertIcon } from "lucide-react"
+import { LabelHTMLAttributes } from 'react';
 import { FormLabel } from "#/ui/form"
 import { cn } from "@/lib/utils";
 
-interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps, HtmlForProps {
+interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps, Pick<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> {
   to: 'input' | 'component';
   title?: string;
   className?: string;
@@ -23,12 +24,12 @@ interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps, HtmlForP
  * @param {string} props.span - Corresponds to the description of the header, if it is not passed, the iconSpan will not be displayed.
  */
 const HeaderCustom = ({
+  iconSpan = 'none',
+  to = 'component',
+  className,
   htmlFor,
   theme,
   title,
-  className,
-  to = 'component',
-  iconSpan = 'none',
   span
 }: HeaderCustomProps) => {
   return (

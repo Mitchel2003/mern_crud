@@ -16,12 +16,12 @@ interface AreaFieldProps extends HeaderSpanProps, ThemeContextProps {
 }
 
 const AreaField = React.forwardRef<HTMLTextAreaElement, AreaFieldProps>(({
-  theme,
-  name,
-  label,
-  className,
-  placeholder,
   iconSpan = 'none',
+  placeholder,
+  className,
+  theme,
+  label,
+  name,
   span
 }, ref) => {
   const { control } = useFormContext()

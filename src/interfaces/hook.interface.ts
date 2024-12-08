@@ -1,14 +1,5 @@
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query"
 import { Country, Curriculum } from "@/interfaces/context.interface"
-import { LucideIcon } from "lucide-react"
-
-//items actions to dropdown (data-table)
-export interface ActionProps {
-  label: string
-  icon: LucideIcon
-  className?: string
-  onClick: () => void | Promise<void>
-}
 
 /*-------------------------useQuery and useMutation-------------------------*/
 //to curriculum

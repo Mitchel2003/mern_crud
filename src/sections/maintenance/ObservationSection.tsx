@@ -1,5 +1,5 @@
 import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import StatusCheck from "@/components/common/elements/StatusCheck"
+import StatusCheck from "@/components/common/fields/StatusCheck"
 import DateField from "@/components/common/fields/Date"
 import AreaField from "@/components/common/fields/Area"
 

@@ -38,7 +38,13 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /** Verifica el token de autenticación almacenado en las cookies */
-  const verifyToken = async () => {
+  const verifyToken = async () => {//working here...
+    //remember that the methods to verification of account (emailVerificate or resetPassword)
+    //has been alterated by flexibility between apps (anothers), so we have this mecanics by default
+    //so, if we need register data on mongoDB (create user credentials) after that user has verificate the account
+    //we can use a conditial, so if(isEmailVerificate and !mongo.user) { create credentials }
+
+    //also i need delete some logic residual on backend (even frontend)
     setLoading(true);
     if (!Cookies.get().token) { setLoading(false); return setAuthStatus() }
     try {
@@ -98,7 +104,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {string} mode - Corresponde a la modalidad de la solicitud
    * @param {object} data - Los datos complementarios para la ejecucion
    */
-  const verifyAction = async (mode: string, data: object) => {
+  const verifyAction = async (mode: string, data: object) => {//REMOVING
     setLoadingStatus("Validando solicitud...")
     try {
       await verifyActionRequest(mode, data)

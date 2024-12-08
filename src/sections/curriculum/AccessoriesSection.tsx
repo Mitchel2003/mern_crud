@@ -3,7 +3,6 @@ import IterableCard from "@/components/common/fields/CardIterable"
 import InputField from "@/components/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { CardFieldProps } from "@/interfaces/props.interface"
 import { FormProvider, useForm } from "react-hook-form"
 
 interface AccessoriesProps extends ThemeContextProps { }
@@ -11,7 +10,7 @@ interface AccessoriesProps extends ThemeContextProps { }
 const AccessoriesSection = ({ theme }: AccessoriesProps) => {
   const methods = useForm<AccessoriesProps>()
 
-  const accessoriesFields: CardFieldProps[] = [
+  const accessoriesFields = [
     {
       name: "name",
       component: <InputField name="name" theme={theme} label="Nombre" />
