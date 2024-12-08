@@ -1,6 +1,6 @@
 import { LoginComponentsProps } from '@/interfaces/props.interface'
 
-import InputField from '@/components/common/fields/Input'
+import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'

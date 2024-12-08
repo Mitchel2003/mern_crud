@@ -1,13 +1,13 @@
-import HeaderForm from '@/components/common/elements/HeaderForm'
-import { Card } from '#/ui/card'
-
-import FooterSection from './FooterSection'
-import FormSection from './FormSection'
-
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useLoginForm } from '@/hooks/auth/useLoginForm'
 import { FormProvider } from 'react-hook-form'
 import { cn } from '@/lib/utils'
+
+import HeaderForm from '#/common/elements/HeaderForm'
+import { Card } from '#/ui/card'
+
+import FooterSection from './FooterSection'
+import FormSection from './FormSection'
 
 const LoginSection = ({ theme }: ThemeContextProps) => {
   const { methods, onSubmit } = useLoginForm()
