@@ -39,10 +39,9 @@ const BuildMaintenanceSection = ({ theme }: BuildMaintenanceProps) => {
                 theme={theme}
                 name="equipmentFault"
                 className="min-h-[55px]"
-                label="¿Equipo presenta falla?"
                 inputLabel="Descripción"
+                label="¿Equipo presenta falla?"
                 placeholder="Ingrese los detalles"
-                control={methods.control}
               />
             </div>
           </div>

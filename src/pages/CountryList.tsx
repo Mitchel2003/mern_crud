@@ -1,5 +1,5 @@
 import { useQueryReact, useCustomMutation } from "@/hooks/useCountry"
-import { ActionProps } from "@/interfaces/hook.interface"
+import { ActionProps } from "@/interfaces/props.interface"
 import { Country } from "@/interfaces/context.interface"
 import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"

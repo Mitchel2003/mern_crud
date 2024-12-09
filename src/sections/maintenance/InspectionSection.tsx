@@ -28,8 +28,8 @@ const InspectionSection = ({ theme }: InspectionProps) => {
         <CheckboxField
           theme={theme}
           isMultiple={true}
+          name="fields-inspection"
           label="Campos de inspección"
-          control={methods.control}
           options={inspectionOptions}
         />
       </div>

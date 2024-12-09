@@ -50,10 +50,9 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
           {/* -------------------- Status equipment -------------------- */}
           <StatusCheck
             theme={theme}
+            options={statusOptions}
             name="equipmentStatus"
             label="Estado del equipo"
-            control={methods.control}
-            options={statusOptions}
             span="Indique la disponibilidad del equipo"
             iconSpan="warn"
           />
@@ -64,7 +63,6 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
               theme={theme}
               name="currentDate"
               label="Fecha actual"
-              control={methods.control}
               value={currentDate}
               readOnly={true}
             />
@@ -72,7 +70,6 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
               theme={theme}
               name="nextMaintenanceDate"
               label="Fecha próximo mantenimiento"
-              control={methods.control}
               placeholder="Seleccione la fecha"
             />
           </div>

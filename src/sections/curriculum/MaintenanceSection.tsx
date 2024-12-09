@@ -32,8 +32,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
           <CheckboxField
             theme={theme}
             isMultiple={true}
+            name="type-maintenance"
             label="Tipo de Mantenimiento"
-            control={methods.control}
             options={['Preventivo', 'Correctivo', 'Predictivo']}
           />
         </div>
@@ -48,8 +48,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
           />
           <CheckboxField
             theme={theme}
+            name="manuales"
             label="Manuales"
-            control={methods.control}
             options={['servicio', 'componentes', 'usuario', 'despiece']}
           />
         </div>

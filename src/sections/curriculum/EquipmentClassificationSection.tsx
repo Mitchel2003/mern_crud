@@ -61,7 +61,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           <CheckboxField
             theme={theme}
             isMultiple={true}
-            control={methods.control}
+            name="power-supply"
             label="Fuentes de alimentacion"
             options={['agua', 'aire', 'gas', 'vapor', 'electricidad']}
           />
@@ -86,7 +86,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           <CheckboxField
             theme={theme}
             isMultiple={true}
-            control={methods.control}
+            name="technology-predominant"
             label="Tecnología Predominante"
             options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
           />

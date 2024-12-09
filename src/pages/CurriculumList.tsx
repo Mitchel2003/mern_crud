@@ -1,6 +1,6 @@
 import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
 import { Curriculum } from "@/interfaces/context.interface"
-import { ActionProps } from "@/interfaces/hook.interface"
+import { ActionProps } from "@/interfaces/props.interface"
 import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
