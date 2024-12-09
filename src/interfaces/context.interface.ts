@@ -24,8 +24,8 @@ export type AuthContext = {
   loading: boolean
   signin: (data: object) => Promise<void>
   signup: (data: object) => Promise<void>
-  verifyAction: (mode: string, data: object) => Promise<void>
   logout: () => Promise<void>
+  sendResetPassword: (email: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

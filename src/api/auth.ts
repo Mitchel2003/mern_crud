@@ -7,4 +7,4 @@ export const registerRequest = async (user: object) => axios.post('/auth/registe
 
 //Verify requests
 export const verifyAuthRequest = async () => axios.get('/auth/verify-auth');
-export const verifyActionRequest = async (mode: string, body: object) => axios.post(`/auth/verify-action/${mode}`, body);
+export const forgotPasswordRequest = async (data: object) => axios.post('/auth/forgot-password', data);

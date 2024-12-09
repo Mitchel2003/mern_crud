@@ -1,4 +1,4 @@
-import { loginRequest, registerRequest, logoutRequest, verifyActionRequest, verifyAuthRequest } from "@/api/auth";
+import { loginRequest, registerRequest, logoutRequest, verifyAuthRequest, forgotPasswordRequest } from "@/api/auth";
 import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
@@ -38,13 +38,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /** Verifica el token de autenticación almacenado en las cookies */
-  const verifyToken = async () => {//working here...
-    //remember that the methods to verification of account (emailVerificate or resetPassword)
-    //has been alterated by flexibility between apps (anothers), so we have this mecanics by default
-    //so, if we need register data on mongoDB (create user credentials) after that user has verificate the account
-    //we can use a conditial, so if(isEmailVerificate and !mongo.user) { create credentials }
-
-    //also i need delete some logic residual on backend (even frontend)
+  const verifyToken = async () => {
     setLoading(true);
     if (!Cookies.get().token) { setLoading(false); return setAuthStatus() }
     try {
@@ -99,20 +93,15 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /*--------------------------------------------------verification--------------------------------------------------*/
   /**
-   * Valida un tipo de solicitud publica (resetPassword or verifyEmail)
-   * la petición se ejecuta a travez de un param "mode" explicito en la url 
-   * @param {string} mode - Corresponde a la modalidad de la solicitud
-   * @param {object} data - Los datos complementarios para la ejecucion
+   * Permite enviar una solicitud de restablecimiento de contraseña
+   * @param {string} email - Corresponde al email para enviar la solicitud.
    */
-  const verifyAction = async (mode: string, data: object) => {//REMOVING
+  const sendResetPassword = async (email: string) => {
     setLoadingStatus("Validando solicitud...")
     try {
-      await verifyActionRequest(mode, data)
-      Cookies.remove('token')
-      await logoutRequest()
-      setAuthStatus()
+      await forgotPasswordRequest({ email })
       notifySuccess({
-        title: `Exito al ${mode !== 'verifyEmail' ? 'restablecer contraseña' : 'verificar email'}`,
+        title: "Exito al enviar solicitud de restablecimiento de contraseña",
         message: "La solicitud se ha completado"
       })
     } catch (e: unknown) {
@@ -142,7 +131,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /*---------------------------------------------------------------------------------------------------------*/
 
   return (
-    <Auth.Provider value={{ isAuth, user, loading, signin, signup, logout, verifyAction }}>
+    <Auth.Provider value={{ isAuth, user, loading, signin, signup, logout, sendResetPassword }}>
       {children}
     </Auth.Provider>
   )
