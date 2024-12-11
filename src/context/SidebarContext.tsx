@@ -1,6 +1,7 @@
+import { createContext, useContext, useEffect, useState } from 'react'
 import { SidebarContext } from '@/interfaces/context.interface'
-import { createContext, useContext, useState } from 'react'
 import { Props } from '@/interfaces/props.interface'
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const Sidebar = createContext<SidebarContext>(undefined)
 
@@ -21,11 +22,15 @@ export const useSidebarContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de sidebar.
  */
 export const SidebarProvider = ({ children }: Props): JSX.Element => {
-  const [open, setOpen] = useState(false)
-  const animate = true
+  const [isExpanded, setIsExpanded] = useState(false)
+  const isMobile = useIsMobile()
+
+  useEffect(() => { if (isMobile) setIsExpanded(false) }, [isMobile])
+
+  const toggleSidebar = () => setIsExpanded(prev => !prev)
 
   return (
-    <Sidebar.Provider value={{ open, animate, setOpen }}>
+    <Sidebar.Provider value={{ isExpanded, toggleSidebar }}>
       {children}
     </Sidebar.Provider>
   )

@@ -1,45 +1,54 @@
-import { useSidebarContext } from '@/context/SidebarContext'
-import { NavItemProps } from '@/interfaces/props.interface'
-import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
+import { SidebarLink as SidebarLinkType } from "@/types/sidebar.type"
+import { Link, useLocation } from "react-router-dom"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 interface SidebarLinkProps {
-  link: NavItemProps
-  className?: string
+  link: SidebarLinkType
+  expanded: boolean
 }
 
-export function SidebarLink({ link, className }: SidebarLinkProps) {
-  const { open, animate } = useSidebarContext()
+export const SidebarLink = ({ link, expanded }: SidebarLinkProps) => {
   const location = useLocation()
   const isActive = location.pathname === link.href
 
   return (
-    <Link
-      to={link.href || '/'}
-      className={cn(
-        "flex items-center gap-2 p-2",
-        "text-neutral-700 dark:text-neutral-200",
-        "hover:bg-neutral-100 dark:hover:bg-neutral-800",
-        "rounded-md transition-colors",
-        isActive && "bg-neutral-100 dark:bg-neutral-800",
-        className
-      )}
-    >
-      {link.icon}
-      <motion.span
-        animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
-        }}
-        className={cn(
-          "text-sm font-medium whitespace-pre",
-          "transition-transform duration-150",
-          "hover:translate-x-1"
-        )}
-      >
-        {link.label}
-      </motion.span>
-    </Link>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to={link.href}
+            className={cn(
+              "flex items-center p-2 rounded-lg transition-colors",
+              "hover:bg-gray-200 dark:hover:bg-neutral-700",
+              isActive && "bg-gray-200 dark:bg-neutral-700"
+            )}
+          >
+            <link.icon className={cn(
+              "h-5 w-5",
+              isActive ? "text-primary" : "text-gray-500 dark:text-gray-400"
+            )} />
+            {expanded && (
+              <motion.span
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.3 }}
+                className={cn(
+                  "ml-3 whitespace-nowrap overflow-hidden",
+                  isActive && "font-medium"
+                )}
+              >
+                {link.label}
+              </motion.span>
+            )}
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right" sideOffset={10}>
+          <p>{link.label}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }

@@ -11,9 +11,8 @@ export type ThemeContextProps = { theme: Theme }
 
 /*--------------------------------------------------SidebarContext--------------------------------------------------*/
 export type SidebarContext = {
-  open: boolean
-  animate: boolean
-  setOpen: (open: boolean) => void
+  isExpanded: boolean
+  toggleSidebar: () => void
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
