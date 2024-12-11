@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 import { SidebarLink } from "./SidebarLink"
 import { SidebarLogo } from "./SidebarLogo"
 
-export const Sidebar = ({
+export const Sidebar = ({ //working here...
   userAvatar,
   logoIcon,
   userName,
