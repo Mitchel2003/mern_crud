@@ -1,30 +1,8 @@
-import {
-  LucideHandHelping,
-  LocateFixedIcon,
-  TerminalSquare,
-  FileStackIcon,
-  BookUserIcon,
-  FileTextIcon,
-  PlusCircle,
-  UserCircle,
-  FilesIcon,
-  Building2,
-  UserPlus,
-  UserCog2,
-  FilePlus,
-  Building,
-  MapPin,
-  LogOut,
-  LogIn,
-  Info,
-  Flag,
-  Home,
-  Map
-} from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, BookUserIcon, FileTextIcon, PlusCircle, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, FilePlus, Building, MapPin, LogOut, LogIn, Info, Flag, Home, Map } from 'lucide-react'
 import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
 
-export const useNavItems = () => {
+export const links = () => {
   const { logout } = useAuthContext()
 
   const navGuestItems: NavItemProps[] = [

@@ -17,21 +17,17 @@ const RootLayout = () => {
   return (
     <>
       <AnimatedBackground theme={theme}>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main
-            className={cn(
-              'flex-1 transition-all duration-300',
-              'flex flex-col min-h-screen',
-              open ? 'ml-[220px]' : 'ml-[70px]'
-            )}
-          >
-            <div className="flex-1 p-6">
-              <Outlet />
-            </div>
-            <Footer theme={theme} />
-          </main>
-        </div>
+        <Sidebar />
+        <main
+          className={cn(
+            'flex flex-col min-h-screen',
+            'transition-all duration-300',
+            open ? 'ml-[220px]' : 'ml-[70px]'
+          )}
+        >
+          <Outlet />
+          <Footer theme={theme} />
+        </main>
       </AnimatedBackground>
 
       {/* Componentes UI globales */}
