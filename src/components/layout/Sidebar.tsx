@@ -10,7 +10,7 @@ import { SidebarLink } from '#/layout/sidebar/SidebarLink'
 import { Logo, LogoIcon } from '#/layout/sidebar/Logo'
 
 export function Sidebar() {
-  const { open, setOpen, animate } = useSidebarContext()
+  const { open, setOpen } = useSidebarContext()
   const isMobile = useIsMobile()
 
   return (
