@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { CurriculumProvider } from "@/context/CurriculumContext";
 import { LocationProvider } from "@/context/LocationContext";
+import { SidebarProvider } from '@/context/SidebarContext'
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
@@ -22,32 +23,34 @@ function App() {
       <AuthProvider>
         <LocationProvider>
           <CurriculumProvider>
+            <SidebarProvider>
+              
+              <BrowserRouter>
+                <Routes>
+                  <Route element={<RootLayout />}>
+                    {/* home index */}
+                    <Route path="/" index element={<Home />} />
 
-            <BrowserRouter>
-              <Routes>
-                <Route element={<RootLayout />}>
-                  {/* home index */}
-                  <Route path="/" index element={<Home />} />
+                    {/* auth routes */}
+                    <Route path="/auth/login" element={<Login />} />
+                    <Route path="/auth/register" element={<Register />} />
 
-                  {/* auth routes */}
-                  <Route path="/auth/login" element={<Login />} />
-                  <Route path="/auth/register" element={<Register />} />
+                    <Route element={<ProtectedRoute />}>
+                      {/* protected routes */}
+                      <Route path="/dashboard" element={<Dashboard />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    {/* protected routes */}
-                    <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/form/cvs" element={<CurriculumList />} />
+                      <Route path="/location/countries" element={<CountryList />} />
 
-                    <Route path="/form/cvs" element={<CurriculumList />} />
-                    <Route path="/location/countries" element={<CountryList />} />
+                      <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                      <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
+                    </Route>
 
-                    <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                    <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                   </Route>
+                </Routes>
+              </BrowserRouter>
 
-                </Route>
-              </Routes>
-            </BrowserRouter>
-
+            </SidebarProvider>
           </CurriculumProvider>
         </LocationProvider>
       </AuthProvider>
