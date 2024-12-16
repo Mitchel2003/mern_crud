@@ -116,8 +116,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setAuthStatus = (res?: AxiosResponse) => {
+    setUser(res?.data ?? undefined)
     setIsAuth(Boolean(res?.data))
-    setUser(res?.data ?? {})
   }
   /**
    * Actualiza el estado de carga basado en un parametro opcional
