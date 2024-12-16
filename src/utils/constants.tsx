@@ -1,30 +1,30 @@
 import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, BookUserIcon, FileTextIcon, PlusCircle, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, FilePlus, Building, MapPin, LogOut, LogIn, Info, Flag, Home, Map } from 'lucide-react'
-import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
+import { NavItemProps } from "@/types/sidebar.type"
 
-export const links = () => {
+export const links = (auth: boolean) => {
   const { logout } = useAuthContext()
 
   const navGuestItems: NavItemProps[] = [
     {
       href: '/',
       label: 'Home',
-      icon: <Home className="w-5 h-5" />
+      icon: Home
     },
     {
       href: '/auth/login',
       label: 'Iniciar sesión',
-      icon: <LogIn className="w-5 h-5" />
+      icon: LogIn
     },
     {
       href: '/auth/register',
       label: 'Registrarse',
-      icon: <UserPlus className="w-5 h-5" />
+      icon: UserPlus
     },
     {
       href: '/about',
       label: 'Acerca de nosotros',
-      icon: <Info className="w-5 h-5" />
+      icon: Info
     }
   ]
 
@@ -32,73 +32,73 @@ export const links = () => {
     {
       href: '/dashboard',
       label: 'Panel del usuario',
-      icon: <TerminalSquare className="w-6 h-6" />
+      icon: TerminalSquare
     },
     {
       label: 'Currículums',
-      icon: <FilesIcon className="w-6 h-6" />,
+      icon: FilesIcon,
       subItems: [
         {
           href: '/form/cvs',
           label: 'Ver todos',
-          icon: <FileTextIcon className="w-5 h-5" />
+          icon: FileTextIcon
         },
         {
           href: '/form/cv/new',
           label: 'Crear curriculum',
-          icon: <FilePlus className="w-5 h-5" />
+          icon: FilePlus
         }
       ]
     },
     {
       label: 'Mantenimientos',
-      icon: <FileTextIcon className="w-6 h-6" />,
+      icon: FileTextIcon,
       subItems: [
         {
           href: '/form/maintenances',
           label: 'Ver todos',
-          icon: <FileTextIcon className="w-5 h-5" />
+          icon: FileTextIcon
         },
         {
           href: '/form/maintenance/new',
           label: 'Crear mantenimiento',
-          icon: <FilePlus className="w-5 h-5" />
+          icon: FilePlus
         }
       ]
     },
     {
       label: 'Usuarios',
-      icon: <UserCircle className="w-6 h-6" />,
+      icon: UserCircle,
       subItems: [
         {
           label: 'Ingenieros',
-          icon: <UserCog2 className="w-5 h-5" />,
+          icon: UserCog2,
           subItems: [
             {
               href: '/users',
               label: 'Ver ingenieros',
-              icon: <BookUserIcon className="w-5 h-5" />
+              icon: BookUserIcon
             },
             {
               href: '/user/new',
               label: 'Nuevo ingeniero',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         },
         {
           label: 'Clientes',
-          icon: <Building2 className="w-6 h-6" />,
+          icon: Building2,
           subItems: [
             {
               href: '/clients',
               label: 'Ver clientes',
-              icon: <FileTextIcon className="w-5 h-5" />
+              icon: FileTextIcon
             },
             {
               href: '/client/new',
               label: 'Nuevo cliente',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         }
@@ -106,69 +106,69 @@ export const links = () => {
     },
     {
       label: 'Institución',
-      icon: <Building className="w-6 h-6" />,
+      icon: Building,
       subItems: [
         {
           label: 'Sedes',
-          icon: <FileStackIcon className="w-5 h-5" />,
+          icon: FileStackIcon,
           subItems: [
             {
               label: 'Ver sedes',
               href: '/location/headquarters',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear sede',
               href: '/location/headquarter/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         },
         {
           label: 'Areas',
-          icon: <FileStackIcon className="w-5 h-5" />,
+          icon: FileStackIcon,
           subItems: [
             {
               label: 'Ver areas',
               href: '/location/areas',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear area',
               href: '/location/area/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             },
           ]
         },
         {
           label: 'Consultorios',
-          icon: <Building2 className="w-5 h-5" />,
+          icon: Building2,
           subItems: [
             {
               label: 'Ver consultorios',
               href: '/location/offices',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear consultorio',
               href: '/location/office/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         },
         {
           label: 'Servicios',
-          icon: <LucideHandHelping className="w-5 h-5" />,
+          icon: LucideHandHelping,
           subItems: [
             {
               label: 'Ver servicios',
               href: '/location/services',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear servicio',
               href: '/location/service/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         }
@@ -176,53 +176,53 @@ export const links = () => {
     },
     {
       label: 'Ubicaciones',
-      icon: <MapPin className="w-6 h-6" />,
+      icon: MapPin,
       subItems: [
         {
           label: 'Ciudades',
-          icon: <LocateFixedIcon className="w-5 h-5" />,
+          icon: LocateFixedIcon,
           subItems: [
             {
               label: 'Ver ciudades',
               href: '/location/cities',
-              icon: <Map className="w-5 h-5" />
+              icon: Map
             },
             {
               label: 'Crear nueva ciudad',
               href: '/location/city/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         },
         {
           label: 'Departamentos',
-          icon: <MapPin className="w-5 h-5" />,
+          icon: MapPin,
           subItems: [
             {
               label: 'Ver departamentos',
               href: '/location/departments',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear nuevo departamento',
               href: '/location/department/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         },
         {
           label: 'Países',
-          icon: <Flag className="w-5 h-5" />,
+          icon: Flag,
           subItems: [
             {
               label: 'Ver países',
               href: '/location/countries',
-              icon: <FileStackIcon className="w-5 h-5" />
+              icon: FileStackIcon
             },
             {
               label: 'Crear nuevo país',
               href: '/location/country/new',
-              icon: <PlusCircle className="w-5 h-5" />
+              icon: PlusCircle
             }
           ]
         }
@@ -231,9 +231,9 @@ export const links = () => {
     {
       action: logout,
       label: 'Cerrar sesión',
-      icon: <LogOut className="w-6 h-6" />,
+      icon: LogOut,
     }
   ]
 
-  return { navUserItems, navGuestItems }
+  return auth ? navUserItems : navGuestItems
 }

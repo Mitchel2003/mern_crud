@@ -5,15 +5,6 @@ import { LucideIcon } from "lucide-react"
 //interface defautl props
 export interface Props { children?: React.ReactNode }
 
-//sidebar
-export interface NavItemProps {
-  action?: () => Promise<void>
-  subItems?: NavItemProps[]
-  icon: React.ReactNode
-  label: string
-  href?: string
-}
-
 //theme components
 export interface LoginComponentsProps extends ThemeContextProps { }
 

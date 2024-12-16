@@ -23,6 +23,10 @@ export type User = {
   email: string
   username: string
   permissions: object
+
+  //details
+  phone: string
+  photoUrl: string
 } | undefined
 
 export type AuthContext = {

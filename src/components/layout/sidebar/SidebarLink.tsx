@@ -1,11 +1,11 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
-import { SidebarLink as SidebarLinkType } from "@/types/sidebar.type"
 import { Link, useLocation } from "react-router-dom"
+import { NavItemProps } from "@/types/sidebar.type"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 interface SidebarLinkProps {
-  link: SidebarLinkType
+  link: NavItemProps
   expanded: boolean
 }
 
@@ -18,7 +18,7 @@ export const SidebarLink = ({ link, expanded }: SidebarLinkProps) => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
-            to={link.href}
+            to={link.href ?? '/'}
             className={cn(
               "flex items-center p-2 rounded-lg transition-colors",
               "hover:bg-gray-200 dark:hover:bg-neutral-700",
