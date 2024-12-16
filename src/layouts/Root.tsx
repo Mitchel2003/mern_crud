@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils'
 
 const RootLayout = () => {
   const { isExpanded } = useSidebarContext()
-  const { theme } = useThemeContext()
   const { user, isAuth } = useAuthContext()
+  const { theme } = useThemeContext()
 
   return (
     <>

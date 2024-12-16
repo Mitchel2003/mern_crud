@@ -49,8 +49,9 @@ export const Sidebar = ({ auth, user }: SidebarProps) => {
       <div className="p-4 border-t border-gray-200 dark:border-neutral-800">
         <div className="flex items-center space-x-3">
           <Avatar>
-            <AvatarImage src={user?.photoUrl} alt={user?.username} />
-            <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
+            {/** lanzamos una imagen de una api publica */}
+            <AvatarImage src={user?.photoUrl ?? 'https://github.com/shadcn.png'} alt={user?.username ?? 'guest'} />
+            <AvatarFallback>{user?.username.charAt(0) ?? ''}</AvatarFallback>
           </Avatar>
           <AnimatePresence>
             {isExpanded && (
