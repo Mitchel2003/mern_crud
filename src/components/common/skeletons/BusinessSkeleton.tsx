@@ -105,15 +105,7 @@ const SocialMediaSkeleton = ({ theme }: ThemeContextProps) => (
 
       {/* Social Media Links */}
       <div className="flex flex-wrap gap-4">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton
-            key={i}
-            className={cn(
-              'h-12 w-12 rounded-full',
-              'transition-all duration-300'
-            )}
-          />
-        ))}
+        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-12 w-12 rounded-full" />)}
       </div>
     </CardContent>
   </Card>

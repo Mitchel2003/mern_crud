@@ -30,7 +30,7 @@ const MaintenanceSection = ({ theme }: MaintenanceSectionProps) => {
           id="maintenance-form"
           className={cn(
             'w-full mx-auto shadow-lg',
-            'transition-all duration-200 backdrop-filter backdrop-blur-lg',
+            'backdrop-filter backdrop-blur-lg',
             theme === 'dark'
               ? 'bg-zinc-800 hover:shadow-gray-900'
               : 'bg-gray-50 hover:shadow-purple-500/60'

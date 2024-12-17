@@ -10,7 +10,6 @@ const InfoSection = ({ theme, auth }: InfoSectionProps) => {
   return (
     <Card className={cn(
       'text-center space-y-4 p-10',
-      'transition-all duration-200',
       'backdrop-filter backdrop-blur-lg hover:shadow-md',
       theme === 'dark'
         ? 'bg-zinc-800/40 hover:shadow-purple-900/60'

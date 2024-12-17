@@ -85,7 +85,6 @@ const StatusButton = ({ theme, option, isSelected, onClick }: StatusButtonProps)
     onClick={onClick}
     className={cn(
       'flex w-full p-4 px-8 rounded-lg items-center justify-center',
-      'transition-all duration-200 ease-in-out',
       'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2',
       `focus:ring-${option.color}-500`,
       theme === 'dark' ? 'text-white' : 'text-gray-800',

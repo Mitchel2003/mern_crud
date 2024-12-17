@@ -1,35 +1,35 @@
 import { AnimatedBackground } from '#/layout/AnimatedBackground'
 import { LoadingScreen } from "#/ui/loading-screen"
-import { Sidebar } from '#/layout/sidebar/Sidebar'
+import { AppSidebar } from '#/layout/Sidebar'
 import { Toaster } from '#/ui/toaster'
 import Footer from '#/layout/Footer'
 
-import { useSidebarContext } from '@/context/SidebarContext'
 import { useThemeContext } from '@/context/ThemeContext'
-import { useAuthContext } from '@/context/AuthContext'
 import ScrollToTop from '@/hooks/ui/useScrollTop'
+import { SidebarProvider, SidebarTrigger } from '#/ui/sidebar'
 import { Outlet } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 const RootLayout = () => {
-  const { isExpanded } = useSidebarContext()
-  const { user, isAuth } = useAuthContext()
   const { theme } = useThemeContext()
 
   return (
     <>
       <AnimatedBackground theme={theme}>
-        <Sidebar auth={isAuth} user={user} />
-        <main
-          className={cn(
-            'flex flex-col min-h-screen',
-            'transition-all duration-300',
-            isExpanded ? 'ml-[220px]' : 'ml-[70px]'
-          )}
-        >
-          <Outlet />
-          <Footer theme={theme} />
-        </main>
+        <SidebarProvider>
+          <AppSidebar />
+          <main
+            className={cn(
+              'flex flex-col z-10',
+              'items-center justify-center',
+              'transition-all duration-300'
+            )}
+          >
+            <SidebarTrigger />
+            <Outlet />
+            <Footer theme={theme} />
+          </main>
+        </SidebarProvider>
       </AnimatedBackground>
 
       {/* Componentes UI globales */}

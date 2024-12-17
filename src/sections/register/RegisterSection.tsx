@@ -17,7 +17,6 @@ const RegisterSection = ({ theme }: ThemeContextProps) => {
         <Card
           className={cn(
             'relative w-full my-10',
-            'transition-all duration-300',
             'backdrop-filter backdrop-blur-lg',
             theme === 'dark'
               ? 'bg-zinc-800/90 hover:shadow-purple-900/60'

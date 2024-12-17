@@ -33,54 +33,52 @@ const Dialog = ({
   form,
   span,
   open
-}: DialogProps) => {
-  return (
-    <DialogPrimitive
-      open={open}
-      onOpenChange={onOpenChange}
+}: DialogProps) => (
+  <DialogPrimitive
+    open={open}
+    onOpenChange={onOpenChange}
+  >
+    <DialogContent
+      aria-describedby={description ? 'dialog-description' : undefined}
+      className={cn('sm:max-w-[425px]', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
     >
-      <DialogContent
-        aria-describedby={description ? 'dialog-description' : undefined}
-        className={cn('sm:max-w-[425px]', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
-      >
-        {/* Header */}
-        <DialogHeader>
-          <DialogTitle>
-            <HeaderCustom
-              to="component"
-              span={span}
-              theme={theme}
-              title={title}
-              iconSpan={iconSpan}
-              className="text-left"
-            />
-          </DialogTitle>
-          <DialogDescription id="dialog-description">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
+      {/* Header */}
+      <DialogHeader>
+        <DialogTitle>
+          <HeaderCustom
+            to="component"
+            span={span}
+            theme={theme}
+            title={title}
+            iconSpan={iconSpan}
+            className="text-left"
+          />
+        </DialogTitle>
+        <DialogDescription id="dialog-description">
+          {description}
+        </DialogDescription>
+      </DialogHeader>
 
-        {/* Form */}
-        <FormProvider {...form.methods}>
-          <form onSubmit={form.onSubmit} className="space-y-6">
-            {fields.map((field, index) => (
-              <div key={`${field.name}-${index}`}>
-                {cloneElement(field.component, {
-                  'aria-describedby': field.name ?? `field-description-${index}`,
-                  name: field.name,
-                  theme
-                })}
-                {field.name && <div id={`field-description-${index}`} className="sr-only">{field.name}</div>}
-              </div>
-            ))}
+      {/* Form */}
+      <FormProvider {...form.methods}>
+        <form onSubmit={form.onSubmit} className="space-y-6">
+          {fields.map((field, index) => (
+            <div key={`${field.name}-${index}`}>
+              {cloneElement(field.component, {
+                'aria-describedby': field.name ?? `field-description-${index}`,
+                name: field.name,
+                theme
+              })}
+              {field.name && <div id={`field-description-${index}`} className="sr-only">{field.name}</div>}
+            </div>
+          ))}
 
-            <SubmitButton theme={theme} label={labelSubmit} />
-          </form>
-        </FormProvider>
-      </DialogContent>
-    </DialogPrimitive>
-  )
-}
+          <SubmitButton theme={theme} label={labelSubmit} />
+        </form>
+      </FormProvider>
+    </DialogContent>
+  </DialogPrimitive>
+)
 
 export default Dialog
 /*---------------------------------------------------------------------------------------------------------*/
@@ -91,17 +89,17 @@ interface SubmitButtonProps extends ThemeContextProps {
   label: string
 }
 
-const SubmitButton = ({ label, theme }: SubmitButtonProps) => {
-  return (
-    <Button
-      type="submit"
-      className={cn('w-full text-white',
-        'transition-all duration-300 transform hover:scale-105',
-        theme === 'dark' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-purple-800 hover:bg-purple-900'
-      )}
-    >
-      {label}
-      <CheckIcon className="h-4 w-4" />
-    </Button>
-  )
-}
+const SubmitButton = ({ label, theme }: SubmitButtonProps) => (
+  <Button
+    type="submit"
+    className={cn(
+      'w-full text-white',
+      theme === 'dark'
+        ? 'bg-purple-600 hover:bg-purple-700'
+        : 'bg-purple-800 hover:bg-purple-900'
+    )}
+  >
+    {label}
+    <CheckIcon className="h-4 w-4" />
+  </Button>
+)

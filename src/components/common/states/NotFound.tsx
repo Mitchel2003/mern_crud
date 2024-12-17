@@ -56,7 +56,6 @@ const NotFound = ({
             onClick={onRefresh || (() => window.location.reload())}
             variant="outline"
             className={cn(
-              'transition-all duration-300',
               theme === 'dark'
                 ? 'hover:bg-zinc-800'
                 : 'hover:bg-purple-50'
@@ -70,7 +69,6 @@ const NotFound = ({
           <Button
             onClick={() => window.location.href = '/'}
             className={cn(
-              'transition-all duration-300',
               theme === 'dark'
                 ? 'bg-purple-600 hover:bg-purple-700'
                 : 'bg-purple-800 hover:bg-purple-900'

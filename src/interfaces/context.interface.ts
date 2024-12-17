@@ -11,8 +11,13 @@ export type ThemeContextProps = { theme: Theme }
 
 /*--------------------------------------------------SidebarContext--------------------------------------------------*/
 export type SidebarContext = {
-  isExpanded: boolean
+  setOpenMobile: (open: boolean) => void
+  setOpen: (open: boolean) => void
   toggleSidebar: () => void
+  openMobile: boolean
+  isMobile: boolean
+  open: boolean
+  state: "expanded" | "collapsed"
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

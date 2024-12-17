@@ -34,7 +34,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         type="submit"
         className={cn(
           'text-white w-full',
-          'transition-all duration-300 transform hover:scale-105',
+          'transform hover:scale-105',
           theme === 'dark'
             ? 'bg-purple-600 hover:bg-purple-700'
             : 'bg-purple-800 hover:bg-purple-900'
@@ -49,7 +49,7 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         onClick={() => navigate('/auth/register')}
         className={cn(
           'text-white w-full',
-          'transition-all duration-300 transform hover:scale-105',
+          'transform hover:scale-105',
           theme === 'dark'
             ? 'bg-purple-800 hover:bg-purple-900'
             : 'bg-purple-400 hover:bg-purple-500'

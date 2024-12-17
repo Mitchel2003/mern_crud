@@ -1,4 +1,3 @@
-import { User } from '@/interfaces/context.interface'
 import { type LucideIcon } from 'lucide-react'
 
 export interface NavItemProps {
@@ -7,9 +6,4 @@ export interface NavItemProps {
   icon: LucideIcon
   label: string
   href?: string
-}
-
-export interface SidebarProps {
-  auth: boolean
-  user?: User
 }
