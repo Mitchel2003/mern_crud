@@ -1,12 +1,13 @@
 import { AnimatedBackground } from '#/layout/AnimatedBackground'
 import { LoadingScreen } from "#/ui/loading-screen"
-import { AppSidebar } from '#/layout/Sidebar'
+import { SidebarProvider } from '#/ui/sidebar'
+import { Sidebar } from '#/layout/Sidebar'
 import { Toaster } from '#/ui/toaster'
 import Footer from '#/layout/Footer'
+import Navbar from '#/layout/Navbar'
 
 import { useThemeContext } from '@/context/ThemeContext'
 import ScrollToTop from '@/hooks/ui/useScrollTop'
-import { SidebarProvider, SidebarTrigger } from '#/ui/sidebar'
 import { Outlet } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
@@ -17,18 +18,12 @@ const RootLayout = () => {
     <>
       <AnimatedBackground theme={theme}>
         <SidebarProvider>
-          <AppSidebar />
-          <main
-            className={cn(
-              'flex flex-col z-10',
-              'items-center justify-center',
-              'transition-all duration-300'
-            )}
-          >
-            <SidebarTrigger />
+          <Sidebar />
+          <div className={cn('flex flex-col z-10', 'transition-all duration-300')}>
+            <Navbar theme={theme} />
             <Outlet />
             <Footer theme={theme} />
-          </main>
+          </div>
         </SidebarProvider>
       </AnimatedBackground>
 
