@@ -1,11 +1,13 @@
 import { useAnimatedBackground } from '@/hooks/ui/useAnimatedBackground'
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useThemeContext } from '@/context/ThemeContext'
 import { Props } from '@/interfaces/props.interface'
 import { animated } from '@react-spring/web'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-export const AnimatedBackground = ({ children, theme }: ThemeContextProps & Props) => {
+export const AnimatedBackground = ({ children }: Props) => {
+  const { theme } = useThemeContext()
   const { springProps, gradientColors } = useAnimatedBackground({ theme })
 
   return (

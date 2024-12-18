@@ -1,36 +1,34 @@
 import { Sidebar as SidebarShadcn, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "#/ui/sidebar"
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Home, Info, LogIn, UserPlus } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: "Inicio",
+    url: "/",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Iniciar sesión",
+    url: "/auth/login",
+    icon: LogIn,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Registrarse",
+    url: "/auth/register",
+    icon: UserPlus,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
+    title: "Sobre nosotros",
+    url: "/about",
+    icon: Info,
+  }
 ]
 
-export function Sidebar() {
+export const Sidebar = () => {
+  const location = useLocation()
+
   return (
     <SidebarShadcn>
       <SidebarContent>
@@ -40,7 +38,7 @@ export function Sidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>

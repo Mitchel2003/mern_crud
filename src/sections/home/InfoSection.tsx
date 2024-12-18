@@ -1,16 +1,14 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import CarouselInfo from '#/pages/home/CarouselInfo'
 
-const InfoSection = ({ theme }: ThemeContextProps) => {
-  return (
-    <CarouselInfo
-      informations={heroItems}
-      isLoading={false}
-      theme={theme}
-      error={null}
-    />
-  )
-}
+const InfoSection = ({ theme }: ThemeContextProps) => (
+  <CarouselInfo
+    informations={heroItems}
+    isLoading={false}
+    theme={theme}
+    error={null}
+  />
+)
 
 export default InfoSection
 

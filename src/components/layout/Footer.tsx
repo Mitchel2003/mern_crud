@@ -1,11 +1,11 @@
-import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useThemeContext } from '@/context/ThemeContext'
 import { Button } from '#/ui/button'
 import { Badge } from '#/ui/badge'
 import { cn } from '@/lib/utils'
 
-interface FooterSectionProps extends ThemeContextProps { }
+const FooterSection = () => {
+  const { theme } = useThemeContext()
 
-const FooterSection = ({ theme }: FooterSectionProps) => {
   return (
     <div
       className={cn(

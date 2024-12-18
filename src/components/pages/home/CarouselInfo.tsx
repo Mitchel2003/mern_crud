@@ -23,7 +23,6 @@ const CarouselInfo = ({ informations, isLoading, error, theme }: CarouselInfoPro
     <Carousel
       autoplay
       items={informations}
-      className_Carousel="flex relative overflow-hidden"
       className_Item="flex-shrink-0 w-full"
       render={(item) => ItemInfo({ theme, ...item })}
     />

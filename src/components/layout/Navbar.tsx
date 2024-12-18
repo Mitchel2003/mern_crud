@@ -1,4 +1,4 @@
-import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
 import { SidebarTrigger } from '#/ui/sidebar'
 import ThemeToggle from '#/layout/Theme'
@@ -7,13 +7,14 @@ import gsIcon from '/assets/gs_icon.ico'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-const Navbar = ({ theme }: ThemeContextProps) => {
+const Navbar = () => {
+  const { theme } = useThemeContext()
   const { isAuth } = useAuthContext()
 
   return (
     <nav
       className={cn(
-        'flex justify-between items-center py-2 px-6 z-10',
+        'flex justify-between items-center py-2 px-6',
         'shadow-md backdrop-blur-md transition-colors duration-500',
         theme === 'dark'
           ? 'bg-zinc-800/90 text-zinc-100'
@@ -47,4 +48,3 @@ const HeaderNavbar = ({ isAuth }: HeaderNavbarProps) => {
     </Link>
   )
 }
-/*---------------------------------------------------------------------------------------------------------*/

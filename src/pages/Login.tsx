@@ -3,6 +3,7 @@ import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { cn } from '@/lib/utils'
 
 const Login = () => {
   const { theme } = useThemeContext()
@@ -11,7 +12,11 @@ const Login = () => {
 
   useEffect(() => { if (isAuth) navigate('/dashboard') }, [isAuth])
 
-  return <LoginSection theme={theme} />
+  return (
+    <div className={cn("flex justify-center items-center")}>
+      <LoginSection theme={theme} />
+    </div>
+  )
 }
 
 export default Login
