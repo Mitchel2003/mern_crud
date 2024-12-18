@@ -1,4 +1,4 @@
-import { LocationContext, LocationType, BaseLocation, Headquarter, State, City } from "@/interfaces/context.interface"
+import { LocationContext, LocationType, BaseLocation } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
 import { useLoadingScreen } from "@/hooks/ui/useLoading"
@@ -7,7 +7,7 @@ import { locationApi } from "@/api/location"
 
 import { createContext, useContext, useState } from "react"
 
-const Location = createContext<LocationContext | undefined>(undefined)
+const Location = createContext<LocationContext>(undefined)
 
 /**
  * Hook personalizado para acceder al contexto de ubicación.
@@ -36,10 +36,10 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID de la ubicación.
    * @returns {Promise<T>} Los datos de la ubicación.
    */
-  const getOne = async <T extends BaseLocation>(type: LocationType, id: string): Promise<T> => {
-    setLoadingStatus('Obteniendo datos...')
+  const getById = async <T extends BaseLocation>(type: LocationType, id: string): Promise<T> => {
+    setLoadingStatus('Buscando por identificador...')
     try {
-      const response = await locationApi.getOne(type, id)
+      const response = await locationApi.getById(type, id)
       notifySuccess({ title: "Éxito", message: "Datos obtenidos correctamente" })
       return response.data
     } catch (e: unknown) {
@@ -54,9 +54,29 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<T[]>} Un array con los datos de todas las ubicaciones.
    */
   const getAll = async <T extends BaseLocation>(type: LocationType): Promise<T[]> => {
-    setLoadingStatus('Cargando lista...')
+    setLoadingStatus('Obteniendo lista...')
     try {
       const response = await locationApi.getAll(type)
+      notifySuccess({ title: "Éxito", message: "Lista obtenida correctamente" })
+      return response.data
+    } catch (e: unknown) {
+      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+      return []
+    } finally { setLoadingStatus() }
+  }
+
+  /**
+   * Obtiene todas las ubicaciones de un tipo específico por una consulta
+   * tenemos un opcional para poblar con el cual podemos ejercer relaciones
+   * @param {string} type - El tipo de ubicación.
+   * @param {object} query - La consulta.
+   * @param {string} populate - El campo a poblar; corresponde a la relacion de la ubicacion (ej: 'city.state.country')
+   * @returns {Promise<T[]>} Un array con los datos de todas las ubicaciones.
+   */
+  const getByQuery = async <T extends BaseLocation>(type: LocationType, query: object, populate?: string): Promise<T[]> => {
+    setLoadingStatus('Buscando por consulta...')
+    try {
+      const response = await locationApi.getByQuery(type, query, populate)
       notifySuccess({ title: "Éxito", message: "Lista obtenida correctamente" })
       return response.data
     } catch (e: unknown) {
@@ -72,7 +92,7 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<T>} Los datos de la ubicación creada.
    */
   const create = async <T extends BaseLocation>(type: LocationType, data: Partial<T>): Promise<T> => {
-    setLoadingStatus('Creando registro...')
+    setLoadingStatus('Creando...')
     try {
       const response = await locationApi.create(type, data)
       notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
@@ -91,7 +111,7 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<T>} Los datos de la ubicación actualizada.
    */
   const update = async <T extends BaseLocation>(type: LocationType, id: string, data: Partial<T>): Promise<T> => {
-    setLoadingStatus('Actualizando registro...')
+    setLoadingStatus('Actualizando...')
     try {
       const response = await locationApi.update(type, id, data)
       notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
@@ -109,7 +129,7 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<T>} Los datos de la ubicación eliminada.
    */
   const delete_ = async <T extends BaseLocation>(type: LocationType, id: string): Promise<T> => {
-    setLoadingStatus('Eliminando registro...')
+    setLoadingStatus('Eliminando...')
     try {
       const response = await locationApi.delete(type, id)
       notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
@@ -119,37 +139,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       throw e
     } finally { setLoadingStatus() }
   }
-
-  /*--------------------------------------------------relations--------------------------------------------------*/
-  /**
-   * Obtiene todas las sedes de una ciudad
-   * @param {string} cityId - El ID de la ciudad.
-   * @returns {Promise<Headquarter[]>} Un array con los datos de todas las sedes.
-   */
-  const getHeadquartersByCity = (cityId: string) =>
-    getAll<Headquarter>('headquarter').then(headquarters =>
-      headquarters.filter(hq => hq.city === cityId)
-    )
-
-  /**
-   * Obtiene todas las ciudades de un estado
-   * @param {string} stateId - El ID del estado.
-   * @returns {Promise<City[]>} Un array con los datos de todas las ciudades.
-   */
-  const getCitiesByState = (stateId: string) =>
-    getAll<City>('city').then(cities =>
-      cities.filter(city => city.state === stateId)
-    )
-
-  /**
-   * Obtiene todos los estados de un país
-   * @param {string} countryId - El ID del país.
-   * @returns {Promise<State[]>} Un array con los datos de todos los estados.
-   */
-  const getStatesByCountry = (countryId: string) =>
-    getAll<State>('state').then(states =>
-      states.filter(state => state.country === countryId)
-    )
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------tools--------------------------------------------------*/
@@ -167,14 +156,12 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   return (
     <Location.Provider value={{
       loading,
-      getOne,
       getAll,
+      getById,
+      getByQuery,
       create,
       update,
       delete: delete_,
-      getCitiesByState,
-      getStatesByCountry,
-      getHeadquartersByCity
     }}>
       {children}
     </Location.Provider>

@@ -1,6 +1,7 @@
 import { LoginComponentsProps } from '@/interfaces/props.interface'
-import SelectField from '@/components/common/fields/Select'
-import InputField from '@/components/common/fields/Input'
+import { Headquarter } from '@/interfaces/context.interface'
+import SelectField from '#/common/fields/Select'
+import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 
@@ -8,7 +9,11 @@ import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-const FormSection = ({ theme }: LoginComponentsProps) => {
+interface FormSectionProps extends LoginComponentsProps {
+  locations: Headquarter[]
+}
+
+const FormSection = ({ theme, locations }: FormSectionProps) => {
   const navigate = useNavigate()
 
   return (
@@ -38,10 +43,18 @@ const FormSection = ({ theme }: LoginComponentsProps) => {
         name='role'
         label='Rol del usuario'
         theme={theme}
-        options={['admin', 'engineer']}
+        options={['admin', 'engineer', 'medical']}
         placeholder='Seleccionar rol'
       />
 
+      {/* working here... */}
+      <SelectField
+        name='client'
+        label='Cliente(s)'
+        theme={theme}
+        options={locations.map((location) => location.client)}
+        placeholder='Seleccionar cliente'
+      />
       {/* -------------------- Submit -------------------- */}
       <Button
         type="submit"

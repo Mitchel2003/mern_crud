@@ -1,16 +1,23 @@
+import RegisterSkeleton from "#/common/skeletons/RegisterSkeleton"
 import HeaderForm from "#/common/elements/HeaderForm"
 import { Card } from "#/ui/card"
 
 import FooterSection from "./FooterSection"
 import FormSection from "./FormSection"
 
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { Headquarter, ThemeContextProps } from "@/interfaces/context.interface"
 import { useRegisterForm } from "@/hooks/auth/useRegisterForm"
+import { useQueryLocation } from "@/hooks/useLocation"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-const RegisterSection = ({ theme }: ThemeContextProps) => {
+const RegisterSection = ({ theme }: ThemeContextProps) => {//working here...
+  const { fetchAllLocations } = useQueryLocation()
+  const { data: locations, isLoading } = fetchAllLocations('headquarter')
   const { methods, onSubmit } = useRegisterForm()
+
+  if (isLoading) return <RegisterSkeleton theme={theme} />
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={onSubmit}>
@@ -29,7 +36,7 @@ const RegisterSection = ({ theme }: ThemeContextProps) => {
             className="bg-transparent/0"
             description="Diligencia la información para registrar un usuario"
           />
-          <FormSection theme={theme} />
+          <FormSection theme={theme} locations={locations as Headquarter[]} />
           <FooterSection theme={theme} />
         </Card>
       </form>

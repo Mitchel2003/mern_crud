@@ -98,6 +98,7 @@ export type CurriculumContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------LocationContext--------------------------------------------------*/
+export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
 export type BaseLocation = {
   _id: string
   name: string
@@ -110,20 +111,13 @@ export type State = BaseLocation & { country: string }
 export type City = BaseLocation & { state: string }
 export type Headquarter = BaseLocation & { address: string; client: string; city: string }
 
-export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
-
 export type LocationContext = {
   loading: boolean
-  // Métodos genéricos
-  getOne: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
   getAll: <T extends BaseLocation>(type: LocationType) => Promise<T[]>
+  getById: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
+  getByQuery: <T extends BaseLocation>(type: LocationType, query: object, populate?: string) => Promise<T[]>
   create: <T extends BaseLocation>(type: LocationType, data: Partial<T>) => Promise<T>
   update: <T extends BaseLocation>(type: LocationType, id: string, data: Partial<T>) => Promise<T>
   delete: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
-
-  // Métodos específicos para relaciones
-  getStatesByCountry: (countryId: string) => Promise<State[]>
-  getCitiesByState: (stateId: string) => Promise<City[]>
-  getHeadquartersByCity: (cityId: string) => Promise<Headquarter[]>
-}
+} | undefined
 /*---------------------------------------------------------------------------------------------------------*/

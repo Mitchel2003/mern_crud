@@ -1,9 +1,8 @@
+import { Country, Curriculum, LocationType } from "@/interfaces/context.interface"
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query"
-import { Country, Curriculum } from "@/interfaces/context.interface"
 
 /*-------------------------useQuery and useMutation-------------------------*/
-//to curriculum
-export type QueryReact_CV = {
+export type QueryReact_CV = {//to curriculum
   fetchCV: (id: string) => UseQueryResult<Curriculum, Error>
   fetchCVs: () => UseQueryResult<Curriculum[], Error>
 }
@@ -12,8 +11,7 @@ export type CustomMutation_CV = {
   deleteCV: () => UseMutationResult<Curriculum, Error, string, unknown>
 }
 
-//to country
-export type QueryReact_Country = {
+export type QueryReact_Country = {//to country
   fetchCountry: (id: string) => UseQueryResult<Country>
   fetchCountries: () => UseQueryResult<Country[]>
 }
@@ -21,3 +19,13 @@ export type CustomMutation_Country = {
   createOrUpdateCountry: (id: string) => UseMutationResult<Country, Error, object>
   deleteCountry: () => UseMutationResult<Country, Error, string>
 }
+
+export type QueryReact_Location = {//to location
+  fetchAllLocations: (path: LocationType) => UseQueryResult<unknown, Error>
+  fetchLocationById: (path: LocationType, id: string) => UseQueryResult<unknown, Error>
+  fetchLocationByQuery: (path: LocationType, query: object, populate?: string) => UseQueryResult<unknown, Error>
+}
+// export type CustomMutation_Location = {
+//   createOrUpdateLocation: (id: string) => UseMutationResult<Location, Error, object>
+//   deleteLocation: () => UseMutationResult<Location, Error, string>
+// }
