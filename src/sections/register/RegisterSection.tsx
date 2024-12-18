@@ -12,9 +12,9 @@ import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
 const RegisterSection = ({ theme }: ThemeContextProps) => {//working here...
+  const { methods, onSubmit } = useRegisterForm()
   const { fetchAllLocations } = useQueryLocation()
   const { data: locations, isLoading } = fetchAllLocations('headquarter')
-  const { methods, onSubmit } = useRegisterForm()
 
   if (isLoading) return <RegisterSkeleton theme={theme} />
 

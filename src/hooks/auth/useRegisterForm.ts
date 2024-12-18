@@ -7,7 +7,8 @@ const defaultValues = {
   role: '',
   email: '',
   username: '',
-  password: ''
+  password: '',
+  clients: []
 }
 
 export const useRegisterForm = () => {

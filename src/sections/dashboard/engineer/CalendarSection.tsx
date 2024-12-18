@@ -1,7 +1,7 @@
 import { EventMaintenance, CardDay as ICardDay } from '@/types/dashboard.type'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import CardDay from '#/pages/dashboard/CardDay'
+import CardDay from '#/pages/dashboard/engineer/CardDay'
 import useCalendar from '@/hooks/ui/useCalendar'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'

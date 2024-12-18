@@ -1,5 +1,5 @@
+import EquipmentCard from '#/pages/dashboard/engineer/CardEquipment'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import EquipmentCard from '#/pages/dashboard/CardEquipment'
 import { Equipment } from '@/types/dashboard.type'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'

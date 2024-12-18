@@ -1,6 +1,6 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import StatCard from '#/pages/dashboard/engineer/StatsCard'
 import { CircleCheck, CircleX, Users } from 'lucide-react'
-import StatCard from '#/pages/dashboard/StatsCard'
 import { cn } from '@/lib/utils'
 
 const StatisticsSection = ({ theme }: ThemeContextProps) => {

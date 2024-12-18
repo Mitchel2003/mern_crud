@@ -16,7 +16,8 @@ export const registerSchema = z
     email: z.string().email("Correo electronico invalido"),
     username: z.string().min(3, "El nombre de usuario debe tener al menos 3 caracteres"),
     password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-    role: z.string().min(1, "Debes seleccionar un rol")
+    role: z.string().min(1, "Debes seleccionar un rol"),
+    clients: z.array(z.string()).min(1, "Debes seleccionar al menos un cliente")
   })
 
 export type LoginFormProps = z.infer<typeof loginSchema>

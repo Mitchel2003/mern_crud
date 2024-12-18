@@ -8,6 +8,7 @@ import { Button } from '#/ui/button'
 import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { SelectOption } from '#/common/fields/Select'
 
 interface FormSectionProps extends LoginComponentsProps {
   locations: Headquarter[]
@@ -15,6 +16,12 @@ interface FormSectionProps extends LoginComponentsProps {
 
 const FormSection = ({ theme, locations }: FormSectionProps) => {
   const navigate = useNavigate()
+
+  const locationOptions: SelectOption<string>[] = locations.map(location => ({
+    value: location._id,
+    label: location.client,
+    description: `${location.city} - ${location.address}`
+  }))
 
   return (
     <CardContent className="space-y-6">
@@ -41,19 +48,22 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
       />
       <SelectField
         name='role'
+        theme={theme}
         label='Rol del usuario'
-        theme={theme}
-        options={['admin', 'engineer', 'medical']}
         placeholder='Seleccionar rol'
+        options={[
+          { label: 'Administrador', value: 'admin' },
+          { label: 'Ingeniero', value: 'engineer' },
+          { label: 'Médico', value: 'medical' }
+        ]}
       />
-
-      {/* working here... */}
       <SelectField
-        name='client'
-        label='Cliente(s)'
+        name='clients'
         theme={theme}
-        options={locations.map((location) => location.client)}
-        placeholder='Seleccionar cliente'
+        label='Cliente(s)'
+        options={locationOptions}
+        placeholder='Selecciona al menos un cliente'
+        isSearchable
       />
       {/* -------------------- Submit -------------------- */}
       <Button

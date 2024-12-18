@@ -6,8 +6,8 @@ import StatisticsSection from './StatisticsSection'
 import EquipmentSection from './EquipmentSection'
 import InfoSection from './InfoSection'
 
-interface DashboardSectionProps extends ThemeContextProps { }
-const DashboardSection = ({ theme }: DashboardSectionProps) => {
+interface EngineerDashboardProps extends ThemeContextProps { }
+const EngineerDashboard = ({ theme }: EngineerDashboardProps) => {
   const { user } = useAuthContext()
   return (
     <div className="container space-y-10 p-10 mx-auto">
@@ -19,7 +19,7 @@ const DashboardSection = ({ theme }: DashboardSectionProps) => {
   )
 }
 
-export default DashboardSection
+export default EngineerDashboard
 
 // Estos datos deberían venir de una API o un estado global en una aplicación real
 const mockEvents: EventMaintenance[] = [

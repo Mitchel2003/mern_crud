@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
 import { FormField, FormItem, FormControl, FormMessage } from "#/ui/form"
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
+import HeaderCustom from "#/common/elements/HeaderCustom"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { HeaderSpanProps } from "@/interfaces/props.interface"
@@ -8,12 +8,21 @@ import { useFormContext } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import React from "react"
 
-interface SelectFieldProps extends HeaderSpanProps, ThemeContextProps {
+// Definimos una interfaz genérica para las opciones
+export interface SelectOption<T = string> {
+  label: string
+  value: T
+  disabled?: boolean
+  description?: string
+}
+
+interface SelectFieldProps<T = string> extends HeaderSpanProps, ThemeContextProps {
   name: string
   label?: string
-  options: string[]
+  options: SelectOption<T>[]
   className?: string
   placeholder?: string
+  isSearchable?: boolean
 }
 
 const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
@@ -24,7 +33,8 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
   className,
   placeholder,
   iconSpan,
-  span
+  span,
+  isSearchable
 }, ref) => {
   const { control } = useFormContext()
 
@@ -52,6 +62,7 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
               theme={theme}
               options={options}
               placeholder={placeholder}
+              isSearchable={isSearchable}
             />
           </FormControl>
 
@@ -69,55 +80,74 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
 SelectField.displayName = 'SelectField'
 
 export default SelectField
-
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-interface SelectWrapperProps extends ThemeContextProps {
+interface SelectWrapperProps<T = string> extends ThemeContextProps {
+  value: T
   id: string
-  value: string
-  options: string[]
   placeholder?: string
-  onChange: (value: string) => void
+  isSearchable?: boolean
+  options: SelectOption<T>[]
+  onChange: (value: T) => void
 }
 
-const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectWrapperProps>(
-  ({ id, theme, options, placeholder, value, onChange }, ref) => (
-    <Select onValueChange={onChange} value={value}>
+const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectWrapperProps>(({
+  id,
+  theme,
+  value,
+  options,
+  placeholder,
+  isSearchable,
+  onChange
+}, ref) => {
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  // Filtrar opciones basadas en el término de búsqueda
+  const filteredOptions = isSearchable
+    ? options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+    : options
+
+  return (
+    <Select onValueChange={onChange} value={value?.toString()}>
       <SelectTrigger
         id={id}
         ref={ref}
         className={cn(
-          theme === 'dark'
-            ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
-            : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
+          "flex h-9 w-full items-center justify-between",
+          theme === "dark"
+            ? "bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600"
+            : "bg-white border-gray-300 text-gray-900 hover:bg-gray-100"
         )}
       >
-        <SelectValue
-          placeholder={placeholder}
-          className={cn(
-            theme === 'dark' ? 'text-zinc-100' : 'text-gray-900'
-          )}
-        />
+        <SelectValue placeholder={placeholder}>
+          {options.find(opt => opt.value === value)?.label || placeholder}
+        </SelectValue>
       </SelectTrigger>
 
       <SelectContent>
-        {options.map((option, index) => (
+        {isSearchable && (
+          <input
+            type="text"
+            className="p-2 border-b focus:outline-none w-full"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        )}
+        {filteredOptions.map((option) => (
           <SelectItem
-            key={`${option}-${index}`}
-            value={option}
-            className={cn(
-              theme === 'dark'
-                ? 'text-zinc-100 hover:bg-zinc-700 focus:bg-zinc-700'
-                : 'text-gray-900 hover:bg-gray-100 focus:bg-gray-100'
-            )}
+            key={option.value.toString()}
+            value={option.value.toString()}
+            disabled={option.disabled}
           >
-            {option}
+            <span>{option.label}</span>
+            {option.description && <span className="text-xs">{option.description}</span>}
           </SelectItem>
         ))}
       </SelectContent>
     </Select>
   )
-)
+})
 
 SelectWrapper.displayName = 'SelectWrapper'
