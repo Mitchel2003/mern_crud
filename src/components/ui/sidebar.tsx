@@ -1,4 +1,5 @@
 import { VariantProps, cva } from "class-variance-authority"
+import { useThemeContext } from "@/context/ThemeContext"
 import { Slot } from "@radix-ui/react-slot"
 import * as React from "react"
 
@@ -15,7 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ViewVerticalIcon } from "@radix-ui/react-icons"
+import { HamburgerMenuIcon } from "@radix-ui/react-icons"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -262,21 +263,30 @@ const SidebarTrigger = React.forwardRef<
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
+  const { theme } = useThemeContext()
 
   return (
     <Button
       ref={ref}
-      data-sidebar="trigger"
-      variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      variant="ghost"
+      data-sidebar="trigger"
+      className={cn(
+        className,
+        '[&_svg]:size-5',
+        'h-9 w-9 md:h-10 md:w-10',
+        'rounded-lg transition-colors duration-300',
+        theme === 'dark'
+          ? 'bg-zinc-700/40 text-gray-100 hover:bg-zinc-600'
+          : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+      )}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <ViewVerticalIcon />
+      <HamburgerMenuIcon className="h-5 w-5 md:h-6 md:w-6" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
