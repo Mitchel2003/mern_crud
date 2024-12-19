@@ -8,20 +8,16 @@ import { Button } from '#/ui/button'
 import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import { SelectOption } from '#/common/fields/Select'
 
 interface FormSectionProps extends LoginComponentsProps {
-  locations: Headquarter[]
+  locations?: Headquarter[]
 }
 
 const FormSection = ({ theme, locations }: FormSectionProps) => {
   const navigate = useNavigate()
 
-  const locationOptions: SelectOption<string>[] = locations.map(location => ({
-    value: location._id,
-    label: location.client,
-    description: `${location.city} - ${location.address}`
-  }))
+  const clientsOptions = locations?.map(e => ({ value: e._id, label: `${e.client} - ${e.address} - ${e.city}` }))
+    || [{ label: 'No hay clientes', value: '' }]
 
   return (
     <CardContent className="space-y-6">
@@ -61,7 +57,7 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
         name='clients'
         theme={theme}
         label='Cliente(s)'
-        options={locationOptions}
+        options={clientsOptions}
         placeholder='Selecciona al menos un cliente'
         isSearchable
       />
@@ -76,7 +72,8 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
             : 'bg-purple-800 hover:bg-purple-900'
         )}
       >
-        Registrar cuenta <UserPlus className="ml-2 h-4 w-4" />
+        Registrar cuenta
+        <UserPlus className="ml-2 h-4 w-4" />
       </Button>
 
       {/* -------------------- go to login -------------------- */}
