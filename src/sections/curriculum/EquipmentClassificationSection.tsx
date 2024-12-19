@@ -1,6 +1,6 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import CheckboxField from "@/components/common/fields/Checkbox"
-import SelectField from "@/components/common/fields/Select"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import CheckboxField from "#/common/fields/Checkbox"
+import SelectField from "#/common/fields/Select"
 import { Separator } from "#/ui/separator"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
@@ -31,28 +31,46 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
             label="Tipo"
             name="type_device"
             placeholder="Seleccionar tipo"
-            options={['fijo', 'movil']}
+            options={[
+              { label: "fijo", value: "static" },
+              { label: "movil", value: "mobile" }
+            ]}
           />
           <SelectField
             theme={theme}
             name="classification_by_use"
             label="Clasificación por Uso"
             placeholder="Seleccionar clasificación"
-            options={['medico', 'basico', 'apoyo']}
+            options={[
+              { label: "medico", value: "medical" },
+              { label: "basico", value: "basic" },
+              { label: "apoyo", value: "support" }
+            ]}
           />
           <SelectField
             theme={theme}
             name="classification_biomedical"
             label="Clasificación Biomédica"
             placeholder="Seleccionar clasificación"
-            options={['diagnostico', 'tratamiento', 'prevencion', 'rehabilitacion', 'analisis']}
+            options={[
+              { label: "diagnostico", value: "diagnostic" },
+              { label: "tratamiento", value: "treatment" },
+              { label: "prevencion", value: "prevention" },
+              { label: "rehabilitacion", value: "rehabilitation" },
+              { label: "analisis", value: "analysis" }
+            ]}
           />
           <SelectField
             theme={theme}
             name="risk"
             label="Riesgo"
             placeholder="Seleccionar riesgo"
-            options={['muy_alto', 'alto', 'moderado', 'bajo']}
+            options={[
+              { label: "I", value: "I" },
+              { label: "IIA", value: "IIA" },
+              { label: "IIB", value: "IIB" },
+              { label: "III", value: "III" }
+            ]}
           />
         </div>
 
@@ -81,7 +99,6 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
               className={`w-full ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}
             />
           </div>
-
 
           <CheckboxField
             theme={theme}

@@ -1,7 +1,7 @@
-import ImagePreview from "@/components/common/elements/ImagePreview"
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import SelectField from "@/components/common/fields/Select"
-import InputField from "@/components/common/fields/Input"
+import ImagePreview from "#/common/elements/ImagePreview"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import SelectField from "#/common/fields/Select"
+import InputField from "#/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
@@ -32,7 +32,10 @@ const ClientSection = ({ theme }: ClientProps) => {
                 theme={theme}
                 label="Cliente"
                 name="name_client"
-                options={['IPS Sanitas', 'EDS Nueva esperanza']}
+                options={[
+                  { label: "IPS Sanitas", value: "ips_sanitas" },
+                  { label: "EDS Nueva esperanza", value: "eds_nueva_esperanza" }
+                ]}
                 placeholder="Selecciona un cliente"
               />
               <InputField
@@ -60,7 +63,6 @@ const ClientSection = ({ theme }: ClientProps) => {
             />
           </div>
         </div>
-
       </div>
     </FormProvider>
   )

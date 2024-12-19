@@ -1,14 +1,9 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import SelectField from "@/components/common/fields/Select"
-import InputField from "@/components/common/fields/Input"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import SelectField from "#/common/fields/Select"
+import InputField from "#/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
-
-const optionsEquipment = [
-  'Compac Q - servicio recepcion - salon 12 - odontologia',
-  'Taladro metalico - servicio dental - salon 12 - odontologia'
-]
 
 interface EquipmentProps extends ThemeContextProps { }
 const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
@@ -32,7 +27,10 @@ const ReferenceEquipmentSection = ({ theme }: EquipmentProps) => {
             name="equipment"
             label="Equipo para mantenimiento"
             placeholder="Seleccionar el equipo"
-            options={optionsEquipment}
+            options={[
+              { label: 'Compac Q - servicio recepcion - salon 12 - odontologia', value: 'compac_q' },
+              { label: 'Taladro metalico - servicio dental - salon 12 - odontologia', value: 'taladro_metalico' }
+            ]}
           />
 
           <InputField

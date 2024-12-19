@@ -1,5 +1,5 @@
 import { Card, CardContent, CardFooter } from '#/ui/card'
-import HeaderForm from '@/components/common/elements/HeaderForm'
+import HeaderForm from '#/common/elements/HeaderForm'
 import { Button } from '#/ui/button'
 import { Form } from '#/ui/form'
 

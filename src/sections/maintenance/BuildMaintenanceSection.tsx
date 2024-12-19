@@ -1,7 +1,7 @@
-import AreaToggleableField from "@/components/common/fields/AreaToggleable"
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import SelectField from "@/components/common/fields/Select"
-import InputField from "@/components/common/fields/Input"
+import AreaToggleableField from "#/common/fields/AreaToggleable"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import SelectField from "#/common/fields/Select"
+import InputField from "#/common/fields/Input"
 import { Separator } from "#/ui/separator"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
@@ -29,7 +29,10 @@ const BuildMaintenanceSection = ({ theme }: BuildMaintenanceProps) => {
                 theme={theme}
                 name="tipoMantenimiento"
                 label="Tipo de mantenimiento"
-                options={['preventivo', 'correctivo']}
+                options={[
+                  { label: "Preventivo", value: "preventivo" },
+                  { label: "Correctivo", value: "correctivo" }
+                ]}
                 placeholder="Seleccione el tipo de mantenimiento"
                 //to span
                 span="Obligatorio"

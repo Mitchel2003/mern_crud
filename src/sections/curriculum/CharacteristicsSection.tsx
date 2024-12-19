@@ -1,6 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import AreaField from "@/components/common/fields/Area"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import AreaField from "#/common/fields/Area"
 
 
 interface CharacteristicsProps extends ThemeContextProps { }

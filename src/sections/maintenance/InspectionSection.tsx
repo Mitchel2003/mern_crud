@@ -1,5 +1,5 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import CheckboxField from "@/components/common/fields/Checkbox"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import CheckboxField from "#/common/fields/Checkbox"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"

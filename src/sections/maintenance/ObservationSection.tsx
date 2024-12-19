@@ -1,7 +1,7 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import StatusCheck from "@/components/common/fields/StatusCheck"
-import DateField from "@/components/common/fields/Date"
-import AreaField from "@/components/common/fields/Area"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import StatusCheck from "#/common/fields/StatusCheck"
+import DateField from "#/common/fields/Date"
+import AreaField from "#/common/fields/Area"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/props.interface"

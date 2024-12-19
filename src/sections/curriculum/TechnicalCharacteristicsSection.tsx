@@ -1,5 +1,5 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom";
-import InputField from "@/components/common/fields/Input";
+import HeaderCustom from "#/common/elements/HeaderCustom";
+import InputField from "#/common/fields/Input";
 
 import { ThemeContextProps } from "@/interfaces/context.interface";
 import { useForm, FormProvider } from "react-hook-form";

@@ -1,8 +1,8 @@
-import IterableCustomCard from '@/components/common/fields/CardIterable'
-import HeaderCustom from '@/components/common/elements/HeaderCustom'
-import SelectField from '@/components/common/fields/Select'
-import InputField from '@/components/common/fields/Input'
-import DateField from '@/components/common/fields/Date'
+import IterableCustomCard from '#/common/fields/CardIterable'
+import HeaderCustom from '#/common/elements/HeaderCustom'
+import SelectField from '#/common/fields/Select'
+import InputField from '#/common/fields/Input'
+import DateField from '#/common/fields/Date'
 import { Button } from '#/ui/button'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
@@ -67,14 +67,24 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="type_acquisition"
               label="Tipo de Adquisición"
-              options={["compra", "comodato", "alquiler", "otro"]}
+              options={[
+                { label: "compra", value: "compra" },
+                { label: "comodato", value: "comodato" },
+                { label: "alquiler", value: "alquiler" },
+                { label: "otro", value: "otro" }
+              ]}
               placeholder="Seleccionar tipo"
             />
             <SelectField
               theme={theme}
               name="warranty"
               label="Garantía"
-              options={["N/A", "6 months", "1 year", "2 years"]}
+              options={[
+                { label: "N/A", value: "N/A" },
+                { label: "6 meses", value: "6" },
+                { label: "1 año", value: "12" },
+                { label: "2 años", value: "24" }
+              ]}
               placeholder="Seleccionar garantía"
             />
           </div>
@@ -101,11 +111,11 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
-              options={["N/A"]}
               name="representative"
               label="Representante"
               className='text-2xl font-light'
               placeholder="Seleccionar representante"
+              options={[{ label: "N/A", value: "N/A" }]}
             />
             <IterableCustomCard
               theme={theme}
@@ -119,11 +129,11 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
-              options={["N/A"]}
               name="provider"
               label="Proveedor"
               className='text-2xl font-light'
               placeholder="Seleccionar proveedor"
+              options={[{ label: "N/A", value: "N/A" }]}
             />
             <IterableCustomCard
               theme={theme}
@@ -137,11 +147,11 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
-              options={["N/A"]}
               name="manufacturer"
               label="Fabricante"
               className='text-2xl font-light'
               placeholder="Seleccionar fabricante"
+              options={[{ label: "N/A", value: "N/A" }]}
             />
             <IterableCustomCard
               theme={theme}

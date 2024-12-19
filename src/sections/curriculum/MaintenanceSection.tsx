@@ -1,6 +1,6 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import CheckboxField from "@/components/common/fields/Checkbox"
-import SelectField from "@/components/common/fields/Select"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import CheckboxField from "#/common/fields/Checkbox"
+import SelectField from "#/common/fields/Select"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
@@ -27,7 +27,10 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
             name="performing_maintenance"
             label="Realización de Mantenimiento"
             placeholder="Seleccionar tipo"
-            options={['Propio', 'Contratado']}
+            options={[
+              { label: "Propio", value: "own" },
+              { label: "Contratado", value: "contracted" }
+            ]}
           />
           <CheckboxField
             theme={theme}
@@ -44,7 +47,12 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => {
             name="frequency_maintenance"
             label="Frecuencia de Mantenimiento"
             placeholder="Seleccionar frecuencia"
-            options={['3 meses', '4 meses', '6 meses', '12 meses']}
+            options={[
+              { label: "3 meses", value: "3" },
+              { label: "4 meses", value: "4" },
+              { label: "6 meses", value: "6" },
+              { label: "12 meses", value: "12" }
+            ]}
           />
           <CheckboxField
             theme={theme}

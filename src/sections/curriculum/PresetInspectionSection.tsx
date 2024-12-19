@@ -1,8 +1,8 @@
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import IterableCard from "@/components/common/fields/CardIterable"
-import CheckboxField from "@/components/common/fields/Checkbox"
-import SelectField from "@/components/common/fields/Select"
-import InputField from "@/components/common/fields/Input"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import IterableCard from "#/common/fields/CardIterable"
+import CheckboxField from "#/common/fields/Checkbox"
+import SelectField from "#/common/fields/Select"
+import InputField from "#/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, useForm } from "react-hook-form"
@@ -64,7 +64,7 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
             name="inspectionPreset"
             label="Lista de configuraciones preestablecidas"
             placeholder="Seleccione una configuración"
-            options={['N/A']}
+            options={[{ label: "N/A", value: "na" }]}
             //span
             span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
             iconSpan="info"

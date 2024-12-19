@@ -1,7 +1,7 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
-import ImagePreview from "@/components/common/elements/ImagePreview"
-import InputField from "@/components/common/fields/Input"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import ImagePreview from "#/common/elements/ImagePreview"
+import InputField from "#/common/fields/Input"
 
 import { FormProvider, useForm } from "react-hook-form"
 

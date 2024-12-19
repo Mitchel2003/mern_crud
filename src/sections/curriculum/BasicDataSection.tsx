@@ -1,6 +1,6 @@
-import HeaderCustom from '@/components/common/elements/HeaderCustom'
-import InputField from '@/components/common/fields/Input'
-import ImageField from '@/components/common/fields/Image'
+import HeaderCustom from '#/common/elements/HeaderCustom'
+import InputField from '#/common/fields/Input'
+import ImageField from '#/common/fields/Image'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useForm, FormProvider } from 'react-hook-form'
