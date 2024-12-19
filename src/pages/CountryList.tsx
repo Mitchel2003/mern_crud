@@ -1,20 +1,21 @@
-import { useQueryReact, useCustomMutation } from "@/hooks/useCountry"
 import { ActionProps } from "@/interfaces/props.interface"
 import { Country } from "@/interfaces/context.interface"
 import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
-import { Pencil, Trash } from "lucide-react"
 import { Card } from "#/ui/card"
-import { cn } from "@/lib/utils"
 
+import { useQueryLocation, useLocationMutation } from "@/hooks/useLocation"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
+import { Pencil, Trash } from "lucide-react"
+import { cn } from "@/lib/utils"
+
 
 const CountryList = () => {
   const { theme } = useThemeContext()
-  const { fetchCountries } = useQueryReact()
-  const { data: countries, isLoading } = fetchCountries()
+  const { fetchAllLocations } = useQueryLocation()
+  const { data: countries, isLoading } = fetchAllLocations<Country>('country')
 
   const columns: ColumnDef<Country>[] = [
     {
@@ -28,7 +29,7 @@ const CountryList = () => {
     },
     {
       id: "actions",
-      cell: ({ row }) => <ItemDropdown actions={useCountryActions(row.original)} />
+      cell: ({ row }) => <ItemDropdown actions={useCountryActions(row.original as Country)} />
     }
   ]
 
@@ -59,8 +60,7 @@ export default CountryList
  * @returns Array de acciones disponibles para el país
  */
 const useCountryActions = (country: Country): ActionProps[] => {
-  const { deleteCountry } = useCustomMutation()
-  const deleteMutation = deleteCountry()
+  const { deleteLocation } = useLocationMutation('country')
   const navigate = useNavigate()
 
   return [
@@ -72,8 +72,8 @@ const useCountryActions = (country: Country): ActionProps[] => {
     {
       icon: Trash,
       label: "Eliminar",
-      onClick: () => deleteMutation.mutate(country?._id as string),
-      className: "text-red-600"
+      className: "text-red-600",
+      onClick: () => deleteLocation(country?._id as string)
     }
   ]
 }

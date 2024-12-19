@@ -1,4 +1,4 @@
-import { LocationContext, LocationType, BaseLocation } from "@/interfaces/context.interface"
+import { LocationContext, LocationType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
 import { useLoadingScreen } from "@/hooks/ui/useLoading"
@@ -31,29 +31,11 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   const [loading, setLoading] = useState(false)
 
   /**
-   * Obtiene una ubicación específica por su ID
-   * @param {string} type - El tipo de ubicación.
-   * @param {string} id - El ID de la ubicación.
-   * @returns {Promise<T>} Los datos de la ubicación.
-   */
-  const getById = async <T extends BaseLocation>(type: LocationType, id: string): Promise<T> => {
-    setLoadingStatus('Buscando por identificador...')
-    try {
-      const response = await locationApi.getById(type, id)
-      notifySuccess({ title: "Éxito", message: "Datos obtenidos correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-      throw e
-    } finally { setLoadingStatus() }
-  }
-
-  /**
    * Obtiene todas las ubicaciones de un tipo específico
    * @param {string} type - El tipo de ubicación.
-   * @returns {Promise<T[]>} Un array con los datos de todas las ubicaciones.
+   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
-  const getAll = async <T extends BaseLocation>(type: LocationType): Promise<T[]> => {
+  const getAll = async (type: LocationType): Promise<any[]> => {
     setLoadingStatus('Obteniendo lista...')
     try {
       const response = await locationApi.getAll(type)
@@ -66,14 +48,32 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
+   * Obtiene una ubicación específica por su ID
+   * @param {string} type - El tipo de ubicación.
+   * @param {string} id - El ID de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación.
+   */
+  const getById = async (type: LocationType, id: string): Promise<any | undefined> => {
+    setLoadingStatus('Buscando por identificador...')
+    try {
+      const response = await locationApi.getById(type, id)
+      notifySuccess({ title: "Éxito", message: "Datos obtenidos correctamente" })
+      return response.data
+    } catch (e: unknown) {
+      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
+      return undefined
+    } finally { setLoadingStatus() }
+  }
+
+  /**
    * Obtiene todas las ubicaciones de un tipo específico por una consulta
    * tenemos un opcional para poblar con el cual podemos ejercer relaciones
    * @param {string} type - El tipo de ubicación.
    * @param {object} query - La consulta.
    * @param {string} populate - El campo a poblar; corresponde a la relacion de la ubicacion (ej: 'city.state.country')
-   * @returns {Promise<T[]>} Un array con los datos de todas las ubicaciones.
+   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
-  const getByQuery = async <T extends BaseLocation>(type: LocationType, query: object, populate?: string): Promise<T[]> => {
+  const getByQuery = async (type: LocationType, query: object, populate?: string): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
       const response = await locationApi.getByQuery(type, query, populate)
@@ -88,18 +88,15 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   /**
    * Crea una nueva ubicación
    * @param {string} type - El tipo de ubicación.
-   * @param {Partial<T>} data - Los datos de la ubicación.
-   * @returns {Promise<T>} Los datos de la ubicación creada.
+   * @param {object} data - Los datos de la ubicación.
    */
-  const create = async <T extends BaseLocation>(type: LocationType, data: Partial<T>): Promise<T> => {
+  const create = async (type: LocationType, data: object): Promise<void> => {
     setLoadingStatus('Creando...')
     try {
-      const response = await locationApi.create(type, data)
+      await locationApi.create(type, data)
       notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
-      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
-      throw e
     } finally { setLoadingStatus() }
   }
 
@@ -107,18 +104,15 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * Actualiza una ubicación existente
    * @param {string} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
-   * @param {Partial<T>} data - Los datos de la ubicación.
-   * @returns {Promise<T>} Los datos de la ubicación actualizada.
+   * @param {object} data - Los datos de la ubicación.
    */
-  const update = async <T extends BaseLocation>(type: LocationType, id: string, data: Partial<T>): Promise<T> => {
+  const update = async (type: LocationType, id: string, data: object): Promise<void> => {
     setLoadingStatus('Actualizando...')
     try {
-      const response = await locationApi.update(type, id, data)
+      await locationApi.update(type, id, data)
       notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
-      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-      throw e
     } finally { setLoadingStatus() }
   }
 
@@ -126,17 +120,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * Elimina una ubicación existente
    * @param {string} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
-   * @returns {Promise<T>} Los datos de la ubicación eliminada.
    */
-  const delete_ = async <T extends BaseLocation>(type: LocationType, id: string): Promise<T> => {
+  const delete_ = async (type: LocationType, id: string): Promise<void> => {
     setLoadingStatus('Eliminando...')
     try {
-      const response = await locationApi.delete(type, id)
+      await locationApi.delete(type, id)
       notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
-      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
-      throw e
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/

@@ -1,5 +1,5 @@
+import { UseMutateFunction, UseMutationResult, UseQueryResult } from "@tanstack/react-query"
 import { Curriculum, LocationType } from "@/interfaces/context.interface"
-import { UseMutationResult, UseQueryResult } from "@tanstack/react-query"
 
 /*-------------------------useQuery and useMutation-------------------------*/
 export type QueryReact_CV = {//to curriculum
@@ -12,7 +12,13 @@ export type CustomMutation_CV = {
 }
 
 export type QueryReact_Location = {//to location
-  fetchAllLocations: (path: LocationType) => UseQueryResult<unknown, Error>
-  fetchLocationById: (path: LocationType, id: string) => UseQueryResult<unknown, Error>
-  fetchLocationByQuery: (path: LocationType, query: object, populate?: string) => UseQueryResult<unknown, Error>
+  fetchAllLocations: <T>(path: LocationType) => UseQueryResult<T[], Error>
+  fetchLocationById: <T>(path: LocationType, id: string) => UseQueryResult<T | undefined, Error>
+  fetchLocationByQuery: <T>(path: LocationType, query: object, populate?: string) => UseQueryResult<T[], Error>
+}
+export type CustomMutation_Location = {
+  createLocation: UseMutateFunction<void, Error, object, unknown>
+  updateLocation: UseMutateFunction<void, Error, object, unknown>
+  deleteLocation: UseMutateFunction<void, Error, string, unknown>
+  isLoading: boolean
 }

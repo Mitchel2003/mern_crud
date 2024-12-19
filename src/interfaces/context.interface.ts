@@ -113,11 +113,11 @@ export type Headquarter = BaseLocation & { address: string; client: string; city
 
 export type LocationContext = {
   loading: boolean
-  getAll: <T extends BaseLocation>(type: LocationType) => Promise<T[]>
-  getById: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
-  getByQuery: <T extends BaseLocation>(type: LocationType, query: object, populate?: string) => Promise<T[]>
-  create: <T extends BaseLocation>(type: LocationType, data: Partial<T>) => Promise<T>
-  update: <T extends BaseLocation>(type: LocationType, id: string, data: Partial<T>) => Promise<T>
-  delete: <T extends BaseLocation>(type: LocationType, id: string) => Promise<T>
+  getAll: <T>(type: LocationType) => Promise<T[]>
+  getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: LocationType, query: object, populate?: string) => Promise<T[]>
+  create: (type: LocationType, data: object) => Promise<void>
+  update: (type: LocationType, id: string, data: object) => Promise<void>
+  delete: (type: LocationType, id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
