@@ -19,12 +19,12 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
   const clientsOptions = locations && locations.length > 0
     ? locations.map(e => ({ value: e._id, label: `${e.client} - ${e.address} - ${e.city}` }))
     : [
-      { label: 'No hay clientes', value: 'n/a' },
-      { label: 'ejemplo1', value: 'n/a' },
-      { label: 'ejemplo2', value: 'n/a' },
-      { label: 'ejemplo3', value: 'n/a' },
-      { label: 'ejemplo4', value: 'n/a' },
-      { label: 'ejemplo5', value: 'n/a' },
+      { label: 'No hay clientes', value: 'value1', description: 'No hay clientes' },
+      { label: 'ejemplo1', value: 'value2' },
+      { label: 'ejemplo2', value: 'value3' },
+      { label: 'ejemplo3', value: 'value4' },
+      { label: 'ejemplo4', value: 'value5' },
+      { label: 'ejemplo5', value: 'value6' },
     ]
 
   return (
