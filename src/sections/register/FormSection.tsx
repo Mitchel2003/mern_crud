@@ -18,7 +18,14 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
 
   const clientsOptions = locations && locations.length > 0
     ? locations.map(e => ({ value: e._id, label: `${e.client} - ${e.address} - ${e.city}` }))
-    : [{ label: 'No hay clientes', value: 'n/a' }]
+    : [
+      { label: 'No hay clientes', value: 'n/a' },
+      { label: 'ejemplo1', value: 'n/a' },
+      { label: 'ejemplo2', value: 'n/a' },
+      { label: 'ejemplo3', value: 'n/a' },
+      { label: 'ejemplo4', value: 'n/a' },
+      { label: 'ejemplo5', value: 'n/a' },
+    ]
 
   return (
     <CardContent className="space-y-6">

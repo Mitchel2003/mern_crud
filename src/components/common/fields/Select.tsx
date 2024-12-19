@@ -129,9 +129,9 @@ const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectWrapperProps>(({
         {isSearchable && (
           <input
             type="text"
-            className="p-2 border-b focus:outline-none w-full"
-            placeholder="Buscar..."
             value={searchTerm}
+            placeholder="Buscar..."
+            className="p-2 border-b focus:outline-none w-full"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         )}
