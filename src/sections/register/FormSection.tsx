@@ -16,8 +16,9 @@ interface FormSectionProps extends LoginComponentsProps {
 const FormSection = ({ theme, locations }: FormSectionProps) => {
   const navigate = useNavigate()
 
-  const clientsOptions = locations?.map(e => ({ value: e._id, label: `${e.client} - ${e.address} - ${e.city}` }))
-    || [{ label: 'No hay clientes', value: '' }]
+  const clientsOptions = locations && locations.length > 0
+    ? locations.map(e => ({ value: e._id, label: `${e.client} - ${e.address} - ${e.city}` }))
+    : [{ label: 'No hay clientes', value: '' }]
 
   return (
     <CardContent className="space-y-6">
