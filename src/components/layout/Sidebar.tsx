@@ -18,16 +18,16 @@ export const Sidebar = () => {
                 <SidebarMenuItem key={item.label}>
                   <Collapsible>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton isActive={location.pathname === item.href}>
-                        <a
-                          href={item.href}
-                          onClick={item.action}
-                          className='flex items-center gap-2'
-                        >
+                      <a
+                        href={item.href}
+                        onClick={item.action}
+                        className='flex items-center gap-2'
+                      >
+                        <SidebarMenuButton isActive={location.pathname === item.href}>
                           <item.icon className='w-4 h-4 md:w-5 md:h-5' />
                           <span className='text-sm pointer-events-none'>{item.label}</span>
-                        </a>
-                      </SidebarMenuButton>
+                        </SidebarMenuButton>
+                      </a>
                     </CollapsibleTrigger>
                     {item.subItems && (
                       <CollapsibleContent>
