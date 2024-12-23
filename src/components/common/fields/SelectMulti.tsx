@@ -23,20 +23,19 @@ interface SelectMultiProps extends HeaderSpanProps, ThemeContextProps {
   locations?: Headquarter[]
 }
 
-const SelectMulti = ({
+const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
   placeholder,
   className,
   locations,
   iconSpan,
   theme,
   label,
-  span,
   name,
-}: SelectMultiProps) => {
+  span,
+}, ref) => {
   const [selectedFrameworks, setSelectedFrameworks] = React.useState<string[]>([])
   const { control } = useFormContext()
 
-  const clientsOptions = normalize(locations) || [{ label: 'Ningun cliente', value: 'n/a', icon: XCircle }]
   return (
     <FormField
       name={name}
@@ -55,12 +54,13 @@ const SelectMulti = ({
           <FormControl>
             <MultiSelect
               {...field}
+              ref={ref}
               maxCount={2}
               theme={theme}
               variant="inverted"
               id={`${name}-select`}
-              options={clientsOptions}
               placeholder={placeholder}
+              options={normalize(locations)}
               defaultValue={selectedFrameworks}
               onValueChange={setSelectedFrameworks}
             />
@@ -74,16 +74,16 @@ const SelectMulti = ({
       )}
     />
   )
-}
+})
 
 export default SelectMulti
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const normalize = (locations?: Headquarter[]): Option[] | undefined => locations && locations.length > 0
+const normalize = (locations?: Headquarter[]): Option[] => locations && locations.length > 0
   ? locations.map(e => ({
     value: e._id,
     icon: MapPinHouseIcon,
     label: `${e.client} - ${e.address} - ${e.city}`
   }))
-  : undefined
+  : [{ label: 'Ningun cliente', value: 'n/a', icon: XCircle }]
