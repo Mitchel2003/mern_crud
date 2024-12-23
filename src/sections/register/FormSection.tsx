@@ -1,5 +1,6 @@
 import { LoginComponentsProps } from '@/interfaces/props.interface'
 import { Headquarter } from '@/interfaces/context.interface'
+import SelectMulti from '#/common/fields/SelectMulti'
 import SelectField from '#/common/fields/Select'
 import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
@@ -8,7 +9,6 @@ import { Button } from '#/ui/button'
 import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import SelectMulti from '@/components/common/fields/SelectMulti'
 
 interface FormSectionProps extends LoginComponentsProps {
   locations?: Headquarter[]
@@ -51,7 +51,12 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
           { label: 'Médico', value: 'medical' }
         ]}
       />
-      <SelectMulti locations={locations} />
+      <SelectMulti //working here...
+        theme={theme}
+        name='clients'
+        label='Clientes'
+        locations={locations}
+      />
 
       {/* -------------------- Submit -------------------- */}
       <Button

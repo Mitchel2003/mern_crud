@@ -1,7 +1,13 @@
+import { Headquarter, ThemeContextProps } from '@/interfaces/context.interface'
 import { LucideIcon, MapPinHouseIcon, XCircle } from 'lucide-react'
-import { Headquarter } from '@/interfaces/context.interface'
+import { HeaderSpanProps } from '@/interfaces/props.interface'
+import { useFormContext } from 'react-hook-form'
+import { cn } from '@/lib/utils'
+import React from 'react'
+
+import { FormMessage, FormControl, FormField, FormItem } from '#/ui/form'
+import HeaderCustom from '#/common/elements/HeaderCustom'
 import { MultiSelect } from '#/ui/select-multi'
-import { useState } from 'react'
 
 interface Option {
   value: string
@@ -9,22 +15,66 @@ interface Option {
   icon: LucideIcon
 }
 
-const SelectMulti = ({ locations }: { locations?: Headquarter[] }) => {
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([])
+interface SelectMultiProps extends HeaderSpanProps, ThemeContextProps {
+  name: string
+  label?: string
+  className?: string
+  placeholder?: string
+  locations?: Headquarter[]
+}
+
+const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
+  theme,
+  span,
+  name,
+  label,
+  iconSpan,
+  className,
+  locations,
+  placeholder
+}, ref) => {
+  const [selectedFrameworks, setSelectedFrameworks] = React.useState<string[]>([])
+  const { control } = useFormContext()
 
   const clientsOptions = normalize(locations) || [{ label: 'Ningun cliente', value: 'n/a', icon: XCircle }]
-
   return (
-    <MultiSelect
-      maxCount={2}
-      variant="inverted"
-      options={clientsOptions}
-      onValueChange={setSelectedFrameworks}
-      defaultValue={selectedFrameworks}
-      placeholder="Seleccionar clientes"
+    <FormField
+      name={name}
+      control={control}
+      render={({ field, fieldState: { error } }) => (
+        <FormItem className="flex flex-col">
+          <HeaderCustom
+            to='input'
+            theme={theme}
+            title={label}
+            span={span}
+            iconSpan={iconSpan}
+            className={className}
+            htmlFor={`${name}-select`}
+          />
+          <FormControl>
+            <MultiSelect
+              {...field}
+              ref={ref}
+              maxCount={2}
+              variant="inverted"
+              id={`${name}-select`}
+              options={clientsOptions}
+              placeholder={placeholder}
+              defaultValue={selectedFrameworks}
+              onValueChange={setSelectedFrameworks}
+            />
+          </FormControl>
+          {error && (
+            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+              {error.message}
+            </FormMessage>
+          )}
+        </FormItem>
+      )}
     />
   )
-}
+})
 
 export default SelectMulti
 /*---------------------------------------------------------------------------------------------------------*/
