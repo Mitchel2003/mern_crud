@@ -8,10 +8,11 @@ import {
   WandSparkles,
 } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { ThemeContextProps } from "@/interfaces/context.interface";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
@@ -54,7 +55,7 @@ const multiSelectVariants = cva(
 /**
  * Props for MultiSelect component
  */
-interface MultiSelectProps extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+interface MultiSelectProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ThemeContextProps,
   VariantProps<typeof multiSelectVariants> {
   /**
    * An array of option objects to be displayed in the multi-select component.
@@ -117,16 +118,17 @@ interface MultiSelectProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(({
-  options,
-  onValueChange,
-  variant,
-  defaultValue = [],
-  placeholder = "Select options",
-  animation = 0,
-  maxCount = 3,
+  placeholder = "Seleccionar opciones",
   modalPopover = false,
   asChild = false,
+  defaultValue = [],
+  onValueChange,
+  animation = 0,
+  maxCount = 3,
   className,
+  options,
+  variant,
+  theme,
   ...props
 }, ref) => {
   const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
@@ -192,6 +194,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           onClick={handleTogglePopover}
           className={cn(
             "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+            theme === 'dark'
+              ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+              : 'bg-white border-gray-300 text-gray-900',
             className
           )}
         >

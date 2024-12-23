@@ -57,6 +57,7 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
               {...field}
               ref={ref}
               maxCount={2}
+              theme={theme}
               variant="inverted"
               id={`${name}-select`}
               options={clientsOptions}
