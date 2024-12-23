@@ -187,6 +187,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       onOpenChange={setIsPopoverOpen}
       modal={modalPopover}
     >
+      {/* -------------------- Popover Trigger -------------------- */}
       <PopoverTrigger asChild>
         <Button
           ref={ref}
@@ -274,6 +275,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           )}
         </Button>
       </PopoverTrigger>
+
+      {/* -------------------- Popover Content -------------------- */}
       <PopoverContent
         className="w-auto p-0"
         align="start"
@@ -285,7 +288,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             onKeyDown={handleInputKeyDown}
           />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>No se encontraron resultados.</CommandEmpty>
             <CommandGroup>
               <CommandItem
                 key="all"
@@ -302,7 +305,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 >
                   <CheckIcon className="h-4 w-4" />
                 </div>
-                <span>(Select All)</span>
+                <span>(Seleccionar todos)</span>
               </CommandItem>
               {options.map((option) => {
                 const isSelected = selectedValues.includes(option.value);
@@ -339,7 +342,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       onSelect={handleClear}
                       className="flex-1 justify-center cursor-pointer"
                     >
-                      Clear
+                      Limpiar
                     </CommandItem>
                     <Separator
                       orientation="vertical"
@@ -351,7 +354,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   onSelect={() => setIsPopoverOpen(false)}
                   className="flex-1 justify-center cursor-pointer max-w-full"
                 >
-                  Close
+                  Cerrar
                 </CommandItem>
               </div>
             </CommandGroup>

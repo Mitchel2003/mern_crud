@@ -23,16 +23,16 @@ interface SelectMultiProps extends HeaderSpanProps, ThemeContextProps {
   locations?: Headquarter[]
 }
 
-const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
-  theme,
-  span,
-  name,
-  label,
-  iconSpan,
+const SelectMulti = ({
+  placeholder,
   className,
   locations,
-  placeholder
-}, ref) => {
+  iconSpan,
+  theme,
+  label,
+  span,
+  name,
+}: SelectMultiProps) => {
   const [selectedFrameworks, setSelectedFrameworks] = React.useState<string[]>([])
   const { control } = useFormContext()
 
@@ -55,7 +55,6 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
           <FormControl>
             <MultiSelect
               {...field}
-              ref={ref}
               maxCount={2}
               theme={theme}
               variant="inverted"
@@ -75,7 +74,7 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
       )}
     />
   )
-})
+}
 
 export default SelectMulti
 /*---------------------------------------------------------------------------------------------------------*/
