@@ -2,39 +2,72 @@ import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, Book
 import { useAuthContext } from '@/context/AuthContext'
 import { NavItemProps } from "@/types/sidebar.type"
 
-export const links = (auth: boolean) => {
-  const { logout } = useAuthContext()
+export const links = () => {
+  const { isAuth, user, logout } = useAuthContext()
 
+  /*--------------------------------------------------guest--------------------------------------------------*/
   const navGuestItems: NavItemProps[] = [
-    {
+    {/** home **/
       href: '/',
       label: 'Home',
       icon: Home
     },
-    {
+    {/** login **/
       href: '/auth/login',
       label: 'Iniciar sesión',
       icon: LogIn
     },
-    {
+    {/** register **/
       href: '/auth/register',
       label: 'Registrarse',
       icon: UserPlus
     },
-    {
+    {/** about **/
       href: '/about',
       label: 'Acerca de nosotros',
       icon: Info
     }
   ]
+  /*---------------------------------------------------------------------------------------------------------*/
 
-  const navUserItems: NavItemProps[] = [
-    {
+  /*--------------------------------------------------engineer--------------------------------------------------*/
+  const navEngineerItems: NavItemProps[] = [
+    {/** dashboard **/
       href: '/dashboard',
       label: 'Panel del usuario',
       icon: TerminalSquare
     },
-    {
+    {/** logout **/
+      action: logout,
+      label: 'Cerrar sesión',
+      icon: LogOut,
+    }
+  ]
+  /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------medical--------------------------------------------------*/
+  const navMedicalItems: NavItemProps[] = [
+    {/** dashboard **/
+      href: '/dashboard',
+      label: 'Panel del usuario',
+      icon: TerminalSquare
+    },
+    {/** logout **/
+      action: logout,
+      label: 'Cerrar sesión',
+      icon: LogOut,
+    }
+  ]
+  /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------admin--------------------------------------------------*/
+  const navAdminItems: NavItemProps[] = [
+    {/** dashboard **/
+      href: '/dashboard',
+      label: 'Panel del usuario',
+      icon: TerminalSquare
+    },
+    {/** cvs **/
       label: 'Currículums',
       icon: FilesIcon,
       subItems: [
@@ -50,7 +83,7 @@ export const links = (auth: boolean) => {
         }
       ]
     },
-    {
+    {/** maintenances **/
       label: 'Mantenimientos',
       icon: FileTextIcon,
       subItems: [
@@ -66,11 +99,11 @@ export const links = (auth: boolean) => {
         }
       ]
     },
-    {
+    {/** users **/
       label: 'Usuarios',
       icon: UserCircle,
       subItems: [
-        {
+        {// engineers
           label: 'Ingenieros',
           icon: UserCog2,
           subItems: [
@@ -86,7 +119,7 @@ export const links = (auth: boolean) => {
             }
           ]
         },
-        {
+        {// clients
           label: 'Clientes',
           icon: Building2,
           subItems: [
@@ -104,11 +137,11 @@ export const links = (auth: boolean) => {
         }
       ]
     },
-    {
+    {/** institution **/
       label: 'Institución',
       icon: Building,
       subItems: [
-        {
+        {// headquarters
           label: 'Sedes',
           icon: FileStackIcon,
           subItems: [
@@ -124,7 +157,7 @@ export const links = (auth: boolean) => {
             }
           ]
         },
-        {
+        {// areas
           label: 'Areas',
           icon: FileStackIcon,
           subItems: [
@@ -140,7 +173,7 @@ export const links = (auth: boolean) => {
             },
           ]
         },
-        {
+        {// offices
           label: 'Consultorios',
           icon: Building2,
           subItems: [
@@ -156,7 +189,7 @@ export const links = (auth: boolean) => {
             }
           ]
         },
-        {
+        {// services
           label: 'Servicios',
           icon: LucideHandHelping,
           subItems: [
@@ -174,11 +207,11 @@ export const links = (auth: boolean) => {
         }
       ]
     },
-    {
+    {/** locations **/
       label: 'Ubicaciones',
       icon: MapPin,
       subItems: [
-        {
+        {// cities
           label: 'Ciudades',
           icon: LocateFixedIcon,
           subItems: [
@@ -194,7 +227,7 @@ export const links = (auth: boolean) => {
             }
           ]
         },
-        {
+        {// departments
           label: 'Departamentos',
           icon: MapPin,
           subItems: [
@@ -210,7 +243,7 @@ export const links = (auth: boolean) => {
             }
           ]
         },
-        {
+        {// countries
           label: 'Países',
           icon: Flag,
           subItems: [
@@ -234,6 +267,9 @@ export const links = (auth: boolean) => {
       icon: LogOut,
     }
   ]
+  /*---------------------------------------------------------------------------------------------------------*/
 
-  return auth ? navUserItems : navGuestItems
+  return !isAuth ? navGuestItems : (
+    user?.role === 'admin' ? navAdminItems : (user?.role === 'medical' ? navMedicalItems : navEngineerItems)
+  )
 }
