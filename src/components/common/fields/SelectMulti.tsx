@@ -1,7 +1,7 @@
 import { Headquarter, ThemeContextProps } from '@/interfaces/context.interface'
-import { LucideIcon, MapPinHouseIcon, XCircle } from 'lucide-react'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 import { useFormContext, Controller } from 'react-hook-form'
+import { LucideIcon, MapPinHouseIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import React from 'react'
 
@@ -87,4 +87,4 @@ const normalize = (locations?: Headquarter[]): Option[] => locations && location
     icon: MapPinHouseIcon,
     label: `${e.client} - ${e.address} - ${e.city}`
   }))
-  : [{ label: 'Ningun cliente', value: 'n/a', icon: XCircle }]
+  : []
