@@ -53,10 +53,10 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
       />
       <SelectMulti
         theme={theme}
-        name='clients'
-        label='Clientes'
+        label='Sedes'
+        name='headquarters'
         locations={locations}
-        span='Aqui seleccionas tus clientes asociados'
+        span='Aqui seleccionas tus sedes asociadas'
         iconSpan='warn'
       />
 

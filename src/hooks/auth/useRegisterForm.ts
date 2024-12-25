@@ -8,7 +8,7 @@ const defaultValues = {
   email: '',
   username: '',
   password: '',
-  clients: []
+  headquarters: []
 }
 
 export const useRegisterForm = () => {
