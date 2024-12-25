@@ -2,7 +2,6 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Headquarter } from '@/interfaces/context.interface'
 import SelectMulti from '#/common/fields/SelectMulti'
 import SelectField from '#/common/fields/Select'
-import ImageField from '#/common/fields/Image'
 import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
@@ -60,11 +59,7 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
         span='Aqui seleccionas tus clientes asociados'
         iconSpan='warn'
       />
-      <ImageField
-        name='image'
-        theme={theme}
-        label='Imagen de perfil'
-      />
+
       {/* -------------------- Submit -------------------- */}
       <Button
         type="submit"
