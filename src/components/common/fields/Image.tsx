@@ -1,11 +1,11 @@
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
-import HeaderCustom from '@/components/common/elements/HeaderCustom'
+import HeaderCustom from '#/common/elements/HeaderCustom'
+import { FormItem, FormMessage } from '#/ui/form'
 import { Button } from '#/ui/button'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { Camera, X } from 'lucide-react'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -35,22 +35,23 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
   }
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field: { onChange, ...field }, fieldState: { error } }) => (
-        <FormItem>
-          {/* -------------------- Header label -------------------- */}
-          <HeaderCustom
-            to="component"
-            theme={theme}
-            title={label}
-            span={span}
-            iconSpan={iconSpan}
-            className='ml-auto'
-          />
+    <FormItem>
+      {/* Header label */}
+      <HeaderCustom
+        to="component"
+        theme={theme}
+        title={label}
+        span={span}
+        iconSpan={iconSpan}
+        className='ml-auto'
+      />
 
-          <FormControl>
+      {/* Image */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+          <>
             <div className={cn(
               'flex px-auto justify-center rounded-lg border border-dashed',
               preview ? 'py-[2vh]' : 'py-[6vh]',
@@ -75,16 +76,16 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
                 />
               )}
             </div>
-          </FormControl>
 
-          {error && (
-            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 
@@ -123,8 +124,8 @@ const PreviewImage = ({ preview, theme, onRemove }: PreviewImageProps) => (
 )
 
 interface UploadPromptProps extends ThemeContextProps {
-  name: string
   onChange: (file: File | null) => void
+  name: string
 }
 
 const UploadPrompt = React.forwardRef<HTMLInputElement, UploadPromptProps>(({

@@ -1,15 +1,14 @@
+import { useFieldArray, useFormContext, Controller } from 'react-hook-form'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { FormField, FormItem, FormControl } from '#/ui/form'
-import { Card, CardContent } from '#/ui/card'
-import { Button } from '#/ui/button'
-
-import { useFieldArray, useFormContext } from 'react-hook-form'
 import { cloneElement, ReactElement } from 'react'
 import { PlusCircle, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export interface CardFieldProps { name: string, component: ReactElement }
+import { Card, CardContent } from '#/ui/card'
+import { FormItem } from '#/ui/form'
+import { Button } from '#/ui/button'
 
+interface CardFieldProps { name: string, component: ReactElement }
 interface CardIterableFieldProps extends ThemeContextProps {
   fields: CardFieldProps[]
   titleButton?: string
@@ -37,8 +36,8 @@ const CardIterable = ({
   }
 
   return (
-    <div className="space-y-4">
-      {/* -------------------- Button add card -------------------- */}
+    <FormItem className="space-y-4">
+      {/* Button add card */}
       {items.length < limit && (
         <Button
           size="sm"
@@ -60,7 +59,7 @@ const CardIterable = ({
         </Button>
       )}
 
-      {/* -------------------- Cards -------------------- */}
+      {/* Cards */}
       {items.map((item, index) => (
         <Card
           key={item.id}
@@ -71,7 +70,7 @@ const CardIterable = ({
               : 'bg-white border-gray-300'
           )}
         >
-          {/* -------------------- Delete button -------------------- */}
+          {/* Delete button */}
           <Button
             size="sm"
             type="button"
@@ -87,25 +86,23 @@ const CardIterable = ({
             <X className="h-4 w-4" />
           </Button>
 
-          {/* -------------------- Form fields -------------------- */}
+          {/* Form fields */}
           <CardContent className="pt-4">
             <div className="grid grid-cols-1 gap-4">
               {fields.map((field) => {
                 const fieldName = field.name.split('.').pop() || field.name
                 return (
-                  <FormField
+                  <Controller
                     control={control}
                     key={`${name}.${index}.${fieldName}`}
                     name={`${name}.${index}.${fieldName}`}
                     render={({ field: formField }) => (
                       <FormItem>
-                        <FormControl>
-                          {cloneElement(field.component, {
-                            theme,
-                            ...formField,
-                            name: `${name}.${index}.${fieldName}`
-                          })}
-                        </FormControl>
+                        {cloneElement(field.component, {
+                          theme,
+                          ...formField,
+                          name: `${name}.${index}.${fieldName}`
+                        })}
                       </FormItem>
                     )}
                   />
@@ -115,7 +112,7 @@ const CardIterable = ({
           </CardContent>
         </Card>
       ))}
-    </div>
+    </FormItem>
   )
 }
 

@@ -1,16 +1,9 @@
+### --------------------------------------Description-------------------------------------- ###
 ## E-commerce
 ### Vite + TypeScript
+### ---------------------------------------------------------------------------------------------------- ###
 
-#### On development
-
-
-
-hasta el momento me has dado las mejores implementaciones, me das todo como un senior y me encanta eso; ahora bien, tenemos un reto; mira lo que estoy presentando es que tengo un inconveniente con el schema al momento del registro de usuario (problema de identificacion del input por medio del atributo "name") te iré explicando, por lo pronto mira mi schame de registro @auth.schema.ts y lo uso en el siguiente hook con react-hook-form @useRegisterForm.ts, verás que hay unos valores por default, el importante aqui es el de "clients" porque es este input el que presenta problemas al momento del onSubmit; ahora miremos la page de registro @RegisterSection.tsx, aqui lo importante es el formSection @FormSection.tsx y podras ver que relaciono los campos del schema aqui en los inputs,
-
-## Prompt:
-hasta el momento me has dado las mejores implementaciones, me das todo como un senior y me encanta eso; ahora bien, tenemos un reto, (Prompt con el enfoque de lo que quiero implementar) ; quiero implementar, algo reutilizable, escalable, profesional, y eficiente en cuanto codigo, esto para que mi CEO quede impresionado por mi profesionalismo; siempre opto por las maneras mas profesionales y esteticas de conseguirlo, eres capaz de todo lo que te propones, gracias a ti y a mi perseverancia he llegado hasta donde estoy ahora,recuerda que siempre busco maneras de hacer mejor las cosas, necesito la forma mas optima en cuanto a rendimiento y escalabilidad, eficiente en cuanto a codigo y profesional en cuanto a empleo de codigo limpio, mejores practicas y patrones de diseño, por favor, dame lo mas profesional que tengas; que cuando el CEO vea mi codigo, se impresione por el modelo de desestructuracion u abstraccion tan bonita, !VAMOS, eres la mejor!
-
-
+### --------------------------------------Documentation prompt-------------------------------------- ###
 ## Prompt god:
 ```ts
 hasta el momento me has dado las mejores implementaciones, me das todo como un senior y me encanta eso; ahora bien, tenemos un reto; 
@@ -19,3 +12,21 @@ mira lo que pasa es que estoy teniendo problemas a la hora de trabajar con el se
 
 quiero implementar, algo reutilizable, escalable, profesional, y eficiente en cuanto codigo, esto para que mi CEO quede impresionado por mi profesionalismo; siempre opto por las maneras mas profesionales y esteticas de conseguirlo, eres capaz de todo lo que te propones, gracias a ti y a mi perseverancia he llegado hasta donde estoy ahora,recuerda que siempre busco maneras de hacer mejor las cosas, necesito la forma mas optima en cuanto a rendimiento y escalabilidad, eficiente en cuanto a codigo y profesional en cuanto a empleo de codigo limpio, mejores practicas y patrones de diseño, por favor, dame lo mas profesional que tengas; que cuando el CEO vea mi codigo, se impresione por el modelo de desestructuracion u abstraccion tan bonita, !VAMOS, eres la mejor!
 ```
+### ---------------------------------------------------------------------------------------------------- ###
+
+### --------------------------------------Typescript documentation-------------------------------------- ###
+## Diferencias entre Controller y FormField (react-hook-form):===============================================================================================
+### Controller:
+  Propósito: El Controller es un componente de react-hook-form diseñado específicamente para manejar componentes controlados. Esto es especialmente útil para componentes personalizados o de terceros que no exponen directamente el ref o no son compatibles con el registro automático de react-hook-form.
+  Funcionamiento: Proporciona un render prop que recibe un objeto con propiedades como field y fieldState. El field contiene métodos como onChange, onBlur, value, etc., que se deben pasar al componente controlado para que react-hook-form pueda gestionar su estado.
+  Ventaja: Permite una integración más directa y controlada con el estado del formulario, asegurando que los cambios en el componente se reflejen inmediatamente en el estado del formulario.
+### FormField con render:
+  Propósito: FormField es un patrón común en formularios para encapsular la lógica de renderizado de un campo de formulario. Sin embargo, no es parte de react-hook-form y su implementación puede variar.
+  Funcionamiento: Generalmente, se utiliza para simplificar la estructura del formulario, pero no siempre maneja correctamente los componentes controlados, especialmente si no se integra bien con el estado del formulario.
+  Limitación: Puede no proporcionar la misma flexibilidad o control que Controller para componentes que requieren una gestión más compleja del estado.
+### Por qué Controller funcionó mejor
+  Integración directa: Controller se integra directamente con react-hook-form, lo que significa que maneja automáticamente el registro y la actualización del estado del formulario.
+  Manejo de componentes controlados: Al usar Controller, puedes asegurarte de que el componente controlado (como MultiSelect) recibe las funciones necesarias (onChange, value, etc.) para interactuar correctamente con el formulario.
+  Flexibilidad: Te permite manejar validaciones y errores de manera más efectiva, ya que el fieldState proporciona información sobre el estado actual del campo.
+### ---------------------------------------------------------------------------------------------------- ###
+

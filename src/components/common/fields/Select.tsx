@@ -1,10 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
-import { FormField, FormItem, FormControl, FormMessage } from "#/ui/form"
 import HeaderCustom from "#/common/elements/HeaderCustom"
+import { FormItem, FormMessage } from "#/ui/form"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { HeaderSpanProps } from "@/interfaces/props.interface"
-import { useFormContext } from "react-hook-form"
+import { useFormContext, Controller } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import React from "react"
 
@@ -36,21 +36,24 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem className="flex flex-col">
-          <HeaderCustom
-            to='input'
-            theme={theme}
-            title={label}
-            span={span}
-            iconSpan={iconSpan}
-            className={className}
-            htmlFor={`${name}-select`}
-          />
-          <FormControl>
+    <FormItem>
+      {/* Header */}
+      <HeaderCustom
+        to='input'
+        theme={theme}
+        title={label}
+        span={span}
+        iconSpan={iconSpan}
+        className={className}
+        htmlFor={`${name}-select`}
+      />
+
+      {/* Select */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
             <SelectWrapper
               {...field}
               ref={ref}
@@ -59,19 +62,21 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
               options={options}
               placeholder={placeholder}
             />
-          </FormControl>
-          {error && (
-            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 
 SelectField.displayName = 'SelectField'
+
 export default SelectField
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -95,6 +100,7 @@ const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectProps>(({
   onChange
 }, ref) => (
   <Select onValueChange={onChange} value={value?.toString()}>
+    {/* Trigger */}
     <SelectTrigger
       id={id}
       ref={ref}
@@ -109,6 +115,8 @@ const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectProps>(({
         {options.find(opt => opt.value === value)?.label || placeholder}
       </SelectValue>
     </SelectTrigger>
+
+    {/* Content */}
     <SelectContent>
       {options.map((option) => (
         <SelectItem

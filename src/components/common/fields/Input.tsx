@@ -1,20 +1,20 @@
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
-import HeaderCustom from "@/components/common/elements/HeaderCustom"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import { FormItem, FormMessage } from '#/ui/form'
 import { Input } from '#/ui/input'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 import { Eye, EyeOff, LucideIcon } from 'lucide-react'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
   type?: 'text' | 'number' | 'email' | 'password'
+  placeholder?: string
+  icon?: LucideIcon
   label: string
   name: string
-  icon?: LucideIcon
-  placeholder?: string
 }
 
 const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
@@ -31,23 +31,23 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem>
-          {/* -------------------- Header label -------------------- */}
-          <HeaderCustom
-            to="input"
-            theme={theme}
-            title={label}
-            span={span}
-            iconSpan={iconSpan}
-            htmlFor={`${name}-input`}
-          />
+    <FormItem>
+      {/* Header label */}
+      <HeaderCustom
+        to="input"
+        theme={theme}
+        title={label}
+        span={span}
+        iconSpan={iconSpan}
+        htmlFor={`${name}-input`}
+      />
 
-          {/* -------------------- Input customizable -------------------- */}
-          <FormControl>
+      {/* Input customizable */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
             <div className='relative'>
               <Input
                 {...field}
@@ -64,7 +64,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
                 )}
               />
 
-              {/* Main icon  */}
+              {/* Main icon */}
               {Icon && <LeadingIcon Icon={Icon} />}
 
               {/* Button toggle visibility password */}
@@ -76,16 +76,16 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
                 />
               )}
             </div>
-          </FormControl>
 
-          {error && (
-            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 

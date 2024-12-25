@@ -20,6 +20,10 @@ export const useRegisterForm = () => {
     defaultValues
   })
 
-  const onSubmit = methods.handleSubmit(async (data: object) => await signup(data))
+  const onSubmit = methods.handleSubmit(async (data: object) => {
+    await signup(data)
+    methods.reset()
+  })
+
   return { methods, onSubmit }
 }

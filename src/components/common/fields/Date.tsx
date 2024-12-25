@@ -1,13 +1,13 @@
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '#/ui/popover'
-import HeaderCustom from '@/components/common/elements/HeaderCustom'
+import HeaderCustom from '#/common/elements/HeaderCustom'
+import { FormItem, FormMessage } from '#/ui/form'
 import { Calendar } from '#/ui/calendar'
 import { Button } from '#/ui/button'
 import { Input } from '#/ui/input'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
@@ -34,21 +34,23 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem>
-          <HeaderCustom
-            to='input'
-            span={span}
-            theme={theme}
-            title={label}
-            iconSpan={iconSpan}
-            htmlFor={`${name}-date`}
-          />
+    <FormItem>
+      {/* Header */}
+      <HeaderCustom
+        to='input'
+        span={span}
+        theme={theme}
+        title={label}
+        iconSpan={iconSpan}
+        htmlFor={`${name}-date`}
+      />
 
-          <FormControl>
+      {/* Date */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
             {readOnly ? (
               <Input
                 readOnly
@@ -94,18 +96,16 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(({
                 </PopoverContent>
               </Popover>
             )}
-          </FormControl>
 
-          {error && (
-            <FormMessage className={cn(
-              theme === 'dark' ? 'text-red-400' : 'text-red-600'
-            )}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 

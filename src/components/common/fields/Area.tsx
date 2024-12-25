@@ -1,10 +1,10 @@
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
-import HeaderCustom from '@/components/common/elements/HeaderCustom'
+import HeaderCustom from '#/common/elements/HeaderCustom'
+import { FormItem, FormMessage } from '#/ui/form'
 import { Textarea } from '#/ui/textarea'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 import React from 'react'
 
@@ -27,21 +27,23 @@ const AreaField = React.forwardRef<HTMLTextAreaElement, AreaFieldProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem>
-          <HeaderCustom
-            to='input'
-            theme={theme}
-            title={label}
-            span={span}
-            iconSpan={iconSpan}
-            htmlFor={`${name}-area`}
-          />
+    <FormItem>
+      {/* Header label */}
+      <HeaderCustom
+        to='input'
+        theme={theme}
+        title={label}
+        span={span}
+        iconSpan={iconSpan}
+        htmlFor={`${name}-area`}
+      />
 
-          <FormControl>
+      {/* Area */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
             <Textarea
               {...field}
               ref={ref}
@@ -55,16 +57,16 @@ const AreaField = React.forwardRef<HTMLTextAreaElement, AreaFieldProps>(({
                   : 'bg-white border-gray-300 text-gray-900'
               )}
             />
-          </FormControl>
 
-          {error && (
-            <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 

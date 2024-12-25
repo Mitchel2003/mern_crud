@@ -6,12 +6,13 @@ import AreaField from "#/common/fields/Area"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/props.interface"
 import { useForm, FormProvider } from 'react-hook-form'
+import { Check, X, Clock } from "lucide-react"
 import { useState, useEffect } from 'react'
 
 const statusOptions: CheckProps[] = [
-  { name: 'good', label: 'Buen estado', color: 'green' },
-  { name: 'wait', label: 'En espera de repuestos', color: 'yellow' },
-  { name: 'out', label: 'Fuera de servicio', color: 'red' },
+  { name: 'good', label: 'Buen estado', color: 'green', icon: Check },
+  { name: 'wait', label: 'En espera de repuestos', color: 'yellow', icon: Clock },
+  { name: 'out', label: 'Fuera de servicio', color: 'red', icon: X },
 ]
 
 interface ObservationSectionProps extends ThemeContextProps { }

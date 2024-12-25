@@ -1,10 +1,9 @@
 import { HeaderSpanProps, CheckProps } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
 import HeaderCustom from '#/common/elements/HeaderCustom'
-import { Check } from 'lucide-react'
+import { FormItem, FormMessage } from '#/ui/form'
 import { cn } from '@/lib/utils'
 import React from 'react'
 
@@ -25,22 +24,23 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem>
-          {/* Header */}
-          <HeaderCustom
-            to='component'
-            theme={theme}
-            title={label}
-            span={span}
-            iconSpan={iconSpan}
-          />
+    <FormItem>
+      {/* Header */}
+      <HeaderCustom
+        to='component'
+        theme={theme}
+        title={label}
+        span={span}
+        iconSpan={iconSpan}
+      />
 
-          <FormControl>
-            <div ref={ref} className="flex flex-row gap-4">
+      {/* StatusCheck */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
+            <div ref={ref} className="flex flex-col md:flex-row gap-4">
               {options.map((option) => (
                 <StatusButton
                   key={option.name}
@@ -51,18 +51,16 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
                 />
               ))}
             </div>
-          </FormControl>
-
-          {error && (
-            <FormMessage className={cn(
-              theme === 'dark' ? 'text-red-400' : 'text-red-600'
-            )}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 
@@ -93,7 +91,7 @@ const StatusButton = ({ theme, option, isSelected, onClick }: StatusButtonProps)
         : (theme === 'dark' ? `bg-${option.color}-600` : `bg-${option.color}-400`)
     )}
   >
-    <Check className={cn(
+    <option.icon className={cn(
       'w-6 h-6 mr-2',
       isSelected ? 'block' : 'hidden'
     )} />

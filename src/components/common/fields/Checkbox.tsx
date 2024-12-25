@@ -1,10 +1,10 @@
-import { FormField, FormItem, FormControl, FormMessage } from '#/ui/form'
 import HeaderCustom from '#/common/elements/HeaderCustom'
+import { FormItem, FormMessage } from '#/ui/form'
 import { Checkbox } from '#/ui/checkbox'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 import React from 'react'
 
@@ -31,26 +31,27 @@ const CheckboxField = React.forwardRef<HTMLButtonElement, CheckboxFieldProps>(({
   const { control } = useFormContext()
 
   return (
-    <FormField
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <FormItem className={className}>
-          {/* -------------------- Header label -------------------- */}
-          {label && (
-            <HeaderCustom
-              to="input"
-              theme={theme}
-              title={label}
-              span={span}
-              iconSpan={iconSpan}
-              htmlFor={`${name}-checkbox`}
-            />
-          )}
+    <FormItem className={className}>
+      {/* Header label */}
+      {label && (
+        <HeaderCustom
+          to="input"
+          theme={theme}
+          title={label}
+          span={span}
+          iconSpan={iconSpan}
+          htmlFor={`${name}-checkbox`}
+        />
+      )}
 
-          <FormControl>
+      {/* Checkbox */}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
             {options.length > 0 ? (
-              /* -------------------- Multiple checkboxes -------------------- */
+              /* Multiple checkboxes */
               <div className="flex flex-wrap gap-4 pt-2">
                 {options.map((option, index) => (
                   <CheckboxOption
@@ -78,7 +79,7 @@ const CheckboxField = React.forwardRef<HTMLButtonElement, CheckboxFieldProps>(({
                 ))}
               </div>
             ) : (
-              /* -------------------- Single checkbox -------------------- */
+              /* Single checkbox */
               <div className="flex justify-center">
                 <CheckboxOption
                   ref={ref}
@@ -90,19 +91,16 @@ const CheckboxField = React.forwardRef<HTMLButtonElement, CheckboxFieldProps>(({
                 />
               </div>
             )}
-          </FormControl>
 
-          {/* -------------------- Error message -------------------- */}
-          {error && (
-            <FormMessage className={cn(
-              theme === 'dark' ? 'text-red-400' : 'text-red-600'
-            )}>
-              {error.message}
-            </FormMessage>
-          )}
-        </FormItem>
-      )}
-    />
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
+          </>
+        )}
+      />
+    </FormItem>
   )
 })
 
