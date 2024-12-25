@@ -33,14 +33,12 @@ function App() {
                   <Route path="/auth/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
 
+                  {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
-                    {/* protected routes */}
                     <Route path="/dashboard" element={<Dashboard />} />
-
                     <Route path="/form/cvs" element={<CurriculumList />} />
-                    <Route path="/location/countries" element={<CountryList />} />
-
                     <Route path="/form/cv/:id" element={<CurriculumForm />} />
+                    <Route path="/location/countries" element={<CountryList />} />
                     <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                   </Route>
 
