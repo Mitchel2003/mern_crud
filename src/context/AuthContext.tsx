@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     setLoadingStatus("Registrando usuario...")
     try {
       await registerRequest(data)
+      console.log(data)
       notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
     } catch (e: unknown) {
       setAuthStatus()
@@ -118,7 +119,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const setAuthStatus = (res?: AxiosResponse) => {
     setUser(res?.data ?? undefined)
     setIsAuth(Boolean(res?.data))
-    console.log(res?.data)
   }
   /**
    * Actualiza el estado de carga basado en un parametro opcional
