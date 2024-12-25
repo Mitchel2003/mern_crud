@@ -1,12 +1,8 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
 import { type LucideIcon } from "lucide-react"
 
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 //interface defautl props
 export interface Props { children?: React.ReactNode }
-
-//theme components
-export interface LoginComponentsProps extends ThemeContextProps { }
 
 /*---------------------- ui components ----------------------*/
 // items actions to dropdown (data-table)

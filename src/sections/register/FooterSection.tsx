@@ -1,8 +1,8 @@
-import { LoginComponentsProps } from "@/interfaces/props.interface";
+import { ThemeContextProps } from "@/interfaces/context.interface";
 import { CardFooter } from "#/ui/card";
 import { cn } from "@/lib/utils";
 
-const FooterSection = ({ theme }: LoginComponentsProps) => {
+const FooterSection = ({ theme }: ThemeContextProps) => {
   return (
     <CardFooter className="flex flex-col space-y-4">
       <div className="text-sm text-center">

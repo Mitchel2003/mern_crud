@@ -1,6 +1,6 @@
-import { DialogField, LoginComponentsProps } from '@/interfaces/props.interface'
 import { useForgotPasswordForm } from '@/hooks/auth/useForgotPasswordForm'
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { DialogField } from '@/interfaces/props.interface'
 import { Mail } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -10,7 +10,7 @@ import InputField from '#/common/fields/Input'
 import { CardFooter } from '#/ui/card'
 import { Button } from '#/ui/button'
 
-const FooterSection = ({ theme }: LoginComponentsProps) => {
+const FooterSection = ({ theme }: ThemeContextProps) => {
   const [showForgotDialog, setShowForgotDialog] = useState(false)
   const { methods, onSubmit } = useForgotPasswordForm()
 

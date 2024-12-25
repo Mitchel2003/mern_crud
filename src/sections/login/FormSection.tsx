@@ -1,5 +1,4 @@
-import { LoginComponentsProps } from '@/interfaces/props.interface'
-
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
@@ -8,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { LogIn, Lock, UserPlus, ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-const FormSection = ({ theme }: LoginComponentsProps) => {
+const FormSection = ({ theme }: ThemeContextProps) => {
   const navigate = useNavigate()
 
   return (

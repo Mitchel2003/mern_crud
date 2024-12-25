@@ -1,4 +1,4 @@
-import { EventMaintenance, CardDay as ICardDay } from '@/types/dashboard.type'
+import { EventMaintenance, CardDay as ICardDay } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import CardDay from '#/pages/dashboard/engineer/CardDay'

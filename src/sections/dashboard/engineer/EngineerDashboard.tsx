@@ -1,4 +1,4 @@
-import { EventMaintenance, Equipment } from '@/types/dashboard.type'
+import { EventMaintenance, Equipment } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
 import MaintenanceCalendar from './CalendarSection'

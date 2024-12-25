@@ -1,4 +1,4 @@
-import { LoginComponentsProps } from '@/interfaces/props.interface'
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Headquarter } from '@/interfaces/context.interface'
 import SelectMulti from '#/common/fields/SelectMulti'
 import SelectField from '#/common/fields/Select'
@@ -11,7 +11,7 @@ import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-interface FormSectionProps extends LoginComponentsProps {
+interface FormSectionProps extends ThemeContextProps {
   locations?: Headquarter[]
 }
 

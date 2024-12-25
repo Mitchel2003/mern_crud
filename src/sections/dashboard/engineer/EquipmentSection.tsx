@@ -1,6 +1,6 @@
 import EquipmentCard from '#/pages/dashboard/engineer/CardEquipment'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Equipment } from '@/types/dashboard.type'
+import { Equipment } from '@/interfaces/props.interface'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'

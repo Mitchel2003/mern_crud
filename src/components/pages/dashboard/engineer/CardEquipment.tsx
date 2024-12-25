@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '#/ui/card'
-import { Equipment } from '@/types/dashboard.type'
+import { Equipment } from '@/interfaces/props.interface'
 import { Badge } from '#/ui/badge'
 
 interface CardEquipmentProps { equipment: Equipment }
