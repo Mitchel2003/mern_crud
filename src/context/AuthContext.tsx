@@ -69,8 +69,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const signup = async (data: object) => {
     setLoadingStatus("Registrando usuario...")
     try {
-      await registerRequest(data)
-      console.log(data)
+      const res = await registerRequest(data)
+      console.log(res)
       notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
     } catch (e: unknown) {
       setAuthStatus()
