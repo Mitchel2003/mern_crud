@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       isAxiosResponse(e) && notifyError({ title: "Error de autenticación", message: e.response.data.message })
     } finally { setLoading(false) }
   }
+
   /**
    * Inicia sesión con las credenciales del usuario.
    * @param {object} credentials - Las credenciales del usuario.
@@ -62,40 +63,22 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
+
   /**
    * Registra un nuevo usuario con los datos proporcionados.
    * @param {object} data - Los datos del nuevo usuario.
    */
   const signup = async (data: object) => {
-          //necesito poder guardar tanto role como permissions en photoURL;
-      //para ello puedo construir un string y luego hacer un split para obtener los datos
-      //pero como se trata de diferentes tipos de datos podemos ingeniar una forma de guardarlos
-      //podemos hacer de la siguiente manera:
-      //"admin, ["headquarter_1", "headquarter_2"]"
-      //luego podemos hacer un split para obtener los datos de este modo
-      //const [role, permissions] = photoURL.split(',');
-      //esto nos retorna role como string y permissions como array
-      //entonces al ser un array, podemos usar el join para unir las sedes mediante una coma
-
-      //al final, desde el frontend, para volver a separar estos datos (role y permissions.headquarters)
-      //podemos hacer un split por la coma y luego usar JSON.parse para obtener el array de sedes, de esta manera:
-      //const [role, permissions] = photoURL.split(',');
-      //const permissions = JSON.parse(permissions);
-
     setLoadingStatus("Registrando usuario...")
     try {
-      const res = await registerRequest(data)
-
-      console.log(res.data)
-      const [role, clients] = res.data.photoURL.split(',')
-      console.log(role, clients)
-
+      await registerRequest(data)
       notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
     } catch (e: unknown) {
       setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
+
   /**
    * Cierra la sesión del usuario actual
    * permite cerrar el user.current de firebase/auth
