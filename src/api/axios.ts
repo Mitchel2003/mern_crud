@@ -1,7 +1,9 @@
-import config from "@/utils/config"
 import axios from "axios"
 
-const instance = axios.create({ baseURL: config.backendUrl, withCredentials: true })
+const instance = axios.create({
+  baseURL: 'https://rest-api-qvo9.onrender.com/api', /* to mode production */
+  withCredentials: true
+})
 
 instance.interceptors.request.use(
   (config) => {

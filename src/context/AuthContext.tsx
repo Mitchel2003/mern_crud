@@ -3,12 +3,10 @@ import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
 import { useLoadingScreen } from "@/hooks/ui/useLoading";
-import { authService } from "@/firebase/auth.service";
 import { Props } from "@/interfaces/props.interface";
-import { User as UserFB } from "@firebase/auth";
 
-import { createContext, useContext, useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import { createContext, useContext, useState } from "react";
+import { AxiosResponse } from "axios";
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -35,7 +33,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const [isAuth, setIsAuth] = useState(false)
   const [user, setUser] = useState<User>()
 
-  useEffect(() => { return () => authService.observeAuth((user) => verifyToken(user)) }, [])
+  // useEffect(() => { return () => authService.observeAuth((user) => verifyToken(user)) }, [])
 
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /**
@@ -88,13 +86,13 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * Verifica el token de autenticación almacenado en el user de firebase/auth
    * @param {UserFB | null} user - El usuario autenticado.
    */
-  const verifyToken = async (user: UserFB | null) => {
-    if (user) {
-      const token = await user.getIdToken();
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setAuthStatus({ data: { ...user, token } } as AxiosResponse)
-    } else { setAuthStatus() }
-  }
+  // const verifyToken = async (user: UserFB | null) => {
+  //   if (user) {
+  //     const token = await user.getIdToken();
+  //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  //     setAuthStatus({ data: { ...user, token } } as AxiosResponse)
+  //   } else { setAuthStatus() }
+  // }
   /**
    * Permite enviar una solicitud de restablecimiento de contraseña
    * @param {string} email - Corresponde al email para enviar la solicitud.
