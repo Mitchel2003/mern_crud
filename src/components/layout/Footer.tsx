@@ -9,7 +9,7 @@ const FooterSection = () => {
   return (
     <div
       className={cn(
-        'p-6 z-10 border-t',
+        'p-6 border-t mt-auto',
         'flex flex-col sm:flex-row',
         'justify-between items-center',
         theme === 'dark'

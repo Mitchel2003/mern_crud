@@ -103,10 +103,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setAuthStatus = (res?: AxiosResponse) => {
-    const auth = buildAuth(res?.data)
-    console.log(auth)
-    setIsAuth(Boolean(auth))
-    setUser(auth)
+    setUser(buildAuth(res?.data))
+    setIsAuth(Boolean(res?.data))
   }
   /**
    * Actualiza el estado de carga basado en un parametro opcional
@@ -126,7 +124,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       const res = await getOnAuthRequest()
       setAuthStatus(res)
       setLoading(false)
-      console.log(user)
     } catch (e: unknown) {
       setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error solicitud de verificación", message: e.response.data.message })

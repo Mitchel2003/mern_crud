@@ -10,9 +10,9 @@ import RootLayout from "@/layouts/Root";
 import MaintenanceForm from "@/pages/MaintenanceForm";
 import CurriculumForm from "@/pages/CurriculumForm";
 import CurriculumList from "@/pages/CurriculumList";
-import CountryList from "@/pages/CountryList";
 import Dashboard from "@/pages/Dashboard";
 import Register from "@/pages/Register";
+import Country from "@/pages/Country";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 
@@ -36,9 +36,11 @@ function App() {
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/location/country" element={<Country />} />
+
+                    {/** test this routes */}
                     <Route path="/form/cvs" element={<CurriculumList />} />
                     <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                    <Route path="/location/countries" element={<CountryList />} />
                     <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
                   </Route>
 

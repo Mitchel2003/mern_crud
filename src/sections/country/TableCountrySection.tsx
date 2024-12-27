@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 const CountryList = () => {
   const { theme } = useThemeContext()
   const { fetchAllLocations } = useQueryLocation()
-  const { data: countries, isLoading } = fetchAllLocations<Country>('country')
+  const { data: countries } = fetchAllLocations<Country>('country')
 
   const columns: ColumnDef<Country>[] = [
     {
@@ -31,8 +31,6 @@ const CountryList = () => {
       cell: ({ row }) => <ItemDropdown actions={useCountryActions(row.original as Country)} />
     }
   ]
-
-  if (isLoading) return <div>Cargando...</div>
 
   return (
     <div className="container mx-auto py-10">
@@ -76,4 +74,3 @@ const useCountryActions = (country: Country): ActionProps[] => {
     }
   ]
 }
-

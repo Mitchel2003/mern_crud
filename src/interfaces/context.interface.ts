@@ -28,12 +28,12 @@ interface Permissions {
 }
 export type User = {
   _id?: string
-  role: string
+  role?: string
   email: string
   phone?: string
-  username: string
+  username?: string
   photoUrl?: string
-  permissions: Permissions
+  permissions?: Permissions
 } | null
 
 export type AuthContext = {

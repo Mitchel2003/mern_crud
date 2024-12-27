@@ -17,15 +17,10 @@ export function isAxiosResponse(e: unknown): e is AxiosResponse {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-export const buildAuth = (auth: any): User => {
-  const [role, headquarters] = auth.photoURL?.split(';') || []
-  const array = headquarters ? headquarters.split(',') : []
-
-  return typeof auth === "object" ? {
-    role: role,
-    email: auth.email,
-    username: auth.displayName,
-    permissions: { headquarters: array }
-  } : null
-}
+/**
+ * Construye un objeto usuario basado en los datos "auth" de firebase.
+ * @param {any} auth - Los datos del usuario, corresponde al User de firebase.
+ * @returns {User | null} - El objeto de usuario construido o null si los datos no son válidos.
+ */
+export const buildAuth = (auth: any): User => (typeof auth === "object" ? { email: auth.email } : null)
 /*---------------------------------------------------------------------------------------------------------*/
