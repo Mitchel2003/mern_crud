@@ -22,16 +22,18 @@ export type SidebarContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
+interface Permissions {
+  overwrite?: object
+  headquarters: []
+}
 export type User = {
   _id?: string
   role: string
   email: string
-  username: string
-  permissions?: object
-
-  //details
   phone?: string
+  username: string
   photoUrl?: string
+  permissions: Permissions
 } | null
 
 export type AuthContext = {

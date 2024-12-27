@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom"
 import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-
 const CountryList = () => {
   const { theme } = useThemeContext()
   const { fetchAllLocations } = useQueryLocation()

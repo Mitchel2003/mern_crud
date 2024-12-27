@@ -104,6 +104,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const setAuthStatus = (res?: AxiosResponse) => {
     const auth = buildAuth(res?.data)
+    console.log(auth)
     setIsAuth(Boolean(auth))
     setUser(auth)
   }
@@ -116,10 +117,16 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     setLoading(Boolean(status))
     status ? showLoading(status) : hideLoading()
   }
-  /** Verifica el estado de autenticación del usuario */
+  /**
+   * Verifica el estado de autenticación del usuario (auth)
+   * logramos obtener un "user | null" segun corresponda
+   */
   const checkoutAuth = async (): Promise<void> => {
     try {
-      await getOnAuthRequest().then(res => setAuthStatus(res)).finally(() => setLoading(false))
+      const res = await getOnAuthRequest()
+      setAuthStatus(res)
+      setLoading(false)
+      console.log(user)
     } catch (e: unknown) {
       setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error solicitud de verificación", message: e.response.data.message })
