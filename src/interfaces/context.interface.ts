@@ -23,16 +23,16 @@ export type SidebarContext = {
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type User = {
-  _id: string
+  _id?: string
   role: string
   email: string
   username: string
-  permissions: object
+  permissions?: object
 
   //details
-  phone: string
-  photoUrl: string
-} | undefined
+  phone?: string
+  photoUrl?: string
+} | null
 
 export type AuthContext = {
   user: User

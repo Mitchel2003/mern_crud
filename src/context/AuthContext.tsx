@@ -1,11 +1,11 @@
-import { loginRequest, registerRequest, logoutRequest, forgotPasswordRequest } from "@/api/auth";
+import { loginRequest, registerRequest, logoutRequest, getOnAuthRequest, forgotPasswordRequest } from "@/api/auth";
+import { isAxiosResponse, buildAuth } from "@/interfaces/db.interface";
 import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/ui/useNotification";
-import { isAxiosResponse } from "@/interfaces/db.interface";
 import { useLoadingScreen } from "@/hooks/ui/useLoading";
 import { Props } from "@/interfaces/props.interface";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 
 const Auth = createContext<AuthContext>(undefined)
@@ -31,10 +31,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const { notifySuccess, notifyError } = useNotification()
   const [loading, setLoading] = useState(true)
   const [isAuth, setIsAuth] = useState(false)
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>(null)
 
-  // useEffect(() => { return () => authService.observeAuth((user) => verifyToken(user)) }, [])
-
+  useEffect(() => { checkoutAuth() }, [])
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /**
    * Inicia sesión con las credenciales del usuario.
@@ -50,7 +49,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
-
   /**
    * Registra un nuevo usuario con los datos proporcionados.
    * @param {object} data - Los datos del nuevo usuario.
@@ -65,7 +63,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message })
     } finally { setLoadingStatus() }
   }
-
   /**
    * Cierra la sesión del usuario actual
    * permite cerrar el user.current de firebase/auth
@@ -82,17 +79,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------verification--------------------------------------------------*/
-  /**
-   * Verifica el token de autenticación almacenado en el user de firebase/auth
-   * @param {UserFB | null} user - El usuario autenticado.
-   */
-  // const verifyToken = async (user: UserFB | null) => {
-  //   if (user) {
-  //     const token = await user.getIdToken();
-  //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  //     setAuthStatus({ data: { ...user, token } } as AxiosResponse)
-  //   } else { setAuthStatus() }
-  // }
   /**
    * Permite enviar una solicitud de restablecimiento de contraseña
    * @param {string} email - Corresponde al email para enviar la solicitud.
@@ -117,8 +103,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setAuthStatus = (res?: AxiosResponse) => {
-    setUser(res?.data ?? undefined)
-    setIsAuth(Boolean(res?.data))
+    const auth = buildAuth(res?.data)
+    setIsAuth(Boolean(auth))
+    setUser(auth)
   }
   /**
    * Actualiza el estado de carga basado en un parametro opcional
@@ -129,8 +116,16 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     setLoading(Boolean(status))
     status ? showLoading(status) : hideLoading()
   }
+  /** Verifica el estado de autenticación del usuario */
+  const checkoutAuth = async (): Promise<void> => {
+    try {
+      await getOnAuthRequest().then(res => setAuthStatus(res)).finally(() => setLoading(false))
+    } catch (e: unknown) {
+      setAuthStatus()
+      isAxiosResponse(e) && notifyError({ title: "Error solicitud de verificación", message: e.response.data.message })
+    }
+  }
   /*---------------------------------------------------------------------------------------------------------*/
-
   return (
     <Auth.Provider value={{ isAuth, user, loading, signin, signup, logout, sendResetPassword }}>
       {children}
