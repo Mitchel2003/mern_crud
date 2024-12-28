@@ -1,12 +1,23 @@
-import { Sidebar as SidebarShadcn, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton } from "#/ui/sidebar"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "#/ui/collapsible"
+import { NavItemProps } from "@/interfaces/props.interface"
 import { useLocation } from 'react-router-dom'
 import { links } from '@/utils/constants'
+import {
+  Sidebar as SidebarShadcn,
+  SidebarMenuSubButton,
+  SidebarGroupContent,
+  SidebarMenuSubItem,
+  SidebarGroupLabel,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarContent,
+  SidebarGroup,
+  SidebarMenu
+} from "#/ui/sidebar"
 
 export const Sidebar = () => {
-  const location = useLocation()
   const items = links()
-
   return (
     <SidebarShadcn>
       <SidebarContent>
@@ -16,39 +27,7 @@ export const Sidebar = () => {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <Collapsible>
-                    <CollapsibleTrigger asChild>
-                      <a
-                        href={item.href}
-                        onClick={item.action}
-                        className='flex items-center gap-2'
-                      >
-                        <SidebarMenuButton isActive={location.pathname === item.href}>
-                          <item.icon className='w-4 h-4 md:w-5 md:h-5' />
-                          <span className='text-sm pointer-events-none'>{item.label}</span>
-                        </SidebarMenuButton>
-                      </a>
-                    </CollapsibleTrigger>
-                    {item.subItems && (
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.subItems.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.label}>
-                              <SidebarMenuSubButton asChild isActive={location.pathname === subItem.href}>
-                                <a
-                                  href={subItem.href}
-                                  onClick={subItem.action}
-                                >
-                                  <subItem.icon className='w-4 h-4 md:w-5 md:h-5' />
-                                  <span className='text-sm pointer-events-none'>{subItem.label}</span>
-                                </a>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    )}
-                  </Collapsible>
+                  <SidebarItem item={item} />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -56,5 +35,65 @@ export const Sidebar = () => {
         </SidebarGroup>
       </SidebarContent>
     </SidebarShadcn>
+  )
+}
+
+interface SidebarItemProps { item: NavItemProps }
+const SidebarItem = ({ item }: SidebarItemProps) => {
+  const location = useLocation()
+  const isActive = location.pathname === item.href
+
+  return (
+    <Collapsible>
+      <CollapsibleTrigger asChild>
+        <SidebarMenuButton asChild isActive={isActive}>
+          <a href={item.href} onClick={item.action} className='flex items-center gap-2'>
+            <item.icon className='w-4 h-4 md:w-5 md:h-5' />
+            <span className='text-sm pointer-events-none'>{item.label}</span>
+          </a>
+        </SidebarMenuButton>
+      </CollapsibleTrigger>
+
+      {item.subItems && (
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {item.subItems.map((subItem) => (
+              <SidebarSubItem key={subItem.label} item={subItem} />
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      )}
+    </Collapsible>
+  )
+}
+
+interface SidebarSubItemProps { item: NavItemProps }
+const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
+  const location = useLocation()
+  const isActive = location.pathname === item.href
+
+  return (
+    <SidebarMenuSubItem>
+      <Collapsible>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuSubButton asChild isActive={isActive}>
+            <a href={item.href} onClick={item.action} className='flex items-center gap-2'>
+              <item.icon className='w-4 h-4 md:w-5 md:h-5' />
+              <span className='text-sm pointer-events-none'>{item.label}</span>
+            </a>
+          </SidebarMenuSubButton>
+        </CollapsibleTrigger>
+
+        {item.subItems && (
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {item.subItems.map((subSubItem) => (
+                <SidebarSubItem key={subSubItem.label} item={subSubItem} />
+              ))}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        )}
+      </Collapsible>
+    </SidebarMenuSubItem>
   )
 }
