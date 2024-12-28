@@ -22,28 +22,51 @@ export type SidebarContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
-interface Permissions {
-  overwrite?: object
-  headquarters: []
-}
-export type User = {
-  _id?: string
-  role?: string
+interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
+interface Permissions { overwrite: Overwrite; headquarters: [] }
+export type UserCredentials = {
+  uid: string
+  _id: string
+  role: string
   email: string
-  phone?: string
-  username?: string
-  photoUrl?: string
-  permissions?: Permissions
+  username: string
+  permissions: Permissions
+
+  //timestamps
+  updatedAt: Date
+  createdAt: Date
 } | null
 
 export type AuthContext = {
-  user: User
+  user: UserCredentials
   isAuth: boolean
   loading: boolean
   signin: (data: object) => Promise<void>
   signup: (data: object) => Promise<void>
   logout: () => Promise<void>
   sendResetPassword: (email: string) => Promise<void>
+} | undefined
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------UserContext--------------------------------------------------*/
+export type UserType = 'client' | 'user'
+export type BaseUser = {
+  _id: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type User = BaseUser & {}
+export type Client = BaseUser & { name: string, address: string }
+
+export type UserContext = {
+  loading: boolean
+  getAll: <T>(type: UserType) => Promise<T[]>
+  getById: <T>(type: UserType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: UserType, query: object, populate?: string) => Promise<T[]>
+  create: (type: UserType, data: object) => Promise<void>
+  update: (type: UserType, id: string, data: object) => Promise<void>
+  delete: (type: UserType, id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

@@ -1,27 +1,29 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { CurriculumProvider } from "@/context/CurriculumContext";
 import { LocationProvider } from "@/context/LocationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+// import { FormsProvider } from "@/context/FormsContext";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
-import MaintenanceForm from "@/pages/MaintenanceForm";
-import CurriculumForm from "@/pages/CurriculumForm";
-import CurriculumList from "@/pages/CurriculumList";
+// import MaintenanceForm from "@/pages/MaintenanceForm";
+// import CurriculumForm from "@/pages/CurriculumForm";
+// import CurriculumList from "@/pages/CurriculumList";
 import Dashboard from "@/pages/Dashboard";
 import Register from "@/pages/Register";
 import Country from "@/pages/Country";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <LocationProvider>
-          <CurriculumProvider>
+        <UserProvider>
+          <LocationProvider>
+            {/* <FormsProvider> */}
 
             <BrowserRouter>
               <Routes>
@@ -39,17 +41,18 @@ function App() {
                     <Route path="/location/country" element={<Country />} />
 
                     {/** test this routes */}
-                    <Route path="/form/cvs" element={<CurriculumList />} />
-                    <Route path="/form/cv/:id" element={<CurriculumForm />} />
-                    <Route path="/form/maintenance/:id" element={<MaintenanceForm />} />
+                    {/* <Route path="/form/cvs" element={<CurriculumList />} /> */}
+                    {/* <Route path="/form/cv/:id" element={<CurriculumForm />} /> */}
+                    {/* <Route path="/form/maintenance/:id" element={<MaintenanceForm />} /> */}
                   </Route>
 
                 </Route>
               </Routes>
             </BrowserRouter>
 
-          </CurriculumProvider>
-        </LocationProvider>
+            {/* </FormsProvider> */}
+          </LocationProvider>
+        </UserProvider>
       </AuthProvider>
     </ThemeProvider >
   )

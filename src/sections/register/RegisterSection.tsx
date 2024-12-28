@@ -1,6 +1,6 @@
 import { Headquarter, ThemeContextProps } from "@/interfaces/context.interface"
-import { useRegisterForm } from "@/hooks/auth/useRegisterForm"
-import { useQueryLocation } from "@/hooks/useLocation"
+import { useCreateUserForm } from "@/hooks/auth/useUserForm"
+import { useQueryLocation } from "@/hooks/useLocationQuery"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
@@ -12,7 +12,7 @@ import FooterSection from "./FooterSection"
 import FormSection from "./FormSection"
 
 const RegisterSection = ({ theme }: ThemeContextProps) => {
-  const { methods, onSubmit } = useRegisterForm()
+  const { methods, onSubmit } = useCreateUserForm()
   const { fetchAllLocations } = useQueryLocation()
   const { data: locations, isLoading } = fetchAllLocations<Headquarter>('headquarter')
 

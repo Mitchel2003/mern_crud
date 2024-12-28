@@ -1,4 +1,4 @@
-import { CustomMutation_Location, QueryReact_Location } from '@/interfaces/hook.interface'
+import { CustomMutation_Location, QueryReact_Location, UpdateMutationProps, DeleteMutationProps } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { useLocationContext } from '@/context/LocationContext'
 import { LocationType } from '@/interfaces/context.interface'
@@ -59,8 +59,7 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
    */
   const createMutation = useMutation({
     mutationFn: async (data: object) => await create(path, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.locations(path) }),
-    onError: (error) => error
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.locations(path) })
   })
 
   /**
@@ -68,10 +67,10 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
    * @param {object} data - La data del documento a actualizar.
    */
   const updateMutation = useMutation({
-    mutationFn: async (data: any) => await update(path, data._id, data),
+    mutationFn: async ({ id, data }: UpdateMutationProps) => await update(path, id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.locations(path) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.location(path, variables._id) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.location(path, variables.id) })
     }
   })
 
@@ -80,10 +79,10 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
    * @param {string} _id - Corresponde al uid default de la ubicación.
    */
   const deleteMutation = useMutation({
-    mutationFn: async (_id: string) => await deleteLocation(path, _id),
-    onSuccess: (_, id) => {
+    mutationFn: async ({ id }: DeleteMutationProps) => await deleteLocation(path, id),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.locations(path) })
-      queryClient.removeQueries({ queryKey: QUERY_KEYS.location(path, id) })
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.location(path, variables.id) })
     }
   })
 

@@ -1,5 +1,5 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useLoginForm } from '@/hooks/auth/useLoginForm'
+import { useLoginForm } from '@/hooks/auth/useAuthForm'
 import { FormProvider } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 

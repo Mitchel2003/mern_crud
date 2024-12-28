@@ -1,3 +1,4 @@
+import { useQueryLocation, useLocationMutation } from "@/hooks/useLocationQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 import { Country } from "@/interfaces/context.interface"
 import { useThemeContext } from "@/context/ThemeContext"
@@ -5,7 +6,6 @@ import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
 
-import { useQueryLocation, useLocationMutation } from "@/hooks/useLocation"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { Pencil, Trash } from "lucide-react"
@@ -70,7 +70,7 @@ const useCountryActions = (country: Country): ActionProps[] => {
       icon: Trash,
       label: "Eliminar",
       className: "text-red-600",
-      onClick: () => deleteLocation(country?._id as string)
+      onClick: () => deleteLocation({ id: country?._id })
     }
   ]
 }

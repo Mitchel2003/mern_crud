@@ -1,5 +1,5 @@
-import { useForgotPasswordForm } from '@/hooks/auth/useForgotPasswordForm'
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useForgotPasswordForm } from '@/hooks/auth/useAuthForm'
 import { DialogField } from '@/interfaces/props.interface'
 import { Mail } from 'lucide-react'
 import { useState } from 'react'

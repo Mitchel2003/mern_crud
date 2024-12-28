@@ -3,7 +3,7 @@ import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
 
 export const links = () => {
-  const { isAuth, user, logout } = useAuthContext()
+  const { isAuth, logout, user } = useAuthContext()
 
   /*--------------------------------------------------guest--------------------------------------------------*/
   const navGuestItems: NavItemProps[] = [

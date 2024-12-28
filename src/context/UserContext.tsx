@@ -1,4 +1,4 @@
-import { LocationContext, LocationType } from "@/interfaces/context.interface"
+import { UserContext, UserType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
 import { useLoadingScreen } from "@/hooks/ui/useLoading"
@@ -7,35 +7,35 @@ import { useApi } from "@/api/handler"
 
 import { createContext, useContext, useState } from "react"
 
-const Location = createContext<LocationContext>(undefined)
+const User = createContext<UserContext>(undefined)
 
 /**
- * Hook personalizado para acceder al contexto de ubicación.
- * @throws {Error} Si se intenta usar fuera del LocationProvider.
+ * Hook personalizado para acceder al contexto de usuario.
+ * @throws {Error} Si se intenta usar fuera del UserProvider.
  */
-export const useLocationContext = () => {
-  const context = useContext(Location)
-  if (!context) throw new Error('Error al intentar usar locationContext')
+export const useUserContext = () => {
+  const context = useContext(User)
+  if (!context) throw new Error('Error al intentar usar userContext')
   return context
 }
 
 /**
- * Proveedor del contexto de ubicación.
- * Maneja el estado de las ubicaciones y proporciona funciones para interactuar con ellas.
+ * Proveedor del contexto de usuario.
+ * Maneja el estado de los usuarios y proporciona funciones para interactuar con ellos.
  * @param {Props} props - Las propiedades del componente.
- * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de ubicación.
+ * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de usuario.
  */
-export const LocationProvider = ({ children }: Props): JSX.Element => {
+export const UserProvider = ({ children }: Props): JSX.Element => {
   const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifySuccess, notifyError } = useNotification()
   const [loading, setLoading] = useState(false)
 
   /**
-   * Obtiene todas las ubicaciones de un tipo específico
-   * @param {string} type - El tipo de ubicación.
-   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
+   * Obtiene todas los usuarios de un tipo específico
+   * @param {string} type - El tipo de usuario.
+   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
-  const getAll = async (type: LocationType): Promise<any[]> => {
+  const getAll = async (type: UserType): Promise<any[]> => {
     setLoadingStatus('Obteniendo lista...')
     try {
       const response = await useApi(type).getAll()
@@ -48,12 +48,12 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
-   * Obtiene una ubicación específica por su ID
-   * @param {string} type - El tipo de ubicación.
-   * @param {string} id - El ID de la ubicación.
-   * @returns {Promise<any>} Los datos de la ubicación.
+   * Obtiene un usuario específico por su ID
+   * @param {string} type - El tipo de usuario.
+   * @param {string} id - El ID del usuario.
+   * @returns {Promise<any>} Los datos del usuario.
    */
-  const getById = async (type: LocationType, id: string): Promise<any | undefined> => {
+  const getById = async (type: UserType, id: string): Promise<any | undefined> => {
     setLoadingStatus('Buscando por identificador...')
     try {
       const response = await useApi(type).getById(id)
@@ -66,14 +66,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
-   * Obtiene todas las ubicaciones de un tipo específico por una consulta
+   * Obtiene todos los usuarios de un tipo específico por una consulta
    * tenemos un opcional para poblar con el cual podemos ejercer relaciones
-   * @param {string} type - El tipo de ubicación.
+   * @param {string} type - El tipo de usuario.
    * @param {object} query - La consulta.
-   * @param {string} populate - El campo a poblar; corresponde a la relacion de la ubicacion (ej: 'city.state.country')
-   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
+   * @param {string} populate - El campo a poblar; corresponde a la relacion del usuario (ej: 'user.headquarter')
+   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
-  const getByQuery = async (type: LocationType, query: object, populate?: string): Promise<any[]> => {
+  const getByQuery = async (type: UserType, query: object, populate?: string): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
       const response = await useApi(type).getByQuery(query, populate)
@@ -86,11 +86,11 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
-   * Crea una nueva ubicación
-   * @param {string} type - El tipo de ubicación.
-   * @param {object} data - Los datos de la ubicación.
+   * Crea un nuevo usuario de un tipo específico
+   * @param {string} type - El tipo de usuario.
+   * @param {object} data - Los datos del usuario.
    */
-  const create = async (type: LocationType, data: object): Promise<void> => {
+  const create = async (type: UserType, data: object): Promise<void> => {
     setLoadingStatus('Creando...')
     try {
       await useApi(type).create(data)
@@ -101,12 +101,12 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
-   * Actualiza una ubicación existente
-   * @param {string} type - El tipo de ubicación.
-   * @param {string} id - El ID de la ubicación.
-   * @param {object} data - Los datos de la ubicación.
+   * Actualiza un usuario existente de un tipo específico
+   * @param {string} type - El tipo de usuario.
+   * @param {string} id - El ID del usuario.
+   * @param {object} data - Los datos del usuario.
    */
-  const update = async (type: LocationType, id: string, data: object): Promise<void> => {
+  const update = async (type: UserType, id: string, data: object): Promise<void> => {
     setLoadingStatus('Actualizando...')
     try {
       await useApi(type).update(id, data)
@@ -117,11 +117,11 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   }
 
   /**
-   * Elimina una ubicación existente
-   * @param {string} type - El tipo de ubicación.
-   * @param {string} id - El ID de la ubicación.
+   * Elimina un usuario existente de un tipo específico
+   * @param {string} type - El tipo de usuario.
+   * @param {string} id - El ID del usuario.
    */
-  const delete_ = async (type: LocationType, id: string): Promise<void> => {
+  const delete_ = async (type: UserType, id: string): Promise<void> => {
     setLoadingStatus('Eliminando...')
     try {
       await useApi(type).delete(id)
@@ -145,7 +145,7 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   /*---------------------------------------------------------------------------------------------------------*/
 
   return (
-    <Location.Provider value={{
+    <User.Provider value={{
       loading,
       getAll,
       getById,
@@ -155,6 +155,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       delete: delete_,
     }}>
       {children}
-    </Location.Provider>
+    </User.Provider>
   )
 }
