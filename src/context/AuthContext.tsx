@@ -120,9 +120,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     try {
       const res = await useApi('on-auth').get()
       if (!res?.data) return setAuthStatus()
-      const result = await useApi('user').getByQuery({ uid: res.data.uid })
-      setIsAuth(Boolean(result.data))
-      setUser(result.data[0])
+      setAuthStatus(res)
     } catch (e: unknown) {
       setAuthStatus()
       isAxiosResponse(e) && notifyError({ title: "Error solicitud de verificación", message: e.response.data.message })

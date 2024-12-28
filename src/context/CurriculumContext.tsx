@@ -1,9 +1,9 @@
-import { getCVRequest, getCVsRequest, createCVRequest, updateCVRequest, deleteCVRequest } from "@/api/curriculum";
 import { Curriculum as TypeCurriculum, CurriculumContext } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
 import { useLoadingScreen } from "@/hooks/ui/useLoading";
 import { Props } from "@/interfaces/props.interface";
+import { useApi } from "@/api/handler";
 
 import { useState, useContext, createContext } from "react";
 
@@ -38,7 +38,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const getCV = async (id: string): Promise<TypeCurriculum> => {
     setLoadingStatus('Obteniendo datos...')
     try {
-      const response = await getCVRequest(id)
+      const response = await useApi('curriculum').getByQuery({ id })
       notifySuccess({
         title: "Exito al obtener dato",
         message: 'La solicitud se ha completado'
@@ -56,7 +56,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const getCVs = async (): Promise<TypeCurriculum[]> => {
     setLoadingStatus('Obteniendo datos...')
     try {
-      const response = await getCVsRequest()
+      const response = await useApi('curriculum').getByQuery({})
       notifySuccess({
         title: "Éxito al obtener datos",
         message: 'La solicitud se ha completado'
@@ -76,7 +76,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const createCV = async (curriculum: object): Promise<TypeCurriculum> => {
     setLoadingStatus('Creando datos...')
     try {
-      const response = await createCVRequest(curriculum)
+      const response = await useApi('curriculum').create(curriculum)
       notifySuccess({ title: "Exito al crear datos", message: 'La solicitud se ha completado' })
       return response.data
     } catch (e: unknown) {
@@ -93,7 +93,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const updateCV = async (id: string, curriculum: object): Promise<TypeCurriculum> => {
     setLoadingStatus('Actualizando datos...')
     try {
-      const response = await updateCVRequest(id, curriculum)
+      const response = await useApi('curriculum').update(id, curriculum)
       notifySuccess({
         title: "Exito al actualizar datos",
         message: 'La solicitud se ha completado'
@@ -112,7 +112,7 @@ export const CurriculumProvider = ({ children }: Props): JSX.Element => {
   const deleteCV = async (id: string): Promise<TypeCurriculum> => {
     setLoadingStatus('Eliminando datos...')
     try {
-      const response = await deleteCVRequest(id)
+      const response = await useApi('curriculum').delete(id)
       notifySuccess({
         title: "Exito al eliminar datos",
         message: 'La solicitud se ha completado'

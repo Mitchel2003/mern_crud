@@ -14,39 +14,43 @@ import AccessoriesSection from "./AccessoriesSection"
 import OfficeAreaSection from "./OfficeAreaSection"
 import BasicDataSection from "./BasicDataSection"
 
-import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
+// import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { cn } from "@/lib/utils"
 
-import { useNavigate, useParams } from "react-router-dom"
-import { FieldValues, useForm } from "react-hook-form"
+// import { useNavigate, useParams } from "react-router-dom"
+// import { FieldValues } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { CheckSquare, Ban } from "lucide-react"
-import { useEffect } from "react"
+// import { useEffect } from "react"
 
 interface CurriculumSectionProps extends ThemeContextProps { }
 
 const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
-  const { id = 'new' } = useParams()
-  const navigate = useNavigate()
+  // const { id = 'new' } = useParams()
+  // const navigate = useNavigate()
   const form = useForm()
 
-  const mutation = useCustomMutation().createOrUpdateCV(id)
-  const { data: cv, error, isLoading } = useQueryReact().fetchCV(id)
+  // const mutation = useCustomMutation().createOrUpdateCV(id)
+  // const { data: cv, error, isLoading } = useQueryReact().fetchCV(id)
 
-  useEffect(() => { if (mutation.isSuccess) navigate('/curriculums') }, [mutation.isSuccess])
-  useEffect(() => { setInputValues() }, [cv])
+  // useEffect(() => { if (mutation.isSuccess) navigate('/curriculums') }, [mutation.isSuccess])
+  // useEffect(() => { setInputValues() }, [cv])
 
-  /** Function to handle onClick */
-  const onSubmit = form.handleSubmit(async (values) => mutation.mutate(schemaCV(values)))
-  const setInputValues = () => {
-    if (!cv || id === 'new') return;
-    // setValue('title', task.title);
-    // setValue('description', task.description);
-    // setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
-  }
-  if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
-  if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
+  // /** Function to handle onClick */
+  const onSubmit = form.handleSubmit(async (values) => {
+    // mutation.mutate(schemaCV(values))
+    console.log(values)
+  })
+  // const setInputValues = () => {
+  //   if (!cv || id === 'new') return;
+  //   // setValue('title', task.title);
+  //   // setValue('description', task.description);
+  //   // setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
+  // }
+  // if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
+  // if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
 
   return (
     <Form {...form}>
@@ -130,5 +134,5 @@ export default CurriculumSection
  * @param values es un objeto de datos que representa los campos en el contexto del formulario
  * @returns {object} un objeto que significa el esquema de tarea a utilizar en la solicitud
  */
-const schemaCV = (values: FieldValues): object => ({ ...values })
+// const schemaCV = (values: FieldValues): object => ({ ...values })
 /*---------------------------------------------------------------------------------------------------------*/
