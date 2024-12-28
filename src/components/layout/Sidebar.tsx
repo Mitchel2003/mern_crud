@@ -1,7 +1,9 @@
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "#/ui/collapsible"
 import { NavItemProps } from "@/interfaces/props.interface"
 import { useLocation } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react'
 import { links } from '@/utils/constants'
+import React from 'react'
 import {
   Sidebar as SidebarShadcn,
   SidebarMenuSubButton,
@@ -42,14 +44,16 @@ interface SidebarItemProps { item: NavItemProps }
 const SidebarItem = ({ item }: SidebarItemProps) => {
   const location = useLocation()
   const isActive = location.pathname === item.href
+  const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <Collapsible>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
         <SidebarMenuButton asChild isActive={isActive}>
-          <a href={item.href} onClick={item.action} className='flex items-center gap-2'>
+          <a href={item.href} onClick={item.action} className='flex w-full items-center gap-2'>
             <item.icon className='w-4 h-4 md:w-5 md:h-5' />
             <span className='text-sm pointer-events-none'>{item.label}</span>
+            {item.subItems && (<IconChevron isOpen={isOpen} />)}
           </a>
         </SidebarMenuButton>
       </CollapsibleTrigger>
@@ -71,15 +75,17 @@ interface SidebarSubItemProps { item: NavItemProps }
 const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
   const location = useLocation()
   const isActive = location.pathname === item.href
+  const [isOpen, setIsOpen] = React.useState(false)
 
   return (
     <SidebarMenuSubItem>
-      <Collapsible>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton asChild isActive={isActive}>
-            <a href={item.href} onClick={item.action} className='flex items-center gap-2'>
+            <a href={item.href} onClick={item.action} className='flex w-full items-center gap-2'>
               <item.icon className='w-4 h-4 md:w-5 md:h-5' />
               <span className='text-sm pointer-events-none'>{item.label}</span>
+              {item.subItems && (<IconChevron isOpen={isOpen} />)}
             </a>
           </SidebarMenuSubButton>
         </CollapsibleTrigger>
@@ -97,3 +103,6 @@ const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
     </SidebarMenuSubItem>
   )
 }
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const IconChevron = ({ isOpen }: { isOpen: boolean }) => <ChevronDown className={`w-4 h-4 ms-auto transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />
