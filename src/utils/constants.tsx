@@ -2,6 +2,15 @@ import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, File
 import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
 
+export const formatDate: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+}
+
 export const links = () => {
   const { isAuth, logout, user } = useAuthContext()
 

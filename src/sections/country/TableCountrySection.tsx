@@ -8,6 +8,7 @@ import { Card } from "#/ui/card"
 
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
+import { formatDate } from "@/utils/constants"
 import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -23,9 +24,9 @@ const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
       header: "Nombre del país"
     },
     {
-      accessorKey: "createdAt",
-      header: "Fecha de creación",
-      cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleDateString()
+      accessorKey: "updatedAt",
+      header: "Última actualización",
+      cell: ({ row }) => new Date(row.getValue("updatedAt")).toLocaleString('es-ES', formatDate)
     },
     {
       id: "actions",

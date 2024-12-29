@@ -6,10 +6,10 @@ import HeaderCustom from "./HeaderCustom"
 import { cn } from "@/lib/utils"
 
 interface HeaderFormProps extends ThemeContextProps {
-  title: string
+  breadcrumbs?: HeaderBreadcrumbProps[]
   description: string
   className?: string
-  breadcrumbs?: HeaderBreadcrumbProps[]
+  title: string
 }
 const HeaderForm = ({
   description,

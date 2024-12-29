@@ -19,7 +19,7 @@ const CountrySection = ({ theme, id }: CountrySectionProps) => {
     <div className="container mx-auto p-6 space-y-8">
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center justify-between">
           <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Países </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
@@ -37,6 +37,7 @@ const CountrySection = ({ theme, id }: CountrySectionProps) => {
         <TabsContent value="form">
           <FormCountrySection
             theme={theme}
+            isUpdate={!!id}
             methods={methods}
             onChange={handle}
             onSubmit={onSubmit}
