@@ -1,7 +1,6 @@
 import { useQueryLocation, useLocationMutation } from "@/hooks/useLocationQuery"
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { Country, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
-import { Country } from "@/interfaces/context.interface"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"

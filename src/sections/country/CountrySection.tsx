@@ -49,7 +49,6 @@ const CountrySection = ({ theme, id }: CountrySectionProps) => {
 }
 
 export default CountrySection
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
  * Hook para manejar las secciones "tabs"
