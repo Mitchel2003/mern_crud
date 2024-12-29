@@ -17,15 +17,17 @@ const CountrySection = ({ theme, id }: CountrySectionProps) => {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <h1 className={cn('text-3xl font-bold', theme === 'dark' ? 'text-white' : 'text-black')}>
-        Países
-      </h1>
       <Tabs value={tab} onValueChange={handle}>
-        <TabsList>
-          <TabsTrigger value="table">Tabla</TabsTrigger>
-          <TabsTrigger value="form">Formulario</TabsTrigger>
-        </TabsList>
+        {/* tabs header */}
+        <div className="flex items-center justify-between">
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Países </h1>
+          <TabsList>
+            <TabsTrigger value="table">Tabla</TabsTrigger>
+            <TabsTrigger value="form">Formulario</TabsTrigger>
+          </TabsList>
+        </div>
 
+        {/* tabs content */}
         <TabsContent value="table">
           <TableCountrySection
             theme={theme}

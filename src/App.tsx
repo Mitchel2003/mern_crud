@@ -4,6 +4,7 @@ import { LocationProvider } from "@/context/LocationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 // import { FormsProvider } from "@/context/FormsContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { UserProvider } from "@/context/UserContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
@@ -15,7 +16,6 @@ import Register from "@/pages/Register";
 import Country from "@/pages/Country";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
-import { UserProvider } from "./context/UserContext";
 
 function App() {
   return (
