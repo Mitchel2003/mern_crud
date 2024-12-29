@@ -1,7 +1,7 @@
 import { useQueryLocation, useLocationMutation } from "@/hooks/useLocationQuery"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
 import { Country } from "@/interfaces/context.interface"
-import { useThemeContext } from "@/context/ThemeContext"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
@@ -11,8 +11,9 @@ import { useNavigate } from "react-router-dom"
 import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const CountryList = () => {
-  const { theme } = useThemeContext()
+interface TableCountrySectionProps extends ThemeContextProps { onChange: (value: string) => void }
+
+const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
   const { fetchAllLocations } = useQueryLocation()
   const { data: countries } = fetchAllLocations<Country>('country')
 
@@ -28,7 +29,7 @@ const CountryList = () => {
     },
     {
       id: "actions",
-      cell: ({ row }) => <ItemDropdown actions={useCountryActions(row.original as Country)} />
+      cell: ({ row }) => <ItemDropdown actions={useCountryActions({ country: row.original, onChange })} />
     }
   ]
 
@@ -48,7 +49,7 @@ const CountryList = () => {
   )
 }
 
-export default CountryList
+export default TableCountrySection
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
@@ -56,7 +57,12 @@ export default CountryList
  * @param country - El país sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el país
  */
-const useCountryActions = (country: Country): ActionProps[] => {
+interface UseCountryActionsProps {
+  country: Country
+  onChange: (value: string) => void
+}
+
+const useCountryActions = ({ country, onChange }: UseCountryActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('country')
   const navigate = useNavigate()
 
@@ -64,7 +70,10 @@ const useCountryActions = (country: Country): ActionProps[] => {
     {
       icon: Pencil,
       label: "Editar",
-      onClick: () => navigate(`/location/country/${country?._id}`)
+      onClick: () => {
+        onChange('form')
+        navigate(`/location/country/${country?._id}`)
+      }
     },
     {
       icon: Trash,

@@ -38,12 +38,15 @@ function App() {
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/location/country" element={<Country />} />
-
                     {/** test this routes */}
                     {/* <Route path="/form/cvs" element={<CurriculumList />} /> */}
                     {/* <Route path="/form/cv/:id" element={<CurriculumForm />} /> */}
                     {/* <Route path="/form/maintenance/:id" element={<MaintenanceForm />} /> */}
+
+                    {/* location routes */}
+                    <Route path="/location/country" element={<Country />} /> {/*new country*/}
+                    <Route path="/location/countries" element={<Country />} />{/*list countries*/}
+                    <Route path="/location/country/:id" element={<Country />} />{/*edit country*/}
                   </Route>
 
                 </Route>

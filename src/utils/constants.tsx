@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon } from 'lucide-react'
 import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -67,29 +67,35 @@ export const links = () => {
       icon: TerminalSquare,
       label: 'Panel del usuario',
     },
-    {/** cvs **/
+    {/** forms **/
       icon: FilesIcon,
-      href: '/form/cv',
-      label: 'Currículums',
-    },
-    {/** maintenances **/
-      icon: FileTextIcon,
-      label: 'Mantenimientos',
-      href: '/form/maintenance',
+      label: 'Formularios',
+      subItems: [
+        {// cvs
+          icon: FileTextIcon,
+          href: '/form/cvs',
+          label: 'Currículums',
+        },
+        {// maintenances
+          icon: WrenchIcon,
+          href: '/form/maintenances',
+          label: 'Mantenimientos',
+        }
+      ]
     },
     {/** users **/
       label: 'Usuarios',
       icon: UserCircle,
       subItems: [
         {// engineers
-          href: '/users/engineer',
           icon: UserCog2,
           label: 'Ingenieros',
+          href: '/users/engineers',
         },
         {// clients
           icon: Building2,
-          href: '/users/client',
           label: 'Clientes',
+          href: '/users/clients',
         }
       ]
     },
@@ -100,22 +106,22 @@ export const links = () => {
         {// headquarters
           label: 'Sedes',
           icon: FileStackIcon,
-          href: '/location/headquarter',
+          href: '/location/headquarters',
         },
         {// areas
           label: 'Areas',
           icon: FileStackIcon,
-          href: '/location/area',
+          href: '/location/areas',
         },
         {// offices
           icon: Building2,
           label: 'Consultorios',
-          href: '/location/office',
+          href: '/location/offices',
         },
         {// services
           label: 'Servicios',
           icon: LucideHandHelping,
-          href: '/location/service',
+          href: '/location/services',
         }
       ]
     },
@@ -126,17 +132,17 @@ export const links = () => {
         {// cities
           label: 'Ciudades',
           icon: LocateFixedIcon,
-          href: '/location/city',
+          href: '/location/cities',
         },
         {// departments
           icon: MapPin,
           label: 'Departamentos',
-          href: '/location/department',
+          href: '/location/departments',
         },
         {// countries
           icon: Flag,
           label: 'Países',
-          href: '/location/country',
+          href: '/location/countries',
         }
       ]
     },
