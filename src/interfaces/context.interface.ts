@@ -132,9 +132,9 @@ export type BaseLocation = {
 }
 
 export type Country = BaseLocation & { name: string }
-export type State = BaseLocation & { name: string; country: string }
-export type City = BaseLocation & { name: string; state: string }
-export type Headquarter = BaseLocation & { name: string; address: string; client: string; city: string }
+export type State = BaseLocation & { name: string; country: Country }
+export type City = BaseLocation & { name: string; state: State }
+export type Headquarter = BaseLocation & { name: string; address: string; client: string; city: City }
 
 export type LocationContext = {
   loading: boolean

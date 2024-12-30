@@ -2,18 +2,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { LocationProvider } from "@/context/LocationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-// import { FormsProvider } from "@/context/FormsContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { UserProvider } from "@/context/UserContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
-// import MaintenanceForm from "@/pages/MaintenanceForm";
-// import CurriculumForm from "@/pages/CurriculumForm";
-// import CurriculumList from "@/pages/CurriculumList";
 import Dashboard from "@/pages/Dashboard";
 import Register from "@/pages/Register";
 import Country from "@/pages/Country";
+import State from "@/pages/State";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 
@@ -23,7 +20,7 @@ function App() {
       <AuthProvider>
         <UserProvider>
           <LocationProvider>
-            {/* <FormsProvider> */}
+            {/* <FormsProvider> // anteriormente llamado CurriculumProvider */}
 
             <BrowserRouter>
               <Routes>
@@ -47,13 +44,17 @@ function App() {
                     <Route path="/location/country" element={<Country />} /> {/*new country*/}
                     <Route path="/location/countries" element={<Country />} />{/*list countries*/}
                     <Route path="/location/country/:id" element={<Country />} />{/*edit country*/}
+
+                    <Route path="/location/state" element={<State />} /> {/*new state*/}
+                    <Route path="/location/states" element={<State />} />{/*list states*/}
+                    <Route path="/location/state/:id" element={<State />} />{/*edit state*/}
                   </Route>
 
                 </Route>
               </Routes>
             </BrowserRouter>
 
-            {/* </FormsProvider> */}
+            {/* </FormsProvider> // anteriormente llamado CurriculumProvider */}
           </LocationProvider>
         </UserProvider>
       </AuthProvider>

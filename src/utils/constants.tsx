@@ -146,7 +146,7 @@ export const links = () => {
         {// departments
           icon: MapPin,
           label: 'Departamentos',
-          href: '/location/departments',
+          href: '/location/states',
         },
         {// countries
           icon: Flag,
