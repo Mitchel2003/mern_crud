@@ -12,6 +12,7 @@ import Register from "@/pages/Register";
 import Country from "@/pages/Country";
 import State from "@/pages/State";
 import Login from "@/pages/Login";
+import City from "@/pages/City";
 import Home from "@/pages/Home";
 
 function App() {
@@ -48,6 +49,10 @@ function App() {
                     <Route path="/location/state" element={<State />} /> {/*new state*/}
                     <Route path="/location/states" element={<State />} />{/*list states*/}
                     <Route path="/location/state/:id" element={<State />} />{/*edit state*/}
+
+                    <Route path="/location/city" element={<City />} /> {/*new city*/}
+                    <Route path="/location/cities" element={<City />} />{/*list cities*/}
+                    <Route path="/location/city/:id" element={<City />} />{/*edit city*/}
                   </Route>
 
                 </Route>
