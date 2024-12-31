@@ -29,11 +29,11 @@ const FormCitySection = ({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={(e) => { onSubmit(e); onChange('table') }}>
+      <form onSubmit={onSubmit}>
         <div className="flex justify-center">
           <Card
             className={cn(
-              'relative w-[calc(100%-1rem)] md:w-[calc(100%-20rem)] my-10',
+              'relative my-10 w-[calc(100%-1rem)] md:max-w-[calc(100%-10rem)]',
               'backdrop-filter backdrop-blur-lg',
               theme === 'dark'
                 ? 'bg-zinc-800/90 hover:shadow-purple-900/60'

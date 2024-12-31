@@ -1,6 +1,6 @@
-import { Country, ThemeContextProps } from "@/interfaces/context.interface"
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import { SelectOptionProps } from "@/interfaces/props.interface"
 import { FormProvider, UseFormReturn } from "react-hook-form"
-import { useQueryLocation } from "@/hooks/useLocationQuery"
 import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
@@ -12,6 +12,7 @@ import { Card, CardContent } from "#/ui/card"
 interface FormStateSectionProps extends ThemeContextProps {
   onSubmit: (event: React.FormEvent) => void
   onChange: (value: string) => void
+  options: SelectOptionProps[]
   methods: UseFormReturn<any>
   isUpdate: boolean
 }
@@ -19,21 +20,18 @@ interface FormStateSectionProps extends ThemeContextProps {
 const FormStateSection = ({
   theme,
   methods,
+  options,
   onSubmit,
   onChange,
   isUpdate,
 }: FormStateSectionProps) => {
-  const { fetchAllLocations } = useQueryLocation()
-  const { data: countries } = fetchAllLocations<Country>('country')
-  const countriesOptions = countries?.map((e) => ({ label: e.name, value: e._id })) || []
-
   return (
     <FormProvider {...methods}>
-      <form onSubmit={(e) => { onSubmit(e); onChange('table') }}>
+      <form onSubmit={onSubmit}>
         <div className="flex justify-center">
           <Card
             className={cn(
-              'relative w-[calc(100%-1rem)] md:w-[calc(100%-20rem)] my-10',
+              'relative my-10 w-[calc(100%-1rem)] md:max-w-[calc(100%-10rem)]',
               'backdrop-filter backdrop-blur-lg',
               theme === 'dark'
                 ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
@@ -57,14 +55,14 @@ const FormStateSection = ({
                 theme={theme}
                 label="País"
                 name="country"
+                options={options}
                 placeholder="Selecciona el país"
-                options={countriesOptions || []}
               />
             </CardContent>
             <SubmitFooter
               theme={theme}
               to="/location/states"
-              onChange={() => { onChange('table'); methods.reset() }}
+              onCancel={() => { methods.reset(); onChange('table') }}
             />
           </Card>
         </div>

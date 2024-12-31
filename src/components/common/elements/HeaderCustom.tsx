@@ -1,15 +1,16 @@
-import { ThemeContextProps } from "@/interfaces/context.interface";
-import { HeaderSpanProps } from "@/interfaces/props.interface";
-
 import { InfoIcon, SirenIcon, TriangleAlertIcon } from "lucide-react"
-import { LabelHTMLAttributes } from 'react';
+import { LabelHTMLAttributes } from "react"
 import { FormLabel } from "#/ui/form"
 import { cn } from "@/lib/utils";
 
+import { ThemeContextProps } from "@/interfaces/context.interface";
+import { HeaderSpanProps } from "@/interfaces/props.interface";
+
 interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps, Pick<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> {
   to: 'input' | 'component';
-  title?: string;
+  className_span?: string;
   className?: string;
+  title?: string;
 }
 /**
  * This component is a customizable "Header" that use a title at left side and an optional description with respective icon.
@@ -26,62 +27,69 @@ interface HeaderCustomProps extends ThemeContextProps, HeaderSpanProps, Pick<Lab
 const HeaderCustom = ({
   iconSpan = 'none',
   to = 'component',
+  className_span,
   className,
   htmlFor,
-  theme,
   title,
+  theme,
   span
 }: HeaderCustomProps) => {
   return (
-    <div className="flex items-center justify-between">
-
+    <div className="flex flex-col md:flex-row md:items-center justify-between">
       {/* -------------------- Header (mode input or component) -------------------- */}
-      {title && (
-        to === 'input' ? (
-          //label to asocciate at input =>
-          <FormLabel
-            htmlFor={htmlFor}
-            className={cn(className, theme === 'dark' ? 'text-zinc-200' : 'text-gray-700')}
-          >
-            {title}
-          </FormLabel>
-        ) : (
-          //Text free customizable to display =>
-          <span className={cn(className, theme === 'dark' ? 'text-zinc-200' : 'text-gray-700')}>
-            {title}
-          </span>
-        )
-      )}
+      <div>
+        {title && (
+          to === 'input' ? (
+            //label to asocciate at input =>
+            <FormLabel
+              htmlFor={htmlFor}
+              className={cn(className, theme === 'dark' ? 'text-zinc-200' : 'text-gray-700')}
+            >
+              {title}
+            </FormLabel>
+          ) : (
+            //Text free customizable to display =>
+            <span className={cn(className, theme === 'dark' ? 'text-zinc-200' : 'text-gray-700')}>
+              {title}
+            </span>
+          )
+        )}
+      </div>
+
       {/* ---------------------------------------------------------------- */}
 
       {/* -------------------- Description of section or component - remember that this is optional -------------------- */}
-      {span && (
-        <span className={cn(
-          'text-sm text-right flex items-center gap-2',
-          theme === 'dark' ? 'text-zinc-300' : 'text-gray-500'
-        )}>
-          {/* -------------------- Description of section or component -------------------- */}
-          {span}
-          {/* -------------------- Icon associated to the description -------------------- */}
-          {iconSpan !== 'none' ? (<RenderIconSpan iconSpan={iconSpan} />) : (<></>)}
-        </span>
-      )}
+      <div>
+        {span && (
+          <span
+            className={cn(
+              className_span,
+              'flex text-sm md:items-center gap-2',
+              theme === 'dark' ? 'text-zinc-300' : 'text-gray-500'
+            )}
+          >
+            {span}
+            {iconSpan !== 'none' ? (<RenderIconSpan iconSpan={iconSpan} />) : (<></>)}
+          </span>
+        )}
+      </div>
       {/* ---------------------------------------------------------------- */}
-
     </div >
   )
 }
 export default HeaderCustom
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------tools--------------------------------------------------*/
 interface RenderIconSpanProps extends HeaderSpanProps { }
 const RenderIconSpan = ({ iconSpan }: RenderIconSpanProps) => {
   return (
     <>
       {iconSpan === 'info'
-        ? <InfoIcon className="w-7 h-7 md:w-6 md:h-6 text-sky-300" />
+        ? <InfoIcon className="w-5 h-5 md:w-7 md:h-7 text-sky-300" />
         : (iconSpan === 'warn'
-          ? <TriangleAlertIcon className="w-7 h-7 md:w-6 md:h-6 text-yellow-300" />
-          : <SirenIcon className="w-7 h-7 md:w-6 md:h-6 text-red-300" />
+          ? <TriangleAlertIcon className="w-5 h-5 md:w-7 md:h-7 text-yellow-300" />
+          : <SirenIcon className="w-5 h-5 md:w-7 md:h-7 text-red-300" />
         )
       }
     </>

@@ -14,21 +14,35 @@ export interface ActionProps {
 }
 
 /*---------------------- Reusables ----------------------*/
-// HeaderForm
-export interface HeaderBreadcrumbProps { description: string }
-
 // HeaderCustom
 export interface HeaderSpanProps {
   iconSpan?: 'info' | 'warn' | 'alert' | 'none'
   span?: string
 }
 
+// SelectOption
+export interface SelectOptionProps<T = string> {
+  description?: string
+  disabled?: boolean
+  label: string
+  value: T
+}
+
 // StatusCheck
-export interface CheckProps { name: string, label: string, color: string, icon: LucideIcon }
+export interface CheckProps {
+  name: string
+  label: string
+  color: string
+  icon: LucideIcon
+}
 
 // Carousel
 /** @description permite crear un carousel de imagenes con un intervalo de tiempo */
-export interface CarouselProps { children: React.ReactNode, autoPlay?: boolean, interval?: number }
+export interface CarouselProps {
+  children: React.ReactNode
+  autoPlay?: boolean
+  interval?: number
+}
 export interface CarouselContext {
   index: number
   setIndex: (index: number) => void
@@ -47,22 +61,25 @@ export interface NavItemProps {
 
 // Dashboard
 export interface EventMaintenance {
-  importance: 'critical' | 'warning' | 'normal';
-  description: string;
-  date: Date;
-  id: string;
+  importance: 'critical' | 'warning' | 'normal'
+  description: string
+  date: Date
+  id: string
 }
 export interface CardDay {
-  events: EventMaintenance[];
-  date: Date;
+  events: EventMaintenance[]
+  date: Date
 }
 export interface Equipment {
-  nextMaintenance: Date;
-  imageUrl: string;
-  status: string;
-  name: string;
-  id: string;
+  nextMaintenance: Date
+  imageUrl: string
+  status: string
+  name: string
+  id: string
 }
 
 // Dialog
-export interface DialogField { name: string, component: React.ReactElement }
+export interface DialogField {
+  component: React.ReactElement
+  name: string
+}

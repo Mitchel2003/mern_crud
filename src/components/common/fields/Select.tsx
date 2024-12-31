@@ -1,26 +1,19 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
-import HeaderCustom from "#/common/elements/HeaderCustom"
-import { FormItem, FormMessage } from "#/ui/form"
-
+import { HeaderSpanProps, SelectOptionProps } from "@/interfaces/props.interface"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { HeaderSpanProps } from "@/interfaces/props.interface"
 import { useFormContext, Controller } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import React from "react"
 
-interface SelectOption<T = string> {
-  value: T
-  label: string
-  disabled?: boolean
-  description?: string
-}
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import { FormItem, FormMessage } from "#/ui/form"
 
 interface SelectFieldProps<T = string> extends HeaderSpanProps, ThemeContextProps {
   name: string
   label?: string
   className?: string
   placeholder?: string
-  options: SelectOption<T>[]
+  options: SelectOptionProps<T>[]
 }
 
 const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
@@ -86,7 +79,7 @@ interface SelectProps<T = string> extends ThemeContextProps {
   id: string
   placeholder?: string
   isSearchable?: boolean
-  options: SelectOption<T>[]
+  options: SelectOptionProps<T>[]
   onChange: (value: T) => void
 }
 

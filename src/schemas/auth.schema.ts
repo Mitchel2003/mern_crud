@@ -4,6 +4,7 @@ import { z } from "zod"
 export const forgotPasswordSchema = z.object({
   email: z.string().email("Correo electrónico inválido")
 })
+
 export const loginSchema = z.object({
   email: z.string().email("Correo electronico invalido"),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres")
@@ -30,6 +31,7 @@ export const userSchema = z.object({
 }).refine(data => data.role === 'admin' ? true : data.headquarters.length > 0, {
   message: "Debes seleccionar al menos una sede", path: ["headquarters"]
 })
+
 export const userUpdateSchema = z.object({
   username: z
     .string()
@@ -64,9 +66,8 @@ export const clientSchema = z.object({
     .string()
     .min(10, "El NIT es requerido")
     .max(20, "El NIT es demasiado largo")
-}).refine(data => {
-  return /^[0-9]+$/.test(data.phone)
-}, { message: "El teléfono debe contener solo números", path: ["phone"] })
+}).refine(data => { return /^[0-9]+$/.test(data.phone) }, { message: "El teléfono debe contener solo números", path: ["phone"] })
+
 export const clientUpdateSchema = z.object({
   name: z
     .string()
@@ -87,7 +88,7 @@ export const clientUpdateSchema = z.object({
     .min(10, "El NIT es requerido")
     .max(20, "El NIT es demasiado largo")
     .optional()
-}).refine(data => { return /^[0-9]+$/.test(data.phone || '') }, { message: "El teléfono debe contener solo números", path: ["phone"] })
+}).refine(data => { return /^[0-9]+$/.test(data.phone || '0') }, { message: "El teléfono debe contener solo números", path: ["phone"] })
   .refine((data) => Object.keys(data).length > 0, { message: "Al menos un campo debe ser proporcionado", path: ["root"] })
 /*---------------------------------------------------------------------------------------------------------*/
 

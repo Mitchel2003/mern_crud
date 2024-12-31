@@ -1,8 +1,8 @@
 import { useLocationMutation, useQueryLocation } from "@/hooks/useLocationQuery"
 import { City, Country, State } from "@/interfaces/context.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useEffect } from "react"
 
 import {
   citySchema, CityFormProps,
@@ -12,7 +12,6 @@ import {
   stateUpdateSchema, StateUpdateFormProps,
 
   countrySchema, CountryFormProps,
-  countryUpdateSchema, CountryUpdateFormProps,
 } from "@/schemas/location.schema"
 
 const cityDefaultValues = { name: '', state: '' }
@@ -50,24 +49,6 @@ export const useCreateStateForm = () => {// to State
 
   const onSubmit = methods.handleSubmit(async (data: any) => {
     createState(data)
-    methods.reset()
-  })
-
-  return { methods, onSubmit }
-}
-
-/** Hook personalizado para manejar el formulario de creación de países */
-export const useCreateCountryForm = () => {// to Country
-  const { createLocation: createCountry } = useLocationMutation("country")
-
-  const methods = useForm<CountryFormProps>({
-    resolver: zodResolver(countrySchema),
-    defaultValues: countryDefaultValues,
-    mode: "onSubmit",
-  })
-
-  const onSubmit = methods.handleSubmit(async (data: any) => {
-    createCountry(data)
     methods.reset()
   })
 
@@ -133,34 +114,6 @@ export const useUpdateStateForm = (state: State) => {// to State
 
   return { methods, onSubmit }
 }
-
-/**
- * Hook personalizado para manejar el formulario de actualización de países
- * @param country - País actual a actualizar
- */
-export const useUpdateCountryForm = (country: Country) => {// to Country
-  const { updateLocation: updateCountry } = useLocationMutation("country")
-
-  const methods = useForm<CountryUpdateFormProps>({
-    resolver: zodResolver(countryUpdateSchema),
-    defaultValues: countryDefaultValues,
-    mode: "onSubmit"
-  })
-
-  // Cargar datos iniciales del país
-  useEffect(() => {
-    country && methods.reset({
-      name: country.name
-    })
-  }, [country])
-
-  const onSubmit = methods.handleSubmit(async (data: any) => {
-    updateCountry({ id: country?._id as string, data })
-    methods.reset()
-  })
-
-  return { methods, onSubmit }
-}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
@@ -182,12 +135,20 @@ export const useCityForm = (id?: string) => {// to City
  * @param id - ID del estado a actualizar
  */
 export const useStateForm = (id?: string) => {// to State
-  const { fetchLocationById } = useQueryLocation()
-  const { data: state } = fetchLocationById<State>('state', id as string)
+  const { fetchLocationById, fetchAllLocations } = useQueryLocation()
+  const { data: state, isLoading: isLoadingState } = fetchLocationById<State>('state', id as string)
+  const { data: countries, isLoading: isLoadingCountries } = fetchAllLocations<Country>('country')
 
   const createForm = useCreateStateForm()
   const updateForm = useUpdateStateForm(state as State)
-  return id ? updateForm : createForm
+
+  return {
+    isLoading: isLoadingState || isLoadingCountries,
+    methods: id ? updateForm.methods : createForm.methods,
+    onSubmit: id ? updateForm.onSubmit : createForm.onSubmit,
+    options: countries?.map((e) => ({ label: e.name, value: e._id })) || []
+  }
+
 }
 
 /**
@@ -197,9 +158,23 @@ export const useStateForm = (id?: string) => {// to State
 export const useCountryForm = (id?: string) => {// to Country
   const { fetchLocationById } = useQueryLocation()
   const { data: country } = fetchLocationById<Country>('country', id as string)
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('country')
 
-  const createForm = useCreateCountryForm()
-  const updateForm = useUpdateCountryForm(country as Country)
-  return id ? updateForm : createForm
+  const methods = useForm<CountryFormProps>({
+    resolver: zodResolver(countrySchema),
+    defaultValues: countryDefaultValues,
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {// load data
+    country && methods.reset({ name: country.name })
+  }, [country])
+
+  const onSubmit = methods.handleSubmit(async (data: any) => {
+    id ? updateLocation({ id, data }) : createLocation(data)
+    methods.reset()
+  })
+
+  return { methods, onSubmit, isLoading }
 }
 /*---------------------------------------------------------------------------------------------------------*/

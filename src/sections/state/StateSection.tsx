@@ -1,3 +1,4 @@
+import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useStateForm } from '@/hooks/auth/useLocationForm'
@@ -11,16 +12,18 @@ import FormStateSection from './FormStateSection'
 interface StateSectionProps extends ThemeContextProps { id: string | undefined }
 
 const StateSection = ({ theme, id }: StateSectionProps) => {
+  const { methods, onSubmit, options, isLoading } = useStateForm(id)
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useStateSection({ id, setTab })
-  const { methods, onSubmit } = useStateForm(id)
+
+  if (isLoading) return <DashboardSkeleton theme={theme} />
 
   return (
     <div className="container mx-auto p-6 space-y-8">
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Países </h1>
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Departamentos </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
             <TabsTrigger value="form">Formulario</TabsTrigger>
@@ -39,6 +42,7 @@ const StateSection = ({ theme, id }: StateSectionProps) => {
             theme={theme}
             isUpdate={!!id}
             methods={methods}
+            options={options}
             onChange={handle}
             onSubmit={onSubmit}
           />

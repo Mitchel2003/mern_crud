@@ -106,7 +106,7 @@ export const useUpdateClientForm = (client: Client) => {
       nit: client.nit,
       name: client.name,
       email: client.email,
-      phone: client.phone,
+      phone: String(client.phone),
     })
   }, [client])
 
