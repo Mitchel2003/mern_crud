@@ -7,12 +7,22 @@ import { UserProvider } from "@/context/UserContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
-import Dashboard from "@/pages/Dashboard";
-import Register from "@/pages/Register";
+import Curriculum from "@/pages/Curriculum";
+import Maintenance from "@/pages/Maintenance";
+
+// import Engineer from "@/pages/Engineer";
+// import Medical from "@/pages/Medical";
+import Client from "@/pages/Client";
+// import Admin from "@/pages/Admin";
+
+// import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
 import State from "@/pages/State";
-import Login from "@/pages/Login";
 import City from "@/pages/City";
+
+import Dashboard from "@/pages/Dashboard";
+import Register from "@/pages/Register";
+import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 
 function App() {
@@ -36,23 +46,49 @@ function App() {
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
-                    {/** test this routes */}
-                    {/* <Route path="/form/cvs" element={<CurriculumList />} /> */}
-                    {/* <Route path="/form/cv/:id" element={<CurriculumForm />} /> */}
-                    {/* <Route path="/form/maintenance/:id" element={<MaintenanceForm />} /> */}
+
+                    {/* forms routes */}
+                    <Route path="/form/curriculum" element={<Curriculum />} />
+                    <Route path="/form/curriculums" element={<Curriculum />} />
+                    <Route path="/form/curriculum/:id" element={<Curriculum />} />
+
+                    <Route path="/form/maintenance" element={<Maintenance />} />
+                    <Route path="/form/maintenances" element={<Maintenance />} />
+                    <Route path="/form/maintenance/:id" element={<Maintenance />} />
+
+                    {/* user routes */}
+                    {/* <Route path="/users/engineers" element={<Engineer />} /> {/*new engineer*/}
+                    {/* <Route path="/users/engineers" element={<Engineer />} /> {/*list engineers*/}
+                    {/* <Route path="/users/engineer/:id" element={<Engineer />} /> {/*edit engineer*/}
+
+                    {/* <Route path="/users/medical" element={<Medical />} /> {/*new medical*/}
+                    {/* <Route path="/users/medicals" element={<Medical />} /> {/*list medicals*/}
+                    {/* <Route path="/user/medical/:id" element={<Medical />} /> {/*edit medical*/}
+
+                    {/* <Route path="/users/admin" element={<Admin />} /> {/*new admin*/}
+                    {/* <Route path="/users/admins" element={<Admin />} /> {/*list admins*/}
+                    {/* <Route path="/user/admin/:id" element={<Admin />} /> {/*edit admin*/}
+
+                    <Route path="/client" element={<Client />} /> {/*new client*/}
+                    <Route path="/clients" element={<Client />} /> {/*list clients*/}
+                    <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                     {/* location routes */}
-                    <Route path="/location/country" element={<Country />} /> {/*new country*/}
-                    <Route path="/location/countries" element={<Country />} />{/*list countries*/}
-                    <Route path="/location/country/:id" element={<Country />} />{/*edit country*/}
-
-                    <Route path="/location/state" element={<State />} /> {/*new state*/}
-                    <Route path="/location/states" element={<State />} />{/*list states*/}
-                    <Route path="/location/state/:id" element={<State />} />{/*edit state*/}
+                    {/* <Route path="/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
+                    {/* <Route path="/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
+                    {/* <Route path="/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
 
                     <Route path="/location/city" element={<City />} /> {/*new city*/}
-                    <Route path="/location/cities" element={<City />} />{/*list cities*/}
-                    <Route path="/location/city/:id" element={<City />} />{/*edit city*/}
+                    <Route path="/location/cities" element={<City />} /> {/*list cities*/}
+                    <Route path="/location/city/:id" element={<City />} /> {/*edit city*/}
+
+                    <Route path="/location/state" element={<State />} /> {/*new state*/}
+                    <Route path="/location/states" element={<State />} /> {/*list states*/}
+                    <Route path="/location/state/:id" element={<State />} /> {/*edit state*/}
+
+                    <Route path="/location/country" element={<Country />} /> {/*new country*/}
+                    <Route path="/location/countries" element={<Country />} /> {/*list countries*/}
+                    <Route path="/location/country/:id" element={<Country />} /> {/*edit country*/}
                   </Route>
 
                 </Route>

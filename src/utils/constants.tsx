@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileStackIcon, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon } from 'lucide-react'
 import { NavItemProps } from "@/interfaces/props.interface"
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -96,34 +96,44 @@ export const links = () => {
       label: 'Usuarios',
       icon: UserCircle,
       subItems: [
+        {// medicals
+          icon: UserCircle,
+          label: 'Médicos',
+          href: '/users/medicals',
+        },
         {// engineers
-          icon: UserCog2,
+          icon: UserPenIcon,
           label: 'Ingenieros',
           href: '/users/engineers',
         },
-        {// clients
-          icon: Building2,
-          label: 'Clientes',
-          href: '/users/clients',
+        {// admins
+          icon: UserCog2,
+          href: '/users/admins',
+          label: 'Administradores',
         }
       ]
     },
     {/** institution **/
       label: 'Institución',
-      icon: Building,
+      icon: Building2,
       subItems: [
+        {// clients
+          icon: Building,
+          label: 'Clientes',
+          href: '/clients',
+        },
         {// headquarters
           label: 'Sedes',
-          icon: FileStackIcon,
+          icon: HomeIcon,
           href: '/location/headquarters',
         },
         {// areas
+          icon: MapPin,
           label: 'Areas',
-          icon: FileStackIcon,
           href: '/location/areas',
         },
         {// offices
-          icon: Building2,
+          icon: BriefcaseIcon,
           label: 'Consultorios',
           href: '/location/offices',
         },
@@ -164,6 +174,8 @@ export const links = () => {
   /*---------------------------------------------------------------------------------------------------------*/
 
   return !isAuth ? navGuestItems : (
-    user?.role === 'admin' ? navAdminItems : (user?.role === 'medical' ? navMedicalItems : navEngineerItems)
+    user?.role === 'admin'
+      ? navAdminItems
+      : (user?.role === 'medical' ? navMedicalItems : navEngineerItems)
   )
 }

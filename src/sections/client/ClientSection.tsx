@@ -1,31 +1,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-// import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import { useClientForm } from '@/hooks/auth/useUserForm'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-// import TableCurriculumSection from './TableCurriculumSection'
-import FormMaintenanceSection from './FormMaintenanceSection'
-import { useForm } from 'react-hook-form'
+import TableClientSection from './TableClientSection'
+import FormClientSection from './FormClientSection'
 
-interface MaintenanceSectionProps extends ThemeContextProps { id: string | undefined }
+interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
 
-const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
+const ClientSection = ({ theme, id }: ClientSectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useMaintenanceSection({ id, setTab })
-  // const { methods, onSubmit } = useCurriculumForm(id)
+  const { handle } = useClientSection({ id, setTab })
+  const { methods, onSubmit } = useClientForm(id)
 
-  const methods = useForm() //temporal
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
   return (
     <div className="container mx-auto p-6 space-y-8">
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Mantenimiento </h1>
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Clientes </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
             <TabsTrigger value="form">Formulario</TabsTrigger>
@@ -34,13 +29,13 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          {/* <TableCurriculumSection
+          <TableClientSection
             theme={theme}
             onChange={handle}
-          /> */}
+          />
         </TabsContent>
         <TabsContent value="form">
-          <FormMaintenanceSection
+          <FormClientSection
             theme={theme}
             isUpdate={!!id}
             methods={methods}
@@ -53,7 +48,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
   )
 }
 
-export default MaintenanceSection
+export default ClientSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
  * Hook para manejar las secciones "tabs"
@@ -61,12 +56,12 @@ export default MaintenanceSection
  * @param setTab - Función para cambiar el tab actual
  * @returns handle - Función para cambiar el tab actual
  */
-interface UseMaintenanceSectionProps { id?: string; setTab: (value: string) => void }
-export const useMaintenanceSection = ({ id, setTab }: UseMaintenanceSectionProps) => {
+interface UseClientSectionProps { id?: string; setTab: (value: string) => void }
+export const useClientSection = ({ id, setTab }: UseClientSectionProps) => {
   const navigate = useNavigate()
   const handle = (value: string) => {
-    if (value === 'form') navigate(`/form/maintenance${id ? `/${id}` : ''}`)
-    else navigate('/form/maintenances')
+    if (value === 'form') navigate(`/client${id ? `/${id}` : ''}`)
+    else navigate('/clients')
     setTab(value)
   }
   return { handle }

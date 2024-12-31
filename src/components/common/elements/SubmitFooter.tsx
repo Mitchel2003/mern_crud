@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { CardFooter } from "#/ui/card"
 import { Button } from "#/ui/button"
 import { cn } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 
 interface SubmitFooterProps extends ThemeContextProps {
   onChange?: () => void
@@ -12,6 +13,7 @@ interface SubmitFooterProps extends ThemeContextProps {
 }
 
 const SubmitFooter = ({ theme, onChange, to = '/', disabled = false }: SubmitFooterProps) => {
+  const isMobile = useIsMobile()
   const navigate = useNavigate()
 
   return (
@@ -26,7 +28,7 @@ const SubmitFooter = ({ theme, onChange, to = '/', disabled = false }: SubmitFoo
         )}
       >
         <Ban className="text-red-600 mr-2 h-4 w-4" />
-        Cancelar
+        {isMobile ? '' : 'Cancelar'}
       </Button>
 
       <Button
@@ -38,7 +40,7 @@ const SubmitFooter = ({ theme, onChange, to = '/', disabled = false }: SubmitFoo
         )}
       >
         <CheckSquare className="text-green-600 mr-2 h-4 w-4" />
-        Guardar
+        {isMobile ? '' : 'Guardar'}
       </Button>
     </CardFooter>
   )

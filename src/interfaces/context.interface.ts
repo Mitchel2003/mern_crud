@@ -1,3 +1,5 @@
+import { BaseMDB } from "@/interfaces/db.interface"
+
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -9,36 +11,9 @@ export type ThemeContext = {
 export type ThemeContextProps = { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------SidebarContext--------------------------------------------------*/
-export type SidebarContext = {
-  setOpenMobile: (open: boolean) => void
-  setOpen: (open: boolean) => void
-  toggleSidebar: () => void
-  openMobile: boolean
-  isMobile: boolean
-  open: boolean
-  state: "expanded" | "collapsed"
-} | undefined
-/*---------------------------------------------------------------------------------------------------------*/
-
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
-interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
-interface Permissions { overwrite: Overwrite; headquarters: [] }
-export type UserCredentials = {
-  uid: string
-  _id: string
-  role: string
-  email: string
-  username: string
-  permissions: Permissions
-
-  //timestamps
-  updatedAt: Date
-  createdAt: Date
-} | null
-
 export type AuthContext = {
-  user: UserCredentials
+  user: User
   isAuth: boolean
   loading: boolean
   signin: (data: object) => Promise<void>
@@ -49,15 +24,12 @@ export type AuthContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------UserContext--------------------------------------------------*/
+interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
+interface Permissions { overwrite: Overwrite; headquarters: [] }
 export type UserType = 'client' | 'user'
-export type BaseUser = {
-  _id: string
-  createdAt: Date
-  updatedAt: Date
-}
 
-export type User = BaseUser & {}
-export type Client = BaseUser & { name: string, address: string }
+export type User = BaseMDB & { uid: string; role: string; email: string; username: string; permissions: Permissions } | null
+export type Client = BaseMDB & { name: string, email: string, phone: string, nit: string }
 
 export type UserContext = {
   loading: boolean
@@ -67,6 +39,25 @@ export type UserContext = {
   create: (type: UserType, data: object) => Promise<void>
   update: (type: UserType, id: string, data: object) => Promise<void>
   delete: (type: UserType, id: string) => Promise<void>
+} | undefined
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------LocationContext--------------------------------------------------*/
+export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
+
+export type Country = BaseMDB & { name: string }
+export type State = BaseMDB & { name: string; country: Country }
+export type City = BaseMDB & { name: string; state: State }
+export type Headquarter = BaseMDB & { name: string; address: string; client: Client; city: City }
+
+export type LocationContext = {
+  loading: boolean
+  getAll: <T>(type: LocationType) => Promise<T[]>
+  getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: LocationType, query: object, populate?: string) => Promise<T[]>
+  create: (type: LocationType, data: object) => Promise<void>
+  update: (type: LocationType, id: string, data: object) => Promise<void>
+  delete: (type: LocationType, id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -119,30 +110,5 @@ export type CurriculumContext = {
   createCV: (cv: object) => Promise<Curriculum>
   updateCV: (id: string, cv: object) => Promise<Curriculum>
   deleteCV: (id: string) => Promise<Curriculum>
-} | undefined
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------LocationContext--------------------------------------------------*/
-export type LocationType = 'country' | 'state' | 'city' | 'headquarter'
-export type BaseLocation = {
-  _id: string
-  name: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-export type Country = BaseLocation & { name: string }
-export type State = BaseLocation & { name: string; country: Country }
-export type City = BaseLocation & { name: string; state: State }
-export type Headquarter = BaseLocation & { name: string; address: string; client: string; city: City }
-
-export type LocationContext = {
-  loading: boolean
-  getAll: <T>(type: LocationType) => Promise<T[]>
-  getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
-  getByQuery: <T>(type: LocationType, query: object, populate?: string) => Promise<T[]>
-  create: (type: LocationType, data: object) => Promise<void>
-  update: (type: LocationType, id: string, data: object) => Promise<void>
-  delete: (type: LocationType, id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/

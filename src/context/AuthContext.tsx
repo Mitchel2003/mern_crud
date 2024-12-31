@@ -1,4 +1,4 @@
-import { AuthContext, UserCredentials as User } from "@/interfaces/context.interface";
+import { AuthContext, User } from "@/interfaces/context.interface";
 import { useNotification } from "@/hooks/ui/useNotification";
 import { isAxiosResponse } from "@/interfaces/db.interface";
 import { useLoadingScreen } from "@/hooks/ui/useLoading";

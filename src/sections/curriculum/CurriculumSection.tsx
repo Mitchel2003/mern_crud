@@ -1,138 +1,74 @@
-import { Card, CardContent, CardFooter } from "#/ui/card"
-import HeaderForm from "#/common/elements/HeaderForm"
-import { Button } from "#/ui/button"
-import { Form } from "#/ui/form"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
+import { ThemeContextProps } from '@/interfaces/context.interface'
+// import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
-import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
-import EquipmentClassificationSection from "./EquipmentClassificationSection"
-import DetailsEquipmentSection from "./DetailsEquipmentSection"
-import EngineerServiceSection from "./EngineerServiceSection"
-import CharacteristicsSection from "./CharacteristicsSection"
-import InspectionSection from "./PresetInspectionSection"
-import MaintenanceSection from "./MaintenanceSection"
-import AccessoriesSection from "./AccessoriesSection"
-import OfficeAreaSection from "./OfficeAreaSection"
-import BasicDataSection from "./BasicDataSection"
+// import TableCurriculumSection from './TableCurriculumSection'
+import FormCurriculumSection from './FormCurriculumSection'
+import { useForm } from 'react-hook-form'
 
-// import { useQueryReact, useCustomMutation } from "@/hooks/useCurriculum"
-import { ThemeContextProps } from "@/interfaces/context.interface"
-import { RenderFormat } from "@/utils/RenderFormat"
-import { cn } from "@/lib/utils"
+interface CurriculumSectionProps extends ThemeContextProps { id: string | undefined }
 
-// import { useNavigate, useParams } from "react-router-dom"
-// import { FieldValues } from "react-hook-form"
-import { useForm } from "react-hook-form"
-import { CheckSquare, Ban } from "lucide-react"
-// import { useEffect } from "react"
+const CurriculumSection = ({ theme, id }: CurriculumSectionProps) => {
+  const [tab, setTab] = useState(id ? 'form' : 'table')
+  const { handle } = useCurriculumSection({ id, setTab })
+  // const { methods, onSubmit } = useCurriculumForm(id)
 
-interface CurriculumSectionProps extends ThemeContextProps { }
-
-const CurriculumSection = ({ theme }: CurriculumSectionProps) => {
-  // const { id = 'new' } = useParams()
-  // const navigate = useNavigate()
-  const form = useForm()
-
-  // const mutation = useCustomMutation().createOrUpdateCV(id)
-  // const { data: cv, error, isLoading } = useQueryReact().fetchCV(id)
-
-  // useEffect(() => { if (mutation.isSuccess) navigate('/curriculums') }, [mutation.isSuccess])
-  // useEffect(() => { setInputValues() }, [cv])
-
-  // /** Function to handle onClick */
-  const onSubmit = form.handleSubmit(async (values) => {
-    // mutation.mutate(schemaCV(values))
-    console.log(values)
-  })
-  // const setInputValues = () => {
-  //   if (!cv || id === 'new') return;
-  //   // setValue('title', task.title);
-  //   // setValue('description', task.description);
-  //   // setValue('date', dayjs(task.date).utc().format('YYYY-MM-DD'));
-  // }
-  // if (error) return (<div className="bg-red-600"> <h1 className="text-white"> {error.message} </h1> </div>)
-  // if (isLoading) return (<h1 className="font-bold text-2xl"> Cargando... </h1>)
-
+  const methods = useForm() //temporal
+  const onSubmit = (data: any) => {
+    console.log(data)
+  }
   return (
-    <Form {...form}>
-      <form onSubmit={onSubmit}>
-        <Card
-          id="curriculum-form"
-          className={cn(
-            'w-full mx-auto shadow-lg',
-            'backdrop-filter backdrop-blur-lg',
-            theme === 'dark'
-              ? 'bg-zinc-800 hover:shadow-gray-900'
-              : 'bg-gray-50 hover:shadow-purple-500/60'
-          )}
-        >
+    <div className="container mx-auto p-6 space-y-8">
+      <Tabs value={tab} onValueChange={handle}>
+        {/* tabs header */}
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Curriculum </h1>
+          <TabsList>
+            <TabsTrigger value="table">Tabla</TabsTrigger>
+            <TabsTrigger value="form">Formulario</TabsTrigger>
+          </TabsList>
+        </div>
 
-          {/* -------------------- Header form -------------------- */}
-          <HeaderForm
+        {/* tabs content */}
+        <TabsContent value="table">
+          {/* <TableCurriculumSection
             theme={theme}
-            title="CV - Equipo Biomédico"
-            description="Formato de Curriculum Vitae para equipos biomedicos"
-            breadcrumbs={[
-              { description: "Codigo: FHV-01" },
-              { description: "Vigente desde: 01/08/2019" },
-              { description: "Version: 02" }
-            ]}
+            onChange={handle}
+          /> */}
+        </TabsContent>
+        <TabsContent value="form">
+          <FormCurriculumSection
+            theme={theme}
+            isUpdate={!!id}
+            methods={methods}
+            onChange={handle}
+            onSubmit={onSubmit}
           />
-
-          {/* -------------------- Content form -------------------- */}
-          <CardContent className="pt-6 space-y-8">
-            <RenderFormat format={[
-              <OfficeAreaSection theme={theme} />,
-              <BasicDataSection theme={theme} />,
-              <DetailsEquipmentSection theme={theme} />,
-              <EquipmentClassificationSection theme={theme} />,
-              <TechnicalCharacteristicsSection theme={theme} />,
-              <MaintenanceSection theme={theme} />,
-              <InspectionSection theme={theme} />,
-              <AccessoriesSection theme={theme} />,
-              <CharacteristicsSection theme={theme} />,
-              <EngineerServiceSection theme={theme} />
-            ]} />
-          </CardContent>
-
-          {/* -------------------- Footer form (Buttons submit) -------------------- */}
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              className={cn(
-                'hover:scale-105',
-                theme === 'dark'
-                  ? 'bg-zinc-700 border border-zinc-600 text-zinc-100 hover:bg-zinc-900'
-                  : 'bg-white border border-gray-200 text-gray-900 hover:bg-white'
-              )}
-            >
-              <Ban className="text-red-600 mr-2 h-4 w-4" /> Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              className={cn(
-                'hover:scale-105',
-                theme === 'dark'
-                  ? 'bg-zinc-700 border border-zinc-600 text-zinc-100 hover:bg-zinc-900'
-                  : 'bg-white border border-gray-200 text-gray-900 hover:bg-white'
-              )}
-            >
-              <CheckSquare className="text-green-600 mr-2 h-4 w-4" /> Guardar
-            </Button>
-          </CardFooter>
-
-        </Card>
-      </form>
-    </Form >
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }
 
 export default CurriculumSection
-
+/*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Nos ayuda a construir un formato de tarea y enviar solicitudes como crear o actualizar
- * @param values es un objeto de datos que representa los campos en el contexto del formulario
- * @returns {object} un objeto que significa el esquema de tarea a utilizar en la solicitud
+ * Hook para manejar las secciones "tabs"
+ * @param id - ID del estado a actualizar
+ * @param setTab - Función para cambiar el tab actual
+ * @returns handle - Función para cambiar el tab actual
  */
-// const schemaCV = (values: FieldValues): object => ({ ...values })
+interface UseCurriculumSectionProps { id?: string; setTab: (value: string) => void }
+export const useCurriculumSection = ({ id, setTab }: UseCurriculumSectionProps) => {
+  const navigate = useNavigate()
+  const handle = (value: string) => {
+    if (value === 'form') navigate(`/form/curriculum${id ? `/${id}` : ''}`)
+    else navigate('/form/curriculums')
+    setTab(value)
+  }
+  return { handle }
+}
 /*---------------------------------------------------------------------------------------------------------*/

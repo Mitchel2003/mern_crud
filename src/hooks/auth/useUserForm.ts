@@ -1,6 +1,6 @@
-import { Client, UserCredentials } from "@/interfaces/context.interface"
+import { useQueryUser, useUserMutation } from "@/hooks/useUserQuery"
+import { Client, User } from "@/interfaces/context.interface"
 import { useAuthContext } from "@/context/AuthContext"
-import { useUserMutation } from "@/hooks/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
@@ -14,19 +14,11 @@ import {
   clientUpdateSchema, ClientUpdateFormProps
 } from "@/schemas/auth.schema"
 
-/*--------------------------------------------------useCreateForm--------------------------------------------------*/
-const userDefaultValues = {
-  role: '',
-  email: '',
-  username: '',
-  password: '',
-  headquarters: []
-}
-const clientDefaultValues = {
-  name: '',
-  address: ''
-}
+const userDefaultValues = { role: '', email: '', username: '', password: '', headquarters: [] }
+const userUpdateDefaultValues = { role: '', username: '', permissions: { overwrite: { read: false, create: false, update: false, delete: false }, headquarters: [] } }
+const clientDefaultValues = { nit: '', name: '', phone: '', email: '' }
 
+/*--------------------------------------------------use create form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de creación de usuarios */
 export const useCreateUserForm = () => {
   const { signup } = useAuthContext()
@@ -64,23 +56,24 @@ export const useCreateClientForm = () => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------useUpdateForm--------------------------------------------------*/
+/*--------------------------------------------------use update form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de actualización de usuarios
  * @param user - Usuario actual a actualizar
  */
-export const useUpdateUserForm = (user: UserCredentials) => {
+export const useUpdateUserForm = (user: User) => {
   const { updateUser } = useUserMutation("user")
 
   const methods = useForm<UserUpdateFormProps>({
     resolver: zodResolver(userUpdateSchema),
-    defaultValues: undefined,
+    defaultValues: userUpdateDefaultValues,
     mode: "onSubmit"
   })
 
   // Cargar datos iniciales del usuario
   useEffect(() => {
     user && methods.reset({
+      role: user.role,
       username: user.username,
       permissions: user.permissions
     })
@@ -103,15 +96,17 @@ export const useUpdateClientForm = (client: Client) => {
 
   const methods = useForm<ClientUpdateFormProps>({
     resolver: zodResolver(clientUpdateSchema),
-    defaultValues: undefined,
+    defaultValues: clientDefaultValues,
     mode: "onSubmit"
   })
 
   // Cargar datos iniciales del cliente
   useEffect(() => {
     client && methods.reset({
+      nit: client.nit,
       name: client.name,
-      address: client.address,
+      email: client.email,
+      phone: client.phone,
     })
   }, [client])
 
@@ -121,5 +116,33 @@ export const useUpdateClientForm = (client: Client) => {
   })
 
   return { methods, onSubmit }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de estados "departamentos"
+ * @param id - ID del estado a actualizar
+ */
+export const useUserForm = (id?: string) => {// to User
+  const { fetchUserById } = useQueryUser()
+  const { data: user } = fetchUserById<User>('user', id as string)
+
+  const createForm = useCreateUserForm()
+  const updateForm = useUpdateUserForm(user as User)
+  return id ? updateForm : createForm
+}
+
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de ciudades
+ * @param id - ID de la ciudad a actualizar
+ */
+export const useClientForm = (id?: string) => {// to Client
+  const { fetchUserById: fetchClientById } = useQueryUser()
+  const { data: client } = fetchClientById<Client>('client', id as string)
+
+  const createForm = useCreateClientForm()
+  const updateForm = useUpdateClientForm(client as Client)
+  return id ? updateForm : createForm
 }
 /*---------------------------------------------------------------------------------------------------------*/

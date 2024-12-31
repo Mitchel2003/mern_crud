@@ -12,3 +12,12 @@ export interface AxiosResponse<T = IError> { response: { data: T } }
 export function isAxiosResponse(e: unknown): e is AxiosResponse {
   return (typeof e === "object" && e !== null && "response" in e)
 }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+export type BaseMDB = {
+  _id: string
+  createdAt: Date
+  updatedAt: Date
+}
+/*---------------------------------------------------------------------------------------------------------*/

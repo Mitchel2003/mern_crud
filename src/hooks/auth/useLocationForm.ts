@@ -20,7 +20,6 @@ const stateDefaultValues = { name: '', country: '' }
 const countryDefaultValues = { name: '' }
 
 /*--------------------------------------------------use create form--------------------------------------------------*/
-
 /** Hook personalizado para manejar el formulario de creación de ciudades */
 export const useCreateCityForm = () => {// to City
   const { createLocation: createCity } = useLocationMutation("city")
