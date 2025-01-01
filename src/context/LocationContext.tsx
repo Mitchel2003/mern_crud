@@ -39,7 +39,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
     setLoadingStatus('Obteniendo lista...')
     try {
       const response = await useApi(type).getAll()
-      notifySuccess({ title: "Éxito", message: "Lista obtenida correctamente" })
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
@@ -57,7 +56,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
     setLoadingStatus('Buscando por identificador...')
     try {
       const response = await useApi(type).getById(id)
-      notifySuccess({ title: "Éxito", message: "Datos obtenidos correctamente" })
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
@@ -77,7 +75,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
     setLoadingStatus('Buscando por consulta...')
     try {
       const response = await useApi(type).getByQuery(query, populate)
-      notifySuccess({ title: "Éxito", message: "Lista obtenida correctamente" })
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })

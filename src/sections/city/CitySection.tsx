@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useCityForm } from '@/hooks/auth/useLocationForm'
+// import { useCityForm } from '@/hooks/auth/useLocationForm'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -13,7 +13,7 @@ interface CitySectionProps extends ThemeContextProps { id: string | undefined }
 const CitySection = ({ theme, id }: CitySectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useCitySection({ id, setTab })
-  const { methods, onSubmit } = useCityForm(id)
+  // const { methods, onSubmit } = useCityForm(id)
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -35,13 +35,13 @@ const CitySection = ({ theme, id }: CitySectionProps) => {
           />
         </TabsContent>
         <TabsContent value="form">
-          <FormCitySection
+          {/* <FormCitySection
             theme={theme}
             isUpdate={!!id}
             methods={methods}
             onChange={handle}
             onSubmit={onSubmit}
-          />
+          /> */}
         </TabsContent>
       </Tabs>
     </div>

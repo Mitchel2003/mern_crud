@@ -1,7 +1,7 @@
 import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useStateForm } from '@/hooks/auth/useLocationForm'
+// import { useStateForm } from '@/hooks/auth/useLocationForm'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -12,11 +12,11 @@ import FormStateSection from './FormStateSection'
 interface StateSectionProps extends ThemeContextProps { id: string | undefined }
 
 const StateSection = ({ theme, id }: StateSectionProps) => {
-  const { methods, onSubmit, options, isLoading } = useStateForm(id)
+  // const { methods, onSubmit, options, isLoading } = useStateForm(id)
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useStateSection({ id, setTab })
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  // if (isLoading) return <DashboardSkeleton theme={theme} />
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -38,14 +38,14 @@ const StateSection = ({ theme, id }: StateSectionProps) => {
           />
         </TabsContent>
         <TabsContent value="form">
-          <FormStateSection
+          {/* <FormStateSection
             theme={theme}
             isUpdate={!!id}
             methods={methods}
             options={options}
             onChange={handle}
             onSubmit={onSubmit}
-          />
+          /> */}
         </TabsContent>
       </Tabs>
     </div>

@@ -9,7 +9,6 @@ import AlertDialog from '#/common/elements/AlertDialog'
 import HeaderForm from "#/common/elements/HeaderForm"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
-import { useState } from "react"
 
 interface FormCountrySectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -17,16 +16,13 @@ interface FormCountrySectionProps extends ThemeContextProps {
 }
 
 const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) => {
-  const { methods, onSubmit, isLoading } = useCountryForm(id)
-  const [confirm, setConfirm] = useState(false)
+  const { methods, isLoading, open, setOpen, onConfirm, handleSubmit } = useCountryForm(id, () => { onChange('table') })
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
-
-  const handleConfirm = () => { setConfirm(false); onSubmit() }
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={(e) => { e.preventDefault(); setConfirm(true) }}>
+        <form onSubmit={handleSubmit}>
           <div className="flex justify-center">
             <Card
               className={cn(
@@ -63,10 +59,10 @@ const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) =>
       </FormProvider>
 
       <AlertDialog
+        open={open}
         theme={theme}
-        open={confirm}
-        onConfirm={handleConfirm}
-        onOpenChange={setConfirm}
+        onConfirm={onConfirm}
+        onOpenChange={() => setOpen(false)}
         description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo país"}`}
         confirmLabel="Confirmar"
         cancelLabel="Cancelar"
