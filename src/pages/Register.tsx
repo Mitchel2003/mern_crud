@@ -14,7 +14,7 @@ const Register = () => {
 
   return (
     <div className={cn("flex justify-center items-center")}>
-      <RegisterSection theme={theme} />
+      <RegisterSection theme={theme} id={undefined} />
     </div>
   )
 }
