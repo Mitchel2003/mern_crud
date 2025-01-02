@@ -36,19 +36,14 @@ const FormSkeleton = () => (
   <CardContent className="space-y-6">
     {/* Username field */}
     <FormFieldSkeleton />
-    
     {/* Email field */}
     <FormFieldSkeleton />
-    
     {/* Password field */}
     <FormFieldSkeleton />
-    
     {/* Role select */}
     <FormFieldSkeleton hasSelect />
-    
     {/* Client select */}
     <FormFieldSkeleton hasSelect />
-    
     {/* Submit buttons */}
     <div className="space-y-4 pt-2">
       <Skeleton className="h-10 w-full" />
@@ -76,7 +71,7 @@ interface FormFieldSkeletonProps {
 const FormFieldSkeleton = ({ hasSelect = false }: FormFieldSkeletonProps) => (
   <div className="space-y-2">
     <Skeleton className="h-4 w-[100px]" /> {/* Label */}
-    <Skeleton 
+    <Skeleton
       className={cn(
         "h-10 w-full",
         hasSelect && "rounded-lg" // Añade bordes redondeados para selects

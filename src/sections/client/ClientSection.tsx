@@ -1,19 +1,18 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useClientForm } from '@/hooks/auth/useUserForm'
-import { useNavigate } from 'react-router-dom'
+import { useTabs } from '@/hooks/core/useTabs'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 import TableClientSection from './TableClientSection'
 import FormClientSection from './FormClientSection'
+const route = '/client'
 
 interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
 
 const ClientSection = ({ theme, id }: ClientSectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useClientSection({ id, setTab })
-  const { methods, onSubmit } = useClientForm(id)
+  const { handle } = useTabs({ id, setTab, to: route })
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -36,11 +35,9 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
         </TabsContent>
         <TabsContent value="form">
           <FormClientSection
+            id={id}
             theme={theme}
-            isUpdate={!!id}
-            methods={methods}
             onChange={handle}
-            onSubmit={onSubmit}
           />
         </TabsContent>
       </Tabs>
@@ -49,21 +46,3 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
 }
 
 export default ClientSection
-/*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Hook para manejar las secciones "tabs"
- * @param id - ID del estado a actualizar
- * @param setTab - Función para cambiar el tab actual
- * @returns handle - Función para cambiar el tab actual
- */
-interface UseClientSectionProps { id?: string; setTab: (value: string) => void }
-export const useClientSection = ({ id, setTab }: UseClientSectionProps) => {
-  const navigate = useNavigate()
-  const handle = (value: string) => {
-    if (value === 'form') navigate(`/client${id ? `/${id}` : ''}`)
-    else navigate('/clients')
-    setTab(value)
-  }
-  return { handle }
-}
-/*---------------------------------------------------------------------------------------------------------*/
