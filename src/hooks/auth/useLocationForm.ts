@@ -34,7 +34,7 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
 
   useEffect(() => {
     city && methods.reset({ name: city.name, state: city.state._id })
-  }, [city])
+  }, [city, states])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },
@@ -68,7 +68,7 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
 
   useEffect(() => {
     state && methods.reset({ name: state.name, country: state.country._id })
-  }, [state])
+  }, [state, countries])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },

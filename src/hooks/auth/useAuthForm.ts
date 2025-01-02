@@ -108,10 +108,10 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
 
   useEffect(() => {
     client && methods.reset({
+      nit: client.nit,
       name: client.name,
       email: client.email,
-      phone: client.phone,
-      nit: client.nit
+      phone: String(client.phone),
     })
   }, [client])
 
