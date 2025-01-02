@@ -15,6 +15,7 @@ import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableCountrySectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface CountryActionsProps { country: Country; onChange: (value: string) => void }
 
 /**
  * Permite construir un componente de tabla para mostrar los países
@@ -24,7 +25,7 @@ interface TableCountrySectionProps extends ThemeContextProps { onChange: (value:
  */
 const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useActionConfirmContext()
-  const { data } = useQueryLocation().fetchAllLocations<Country>('country')
+  const { data: countries } = useQueryLocation().fetchAllLocations<Country>('country')
 
   return (
     <>
@@ -34,8 +35,8 @@ const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
           theme === "dark" ? "bg-zinc-900/80" : "bg-white"
         )}>
           <DataTable
-            data={data || []}
             filterColumn="name"
+            data={countries || []}
             columns={columns(onChange)}
           />
         </Card>
@@ -80,13 +81,12 @@ const columns = (onChange: (value: string) => void): ColumnDef<Country>[] => [
   }
 ]
 
-interface UseCountryActionsProps { country: Country; onChange: (value: string) => void }
 /**
  * Hook personalizado para manejar las acciones del dropdown de países
  * @param country - El país sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el país
  */
-const useCountryActions = ({ country, onChange }: UseCountryActionsProps): ActionProps[] => {
+const useCountryActions = ({ country, onChange }: CountryActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('country')
   const { confirmAction } = useActionConfirmContext()
   const navigate = useNavigate()

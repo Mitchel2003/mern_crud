@@ -15,6 +15,7 @@ import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableStateSectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface StateActionsProps { state: State; onChange: (value: string) => void }
 
 /**
  * Permite construir un componente de tabla para mostrar los departamentos
@@ -24,7 +25,7 @@ interface TableStateSectionProps extends ThemeContextProps { onChange: (value: s
  */
 const TableStateSection = ({ theme, onChange }: TableStateSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useActionConfirmContext()
-  const { data } = useQueryLocation().fetchAllLocations<State>('state')
+  const { data: states } = useQueryLocation().fetchAllLocations<State>('state')
 
   return (
     <>
@@ -34,8 +35,8 @@ const TableStateSection = ({ theme, onChange }: TableStateSectionProps) => {
           theme === "dark" ? "bg-zinc-900/80" : "bg-white"
         )}>
           <DataTable
-            data={data || []}
             filterColumn="name"
+            data={states || []}
             columns={columns(onChange)}
           />
         </Card>
@@ -70,9 +71,9 @@ const columns = (onChange: (value: string) => void): ColumnDef<State>[] => [
     header: "Nombre del departamento"
   },
   {
-    accessorKey: "country",
     header: "País",
-    cell: ({ row }) => row.original.country.name
+    accessorKey: "country",
+    cell: ({ row }) => row.original.country?.name || 'Sin país'
   },
   {
     accessorKey: "updatedAt",
@@ -85,13 +86,12 @@ const columns = (onChange: (value: string) => void): ColumnDef<State>[] => [
   }
 ]
 
-interface UseStateActionsProps { state: State; onChange: (value: string) => void }
 /**
  * Hook personalizado para manejar las acciones del dropdown de departamentos
  * @param state - El departamento sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el departamento
  */
-const useStateActions = ({ state, onChange }: UseStateActionsProps): ActionProps[] => {
+const useStateActions = ({ state, onChange }: StateActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('state')
   const { confirmAction } = useActionConfirmContext()
   const navigate = useNavigate()
