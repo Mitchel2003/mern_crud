@@ -1,22 +1,18 @@
-import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-// import { useStateForm } from '@/hooks/auth/useLocationForm'
-import { useNavigate } from 'react-router-dom'
+import { useTabs } from '@/hooks/core/useTabs'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 import TableStateSection from './TableStateSection'
 import FormStateSection from './FormStateSection'
+const route = '/location/state'
 
 interface StateSectionProps extends ThemeContextProps { id: string | undefined }
 
 const StateSection = ({ theme, id }: StateSectionProps) => {
-  // const { methods, onSubmit, options, isLoading } = useStateForm(id)
   const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useStateSection({ id, setTab })
-
-  // if (isLoading) return <DashboardSkeleton theme={theme} />
+  const { handle } = useTabs({ id, setTab, to: route })
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -38,14 +34,11 @@ const StateSection = ({ theme, id }: StateSectionProps) => {
           />
         </TabsContent>
         <TabsContent value="form">
-          {/* <FormStateSection
+          <FormStateSection
+            id={id}
             theme={theme}
-            isUpdate={!!id}
-            methods={methods}
-            options={options}
             onChange={handle}
-            onSubmit={onSubmit}
-          /> */}
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -53,21 +46,3 @@ const StateSection = ({ theme, id }: StateSectionProps) => {
 }
 
 export default StateSection
-/*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Hook para manejar las secciones "tabs"
- * @param id - ID del estado a actualizar
- * @param setTab - Función para cambiar el tab actual
- * @returns handle - Función para cambiar el tab actual
- */
-interface UseStateSectionProps { id?: string; setTab: (value: string) => void }
-export const useStateSection = ({ id, setTab }: UseStateSectionProps) => {
-  const navigate = useNavigate()
-  const handle = (value: string) => {
-    if (value === 'form') navigate(`/location/state${id ? `/${id}` : ''}`)
-    else navigate('/location/states')
-    setTab(value)
-  }
-  return { handle }
-}
-/*---------------------------------------------------------------------------------------------------------*/

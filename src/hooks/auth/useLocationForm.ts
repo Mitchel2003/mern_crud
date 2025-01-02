@@ -1,15 +1,51 @@
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
+import { Country, State } from "@/interfaces/context.interface"
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
-import { Country } from "@/interfaces/context.interface"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 
 import {
+  stateSchema, StateFormProps,
   countrySchema, CountryFormProps,
 } from "@/schemas/location.schema"
 
 const countryDefaultValues = { name: '' }
+const stateDefaultValues = { name: '', country: '' }
+
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de departamentos
+ * @param id - ID del departamento a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useStateForm = (id?: string, onSuccess?: () => void) => {
+  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
+  const { data: countries } = fetchAllLocations<Country>('country')
+  const { data: state } = fetchLocationById<State>('state', id as string)
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('state')
+
+  const methods = useForm<StateFormProps>({
+    resolver: zodResolver(stateSchema),
+    defaultValues: stateDefaultValues,
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {
+    state && methods.reset({ name: state.name, country: state.country._id })
+  }, [state])
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit,
+    options: countries?.map((e) => ({ label: e.name, value: e._id })) || []
+  }
+}
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de países
@@ -17,8 +53,7 @@ const countryDefaultValues = { name: '' }
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useCountryForm = (id?: string, onSuccess?: () => void) => {
-  const { fetchLocationById } = useQueryLocation()
-  const { data: country } = fetchLocationById<Country>('country', id as string)
+  const { data: country } = useQueryLocation().fetchLocationById<Country>('country', id as string)
   const { createLocation, updateLocation, isLoading } = useLocationMutation('country')
 
   const methods = useForm<CountryFormProps>({
@@ -36,6 +71,9 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
     onSuccess
   }, methods)
 
-  return { methods, isLoading, ...handleSubmit }
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit
+  }
 }
-/*---------------------------------------------------------------------------------------------------------*/
