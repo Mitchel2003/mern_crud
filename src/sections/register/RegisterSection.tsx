@@ -1,6 +1,6 @@
 import { Headquarter, ThemeContextProps } from "@/interfaces/context.interface"
+import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useCreateUserForm } from "@/hooks/auth/useUserForm"
-import { useQueryLocation } from "@/hooks/useLocationQuery"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 

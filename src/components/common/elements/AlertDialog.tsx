@@ -11,12 +11,11 @@ import {
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { Dispatch, SetStateAction } from 'react'
 import { cn } from '@/lib/utils'
 
 interface AlertDialogProps extends ThemeContextProps, HeaderSpanProps {
   // Control props
-  onOpenChange: Dispatch<SetStateAction<boolean>>
+  onOpenChange: (isOpen: boolean) => void
   onConfirm: () => Promise<void> | void
   open: boolean
 

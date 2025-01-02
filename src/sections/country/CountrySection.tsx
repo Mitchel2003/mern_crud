@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useTabs } from '@/hooks/ui/useTabs'
+import { useTabs } from '@/hooks/core/useTabs'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 

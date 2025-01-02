@@ -1,5 +1,5 @@
 import { Client, ThemeContextProps } from "@/interfaces/context.interface"
-import { useQueryUser, useUserMutation } from "@/hooks/useUserQuery"
+import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import { DataTable } from "#/ui/data-table/data-table"

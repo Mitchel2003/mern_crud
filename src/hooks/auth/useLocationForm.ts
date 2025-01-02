@@ -1,4 +1,4 @@
-import { useLocationMutation, useQueryLocation } from "@/hooks/useLocationQuery"
+import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
 import { Country } from "@/interfaces/context.interface"
 import { zodResolver } from "@hookform/resolvers/zod"

@@ -1,4 +1,4 @@
-import { useQueryLocation, useLocationMutation } from "@/hooks/useLocationQuery"
+import { useQueryLocation, useLocationMutation } from "@/hooks/query/useLocationQuery"
 import { State, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
 import ItemDropdown from "#/ui/data-table/item-dropdown"

@@ -11,6 +11,25 @@ export type ThemeContext = {
 export type ThemeContextProps = { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------ActionConfirmContext--------------------------------------------------*/
+export type ActionConfig = {
+  title: string
+  description: string
+  isDestructive: boolean
+  action: () => Promise<void> | void
+} | null
+
+export type ActionConfirmContext = {
+  show: boolean
+  title: string
+  description: string
+  isDestructive: boolean
+  setShow: (show: boolean) => void
+  handleConfirm: () => Promise<void>
+  confirmAction: (config: ActionConfig) => void
+} | undefined
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type AuthContext = {
   user: User

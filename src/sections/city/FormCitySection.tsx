@@ -1,6 +1,6 @@
 import { State, ThemeContextProps } from "@/interfaces/context.interface"
 import { FormProvider, UseFormReturn } from "react-hook-form"
-import { useQueryLocation } from "@/hooks/useLocationQuery"
+import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"

@@ -1,4 +1,4 @@
-import { useQueryUser, useUserMutation } from "@/hooks/useUserQuery"
+import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { Client, User } from "@/interfaces/context.interface"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
