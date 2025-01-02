@@ -58,7 +58,6 @@ const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
 }
 
 export default TableCountrySection
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
 * Hook para crear las columnas de la tabla de países

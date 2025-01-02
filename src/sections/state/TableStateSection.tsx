@@ -58,7 +58,6 @@ const TableStateSection = ({ theme, onChange }: TableStateSectionProps) => {
 }
 
 export default TableStateSection
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
 * Hook para crear las columnas de la tabla de departamentos

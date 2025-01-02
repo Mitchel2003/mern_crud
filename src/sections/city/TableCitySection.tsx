@@ -58,7 +58,6 @@ const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
 }
 
 export default TableCitySection
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
 * Hook para crear las columnas de la tabla de ciudades
