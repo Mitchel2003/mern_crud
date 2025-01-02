@@ -19,7 +19,7 @@ const CitySection = ({ theme, id }: CitySectionProps) => {
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Departamentos </h1>
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Ciudades </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
             <TabsTrigger value="form">Formulario</TabsTrigger>

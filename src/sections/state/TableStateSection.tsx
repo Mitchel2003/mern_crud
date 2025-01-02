@@ -1,6 +1,6 @@
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { State, ThemeContextProps } from "@/interfaces/context.interface"
-import { useActionConfirmContext } from "@/context/ActionConfirmContext"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -24,7 +24,7 @@ interface StateActionsProps { state: State; onChange: (value: string) => void }
  * @returns react-query table con los departamentos, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableStateSection = ({ theme, onChange }: TableStateSectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useActionConfirmContext()
+  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: states } = useQueryLocation().fetchAllLocations<State>('state')
 
   return (
@@ -93,7 +93,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<State>[] => [
  */
 const useStateActions = ({ state, onChange }: StateActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('state')
-  const { confirmAction } = useActionConfirmContext()
+  const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
   return [{

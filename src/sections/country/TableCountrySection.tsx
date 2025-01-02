@@ -1,6 +1,6 @@
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { Country, ThemeContextProps } from "@/interfaces/context.interface"
-import { useActionConfirmContext } from "@/context/ActionConfirmContext"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -24,7 +24,7 @@ interface CountryActionsProps { country: Country; onChange: (value: string) => v
  * @returns react-query table con los países, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useActionConfirmContext()
+  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: countries } = useQueryLocation().fetchAllLocations<Country>('country')
 
   return (
@@ -88,7 +88,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Country>[] => [
  */
 const useCountryActions = ({ country, onChange }: CountryActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('country')
-  const { confirmAction } = useActionConfirmContext()
+  const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
   return [{

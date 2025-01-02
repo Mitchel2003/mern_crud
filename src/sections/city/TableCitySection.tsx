@@ -1,6 +1,6 @@
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { City, ThemeContextProps } from "@/interfaces/context.interface"
-import { useActionConfirmContext } from "@/context/ActionConfirmContext"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -15,6 +15,7 @@ import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableCitySectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface CityActionsProps { city: City; onChange: (value: string) => void }
 
 /**
  * Permite construir un componente de tabla para mostrar las ciudades
@@ -23,7 +24,7 @@ interface TableCitySectionProps extends ThemeContextProps { onChange: (value: st
  * @returns react-query table con las ciudades, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useActionConfirmContext()
+  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: cities } = useQueryLocation().fetchAllLocations<City>('city')
 
   return (
@@ -85,7 +86,6 @@ const columns = (onChange: (value: string) => void): ColumnDef<City>[] => [
   }
 ]
 
-interface CityActionsProps { city: City; onChange: (value: string) => void }
 /**
  * Hook personalizado para manejar las acciones del dropdown de ciudades
  * @param city - La ciudad sobre la que se realizarán las acciones
@@ -93,7 +93,7 @@ interface CityActionsProps { city: City; onChange: (value: string) => void }
  */
 const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => {
   const { deleteLocation } = useLocationMutation('city')
-  const { confirmAction } = useActionConfirmContext()
+  const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
   return [{

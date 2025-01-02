@@ -1,16 +1,16 @@
-import { ActionConfig, ActionConfirmContext } from '@/interfaces/context.interface'
+import { DialogConfig, DialogConfirmContext } from '@/interfaces/context.interface'
 import { createContext, useContext, useState } from 'react'
 import { Props } from '@/interfaces/props.interface'
 
-const ActionConfirm = createContext<ActionConfirmContext>(undefined)
+const DialogConfirm = createContext<DialogConfirmContext>(undefined)
 
 /**
  * Hook personalizado para acceder al contexto de confirmación de acciones.
  * @throws {Error} Si se intenta usar fuera del ActionConfirmProvider.
  */
-export const useActionConfirmContext = () => {
-  const context = useContext(ActionConfirm)
-  if (!context) throw new Error('Error al intentar usar actionConfirmContext')
+export const useDialogConfirmContext = () => {
+  const context = useContext(DialogConfirm)
+  if (!context) throw new Error('Error al intentar usar dialogConfirmContext')
   return context
 }
 
@@ -19,8 +19,8 @@ export const useActionConfirmContext = () => {
  * @param {Props} props - Las propiedades del componente.
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de confirmación de acciones.
  */
-export const ActionConfirmProvider = ({ children }: Props): JSX.Element => {
-  const [currentAction, setCurrentAction] = useState<ActionConfig>(null)
+export const DialogConfirmProvider = ({ children }: Props): JSX.Element => {
+  const [currentAction, setCurrentAction] = useState<DialogConfig>(null)
   const [show, setShow] = useState(false)
 
   const handleConfirm = async () => {
@@ -28,13 +28,13 @@ export const ActionConfirmProvider = ({ children }: Props): JSX.Element => {
     finally { setShow(false); setCurrentAction(null) }
   }
 
-  const confirmAction = (config: ActionConfig) => {
+  const confirmAction = (config: DialogConfig) => {
     setCurrentAction(config)
     setShow(true)
   }
 
   return (
-    <ActionConfirm.Provider value={{
+    <DialogConfirm.Provider value={{
       description: currentAction?.description || '¿Estás seguro?',
       isDestructive: currentAction?.isDestructive || false,
       title: currentAction?.title || 'Confirmación',
@@ -44,6 +44,6 @@ export const ActionConfirmProvider = ({ children }: Props): JSX.Element => {
       show,
     }}>
       {children}
-    </ActionConfirm.Provider>
+    </DialogConfirm.Provider>
   )
 }

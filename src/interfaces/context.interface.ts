@@ -12,21 +12,21 @@ export type ThemeContextProps = { theme: Theme }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------ActionConfirmContext--------------------------------------------------*/
-export type ActionConfig = {
+export type DialogConfig = {
   title: string
   description: string
   isDestructive: boolean
   action: () => Promise<void> | void
 } | null
 
-export type ActionConfirmContext = {
+export type DialogConfirmContext = {
   show: boolean
   title: string
   description: string
   isDestructive: boolean
   setShow: (show: boolean) => void
   handleConfirm: () => Promise<void>
-  confirmAction: (config: ActionConfig) => void
+  confirmAction: (config: DialogConfig) => void
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

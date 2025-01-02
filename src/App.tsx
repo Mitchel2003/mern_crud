@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { ActionConfirmProvider } from '@/context/ActionConfirmContext'
+import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
 import { LocationProvider } from "@/context/LocationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -25,7 +25,7 @@ import Home from "@/pages/Home";
 function App() {
   return (
     <ThemeProvider>
-      <ActionConfirmProvider>
+      <ConfirmProvider>
         <AuthProvider>
           <UserProvider>
             <LocationProvider>
@@ -95,7 +95,7 @@ function App() {
             </LocationProvider>
           </UserProvider>
         </AuthProvider>
-      </ActionConfirmProvider>
+      </ConfirmProvider>
     </ThemeProvider >
   )
 }
