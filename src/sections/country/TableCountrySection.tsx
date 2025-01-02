@@ -31,7 +31,7 @@ const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
       <div className="container mx-auto py-10">
         <Card className={cn(
           "p-4 border-rounded-md shadow-md",
-          theme === "dark" ? "bg-gray-800" : "bg-white"
+          theme === "dark" ? "bg-zinc-900/80" : "bg-white"
         )}>
           <DataTable
             data={data || []}
