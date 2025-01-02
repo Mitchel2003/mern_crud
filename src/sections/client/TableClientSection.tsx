@@ -70,6 +70,14 @@ const columns = (onChange: (value: string) => void): ColumnDef<Client>[] => [
     header: "Nombre del cliente"
   },
   {
+    accessorKey: "email",
+    header: "Correo electrónico"
+  },
+  {
+    header: "Teléfono",
+    accessorKey: "phone"
+  },
+  {
     accessorKey: "updatedAt",
     header: "Última actualización",
     cell: ({ row }) => new Date(row.getValue("updatedAt")).toLocaleString('es-ES', formatDate)
