@@ -8,9 +8,7 @@ import TableAreaSection from './TableAreaSection'
 import FormAreaSection from './FormAreaSection'
 const route = '/location/area'
 
-interface AreaSectionProps extends ThemeContextProps {
-  id: string | undefined
-}
+interface AreaSectionProps extends ThemeContextProps { id: string | undefined }
 
 const AreaSection = ({ theme, id }: AreaSectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
@@ -21,10 +19,7 @@ const AreaSection = ({ theme, id }: AreaSectionProps) => {
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className={cn('text-3xl font-roboto-slab font-bold',
-            theme === 'dark' ? 'text-white' : 'text-black')}>
-            Áreas
-          </h1>
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Áreas </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
             <TabsTrigger value="form">Formulario</TabsTrigger>

@@ -70,18 +70,18 @@ const columns = (onChange: (value: string) => void): ColumnDef<Area>[] => [
     header: "Nombre del área"
   },
   {
-    accessorKey: "headquarter",
     header: "Sede",
+    accessorKey: "headquarter",
     cell: ({ row }) => row.original.headquarter?.name || 'Sin sede'
   },
   {
-    accessorKey: "client",
     header: "Cliente",
+    accessorKey: "client",
     cell: ({ row }) => row.original.headquarter?.client?.name || 'Sin cliente'
   },
   {
-    accessorKey: "city",
     header: "Ciudad",
+    accessorKey: "city",
     cell: ({ row }) => row.original.headquarter?.city?.name || 'Sin ciudad'
   },
   {
