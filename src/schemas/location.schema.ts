@@ -1,5 +1,19 @@
 import { z } from "zod"
 
+export const serviceSchema = z.object({
+  name: z.string()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres")
+})
+
+export const officeSchema = z.object({
+  name: z.string()
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres"),
+  area: z.string({ required_error: "El área es requerida" })
+    .min(1, "Debes seleccionar un área")
+})
+
 export const areaSchema = z.object({
   name: z.string()
     .min(3, "El nombre debe tener al menos 3 caracteres")
@@ -51,17 +65,10 @@ export const countrySchema = z.object({
     .max(50, "El nombre debe tener menos de 50 caracteres"),
 })
 
-export const officeSchema = z.object({
-  name: z.string()
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(50, "El nombre debe tener menos de 50 caracteres"),
-  area: z.string({ required_error: "El área es requerida" })
-    .min(1, "Debes seleccionar un área")
-})
-
 export type CityFormProps = z.infer<typeof citySchema>
 export type StateFormProps = z.infer<typeof stateSchema>
 export type CountryFormProps = z.infer<typeof countrySchema>
 export type HeadquarterFormProps = z.infer<typeof headquarterSchema>
 export type AreaFormProps = z.infer<typeof areaSchema>
 export type OfficeFormProps = z.infer<typeof officeSchema>
+export type ServiceFormProps = z.infer<typeof serviceSchema>

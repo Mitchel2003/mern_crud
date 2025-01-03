@@ -1,4 +1,4 @@
-import { City, Client, Country, State, Headquarter, Area, Office } from "@/interfaces/context.interface"
+import { City, Client, Country, State, Headquarter, Area, Office, Service } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
@@ -13,6 +13,7 @@ import {
   headquarterSchema, HeadquarterFormProps,
   areaSchema, AreaFormProps,
   officeSchema, OfficeFormProps,
+  serviceSchema, ServiceFormProps,
 } from "@/schemas/location.schema"
 
 const countryDefaultValues = { name: '' }
@@ -21,6 +22,40 @@ const cityDefaultValues = { name: '', state: '' }
 const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
 const areaDefaultValues = { name: '', headquarter: '' }
 const officeDefaultValues = { name: '', area: '' }
+
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de servicios
+ * @param id - ID del servicio a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useServiceForm = (id?: string, onSuccess?: () => void) => {
+  const { data: service } = useQueryLocation().fetchLocationById<Service>('service', id as string)
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('service')
+
+  const methods = useForm<ServiceFormProps>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues: { name: '' },
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {
+    service && methods.reset({ name: service.name })
+  }, [service])
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit
+  }
+}
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de oficinas
