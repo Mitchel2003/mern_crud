@@ -1,5 +1,5 @@
 /*--------------------------------------------------results DB--------------------------------------------------*/
-type IError = { message: string, code?: string, details?: unknown, statusCode?: number }
+type IError = { message: string, code?: string, details?: any, statusCode?: number }
 export interface Success<T> { success: true, data: T }
 export interface Failure { success: false; error: IError }
 

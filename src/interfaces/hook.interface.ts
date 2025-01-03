@@ -4,7 +4,7 @@ import { LocationType, UserType } from "@/interfaces/context.interface"
 export interface UpdateMutationProps { id: string; data: Partial<any> }
 export interface DeleteMutationProps { id: string }
 
-/*--------------------------------------------------To product--------------------------------------------------*/
+/*--------------------------------------------------To location--------------------------------------------------*/
 /*useQuery and useMutation*/
 export type QueryReact_Location = {
   fetchAllLocations: <T>(path: LocationType) => UseQueryResult<T[], Error>
