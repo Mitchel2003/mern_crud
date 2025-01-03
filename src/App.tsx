@@ -11,9 +11,9 @@ import RootLayout from "@/layouts/Root";
 import Maintenance from "@/pages/Maintenance";
 import Curriculum from "@/pages/Curriculum";
 
-import Client from "@/pages/Client";
-
+import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
+import Client from "@/pages/Client";
 import State from "@/pages/State";
 import City from "@/pages/City";
 
@@ -71,9 +71,9 @@ function App() {
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                       {/* location routes */}
-                      {/* <Route path="/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
-                      {/* <Route path="/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
-                      {/* <Route path="/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
+                      <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
+                      <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
+                      <Route path="/location/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
 
                       <Route path="/location/city" element={<City />} /> {/*new city*/}
                       <Route path="/location/cities" element={<City />} /> {/*list cities*/}

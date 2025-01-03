@@ -35,14 +35,14 @@ export const userSchema = z.object({
 export const clientSchema = z.object({
   name: z
     .string()
-    .min(1, "El nombre es requerido")
+    .min(5, "El nombre es requerido")
     .max(35, "El nombre es demasiado largo"),
   email: z
     .string()
     .email("Correo electrónico inválido"),
   phone: z
     .string()
-    .min(4, "El teléfono es requerido")
+    .min(6, "El teléfono es requerido")
     .max(15, "El teléfono es demasiado largo"),
   nit: z
     .string()

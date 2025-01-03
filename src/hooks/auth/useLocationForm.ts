@@ -1,6 +1,7 @@
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { City, Country, State } from "@/interfaces/context.interface"
+import { City, Client, Country, State, Headquarter } from "@/interfaces/context.interface"
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
+import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
@@ -9,11 +10,57 @@ import {
   citySchema, CityFormProps,
   stateSchema, StateFormProps,
   countrySchema, CountryFormProps,
+  headquarterSchema, HeadquarterFormProps,
 } from "@/schemas/location.schema"
 
+const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
 const cityDefaultValues = { name: '', state: '' }
 const stateDefaultValues = { name: '', country: '' }
 const countryDefaultValues = { name: '' }
+
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de sedes
+ * @param id - ID de la sede a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
+  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
+  const { data: headquarter } = fetchLocationById<Headquarter>('headquarter', id as string)
+  const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
+  const { data: cities } = fetchAllLocations<City>('city')
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('headquarter')
+
+  const methods = useForm<HeadquarterFormProps>({
+    resolver: zodResolver(headquarterSchema),
+    defaultValues: headquarterDefaultValues,
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {
+    headquarter && methods.reset({
+      name: headquarter.name,
+      address: headquarter.address,
+      client: headquarter.client._id,
+      city: headquarter.city._id
+    })
+  }, [headquarter, cities, clients])
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit,
+    optionsCity: cities?.map((e) => ({ label: e.name, value: e._id })) || [],
+    optionsClient: clients?.map((e) => ({ label: e.name, value: e._id })) || [],
+  }
+}
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de ciudades

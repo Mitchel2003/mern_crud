@@ -1,6 +1,6 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { City, ThemeContextProps } from "@/interfaces/context.interface"
+import { Headquarter, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -14,18 +14,18 @@ import { formatDate } from "@/utils/constants"
 import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-interface TableCitySectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface CityActionsProps { city: City; onChange: (value: string) => void }
+interface TableHeadquarterSectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface HeadquarterActionsProps { headquarter: Headquarter; onChange: (value: string) => void }
 
 /**
- * Permite construir un componente de tabla para mostrar las ciudades
+ * Permite construir un componente de tabla para mostrar las sedes
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con las ciudades, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con las sedes, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
+const TableHeadquarterSection = ({ theme, onChange }: TableHeadquarterSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: cities } = useQueryLocation().fetchAllLocations<City>('city')
+  const { data: headquarters } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
 
   return (
     <>
@@ -36,7 +36,7 @@ const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
         )}>
           <DataTable
             filterColumn="name"
-            data={cities || []}
+            data={headquarters || []}
             columns={columns(onChange)}
           />
         </Card>
@@ -57,22 +57,26 @@ const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
   )
 }
 
-export default TableCitySection
+export default TableHeadquarterSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Hook para crear las columnas de la tabla de ciudades
+ * Hook para crear las columnas de la tabla de sedes
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
- * @returns Array de columnas para la tabla de ciudades
+ * @returns Array de columnas para la tabla de sedes
  */
-const columns = (onChange: (value: string) => void): ColumnDef<City>[] => [
+const columns = (onChange: (value: string) => void): ColumnDef<Headquarter>[] => [
   {
     accessorKey: "name",
-    header: "Nombre de la ciudad"
+    header: "Nombre de la sede"
   },
   {
-    accessorKey: "state",
-    header: "Departamento",
-    cell: ({ row }) => row.original.state?.name || 'Sin departamento'
+    accessorKey: "address",
+    header: "Dirección"
+  },
+  {
+    accessorKey: "city",
+    header: "Ciudad",
+    cell: ({ row }) => row.original.city?.name || 'Sin ciudad'
   },
   {
     accessorKey: "updatedAt",
@@ -81,17 +85,17 @@ const columns = (onChange: (value: string) => void): ColumnDef<City>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useCityActions({ city: row.original, onChange })} />
+    cell: ({ row }) => <ItemDropdown actions={useHeadquarterActions({ headquarter: row.original, onChange })} />
   }
 ]
 
 /**
- * Hook personalizado para manejar las acciones del dropdown de ciudades
- * @param city - La ciudad sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para la ciudad
+ * Hook personalizado para manejar las acciones del dropdown de sedes
+ * @param headquarter - La sede sobre la que se realizarán las acciones
+ * @returns Array de acciones disponibles para la sede
  */
-const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => {
-  const { deleteLocation } = useLocationMutation('city')
+const useHeadquarterActions = ({ headquarter, onChange }: HeadquarterActionsProps): ActionProps[] => {
+  const { deleteLocation } = useLocationMutation('headquarter')
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
@@ -100,10 +104,10 @@ const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => 
     label: "Editar",
     onClick: () => {
       confirmAction({
-        title: 'Editar Ciudad',
+        title: 'Editar Sede',
         isDestructive: false,
-        description: `¿Deseas editar la ciudad "${city.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/city/${city._id}`) }
+        description: `¿Deseas editar la sede "${headquarter.name}"?`,
+        action: () => { onChange('form'); navigate(`/location/headquarter/${headquarter._id}`) }
       })
     }
   }, {
@@ -113,10 +117,10 @@ const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => 
     onClick: () => {
       confirmAction({
         isDestructive: true,
-        title: 'Eliminar Ciudad',
-        description: `¿Estás seguro que deseas eliminar la ciudad "${city.name}"?`,
-        action: () => deleteLocation({ id: city._id })
+        title: 'Eliminar Sede',
+        description: `¿Estás seguro que deseas eliminar la sede "${headquarter.name}"?`,
+        action: () => deleteLocation({ id: headquarter._id })
       })
     }
   }]
-}
+} 
