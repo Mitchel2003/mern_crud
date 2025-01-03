@@ -2,12 +2,18 @@ import { z } from "zod"
 
 /*--------------------------------------------------authSchema--------------------------------------------------*/
 export const forgotPasswordSchema = z.object({
-  email: z.string().email("Correo electrónico inválido")
+  email: z
+    .string()
+    .email("Correo electrónico inválido")
 })
 
 export const loginSchema = z.object({
-  email: z.string().email("Correo electronico invalido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres")
+  email: z
+    .string()
+    .email("Correo electrónico inválido"),
+  password: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
 })
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -15,7 +21,7 @@ export const loginSchema = z.object({
 export const userSchema = z.object({
   email: z
     .string()
-    .email("Correo electronico invalido"),
+    .email("Correo electrónico inválido"),
   username: z
     .string()
     .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
