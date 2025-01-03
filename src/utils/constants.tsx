@@ -1,5 +1,5 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon } from 'lucide-react'
-import { NavItemProps } from "@/interfaces/props.interface"
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon, DoorOpen } from 'lucide-react'
+import { NavItemProps } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
 export const formatDate: Intl.DateTimeFormatOptions = {
@@ -133,15 +133,21 @@ export const links = () => {
           href: '/location/areas',
         },
         {// offices
+          label: 'Oficinas',
           icon: BriefcaseIcon,
-          label: 'Consultorios',
-          href: '/location/offices',
+          subItems: [
+            {// services
+              label: 'Servicios',
+              icon: LucideHandHelping,
+              href: '/location/services',
+            },
+            {// consultories
+              icon: DoorOpen,
+              label: 'Consultorios',
+              href: '/location/offices',
+            }
+          ]
         },
-        {// services
-          label: 'Servicios',
-          icon: LucideHandHelping,
-          href: '/location/services',
-        }
       ]
     },
     {/** locations **/
