@@ -58,7 +58,6 @@ const TableAreaSection = ({ theme, onChange }: TableAreaSectionProps) => {
 }
 
 export default TableAreaSection
-
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
  * Hook para crear las columnas de la tabla de áreas
