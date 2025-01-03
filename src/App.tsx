@@ -10,10 +10,11 @@ import RootLayout from "@/layouts/Root";
 
 import Maintenance from "@/pages/Maintenance";
 import Curriculum from "@/pages/Curriculum";
+import Client from "@/pages/Client";
 
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
-import Client from "@/pages/Client";
+import Office from "@/pages/Office";
 import State from "@/pages/State";
 import Area from "@/pages/Area";
 import City from "@/pages/City";
@@ -72,6 +73,11 @@ function App() {
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                       {/* location routes */}
+
+                      <Route path="/location/office" element={<Office />} /> {/*new office*/}
+                      <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
+                      <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}
+
                       <Route path="/location/area" element={<Area />} /> {/*new area*/}
                       <Route path="/location/areas" element={<Area />} /> {/*list areas*/}
                       <Route path="/location/area/:id" element={<Area />} /> {/*edit area*/}
