@@ -15,6 +15,7 @@ import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
 import Client from "@/pages/Client";
 import State from "@/pages/State";
+import Area from "@/pages/Area";
 import City from "@/pages/City";
 
 import Dashboard from "@/pages/Dashboard";
@@ -71,6 +72,10 @@ function App() {
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                       {/* location routes */}
+                      <Route path="/location/area" element={<Area />} /> {/*new area*/}
+                      <Route path="/location/areas" element={<Area />} /> {/*list areas*/}
+                      <Route path="/location/area/:id" element={<Area />} /> {/*edit area*/}
+
                       <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
                       <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
                       <Route path="/location/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
