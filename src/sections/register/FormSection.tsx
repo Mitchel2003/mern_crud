@@ -6,7 +6,7 @@ import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 
-import { LogIn, Lock, UserPlus } from 'lucide-react'
+import { LogIn, Lock, UserPlus, MapPinHouseIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
@@ -54,10 +54,11 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
       <SelectMulti
         theme={theme}
         label='Sedes'
-        name='headquarters'
-        locations={locations}
-        span='Aqui seleccionas tus sedes asociadas'
         iconSpan='warn'
+        name='headquarters'
+        span='Aqui seleccionas tus sedes asociadas'
+        options={locations?.map(formatHeadquarter) || []}
+        placeholder="Selecciona las sedes"
       />
 
       {/* -------------------- Submit -------------------- */}
@@ -94,3 +95,12 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
 }
 
 export default FormSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const formatHeadquarter = (e: Headquarter) => ({
+  value: e._id,
+  icon: MapPinHouseIcon,
+  label: `${e.client.name} - ${e.address} - ${e.city.name}`,
+})
+/*---------------------------------------------------------------------------------------------------------*/

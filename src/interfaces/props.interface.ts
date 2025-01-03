@@ -20,6 +20,13 @@ export interface HeaderSpanProps {
   span?: string
 }
 
+// SelectMultiOption
+export interface SelectMultiOptionProps {
+  icon?: LucideIcon
+  value: string
+  label: string
+}
+
 // SelectOption
 export interface SelectOptionProps<T = string> {
   description?: string

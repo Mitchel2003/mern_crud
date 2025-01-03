@@ -1,26 +1,25 @@
-import { Headquarter, ThemeContextProps } from '@/interfaces/context.interface'
+import { SelectMultiOptionProps } from '@/interfaces/props.interface'
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { LucideIcon, MapPinHouseIcon, X } from 'lucide-react'
 import { useFormContext, Controller } from 'react-hook-form'
-import { cn } from '@/lib/utils'
-import React from 'react'
-
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import { FormMessage, FormItem } from '#/ui/form'
 import { MultiSelect } from '#/ui/select-multi'
+import { cn } from '@/lib/utils'
+import React from 'react'
 
 interface SelectMultiProps extends HeaderSpanProps, ThemeContextProps {
-  name: string
-  label?: string
-  className?: string
+  options: SelectMultiOptionProps[]
   placeholder?: string
-  locations?: Headquarter[]
+  className?: string
+  label?: string
+  name: string
 }
 
 const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
   placeholder,
   className,
-  locations,
+  options,
   iconSpan,
   theme,
   label,
@@ -34,9 +33,9 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
       {/* Header */}
       <HeaderCustom
         to='input'
+        span={span}
         theme={theme}
         title={label}
-        span={span}
         iconSpan={iconSpan}
         className={className}
         htmlFor={`${name}-select`}
@@ -53,10 +52,10 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
               ref={ref}
               maxCount={2}
               theme={theme}
+              options={options}
               variant="inverted"
               id={`${name}-select`}
               placeholder={placeholder}
-              options={normalize(locations)}
               onValueChange={field.onChange}
             />
 
@@ -71,19 +70,6 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
     </FormItem>
   )
 })
+SelectMulti.displayName = 'SelectMulti'
 
 export default SelectMulti
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-interface Option {
-  value: string
-  label: string
-  icon: LucideIcon
-}
-const normalize = (locations?: Headquarter[]): Option[] => locations && locations.length > 0
-  ? locations.map(e => ({
-    value: e._id,
-    icon: MapPinHouseIcon,
-    label: `${e.client} - ${e.address} - ${e.city}`
-  })) : [{ value: 'n/a', label: 'No hay sedes asociadas', icon: X }]
