@@ -1,9 +1,9 @@
-import { ThemeContextProps, UserCredentials } from '@/interfaces/context.interface'
+import { ThemeContextProps, User } from '@/interfaces/context.interface'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 interface InfoSectionProps extends ThemeContextProps {
-  auth: UserCredentials
+  auth: User
 }
 const InfoSection = ({ theme, auth }: InfoSectionProps) => {
   const complement = auth?.username.slice(1).toLowerCase()

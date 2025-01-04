@@ -72,7 +72,7 @@ const FormMaintenanceSection = ({
           <SubmitFooter
             theme={theme}
             to="/curriculum"
-            onChange={() => { onChange('table'); methods.reset() }}
+            onCancel={() => { onChange('table'); methods.reset() }}
           />
         </Card>
       </form>
