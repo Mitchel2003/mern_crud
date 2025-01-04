@@ -3,6 +3,7 @@ import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocation
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { HandHelpingIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 
@@ -21,7 +22,8 @@ const stateDefaultValues = { name: '', country: '' }
 const cityDefaultValues = { name: '', state: '' }
 const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
 const areaDefaultValues = { name: '', headquarter: '' }
-const officeDefaultValues = { name: '', area: '' }
+const officeDefaultValues = { name: '', area: '', services: [] }
+const serviceDefaultValues = { name: '' }
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de servicios
@@ -34,7 +36,7 @@ export const useServiceForm = (id?: string, onSuccess?: () => void) => {
 
   const methods = useForm<ServiceFormProps>({
     resolver: zodResolver(serviceSchema),
-    defaultValues: { name: '' },
+    defaultValues: serviceDefaultValues,
     mode: "onSubmit",
   })
 
@@ -64,8 +66,9 @@ export const useServiceForm = (id?: string, onSuccess?: () => void) => {
  */
 export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   const { fetchAllLocations, fetchLocationById } = useQueryLocation()
-  const { data: areas } = fetchAllLocations<Area>('area')
   const { data: office } = fetchLocationById<Office>('office', id as string)
+  const { data: services } = fetchAllLocations<Service>('service')
+  const { data: areas } = fetchAllLocations<Area>('area')
   const { createLocation, updateLocation, isLoading } = useLocationMutation('office')
 
   const methods = useForm<OfficeFormProps>({
@@ -77,9 +80,10 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     office && methods.reset({
       name: office.name,
-      area: office.area._id
+      area: office.area._id,
+      services: office.services
     })
-  }, [office, areas])
+  }, [office, methods.reset])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: any) => {
@@ -93,7 +97,8 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: areas?.map((e) => ({ label: `${e.name} - ${e.headquarter?.name || 'Sin sede'} - ${e.headquarter?.client?.name || 'Sin cliente'}`, value: e._id })) || []
+    optionsService: services?.map((e) => ({ value: e.name, label: e.name, icon: HandHelpingIcon })) || [],
+    optionsArea: areas?.map((e) => ({ value: e._id, label: `${e.name} - ${e.headquarter.address} - ${e.headquarter.client.name}` })) || [],
   }
 }
 

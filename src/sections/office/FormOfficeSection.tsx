@@ -7,6 +7,7 @@ import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
+import SelectMulti from "#/common/fields/SelectMulti"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
@@ -17,7 +18,7 @@ interface FormOfficeSectionProps extends ThemeContextProps {
 }
 
 const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, optionsArea, optionsService, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -51,8 +52,17 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
                   name="area"
                   label="Área"
                   theme={theme}
-                  options={options}
+                  options={optionsArea}
                   placeholder="Selecciona el área"
+                />
+                <SelectMulti
+                  theme={theme}
+                  name="services"
+                  iconSpan="info"
+                  label="Servicios"
+                  options={optionsService}
+                  placeholder="Selecciona los servicios"
+                  span="Selecciona varios servicios para este consultorio"
                 />
               </CardContent>
               <SubmitFooter
@@ -80,4 +90,4 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
   )
 }
 
-export default FormOfficeSection 
+export default FormOfficeSection

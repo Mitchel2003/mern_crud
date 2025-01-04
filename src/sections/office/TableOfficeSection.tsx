@@ -70,6 +70,11 @@ const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
     header: "Nombre del consultorio"
   },
   {
+    header: "Servicios",
+    accessorKey: "services",
+    cell: ({ row }) => row.original.services.map((e) => e).join(', ') || 'Sin servicios'
+  },
+  {
     header: "Área",
     accessorKey: "area",
     cell: ({ row }) => row.original.area?.name || 'Sin área'
@@ -77,17 +82,12 @@ const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
   {
     header: "Sede",
     accessorKey: "headquarter",
-    cell: ({ row }) => row.original.area?.headquarter?.name || 'Sin sede'
+    cell: ({ row }) => row.original.area?.headquarter?.address || 'Sin sede'
   },
   {
     header: "Cliente",
     accessorKey: "client",
     cell: ({ row }) => row.original.area?.headquarter?.client?.name || 'Sin cliente'
-  },
-  {
-    header: "Ciudad",
-    accessorKey: "city",
-    cell: ({ row }) => row.original.area?.headquarter?.city?.name || 'Sin ciudad'
   },
   {
     accessorKey: "updatedAt",

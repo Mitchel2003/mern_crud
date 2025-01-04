@@ -57,6 +57,7 @@ const SelectMulti = React.forwardRef<HTMLButtonElement, SelectMultiProps>(({
               id={`${name}-select`}
               placeholder={placeholder}
               onValueChange={field.onChange}
+              defaultValue={field.value || []}
             />
 
             {error && (

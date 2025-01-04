@@ -1,21 +1,28 @@
 import { z } from "zod"
 
 export const serviceSchema = z.object({
-  name: z.string()
+  name: z
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres")
 })
 
 export const officeSchema = z.object({
-  name: z.string()
+  name: z
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
-  area: z.string({ required_error: "El área es requerida" })
-    .min(1, "Debes seleccionar un área")
+  area: z
+    .string({ required_error: "El área es requerida" })
+    .min(1, "Debes seleccionar un área"),
+  services: z
+    .array(z.string({ required_error: "El servicio es requerido" }))
+    .min(1, "Debes seleccionar al menos un servicio")
 })
 
 export const areaSchema = z.object({
-  name: z.string()
+  name: z
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
   headquarter: z
@@ -24,10 +31,12 @@ export const areaSchema = z.object({
 })
 
 export const headquarterSchema = z.object({
-  name: z.string()
+  name: z
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
-  address: z.string()
+  address: z
+    .string({ required_error: "La dirección es requerida" })
     .min(3, "La dirección debe tener al menos 3 caracteres")
     .max(100, "La dirección debe tener menos de 100 caracteres"),
   client: z
@@ -40,7 +49,7 @@ export const headquarterSchema = z.object({
 
 export const citySchema = z.object({
   name: z
-    .string()
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
   state: z
@@ -50,7 +59,7 @@ export const citySchema = z.object({
 
 export const stateSchema = z.object({
   name: z
-    .string()
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
   country: z
@@ -60,7 +69,7 @@ export const stateSchema = z.object({
 
 export const countrySchema = z.object({
   name: z
-    .string()
+    .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
 })
