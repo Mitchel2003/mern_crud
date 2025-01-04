@@ -1,20 +1,20 @@
+import { SelectMultiOptionProps } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Headquarter } from '@/interfaces/context.interface'
 import SelectMulti from '#/common/fields/SelectMulti'
 import SelectField from '#/common/fields/Select'
 import InputField from '#/common/fields/Input'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 
-import { LogIn, Lock, UserPlus, MapPinHouseIcon } from 'lucide-react'
+import { LogIn, Lock, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 interface FormSectionProps extends ThemeContextProps {
-  locations?: Headquarter[]
+  options: SelectMultiOptionProps[]
 }
 
-const FormSection = ({ theme, locations }: FormSectionProps) => {
+const FormSection = ({ theme, options }: FormSectionProps) => {
   const navigate = useNavigate()
 
   return (
@@ -55,10 +55,10 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
         theme={theme}
         label='Sedes'
         iconSpan='warn'
+        options={options}
         name='headquarters'
-        span='Aqui seleccionas tus sedes asociadas'
-        options={locations?.map(formatHeadquarter) || []}
         placeholder="Selecciona las sedes"
+        span='Aqui seleccionas tus sedes asociadas'
       />
 
       {/* -------------------- Submit -------------------- */}
@@ -95,12 +95,3 @@ const FormSection = ({ theme, locations }: FormSectionProps) => {
 }
 
 export default FormSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const formatHeadquarter = (e: Headquarter) => ({
-  value: e._id,
-  icon: MapPinHouseIcon,
-  label: `${e.client.name} - ${e.address} - ${e.city.name}`,
-})
-/*---------------------------------------------------------------------------------------------------------*/

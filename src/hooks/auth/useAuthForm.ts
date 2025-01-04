@@ -4,6 +4,7 @@ import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { MapPinHouseIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 import {
@@ -87,7 +88,7 @@ export const useUserForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    locations
+    options: locations?.map((e) => ({ value: e._id, label: `${e.client.name} - ${e.address} - ${e.city.name}`, icon: MapPinHouseIcon })) || []
   }
 }
 

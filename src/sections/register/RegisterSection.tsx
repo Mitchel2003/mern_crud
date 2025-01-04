@@ -14,7 +14,7 @@ import FormSection from "./FormSection"
 interface RegisterSectionProps extends ThemeContextProps { id: string | undefined }
 
 const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
-  const { open, isLoading, methods, locations, setOpen, onConfirm, handleSubmit } = useUserForm(id)
+  const { open, isLoading, methods, options, setOpen, onConfirm, handleSubmit } = useUserForm(id)
 
   if (isLoading) return <RegisterSkeleton theme={theme} />
   return (
@@ -36,7 +36,7 @@ const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
               className="bg-transparent/0"
               description="Diligencia la información para registrar un usuario"
             />
-            <FormSection theme={theme} locations={locations} />
+            <FormSection theme={theme} options={options} />
             <FooterSection theme={theme} />
           </Card>
         </form>
