@@ -1,6 +1,6 @@
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "#/ui/collapsible"
 import { NavItemProps } from "@/interfaces/props.interface"
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
 import { links } from '@/utils/constants'
 import React from 'react'
@@ -50,11 +50,15 @@ const SidebarItem = ({ item }: SidebarItemProps) => {
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
         <SidebarMenuButton asChild isActive={isActive}>
-          <a href={item.href} onClick={item.action} className='flex w-full items-center gap-2'>
+          <Link
+            to={item.href as string}
+            onClick={() => item.action?.()}
+            className='flex w-full items-center gap-2'
+          >
             <item.icon className='w-4 h-4 md:w-5 md:h-5' />
             <span className='text-sm pointer-events-none'>{item.label}</span>
             {item.subItems && (<IconChevron isOpen={isOpen} />)}
-          </a>
+          </Link>
         </SidebarMenuButton>
       </CollapsibleTrigger>
 
@@ -82,11 +86,15 @@ const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton asChild isActive={isActive}>
-            <a href={item.href} onClick={item.action} className='flex w-full items-center gap-2'>
+            <Link
+              to={item.href as string}
+              onClick={() => item.action?.()}
+              className='flex w-full items-center gap-2'
+            >
               <item.icon className='w-4 h-4 md:w-5 md:h-5' />
               <span className='text-sm pointer-events-none'>{item.label}</span>
               {item.subItems && (<IconChevron isOpen={isOpen} />)}
-            </a>
+            </Link>
           </SidebarMenuSubButton>
         </CollapsibleTrigger>
 

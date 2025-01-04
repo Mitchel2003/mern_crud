@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon, DoorOpen } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon, DoorOpen, LucideMapPinned, LucideMap } from 'lucide-react'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -76,22 +76,6 @@ export const links = () => {
       icon: TerminalSquare,
       label: 'Panel del usuario',
     },
-    {/** forms **/
-      icon: FilesIcon,
-      label: 'Formularios',
-      subItems: [
-        {// cvs
-          icon: FileTextIcon,
-          href: '/form/cvs',
-          label: 'Currículums',
-        },
-        {// maintenances
-          icon: WrenchIcon,
-          href: '/form/maintenances',
-          label: 'Mantenimientos',
-        }
-      ]
-    },
     {/** users **/
       label: 'Usuarios',
       icon: UserCircle,
@@ -113,25 +97,26 @@ export const links = () => {
         }
       ]
     },
+    {/** forms **/
+      icon: FilesIcon,
+      label: 'Formularios',
+      subItems: [
+        {// cvs
+          icon: FileTextIcon,
+          href: '/form/cvs',
+          label: 'Currículums',
+        },
+        {// maintenances
+          icon: WrenchIcon,
+          href: '/form/maintenances',
+          label: 'Mantenimientos',
+        }
+      ]
+    },
     {/** institution **/
       label: 'Institución',
       icon: Building2,
       subItems: [
-        {// clients
-          icon: Building,
-          label: 'Clientes',
-          href: '/clients',
-        },
-        {// headquarters
-          label: 'Sedes',
-          icon: HomeIcon,
-          href: '/location/headquarters',
-        },
-        {// areas
-          icon: MapPin,
-          label: 'Areas',
-          href: '/location/areas',
-        },
         {// offices
           label: 'Oficinas',
           icon: BriefcaseIcon,
@@ -148,26 +133,41 @@ export const links = () => {
             }
           ]
         },
-      ]
-    },
-    {/** locations **/
-      label: 'Ubicaciones',
-      icon: MapPin,
-      subItems: [
-        {// cities
-          label: 'Ciudades',
-          icon: LocateFixedIcon,
-          href: '/location/cities',
+        {// areas
+          icon: LucideMapPinned,
+          label: 'Areas',
+          href: '/location/areas',
         },
-        {// departments
-          icon: MapPin,
-          label: 'Departamentos',
-          href: '/location/states',
+        {// headquarters
+          label: 'Sedes',
+          icon: HomeIcon,
+          href: '/location/headquarters',
         },
-        {// countries
-          icon: Flag,
-          label: 'Países',
-          href: '/location/countries',
+        {// clients
+          icon: Building,
+          label: 'Clientes',
+          href: '/clients',
+        },
+        {/** locations **/
+          label: 'Ubicaciones',
+          icon: LucideMap,
+          subItems: [
+            {// cities
+              label: 'Ciudades',
+              icon: LocateFixedIcon,
+              href: '/location/cities',
+            },
+            {// departments
+              icon: MapPin,
+              label: 'Departamentos',
+              href: '/location/states',
+            },
+            {// countries
+              icon: Flag,
+              label: 'Países',
+              href: '/location/countries',
+            }
+          ]
         }
       ]
     },
