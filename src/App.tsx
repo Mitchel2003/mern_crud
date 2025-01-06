@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
 import { LocationProvider } from "@/context/LocationContext";
+import { FormatProvider } from "@/context/FormatContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { UserProvider } from "@/context/UserContext";
@@ -28,10 +28,10 @@ import Home from "@/pages/Home";
 function App() {
   return (
     <ThemeProvider>
-      <ConfirmProvider>
-        <AuthProvider>
-          <UserProvider>
-            <LocationProvider>
+      <AuthProvider>
+        <UserProvider>
+          <LocationProvider>
+            <FormatProvider>
 
               <BrowserRouter>
                 <Routes>
@@ -107,10 +107,10 @@ function App() {
                 </Routes>
               </BrowserRouter>
 
-            </LocationProvider>
-          </UserProvider>
-        </AuthProvider>
-      </ConfirmProvider>
+            </FormatProvider>
+          </LocationProvider>
+        </UserProvider>
+      </AuthProvider>
     </ThemeProvider >
   )
 }

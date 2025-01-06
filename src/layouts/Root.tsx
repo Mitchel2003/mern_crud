@@ -1,3 +1,4 @@
+import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
 import { AnimatedBackground } from '#/layout/AnimatedBackground'
 import { SidebarInset, SidebarProvider } from '#/ui/sidebar'
 import { LoadingScreen } from "#/ui/loading-screen"
@@ -11,20 +12,22 @@ import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => (
   <>
-    <AnimatedBackground>
-      <SidebarProvider>
-        {/* Sidebar */}
-        <Sidebar />
+    <ConfirmProvider>
+      <AnimatedBackground>
+        <SidebarProvider>
+          {/* Sidebar */}
+          <Sidebar />
 
-        {/* Main content */}
-        <SidebarInset>
-          <Navbar />
-          <Outlet />
-          <Footer />
-        </SidebarInset>
-        
-      </SidebarProvider>
-    </AnimatedBackground>
+          {/* Main content */}
+          <SidebarInset>
+            <Navbar />
+            <Outlet />
+            <Footer />
+          </SidebarInset>
+
+        </SidebarProvider>
+      </AnimatedBackground>
+    </ConfirmProvider>
 
     {/* Componentes UI globales */}
     <Toaster />

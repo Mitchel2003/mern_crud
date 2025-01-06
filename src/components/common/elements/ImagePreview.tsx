@@ -18,7 +18,6 @@ const ImagePreview = ({
   label,
   name
 }: ImagePreviewProps) => {
-
   const { field } = useController({ name, control, defaultValue: null })
 
   return (

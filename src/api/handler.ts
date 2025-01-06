@@ -63,7 +63,7 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  */
 const getBase = (type: string): string | undefined => {
   if (['user', 'client'].includes(type)) return undefined // userContext
-  if (['curriculum', 'maintenance'].includes(type)) return '/form' // curriculumContext
+  if (['cv', 'maintenance'].includes(type)) return '/form' // curriculumContext
   if (['login', 'logout', 'on-auth', 'register', 'forgot-password'].includes(type)) return '/auth' // authContext
   if (['country', 'state', 'city', 'headquarter', 'area', 'office', 'service'].includes(type)) return '/location' // locationContext
 

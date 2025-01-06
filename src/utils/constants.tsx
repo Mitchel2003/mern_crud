@@ -103,7 +103,7 @@ export const links = () => {
       subItems: [
         {// cvs
           icon: FileTextIcon,
-          href: '/form/cvs',
+          href: '/form/curriculums',
           label: 'Currículums',
         },
         {// maintenances

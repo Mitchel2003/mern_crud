@@ -11,12 +11,14 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface ImageFieldProps extends HeaderSpanProps, ThemeContextProps {
-  name: string
+  sizeImage?: string
   label: string
+  name: string
 }
 
 const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
   iconSpan = 'none',
+  sizeImage,
   label,
   theme,
   span,
@@ -58,11 +60,12 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
               error && 'border-red-500',
               theme === 'dark'
                 ? 'bg-zinc-800 border-zinc-600'
-                : 'bg-purple-50 border-gray-900/25',
+                : 'bg-purple-50/20 border-gray-900/25',
             )}>
               {preview ? (
                 <PreviewImage
                   theme={theme}
+                  size={sizeImage}
                   preview={preview}
                   onRemove={() => { setPreview(null); onChange(null) }}
                 />
@@ -97,16 +100,17 @@ export default ImageField
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 interface PreviewImageProps extends ThemeContextProps {
-  preview: string
   onRemove: () => void
+  preview: string
+  size?: string
 }
 
-const PreviewImage = ({ preview, theme, onRemove }: PreviewImageProps) => (
+const PreviewImage = ({ preview, size, theme, onRemove }: PreviewImageProps) => (
   <div className="relative">
     <img
       src={preview}
       alt="Vista previa"
-      className="w-40 h-40 object-cover rounded-md"
+      className={cn(size ?? 'w-40 h-40', 'object-cover rounded-md')}
     />
     <Button
       size="icon"
@@ -157,9 +161,7 @@ const UploadPrompt = React.forwardRef<HTMLInputElement, UploadPromptProps>(({
           className="sr-only"
           onChange={(e) => {
             const file = e.target.files?.[0] || null
-            if (file) {
-              onChange(file)
-            }
+            file && onChange(file)
           }}
         />
       </label>
