@@ -20,4 +20,14 @@ export type BaseMDB = {
   createdAt: Date
   updatedAt: Date
 }
+export interface Metadata {
+  name: string
+  url: string
+}
+export interface FileDB {
+  filename?: string
+  files?: File[]
+  ref: string
+  id: string
+}
 /*---------------------------------------------------------------------------------------------------------*/

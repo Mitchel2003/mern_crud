@@ -3,20 +3,21 @@ import axios from "./axios"
 export const getRequest = async (endpoint: string, params?: object) => axios.get(endpoint, { ...params })
 export const postRequest = async (endpoint: string, data: object | undefined) => axios.post(endpoint, data)
 export const putRequest = async (endpoint: string, data: object) => axios.put(endpoint, data)
-export const deleteRequest = async (endpoint: string) => axios.delete(endpoint)
+export const deleteRequest = async (endpoint: string, data?: object) => axios.delete(endpoint, { ...data })
 
 export const useApi = (type: string) => ({
   // crud functions
-  getAll: () => getRequest(buildEndpoint({ type, action: 'many' })),
+  getAll: (data?: object) => getRequest(buildEndpoint({ type, action: 'many' }), data),
   getById: (id: string) => getRequest(buildEndpoint({ type, action: 'one', id })),
   getByQuery: (query: object, populate?: string) => getRequest(buildEndpoint({ type, action: 'many' }), { query, populate }),
   create: (data: object) => postRequest(buildEndpoint({ type, action: 'void' }), data),
   update: (id: string, data: object) => putRequest(buildEndpoint({ type, action: 'one', id }), data),
   delete: (id: string) => deleteRequest(buildEndpoint({ type, action: 'one', id })),
 
-  //void and return functions
-  void: (data?: object) => postRequest(buildEndpoint({ type, action: 'void' }), data),
+  // essential functions
   get: (data?: object) => getRequest(buildEndpoint({ type, action: 'void' }), data),
+  void: (data?: object) => postRequest(buildEndpoint({ type, action: 'void' }), data),
+  remove: (data?: object) => deleteRequest(buildEndpoint({ type, action: 'void' }), data)
 })
 
 /**
@@ -62,10 +63,10 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  * headquarter: /location => backend = api/location/headquarter,
  */
 const getBase = (type: string): string | undefined => {
-  if (['user', 'client'].includes(type)) return undefined // userContext
-  if (['cv', 'maintenance'].includes(type)) return '/form' // curriculumContext
-  if (['login', 'logout', 'on-auth', 'register', 'forgot-password'].includes(type)) return '/auth' // authContext
-  if (['country', 'state', 'city', 'headquarter', 'area', 'office', 'service'].includes(type)) return '/location' // locationContext
-
+  if (['file'].includes(type)) return '/storage'
+  if (['user', 'client'].includes(type)) return undefined
+  if (['cv', 'maintenance'].includes(type)) return '/form'
+  if (['login', 'logout', 'on-auth', 'register', 'forgot-password'].includes(type)) return '/auth'
+  if (['country', 'state', 'city', 'headquarter', 'area', 'office', 'service'].includes(type)) return '/location'
   return undefined
 }

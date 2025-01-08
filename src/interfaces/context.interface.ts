@@ -1,4 +1,4 @@
-import { BaseMDB } from "@/interfaces/db.interface"
+import { BaseMDB, FileDB, Metadata } from "@/interfaces/db.interface"
 
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
@@ -83,16 +83,48 @@ export type LocationContext = {
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------CurriculumContext--------------------------------------------------*/
-export type Curriculum = {
-  _id: string
+/*--------------------------------------------------FormatContext--------------------------------------------------*/
+export type FormatType = 'cv' | 'maintenance' | 'equipment' | 'supplier' | 'manufacturer' | 'representative'
+
+export type Supplier = BaseMDB & { name: string, email: string, address: string, phone: string, nit: string }
+export type Manufacturer = BaseMDB & { name: string, email: string, phone: string, city: string }
+export type Representative = BaseMDB & { name: string, email: string, phone: string, city: string }
+
+export type Equipment = BaseMDB & {
+  status: string
+  dateNextMaintenance: Date
+  dateLastMaintenance: Date
+  curriculum: Curriculum
+}
+export type Maintenance = BaseMDB & {
+  //timestandard
+  dateNextMaintenance: Date
+  dateMaintenance: Date
+
+  //maintenance
+  typeMaintenance: string
+  statusEquipment: string
+  faultEquipment: boolean
+  faultDescription: string
+  inspections: string[]
+  observations: string
+
+  //references
+  receivedBy: string
+  nameEngineer: string
+  invimaEngineer: string
+  equipment: Equipment
+  headquarter: Headquarter
+}
+export type Curriculum = BaseMDB & {
   name: string
   brand: string
   serie: string
+  service: string
   modelEquip: string
   healthRecord: string
   characteristics: string
-  photoUrl: string
+  photoUrl: Metadata[]
   recommendationsManufacturer: string
 
   //details
@@ -119,18 +151,23 @@ export type Curriculum = {
   manualsMaintenance: string
 
   //relationship
-  serviceOffice: string
-  representative: string
-  manufacturer: string
-  supplier: string
-} | undefined
+  office: Office
+  supplier: Supplier
+  manufacturer: Manufacturer
+  representative: Representative
+}
 
-export type CurriculumContext = {
+export type FormatContext = {
   loading: boolean
-  getCV: (id: string) => Promise<Curriculum>
-  getCVs: () => Promise<Curriculum[]>
-  createCV: (cv: object) => Promise<Curriculum>
-  updateCV: (id: string, cv: object) => Promise<Curriculum>
-  deleteCV: (id: string) => Promise<Curriculum>
+  getAll: <T>(type: FormatType) => Promise<T[]>
+  getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: FormatType, query: object, populate?: string) => Promise<T[]>
+  create: (type: FormatType, data: object) => Promise<void>
+  update: (type: FormatType, id: string, data: object) => Promise<void>
+  delete: (type: FormatType, id: string) => Promise<void>
+  // file operations
+  getAllFiles: <T>(type: FormatType, data: FileDB) => Promise<T[]>
+  uploadFiles: (type: FormatType, data: FileDB) => Promise<void>
+  deleteFile: (type: FormatType, data: FileDB) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
