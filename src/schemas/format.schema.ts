@@ -1,0 +1,148 @@
+import { z } from "zod"
+
+export const curriculumSchema = z.object({
+  //location
+  headquarter: z
+    .string({ required_error: "La sede es requerida" })
+    .min(1, "Debes seleccionar una sede"),
+  area: z
+    .string({ required_error: "El área es requerida" })
+    .min(1, "Debes seleccionar un área"),
+  office: z
+    .string({ required_error: "La oficina es requerida" })
+    .min(1, "Debes seleccionar una oficina"),
+  service: z
+    .string({ required_error: "El servicio es requerido" })
+    .min(1, "Debes seleccionar un servicio"),
+
+  //basicData
+  name: z
+    .string({ required_error: "El nombre es requerido" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres"),
+  brand: z
+    .string({ required_error: "La marca es requerida" })
+    .min(1, "Debes seleccionar una marca"),
+  serie: z
+    .string({ required_error: "La serie es requerida" })
+    .min(1, "Debes seleccionar una serie"),
+  modelEquip: z
+    .string({ required_error: "El modelo es requerido" })
+    .min(1, "Debes seleccionar un modelo"),
+  healthRecord: z
+    .string({ required_error: "El registro invima es requerido" })
+    .min(1, "Debes seleccionar un registro invima"),
+  photoUrl: z.array(
+    z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })
+  ).optional().default([]),
+
+  //another
+  characteristics: z
+    .string({ required_error: "Las características son requeridas" })
+    .min(1, "Debes seleccionar una característica"),
+  recommendationsManufacturer: z
+    .string()
+    .optional()
+    .nullable(),
+
+  //details
+  datePurchase: z
+    .string()
+    .datetime(),
+  dateInstallation: z
+    .string()
+    .datetime(),
+  dateOperation: z
+    .string()
+    .datetime(),
+  dateManufacturing: z
+    .string()
+    .datetime(),
+  acquisition: z
+    .string({ required_error: "Fecha de adquisición del equipo es requerida" })
+    .min(1, "Debes seleccionar una fecha de adquisición"),
+  warranty: z
+    .string({ required_error: "Garantía del equipo es requerida" })
+    .min(1, "Debes seleccionar una garantía"),
+  price: z
+    .string({ required_error: "Precio del equipo es requerido" })
+    .refine(data => { return /^[0-9]+$/.test(data) }, {
+      message: "El precio debe contener solo números", path: ["price"]
+    }),
+
+  //equipment
+  useClassification: z
+    .string({ required_error: "Clasificación de uso del equipo es requerida" })
+    .min(1, "Debes seleccionar una clasificación de uso"),
+  typeClassification: z
+    .string({ required_error: "Clasificación de tipo del equipo es requerida" })
+    .min(1, "Debes seleccionar una clasificación de tipo"),
+  biomedicalClassification: z
+    .string({ required_error: "Clasificación biomédica del equipo es requerida" })
+    .min(1, "Debes seleccionar una clasificación biomédica"),
+  riskClassification: z
+    .string({ required_error: "Clasificación de riesgo del equipo es requerida" })
+    .min(1, "Debes seleccionar una clasificación de riesgo"),
+  technologyPredominant: z
+    .array(z.string({ required_error: "Tecnologías predominantes del equipo son requeridas" }))
+    .min(1, "Debes seleccionar al menos una tecnología predominante"),
+  powerSupply: z
+    .array(z.string({ required_error: "Suministro de energía del equipo es requerido" }))
+    .min(1, "Debes seleccionar al menos un suministro de energía"),
+
+  //maintenance
+  employmentMaintenance: z
+    .string({ required_error: "Empleo del mantenimiento es requerido" })
+    .min(1, "Debes seleccionar un empleo de mantenimiento"),
+  frequencyMaintenance: z
+    .string({ required_error: "Frecuencia de mantenimiento es requerida" })
+    .min(1, "Debes seleccionar una frecuencia de mantenimiento"),
+  typeMaintenance: z
+    .array(z.string({ required_error: "Tipos de mantenimiento son requeridos" }))
+    .min(1, "Debes seleccionar al menos un tipo de mantenimiento"),
+  manualsMaintenance: z
+    .string({ required_error: "Manuales de mantenimiento son requeridos" })
+    .min(1, "Debes seleccionar un manual de mantenimiento"),
+
+  //relationship
+
+  supplier: z
+    .string({ required_error: "El proveedor es requerido" })
+    .min(1, "Debes seleccionar un proveedor"),
+  manufacturer: z
+    .string({ required_error: "El fabricante es requerido" })
+    .min(1, "Debes seleccionar un fabricante"),
+  representative: z
+    .string({ required_error: "El representante es requerido" })
+    .min(1, "Debes seleccionar un representante"),
+})
+
+export const maintenanceSchema = z.object({
+  //timestandard
+  dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }),
+  dateMaintenance: z.date().optional(),
+
+  //maintenance
+  typeMaintenance: z.string({ required_error: "El tipo de mantenimiento es requerido" }).min(1, "Debes seleccionar un tipo de mantenimiento"),
+  statusEquipment: z.string({ required_error: "El estado del equipo es requerido" }).min(1, "Debes seleccionar un estado del equipo"),
+  faultEquipment: z.boolean().optional().default(false),
+  faultDescription: z.string({ required_error: "La descripción de la falla es requerida" }).min(1, "Debes seleccionar una descripción de la falla"),
+  inspections: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
+  observations: z.string({ required_error: "Las observaciones son requeridas" }).min(1, "Debes seleccionar una observación"),
+
+  //received
+  receivedBy: z.string({ required_error: "El nombre de la persona que recibe es requerido" }).min(1, "Debes seleccionar una persona que recibe"),
+  nameEngineer: z.string({ required_error: "El nombre del ingeniero es requerido" }).min(1, "Debes seleccionar un ingeniero"),
+  invimaEngineer: z.string({ required_error: "El INVIMA del ingeniero es requerido" }).min(1, "Debes seleccionar un INVIMA"),
+
+  //references
+  equipment: z.string({ required_error: "El ID del equipo es requerido" }).min(1, "Debes seleccionar un equipo"),
+  headquarter: z.string({ required_error: "El ID de la sede es requerido" }).min(1, "Debes seleccionar una sede"),
+})
+
+export type CurriculumFormProps = z.infer<typeof curriculumSchema>
+export type MaintenanceFormProps = z.infer<typeof maintenanceSchema>
