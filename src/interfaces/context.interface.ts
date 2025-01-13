@@ -15,7 +15,7 @@ export type ThemeContextProps = { theme: Theme }
 export type DialogConfig = {
   title: string
   description: string
-  isDestructive: boolean
+  isDestructive?: boolean
   action: () => Promise<void> | void
 } | null
 
@@ -84,11 +84,28 @@ export type LocationContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------FormatContext--------------------------------------------------*/
-export type FormatType = 'cv' | 'maintenance' | 'equipment' | 'supplier' | 'manufacturer' | 'representative'
+export type FormatType =
+  | 'cv' | 'equipment' | 'maintenance' //globals
+
+  //maintenance
+  | 'check' | 'checkMaintenance'
+  //equipment
+  | 'calibration' | 'reminder' | 'calibrationEquipment'
+  //curriculum
+  | 'inspection' | 'typeInspection' | 'accessory'
+  | 'supplier' | 'manufacturer' | 'representative'
+  | 'representativeHeadquarter' | 'supplierHeadquarter' | 'manufacturerHeadquarter'
+
+export type TypeInspection = BaseMDB & { name: string, inactive: Boolean }
+export type Inspection = BaseMDB & { name: string, typeInspection: TypeInspection[], inactive: Boolean }
 
 export type Supplier = BaseMDB & { name: string, email: string, address: string, phone: string, nit: string }
 export type Manufacturer = BaseMDB & { name: string, email: string, phone: string, city: string }
 export type Representative = BaseMDB & { name: string, email: string, phone: string, city: string }
+
+export type RepresentativeHeadquarter = BaseMDB & { headquarter: Headquarter, representative: Representative }
+export type ManufacturerHeadquarter = BaseMDB & { headquarter: Headquarter, manufacturer: Manufacturer }
+export type SupplierHeadquarter = BaseMDB & { headquarter: Headquarter, supplier: Supplier }
 
 export type Equipment = BaseMDB & {
   status: string
@@ -117,24 +134,26 @@ export type Maintenance = BaseMDB & {
   headquarter: Headquarter
 }
 export type Curriculum = BaseMDB & {
+  //basicData
   name: string
   brand: string
   serie: string
   service: string
   modelEquip: string
   healthRecord: string
-  characteristics: string
   photoUrl: Metadata[]
+
+  characteristics: string
+  technicalCharacteristics: string[],
   recommendationsManufacturer: string
 
-  //details
-  datePurchase: Date
-  dateInstallation: Date
-  dateOperation: Date
-  dateManufacturing: Date
+  //detailsEquipment
+  datePurchase: string
+  dateInstallation: string
+  dateOperation: string
   acquisition: string
   warranty: string
-  price: number
+  price: string
 
   //equipment
   useClassification: string
@@ -152,6 +171,7 @@ export type Curriculum = BaseMDB & {
 
   //relationship
   office: Office
+  inspection: Inspection
   supplier: Supplier
   manufacturer: Manufacturer
   representative: Representative

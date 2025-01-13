@@ -10,8 +10,8 @@ import HeaderForm from "#/common/elements/HeaderForm"
 import { Card, CardContent } from "#/ui/card"
 
 // import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
-// import EquipmentClassificationSection from "./EquipmentClassificationSection"
-// import DetailsEquipmentSection from "./DetailsEquipmentSection"
+import EquipmentClassificationSection from "./EquipmentClassificationSection"
+import DetailsEquipmentSection from "./DetailsEquipmentSection"
 // import CharacteristicsSection from "./CharacteristicsSection"
 // import EngineerServiceSection from "./EngineerServiceSection"
 // import InspectionSection from "./PresetInspectionSection"
@@ -59,8 +59,8 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
                 <RenderFormat format={[
                   <LocationSection theme={theme} />,
                   <BasicDataSection theme={theme} />,
-                  // <DetailsEquipmentSection theme={theme} />, //yet not ready
-                  // <EquipmentClassificationSection theme={theme} />,
+                  <DetailsEquipmentSection theme={theme} />, //yet not ready
+                  <EquipmentClassificationSection theme={theme} />,
                   // <TechnicalCharacteristicsSection theme={theme} />,
                   // <MaintenanceSection theme={theme} />,
                   // <InspectionSection theme={theme} />, //yet not ready

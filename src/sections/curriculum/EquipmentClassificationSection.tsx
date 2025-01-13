@@ -27,8 +27,8 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
         name="type_device"
         placeholder="Seleccionar tipo"
         options={[
-          { label: "fijo", value: "static" },
-          { label: "movil", value: "mobile" }
+          { label: "fijo", value: "fijo" },
+          { label: "movil", value: "movil" }
         ]}
       />
       <SelectField
@@ -37,28 +37,28 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
         label="Clasificación por Uso"
         placeholder="Seleccionar clasificación"
         options={[
-          { label: "medico", value: "medical" },
-          { label: "basico", value: "basic" },
-          { label: "apoyo", value: "support" }
+          { label: "medico", value: "medico" },
+          { label: "basico", value: "basico" },
+          { label: "apoyo", value: "apoyo" }
         ]}
       />
       <SelectField
         theme={theme}
-        name="classification_biomedical"
+        name="biomedicalClassification"
         label="Clasificación Biomédica"
         placeholder="Seleccionar clasificación"
         options={[
-          { label: "diagnostico", value: "diagnostic" },
-          { label: "tratamiento", value: "treatment" },
-          { label: "prevencion", value: "prevention" },
-          { label: "rehabilitacion", value: "rehabilitation" },
-          { label: "analisis", value: "analysis" }
+          { label: "diagnostico", value: "diagnostico" },
+          { label: "tratamiento", value: "tratamiento" },
+          { label: "prevención", value: "prevención" },
+          { label: "rehabilitación", value: "rehabilitación" },
+          { label: "analisis", value: "analisis" }
         ]}
       />
       <SelectField
         theme={theme}
-        name="risk"
-        label="Riesgo"
+        name="riskClassification"
+        label="Clasificación Riesgo"
         placeholder="Seleccionar riesgo"
         options={[
           { label: "I", value: "I" },

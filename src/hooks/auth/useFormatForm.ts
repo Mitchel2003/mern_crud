@@ -1,7 +1,7 @@
-import { Area, Headquarter, Office, Service, Curriculum } from "@/interfaces/context.interface"
+import { Area, Headquarter, Office, Service, Curriculum, RepresentativeHeadquarter, ManufacturerHeadquarter, SupplierHeadquarter } from "@/interfaces/context.interface"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
+import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Metadata } from "@/interfaces/db.interface"
 import { useForm } from "react-hook-form"
@@ -9,54 +9,11 @@ import { useEffect } from "react"
 
 import {
   curriculumSchema, CurriculumFormProps,
+  stakeholderSchema, StakeholderFormProps,
+  supplierSchema, SupplierFormProps
 } from "@/schemas/format.schema"
 
-/*--------------------------------------------------useCurriculumForm--------------------------------------------------*/
-const curriculumDefaultValues = {
-  headquarter: '', //locationData //helper(this field not was send to backend)
-  area: '', //locationData //helper(this field not was send to backend)
-  office: '', //locationData
-  service: '', //locationData
-
-  name: '', //basicData
-  brand: '', //basicData
-  serie: '', //basicData
-  modelEquip: '', //basicData
-  healthRecord: '', //basicData
-  photoUrl: [{ file: undefined }], //basicData
-
-  characteristics: '',
-  recommendationsManufacturer: '',
-
-  //details
-  datePurchase: '',
-  dateOperation: '',
-  dateInstallation: '',
-  dateManufacturing: '',
-  acquisition: '',
-  warranty: '',
-  price: '',
-
-  //equipment
-  useClassification: '',
-  typeClassification: '',
-  biomedicalClassification: '',
-  riskClassification: '',
-  technologyPredominant: [],
-  powerSupply: [],
-
-  //maintenance
-  employmentMaintenance: '',
-  frequencyMaintenance: '',
-  typeMaintenance: [],
-  manualsMaintenance: '',
-
-  //relationship
-  supplier: '',
-  manufacturer: '',
-  representative: '',
-}
-
+/*--------------------------------------------------hooks use form--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks
  * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
@@ -66,13 +23,14 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { fetchFormatById } = useQueryFormat()
   const { createFormat, updateFormat } = useFormatMutation("cv")
   const { data: cv } = fetchFormatById<Curriculum>('cv', id as string)
-  const locationData = useCurriculumLocation()
-  const basicData = useCurriculumBasicData(id)
+  const detailsData = useDetailsEquipmentCV.render(id)
+  const locationData = useLocationCV()
+  const basicData = useBasicDataCV(id)
 
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: curriculumDefaultValues,
-    mode: "onTouched",
+    mode: "onChange",
   })
 
   useEffect(() => { loadData() }, [id])
@@ -80,7 +38,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const loadData = async () => {
     cv && methods.reset({
       ...locationData.mapValues(cv),
-      ...basicData.mapValues(cv)
+      ...basicData.mapValues(cv),
+      ...detailsData.mapValues(cv),
     })
   }
 
@@ -100,14 +59,16 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     id,
     methods,
     ...handleSubmit,
-    files: basicData.files || [],
-    options: locationData.options
+    locationData: locationData.options,
+    basicData: basicData.files,
+    detailsData: detailsData.options
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------subCurriculumForm--------------------------------------------------*/
-const useCurriculumLocation = () => { //locationData
+/*--------------------------------------------------hooks use subForm--------------------------------------------------*/
+{/*------------------------- locationData -------------------------*/ }
+const useLocationCV = () => {
   const { fetchAllLocations } = useQueryLocation()
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
   const { data: services } = fetchAllLocations<Service>('service')
@@ -126,14 +87,12 @@ const useCurriculumLocation = () => { //locationData
     office: data.office
   })
 
-  return {
-    mapValues,
-    submitData,
-    options: { headquarters, services, offices, areas },
-  }
+  return { mapValues, submitData, options: { headquarters, services, offices, areas } }
 }
+{/*----------------------------------------------------------------------*/ }
 
-const useCurriculumBasicData = (id?: string) => { //basicData
+{/*------------------------- basicData -------------------------*/ }
+const useBasicDataCV = (id?: string) => {//basicData
   const { fetchAllFiles } = useQueryFormat()
   const { data: files } = fetchAllFiles<Metadata>('cv', { id: id as string, ref: 'preview' })
 
@@ -155,10 +114,139 @@ const useCurriculumBasicData = (id?: string) => { //basicData
     photoUrl: data.photoUrl || [],
   })
 
-  return {
-    files,
-    mapValues,
-    submitData,
+  return { files, mapValues, submitData }
+}
+{/*----------------------------------------------------------------------*/ }
+
+{/*------------------------- detailsEquipment -------------------------*/ }
+class DetailsEquipmentCV {
+  private static instance: DetailsEquipmentCV
+  readonly defaultSupplier = { name: '', email: '', phone: '', address: '', nit: '' }
+  readonly defaultStakeholder = { name: '', email: '', phone: '', city: '' }
+
+  public static getInstance(): DetailsEquipmentCV {
+    if (!DetailsEquipmentCV.instance) { DetailsEquipmentCV.instance = new DetailsEquipmentCV() }
+    return DetailsEquipmentCV.instance
+  }
+
+  render(id: string | undefined) {//to load data on select fields
+    const { fetchFormatByQuery } = useQueryFormat()
+    const { data: representatives } = fetchFormatByQuery<RepresentativeHeadquarter>('representativeHeadquarter', { headquarter: id })
+    const { data: manufacturers } = fetchFormatByQuery<ManufacturerHeadquarter>('manufacturerHeadquarter', { headquarter: id })
+    const { data: suppliers } = fetchFormatByQuery<SupplierHeadquarter>('supplierHeadquarter', { headquarter: id })
+
+    const mapValues = (data: Curriculum) => ({
+      datePurchase: data.datePurchase,
+      dateInstallation: data.dateInstallation,
+      dateOperation: data.dateOperation,
+      acquisition: data.acquisition,
+      warranty: data.warranty,
+      price: data.price,
+      representative: data.representative._id,
+      manufacturer: data.manufacturer._id,
+      supplier: data.supplier._id,
+    })
+
+    const submitData = (data: CurriculumFormProps) => ({
+      datePurchase: data.datePurchase,
+      dateInstallation: data.dateInstallation,
+      dateOperation: data.dateOperation,
+      acquisition: data.acquisition,
+      warranty: data.warranty,
+      price: data.price
+    })
+
+    return {
+      mapValues,
+      submitData,
+      options: {
+        representative: representatives?.map((e) => ({ value: e.representative._id, label: `${e.representative.name} - ${e.representative.city}` })) || [],
+        manufacturer: manufacturers?.map((e) => ({ value: e.manufacturer._id, label: `${e.manufacturer.name} - ${e.manufacturer.city}` })) || [],
+        supplier: suppliers?.map((e) => ({ value: e.supplier._id, label: `${e.supplier.name} - ${e.supplier.address} - ${e.supplier.nit}` })) || [],
+      }
+    }
+  }
+
+  useRepresentative() {//to handle representative
+    const { createFormat } = useFormatMutation('representative')
+    const methods = useForm<StakeholderFormProps>({
+      resolver: zodResolver(stakeholderSchema),
+      defaultValues: this.defaultStakeholder,
+      mode: "onChange",
+    })
+    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
+    return { methods, ...handleSubmit }
+  }
+
+  useSupplier() {//to handle supplier
+    const { createFormat } = useFormatMutation('supplier')
+    const methods = useForm<SupplierFormProps>({
+      resolver: zodResolver(supplierSchema),
+      defaultValues: this.defaultSupplier,
+      mode: "onChange",
+    })
+    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
+    return { methods, ...handleSubmit }
+  }
+
+  useManufacturer() {//to handle manufacturer
+    const { createFormat } = useFormatMutation('manufacturer')
+    const methods = useForm<StakeholderFormProps>({
+      resolver: zodResolver(stakeholderSchema),
+      defaultValues: this.defaultStakeholder,
+      mode: "onChange",
+    })
+    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
+    return { methods, ...handleSubmit }
   }
 }
+export const useDetailsEquipmentCV = DetailsEquipmentCV.getInstance()
 /*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default values--------------------------------------------------*/
+const curriculumDefaultValues = {
+  //helpers fields not has been sent to database
+  headquarter: '', //helper locationData
+  area: '', //helper locationData
+  office: '', //locationData
+  service: '', //locationData
+
+  name: '', //basicData
+  brand: '', //basicData
+  serie: '', //basicData
+  modelEquip: '', //basicData
+  healthRecord: '', //basicData
+  photoUrl: [{ file: undefined }], //basicData (create after that cv)
+
+  characteristics: '',
+  technicalCharacteristics: [],
+  recommendationsManufacturer: '',
+
+  //working here...
+  datePurchase: '', //datailsEquipment
+  dateOperation: '', //datailsEquipment
+  dateInstallation: '', //datailsEquipment
+  acquisition: '', //datailsEquipment
+  warranty: '', //datailsEquipment
+  price: '', //datailsEquipment
+
+  //equipment
+  useClassification: '',
+  typeClassification: '',
+  biomedicalClassification: '',
+  riskClassification: '',
+  technologyPredominant: [],
+  powerSupply: [],
+
+  //maintenance
+  employmentMaintenance: '',
+  frequencyMaintenance: '',
+  typeMaintenance: [],
+  manualsMaintenance: '',
+
+  //relationship
+  inspection: '',
+  supplier: '', //datailsEquipment
+  manufacturer: '', //datailsEquipment
+  representative: '', //datailsEquipment
+}

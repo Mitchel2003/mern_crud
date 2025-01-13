@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+/*--------------------------------------------------curriculum--------------------------------------------------*/
 export const curriculumSchema = z.object({
   //location
   headquarter: z
@@ -44,6 +45,9 @@ export const curriculumSchema = z.object({
   characteristics: z
     .string({ required_error: "Las características son requeridas" })
     .min(1, "Debes seleccionar una característica"),
+  technicalCharacteristics: z
+    .array(z.string({ required_error: "Tipos de mantenimiento son requeridos" }))
+    .min(1, "Debes seleccionar al menos un tipo de mantenimiento"),
   recommendationsManufacturer: z
     .string()
     .optional()
@@ -57,9 +61,6 @@ export const curriculumSchema = z.object({
     .string()
     .datetime(),
   dateOperation: z
-    .string()
-    .datetime(),
-  dateManufacturing: z
     .string()
     .datetime(),
   acquisition: z
@@ -87,7 +88,7 @@ export const curriculumSchema = z.object({
   riskClassification: z
     .string({ required_error: "Clasificación de riesgo del equipo es requerida" })
     .min(1, "Debes seleccionar una clasificación de riesgo"),
-  technologyPredominant: z
+  technologyPredominant: z //working here...
     .array(z.string({ required_error: "Tecnologías predominantes del equipo son requeridas" }))
     .min(1, "Debes seleccionar al menos una tecnología predominante"),
   powerSupply: z
@@ -109,7 +110,9 @@ export const curriculumSchema = z.object({
     .min(1, "Debes seleccionar un manual de mantenimiento"),
 
   //relationship
-
+  inspection: z
+    .string({ required_error: "El proveedor es requerido" })
+    .min(1, "Debes seleccionar un proveedor"),
   supplier: z
     .string({ required_error: "El proveedor es requerido" })
     .min(1, "Debes seleccionar un proveedor"),
@@ -121,6 +124,53 @@ export const curriculumSchema = z.object({
     .min(1, "Debes seleccionar un representante"),
 })
 
+export const stakeholderSchema = z.object({
+  name: z
+    .string({ required_error: "El nombre es requerido" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres"),
+  email: z
+    .string({ required_error: "El email es requerido" })
+    .email("Correo electrónico inválido"),
+  phone: z
+    .string({ required_error: "El telefono es requerido" })
+    .min(6, "El teléfono es requerido")
+    .max(15, "El teléfono es demasiado largo"),
+  city: z
+    .string({ required_error: "La ciudad es requerida" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres")
+    .optional(),
+}).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
+  message: "El teléfono debe contener solo números", path: ["phone"]
+})
+
+export const supplierSchema = z.object({
+  name: z
+    .string({ required_error: "El nombre es requerido" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres"),
+  email: z
+    .string({ required_error: "El email es requerido" })
+    .email("Correo electrónico inválido"),
+  phone: z
+    .string({ required_error: "El telefono es requerido" })
+    .min(6, "El teléfono es requerido")
+    .max(15, "El teléfono es demasiado largo"),
+  address: z
+    .string({ required_error: "La dirección es requerida" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(30, "El nombre debe tener menos de 50 caracteres"),
+  nit: z
+    .string({ required_error: "El NIT es requerido" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(30, "El nombre debe tener menos de 50 caracteres")
+}).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
+  message: "El teléfono debe contener solo números", path: ["phone"]
+})
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------maintenance--------------------------------------------------*/
 export const maintenanceSchema = z.object({
   //timestandard
   dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }),
@@ -146,3 +196,5 @@ export const maintenanceSchema = z.object({
 
 export type CurriculumFormProps = z.infer<typeof curriculumSchema>
 export type MaintenanceFormProps = z.infer<typeof maintenanceSchema>
+export type StakeholderFormProps = z.infer<typeof stakeholderSchema>
+export type SupplierFormProps = z.infer<typeof supplierSchema>

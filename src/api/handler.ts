@@ -63,10 +63,24 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  * headquarter: /location => backend = api/location/headquarter,
  */
 const getBase = (type: string): string | undefined => {
+  /*-------------------------files-------------------------*/
   if (['file'].includes(type)) return '/storage'
+  /*-------------------------user-------------------------*/
   if (['user', 'client'].includes(type)) return undefined
-  if (['cv', 'maintenance'].includes(type)) return '/form'
+  /*-------------------------authentication-------------------------*/
   if (['login', 'logout', 'on-auth', 'register', 'forgot-password'].includes(type)) return '/auth'
+  /*-------------------------format-------------------------*/
+  if (['cv', 'maintenance', 'equipment'].includes(type)) return '/form' //globals
+
+  //maintenance
+  if (['check', 'checkMaintenance'].includes(type)) return '/form/maintenance'
+  //equipment
+  if (['calibration', 'reminder', 'calibrationEquipment'].includes(type)) return '/form/equipment'
+  //curriculum
+  if (['inspection', 'typeInspection', 'accessory'].includes(type)) return '/form/cv'
+  if (['supplier', 'manufacturer', 'representative'].includes(type)) return '/form/cv/stakeholder'
+  if (['supplierHeadquarter', 'manufacturerHeadquarter', 'representativeHeadquarter'].includes(type)) return '/form/cv/stakeholder'
+  /*-------------------------location-------------------------*/
   if (['country', 'state', 'city', 'headquarter', 'area', 'office', 'service'].includes(type)) return '/location'
   return undefined
 }
