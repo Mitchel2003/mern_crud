@@ -104,7 +104,6 @@ const useClientActions = ({ client, onChange }: ClientActionsProps): ActionProps
     onClick: () => {
       confirmAction({
         title: 'Editar Cliente',
-        isDestructive: false,
         description: `¿Deseas editar el cliente "${client.name}"?`,
         action: () => { onChange('form'); navigate(`/client/${client._id}`) }
       })

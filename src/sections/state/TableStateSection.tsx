@@ -101,7 +101,6 @@ const useStateActions = ({ state, onChange }: StateActionsProps): ActionProps[] 
     onClick: () => {
       confirmAction({
         title: 'Editar Departamento',
-        isDestructive: false,
         description: `¿Deseas editar el departamento "${state.name}"?`,
         action: () => { onChange('form'); navigate(`/location/state/${state._id}`) }
       })

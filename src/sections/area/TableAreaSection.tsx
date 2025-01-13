@@ -111,7 +111,6 @@ const useAreaActions = ({ area, onChange }: AreaActionsProps): ActionProps[] => 
     onClick: () => {
       confirmAction({
         title: 'Editar Área',
-        isDestructive: false,
         description: `¿Deseas editar el área "${area.name}"?`,
         action: () => { onChange('form'); navigate(`/location/area/${area._id}`) }
       })

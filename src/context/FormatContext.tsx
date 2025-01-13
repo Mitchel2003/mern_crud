@@ -1,5 +1,5 @@
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
-import { FileReference, isAxiosResponse, Metadata } from "@/interfaces/db.interface"
+import { FileDB, isAxiosResponse } from "@/interfaces/db.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { useLoadingScreen } from "@/hooks/ui/useLoading"
 import { Props } from "@/interfaces/props.interface"
@@ -133,11 +133,11 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todos los archivos asociados a un formato
    * @param {FormatType} type - El tipo de formato
-   * @param {FileReference} data - Los datos de la referencia del documento
+   * @param {FileDB} data - Los datos de la referencia del documento
    * @example const data = { id: '456', ref: 'preview' }
    * @returns {Promise<any[]>} Array con los metadatos de los archivos
    */
-  const getAllFiles = async (type: FormatType, data: FileReference): Promise<any[]> => {
+  const getAllFiles = async (type: FormatType, data: FileDB): Promise<any[]> => {
     setLoadingStatus('Cargando archivos...')
     try {
       const response = await useApi(type).getAll(data)
@@ -151,10 +151,10 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   /**
    * Sube archivos asociados a un formato
    * @param {FormatType} type - El tipo de formato
-   * @param {FileReference} data - Los datos de la referencia del documento
+   * @param {FileDB} data - Los datos de la referencia del documento
    * @example const data = { id: '456', ref: 'preview', files: [file1, file2, file3] }
    */
-  const uploadFiles = async (type: FormatType, data: FileReference): Promise<void> => {
+  const uploadFiles = async (type: FormatType, data: FileDB): Promise<void> => {
     setLoadingStatus('Subiendo archivos...')
     try {
       await useApi(type).void(data)
@@ -166,10 +166,10 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   /**
    * Elimina un archivo específico
    * @param {FormatType} type - El tipo de formato
-   * @param {FileReference} data - Los datos de la referencia del documento
+   * @param {FileDB} data - Los datos de la referencia del documento
    * @example const data = { id: '456', ref: 'preview', filename: 'example' }
    */
-  const deleteFile = async (type: FormatType, data: FileReference): Promise<void> => {
+  const deleteFile = async (type: FormatType, data: FileDB): Promise<void> => {
     setLoadingStatus('Eliminando archivo...')
     try {
       await useApi(type).remove(data)

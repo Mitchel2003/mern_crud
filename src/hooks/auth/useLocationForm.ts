@@ -1,6 +1,6 @@
 import { City, Client, Country, State, Headquarter, Area, Office, Service } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
+import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HandHelpingIcon } from "lucide-react"

@@ -13,7 +13,7 @@ interface ItemPhotoProps extends ThemeContextProps {
   id: string
 }
 
-const ItemPhoto = ({ theme, id, image }: ItemPhotoProps) => {
+const ItemPhoto = ({ theme, image, id }: ItemPhotoProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const { deleteFile } = useFormatMutation('cv')
 

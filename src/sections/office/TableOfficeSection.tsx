@@ -116,7 +116,6 @@ const useOfficeActions = ({ office, onChange }: OfficeActionsProps): ActionProps
     onClick: () => {
       confirmAction({
         title: 'Editar Consultorio',
-        isDestructive: false,
         description: `¿Deseas editar el consultorio "${office.name}"?`,
         action: () => { onChange('form'); navigate(`/location/office/${office._id}`) }
       })

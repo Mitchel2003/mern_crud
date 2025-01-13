@@ -6,10 +6,7 @@ interface FormSubmitProps<T> {
   onSuccess?: () => void
 }
 
-export const useFormSubmit = <T extends FieldValues>({
-  onSubmit,
-  onSuccess,
-}: FormSubmitProps<T>, methods: UseFormReturn<T>) => {
+export const useFormSubmit = <T extends FieldValues>({ onSubmit, onSuccess }: FormSubmitProps<T>, methods: UseFormReturn<T>) => {
   const [open, setOpen] = useState(false)
 
   const handleSubmit = (e?: React.FormEvent) => {

@@ -96,7 +96,6 @@ const useCountryActions = ({ country, onChange }: CountryActionsProps): ActionPr
     onClick: () => {
       confirmAction({
         title: 'Editar País',
-        isDestructive: false,
         description: `¿Deseas editar el país "${country.name}"?`,
         action: () => { onChange('form'); navigate(`/location/country/${country._id}`) }
       })

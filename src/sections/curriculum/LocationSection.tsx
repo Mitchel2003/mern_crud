@@ -1,5 +1,5 @@
-import { ThemeContextProps } from "@/interfaces/context.interface";
-import { useCurriculumForm } from "@/hooks/auth/useFormatForm";
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"
@@ -7,7 +7,7 @@ import { useFormContext } from "react-hook-form"
 interface LocationSectionProps extends ThemeContextProps { }
 
 const LocationSection = ({ theme }: LocationSectionProps) => {
-  const { options } = useCurriculumForm()
+  const { locationData: options } = useCurriculumForm()
   const { watch } = useFormContext()
 
   const headquarterId = watch('headquarter')

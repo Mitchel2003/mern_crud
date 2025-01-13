@@ -101,7 +101,6 @@ const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => 
     onClick: () => {
       confirmAction({
         title: 'Editar Ciudad',
-        isDestructive: false,
         description: `¿Deseas editar la ciudad "${city.name}"?`,
         action: () => { onChange('form'); navigate(`/location/city/${city._id}`) }
       })

@@ -9,7 +9,7 @@ import ImageField from '#/common/fields/Image'
 interface BasicDataProps extends ThemeContextProps { }
 
 const BasicDataSection = ({ theme }: BasicDataProps) => {
-  const { files, id } = useCurriculumForm()
+  const { basicData: files, id } = useCurriculumForm()
 
   return (
     <div className="space-y-6">
@@ -63,14 +63,14 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
 
         <div className="md:col-span-5">
           {/* preview of the image */}
-          {files[0] && <ItemPhoto theme={theme} image={files[0]} id={id as string} />}
+          {files && <ItemPhoto theme={theme} image={files[0]} id={id as string} />}
 
           {/* input of the image */}
           <CardIterable
             theme={theme}
             name="photoUrl"
-            titleButton="Agregar imagen"
             fields={fields({ theme })}
+            titleButton="Agregar imagen"
             limit={1 - (files?.length ?? 0)}
           />
         </div>

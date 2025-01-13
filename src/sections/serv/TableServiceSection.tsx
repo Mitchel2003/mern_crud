@@ -96,7 +96,6 @@ const useServiceActions = ({ service, onChange }: ServiceActionsProps): ActionPr
     onClick: () => {
       confirmAction({
         title: 'Editar Servicio',
-        isDestructive: false,
         description: `¿Deseas editar el servicio "${service.name}"?`,
         action: () => { onChange('form'); navigate(`/location/service/${service._id}`) }
       })

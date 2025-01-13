@@ -105,7 +105,6 @@ const useHeadquarterActions = ({ headquarter, onChange }: HeadquarterActionsProp
     onClick: () => {
       confirmAction({
         title: 'Editar Sede',
-        isDestructive: false,
         description: `¿Deseas editar la sede "${headquarter.name}"?`,
         action: () => { onChange('form'); navigate(`/location/headquarter/${headquarter._id}`) }
       })
