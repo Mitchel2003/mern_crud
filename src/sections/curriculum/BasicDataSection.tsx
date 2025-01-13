@@ -63,7 +63,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
 
         <div className="md:col-span-5">
           {/* preview of the image */}
-          {files && <ItemPhoto theme={theme} image={files[0]} id={id as string} />}
+          {files && files.length > 0 && <ItemPhoto theme={theme} image={files[0]} id={id as string} />}
 
           {/* input of the image */}
           <CardIterable

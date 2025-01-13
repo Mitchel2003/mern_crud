@@ -14,8 +14,8 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
   const officeId = watch('office')
   const areaId = watch('area')
 
-  const areas = options.areas?.filter((area) => area.headquarter._id === headquarterId)
-  const offices = options.offices?.filter((office) => office.area._id === areaId)
+  const areas = options.areas?.filter((area) => area.headquarter?._id === headquarterId)
+  const offices = options.offices?.filter((office) => office.area?._id === areaId)
   const services = options.services?.filter((service) => {
     const office = offices?.find((office) => office._id === officeId)
     return office?.services.includes(service.name)

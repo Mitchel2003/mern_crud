@@ -80,7 +80,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     office && methods.reset({
       name: office.name,
-      area: office.area._id,
+      area: office.area?._id,
       services: office.services
     })
   }, [office, methods.reset])
@@ -122,7 +122,7 @@ export const useAreaForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     area && methods.reset({
       name: area.name,
-      headquarter: area.headquarter._id
+      headquarter: area.headquarter?._id
     })
   }, [area, headquarters])
 
@@ -164,8 +164,8 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     headquarter && methods.reset({
       name: headquarter.name,
       address: headquarter.address,
-      client: headquarter.client._id,
-      city: headquarter.city._id
+      client: headquarter.client?._id,
+      city: headquarter.city?._id
     })
   }, [headquarter, cities, clients])
 
@@ -204,7 +204,7 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    city && methods.reset({ name: city.name, state: city.state._id })
+    city && methods.reset({ name: city.name, state: city.state?._id })
   }, [city, states])
 
   const handleSubmit = useFormSubmit({
@@ -238,7 +238,7 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    state && methods.reset({ name: state.name, country: state.country._id })
+    state && methods.reset({ name: state.name, country: state.country?._id })
   }, [state, countries])
 
   const handleSubmit = useFormSubmit({

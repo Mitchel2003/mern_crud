@@ -1,7 +1,7 @@
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { Client, Headquarter, User } from "@/interfaces/context.interface"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useFormSubmit } from "@/hooks/auth/useFormSubmit"
+import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MapPinHouseIcon } from "lucide-react"

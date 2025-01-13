@@ -30,7 +30,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: curriculumDefaultValues,
-    mode: "onChange",
+    mode: "onSubmit",
   })
 
   useEffect(() => { loadData() }, [id])
@@ -76,9 +76,9 @@ const useLocationCV = () => {
   const { data: areas } = fetchAllLocations<Area>('area')
 
   const mapValues = (data: Curriculum) => ({
-    headquarter: data.office.area.headquarter._id,
-    area: data.office.area._id,
-    office: data.office._id,
+    headquarter: data.office.area.headquarter?._id,
+    area: data.office.area?._id,
+    office: data.office?._id,
     service: data.service
   })
 
@@ -142,9 +142,9 @@ class DetailsEquipmentCV {
       acquisition: data.acquisition,
       warranty: data.warranty,
       price: data.price,
-      representative: data.representative._id,
-      manufacturer: data.manufacturer._id,
-      supplier: data.supplier._id,
+      representative: data.representative?._id,
+      manufacturer: data.manufacturer?._id,
+      supplier: data.supplier?._id,
     })
 
     const submitData = (data: CurriculumFormProps) => ({
@@ -160,9 +160,9 @@ class DetailsEquipmentCV {
       mapValues,
       submitData,
       options: {
-        representative: representatives?.map((e) => ({ value: e.representative._id, label: `${e.representative.name} - ${e.representative.city}` })) || [],
-        manufacturer: manufacturers?.map((e) => ({ value: e.manufacturer._id, label: `${e.manufacturer.name} - ${e.manufacturer.city}` })) || [],
-        supplier: suppliers?.map((e) => ({ value: e.supplier._id, label: `${e.supplier.name} - ${e.supplier.address} - ${e.supplier.nit}` })) || [],
+        representative: representatives?.map((e) => ({ value: e.representative?._id, label: `${e.representative?.name} - ${e.representative?.city}` })) || [],
+        supplier: suppliers?.map((e) => ({ value: e.supplier?._id, label: `${e.supplier?.name} - ${e.supplier?.address} - ${e.supplier?.nit}` })) || [],
+        manufacturer: manufacturers?.map((e) => ({ value: e.manufacturer?._id, label: `${e.manufacturer?.name} - ${e.manufacturer?.city}` })) || [],
       }
     }
   }
