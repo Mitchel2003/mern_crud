@@ -144,7 +144,6 @@ export type Curriculum = BaseMDB & {
   photoUrl: Metadata[]
 
   characteristics: string
-  technicalCharacteristics: string[],
   recommendationsManufacturer: string
 
   //detailsEquipment
@@ -162,6 +161,20 @@ export type Curriculum = BaseMDB & {
   riskClassification: string
   technologyPredominant: string[]
   powerSupply: string[]
+
+  //technical characteristics
+  technicalCharacteristics: {
+    voltage: string
+    amperage: string
+    power: string
+    frequency: string
+    capacity: string
+    pressure: string
+    speed: string
+    humidity: string
+    temperature: string
+    weight: string
+  }
 
   //maintenance
   employmentMaintenance: string

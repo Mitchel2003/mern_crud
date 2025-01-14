@@ -114,8 +114,9 @@ export const links = () => {
       ]
     },
     {/** institution **/
-      label: 'Institución',
+      label: 'Clientes',
       icon: Building2,
+      href: '/clients',
       subItems: [
         {// offices
           label: 'Oficinas',
@@ -142,11 +143,6 @@ export const links = () => {
           label: 'Sedes',
           icon: HomeIcon,
           href: '/location/headquarters',
-        },
-        {// clients
-          icon: Building,
-          label: 'Clientes',
-          href: '/clients',
         },
         {/** locations **/
           label: 'Ubicaciones',

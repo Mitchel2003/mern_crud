@@ -1,4 +1,4 @@
-import { Area, Headquarter, Office, Service, Curriculum, RepresentativeHeadquarter, ManufacturerHeadquarter, SupplierHeadquarter } from "@/interfaces/context.interface"
+import { Area, Headquarter, Office, Service, Curriculum } from "@/interfaces/context.interface"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
@@ -23,7 +23,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { fetchFormatById } = useQueryFormat()
   const { createFormat, updateFormat } = useFormatMutation("cv")
   const { data: cv } = fetchFormatById<Curriculum>('cv', id as string)
-  const detailsData = useDetailsEquipmentCV.render(id)
+  const technicalData = useTechnicalCharacteristicsCV()
+  const detailsData = useDetailsEquipmentCV.render()
   const locationData = useLocationCV()
   const basicData = useBasicDataCV(id)
 
@@ -40,6 +41,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       ...locationData.mapValues(cv),
       ...basicData.mapValues(cv),
       ...detailsData.mapValues(cv),
+      ...technicalData.mapValues(cv),
     })
   }
 
@@ -47,7 +49,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     onSubmit: async (e: any) => {
       const data = {
         ...locationData.submitData(e),
-        ...basicData.submitData(e)
+        ...basicData.submitData(e),
+        ...technicalData.submitData(e),
       }
       id ? updateFormat({ id, data }) : createFormat(data)
       methods.reset()
@@ -61,13 +64,20 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     ...handleSubmit,
     locationData: locationData.options,
     basicData: basicData.files,
-    detailsData: detailsData.options
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------hooks use subForm--------------------------------------------------*/
-{/*------------------------- locationData -------------------------*/ }
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * This conjunt of tools allow us to operate the sections of the form,
+ * to load data, to map data and to submit data; have a single source.
+ * 
+ * @argument Curriculum - Curriculum interface, consist in subs hooks that return the data of the form
+ * @argument Maintenance - Maintenance interface, consist in subs hooks that return the data of the form
+ */
+
+/*--------------------------------------------------locationData--------------------------------------------------*/
 const useLocationCV = () => {
   const { fetchAllLocations } = useQueryLocation()
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
@@ -89,10 +99,10 @@ const useLocationCV = () => {
 
   return { mapValues, submitData, options: { headquarters, services, offices, areas } }
 }
-{/*----------------------------------------------------------------------*/ }
+/*---------------------------------------------------------------------------------------------------------*/
 
-{/*------------------------- basicData -------------------------*/ }
-const useBasicDataCV = (id?: string) => {//basicData
+/*--------------------------------------------------basicData--------------------------------------------------*/
+const useBasicDataCV = (id?: string) => {
   const { fetchAllFiles } = useQueryFormat()
   const { data: files } = fetchAllFiles<Metadata>('cv', { id: id as string, ref: 'preview' })
 
@@ -116,9 +126,9 @@ const useBasicDataCV = (id?: string) => {//basicData
 
   return { files, mapValues, submitData }
 }
-{/*----------------------------------------------------------------------*/ }
+/*---------------------------------------------------------------------------------------------------------*/
 
-{/*------------------------- detailsEquipment -------------------------*/ }
+/*--------------------------------------------------detailsEquipment--------------------------------------------------*/
 class DetailsEquipmentCV {
   private static instance: DetailsEquipmentCV
   readonly defaultSupplier = { name: '', email: '', phone: '', address: '', nit: '' }
@@ -129,22 +139,15 @@ class DetailsEquipmentCV {
     return DetailsEquipmentCV.instance
   }
 
-  render(id: string | undefined) {//to load data on select fields
-    const { fetchFormatByQuery } = useQueryFormat()
-    const { data: representatives } = fetchFormatByQuery<RepresentativeHeadquarter>('representativeHeadquarter', { headquarter: id })
-    const { data: manufacturers } = fetchFormatByQuery<ManufacturerHeadquarter>('manufacturerHeadquarter', { headquarter: id })
-    const { data: suppliers } = fetchFormatByQuery<SupplierHeadquarter>('supplierHeadquarter', { headquarter: id })
-
+  /*------------- render -------------*/
+  render() {
     const mapValues = (data: Curriculum) => ({
-      datePurchase: data.datePurchase ? new Date(data.datePurchase) : undefined,
-      dateInstallation: data.dateInstallation ? new Date(data.dateInstallation) : undefined,
-      dateOperation: data.dateOperation ? new Date(data.dateOperation) : undefined,
+      datePurchase: data.datePurchase ? new Date(data.datePurchase) : null,
+      dateInstallation: data.dateInstallation ? new Date(data.dateInstallation) : null,
+      dateOperation: data.dateOperation ? new Date(data.dateOperation) : null,
       acquisition: data.acquisition,
       warranty: data.warranty,
-      price: data.price,
-      //representative: data.representative?._id,
-      //manufacturer: data.manufacturer?._id,
-      //supplier: data.supplier?._id,
+      price: data.price
     })
 
     const submitData = (data: CurriculumFormProps) => ({
@@ -158,15 +161,11 @@ class DetailsEquipmentCV {
 
     return {
       mapValues,
-      submitData,
-      options: {
-        representative: representatives?.map((e) => ({ value: e.representative?._id, label: `${e.representative?.name} - ${e.representative?.city}` })) || [],
-        supplier: suppliers?.map((e) => ({ value: e.supplier?._id, label: `${e.supplier?.name} - ${e.supplier?.address} - ${e.supplier?.nit}` })) || [],
-        manufacturer: manufacturers?.map((e) => ({ value: e.manufacturer?._id, label: `${e.manufacturer?.name} - ${e.manufacturer?.city}` })) || [],
-      }
+      submitData
     }
   }
 
+  /*------------- representative -------------*/
   useRepresentative() {//to handle representative
     const { createFormat } = useFormatMutation('representative')
     const methods = useForm<StakeholderFormProps>({
@@ -178,6 +177,7 @@ class DetailsEquipmentCV {
     return { methods, ...handleSubmit }
   }
 
+  /*------------- supplier -------------*/
   useSupplier() {//to handle supplier
     const { createFormat } = useFormatMutation('supplier')
     const methods = useForm<SupplierFormProps>({
@@ -189,6 +189,7 @@ class DetailsEquipmentCV {
     return { methods, ...handleSubmit }
   }
 
+  /*------------- manufacturer -------------*/
   useManufacturer() {//to handle manufacturer
     const { createFormat } = useFormatMutation('manufacturer')
     const methods = useForm<StakeholderFormProps>({
@@ -201,6 +202,38 @@ class DetailsEquipmentCV {
   }
 }
 export const useDetailsEquipmentCV = DetailsEquipmentCV.getInstance()
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------technicalCharacteristics--------------------------------------------------*/
+const useTechnicalCharacteristicsCV = () => {
+  const mapValues = (data: Curriculum) => ({
+    voltage: data.technicalCharacteristics?.voltage,
+    amperage: data.technicalCharacteristics?.amperage,
+    power: data.technicalCharacteristics?.power,
+    frequency: data.technicalCharacteristics?.frequency,
+    capacity: data.technicalCharacteristics?.capacity,
+    pressure: data.technicalCharacteristics?.pressure,
+    speed: data.technicalCharacteristics?.speed,
+    humidity: data.technicalCharacteristics?.humidity,
+    temperature: data.technicalCharacteristics?.temperature,
+    weight: data.technicalCharacteristics?.weight,
+  })
+
+  const submitData = (data: CurriculumFormProps) => ({
+    voltage: data.technicalCharacteristics?.voltage,
+    amperage: data.technicalCharacteristics?.amperage,
+    power: data.technicalCharacteristics?.power,
+    frequency: data.technicalCharacteristics?.frequency,
+    capacity: data.technicalCharacteristics?.capacity,
+    pressure: data.technicalCharacteristics?.pressure,
+    speed: data.technicalCharacteristics?.speed,
+    humidity: data.technicalCharacteristics?.humidity,
+    temperature: data.technicalCharacteristics?.temperature,
+    weight: data.technicalCharacteristics?.weight,
+  })
+
+  return { mapValues, submitData }
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default values--------------------------------------------------*/
@@ -219,13 +252,11 @@ const curriculumDefaultValues: CurriculumFormProps = {
   photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
 
   characteristics: '',
-  technicalCharacteristics: [],
   recommendationsManufacturer: '',
 
-  //working here...
-  datePurchase: new Date(), //datailsEquipment
-  dateOperation: new Date(), //datailsEquipment
-  dateInstallation: new Date(), //datailsEquipment
+  datePurchase: null, //datailsEquipment
+  dateOperation: null, //datailsEquipment
+  dateInstallation: null, //datailsEquipment
   acquisition: '', //datailsEquipment
   warranty: '', //datailsEquipment
   price: '', //datailsEquipment
@@ -237,6 +268,20 @@ const curriculumDefaultValues: CurriculumFormProps = {
   riskClassification: '',
   technologyPredominant: [],
   powerSupply: [],
+
+  //technical characteristics
+  technicalCharacteristics: {
+    voltage: '',
+    amperage: '',
+    power: '',
+    frequency: '',
+    capacity: '',
+    pressure: '',
+    speed: '',
+    humidity: '',
+    temperature: '',
+    weight: '',
+  },
 
   //maintenance
   employmentMaintenance: '',

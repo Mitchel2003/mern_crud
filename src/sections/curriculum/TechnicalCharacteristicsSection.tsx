@@ -11,83 +11,77 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
     <HeaderCustom
       to="component"
       theme={theme}
-      title="Características Técnicas"
-      className="text-2xl font-bold"
+      title="Características técnicas"
+      className="text-2xl font-light"
       span="Campos opcionales"
       iconSpan="info"
     />
 
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       <InputField
         theme={theme}
-        name="voltage"
         label="Voltaje"
         placeholder="Voltaje"
+        name="technicalCharacteristics.voltage"
       />
       <InputField
         theme={theme}
-        name="amperage"
         label="Amperaje"
         placeholder="Amperaje"
+        name="technicalCharacteristics.amperage"
       />
       <InputField
         theme={theme}
-        name="power"
         label="Potencia"
         placeholder="Potencia"
-      />
-    </div>
-
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        name="technicalCharacteristics.power"
+        />
       <InputField
         theme={theme}
-        name="frequency"
         label="Frecuencia"
         placeholder="Frecuencia"
+        name="technicalCharacteristics.frequency"
       />
       <InputField
         theme={theme}
-        name="capacity"
         label="Capacidad"
         placeholder="Capacidad"
+        name="technicalCharacteristics.capacity"
       />
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       <InputField
         theme={theme}
-        name="pressure"
         label="Presión (PSI)"
         placeholder="Presión (PSI)"
+        name="technicalCharacteristics.pressure"
       />
-    </div>
-
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <InputField
         theme={theme}
-        name="speed"
         label="Velocidad"
         placeholder="Velocidad"
+        name="technicalCharacteristics.speed"
       />
       <InputField
         theme={theme}
-        name="humidity"
         label="Humedad"
         placeholder="Humedad"
+        name="technicalCharacteristics.humidity"
       />
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-        <InputField
-          theme={theme}
-          name="temperature"
-          label="Temp (C°)"
-          placeholder="Temp (C°)"
-        />
-        <InputField
-          theme={theme}
-          name="weight"
-          label="Peso (kg)"
-          placeholder="Peso (kg)"
-        />
-      </div>
+      <InputField
+        theme={theme}
+        label="Temp (C°)"
+        placeholder="Temp (C°)"
+        name="technicalCharacteristics.temperature"
+      />
+      <InputField
+        theme={theme}
+        label="Peso (kg)"
+        placeholder="Peso (kg)"
+        name="technicalCharacteristics.weight"
+      />
     </div>
-
   </div>
 )
 

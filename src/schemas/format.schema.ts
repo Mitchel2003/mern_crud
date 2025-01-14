@@ -49,26 +49,24 @@ export const curriculumSchema = z.object({
   characteristics: z
     .string({ required_error: "Las características son requeridas" })
     .min(1, "Debes seleccionar una característica"),
-  technicalCharacteristics: z
-    .array(z.string({ required_error: "Tipos de mantenimiento son requeridos" }))
-    .min(1, "Debes seleccionar al menos un tipo de mantenimiento"),
   recommendationsManufacturer: z
     .string()
     .optional()
     .nullable(),
 
   //details
-  datePurchase: z.date({ required_error: "La fecha de adquisición es requerida" }),
-  dateInstallation: z.date({ required_error: "La fecha de instalación es requerida" }),
-  dateOperation: z.date({ required_error: "La fecha de operación es requerida" }),
+  datePurchase: z.date({ required_error: "La fecha de adquisición es requerida" }).nullable(),
+  dateInstallation: z.date({ required_error: "La fecha de instalación es requerida" }).nullable(),
+  dateOperation: z.date({ required_error: "La fecha de operación es requerida" }).nullable(),
   acquisition: z
-    .string({ required_error: "Fecha de adquisición del equipo es requerida" })
-    .min(1, "Debes seleccionar una fecha de adquisición"),
+    .string({ required_error: "Tipo adquisición del equipo es requerida" })
+    .min(1, "Debes seleccionar un tipo de adquisición"),
   warranty: z
     .string({ required_error: "Garantía del equipo es requerida" })
     .min(1, "Debes seleccionar una garantía"),
   price: z
     .string({ required_error: "Precio del equipo es requerido" })
+    .min(4, "Debes proporcionar un precio")
     .refine(data => { return /^[0-9]+$/.test(data) }, {
       message: "El precio debe contener solo números", path: ["price"]
     }),
@@ -86,12 +84,27 @@ export const curriculumSchema = z.object({
   riskClassification: z
     .string({ required_error: "Clasificación de riesgo del equipo es requerida" })
     .min(1, "Debes seleccionar una clasificación de riesgo"),
-  technologyPredominant: z //working here...
+  technologyPredominant: z
     .array(z.string({ required_error: "Tecnologías predominantes del equipo son requeridas" }))
     .min(1, "Debes seleccionar al menos una tecnología predominante"),
   powerSupply: z
     .array(z.string({ required_error: "Suministro de energía del equipo es requerido" }))
     .min(1, "Debes seleccionar al menos un suministro de energía"),
+
+  //technical characteristics
+  technicalCharacteristics: z
+    .object({
+      voltage: z.string().optional(),
+      amperage: z.string().optional(),
+      power: z.string().optional(),
+      frequency: z.string().optional(),
+      capacity: z.string().optional(),
+      pressure: z.string().optional(),
+      speed: z.string().optional(),
+      humidity: z.string().optional(),
+      temperature: z.string().optional(),
+      weight: z.string().optional(),
+    }).optional(),
 
   //maintenance
   employmentMaintenance: z

@@ -9,7 +9,7 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import { Card, CardContent } from "#/ui/card"
 
-// import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
+import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
 import EquipmentClassificationSection from "./EquipmentClassificationSection"
 import DetailsEquipmentSection from "./DetailsEquipmentSection"
 // import CharacteristicsSection from "./CharacteristicsSection"
@@ -59,9 +59,9 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
                 <RenderFormat format={[
                   <LocationSection theme={theme} />,
                   <BasicDataSection theme={theme} />,
-                  <DetailsEquipmentSection theme={theme} />, //yet not ready
+                  <DetailsEquipmentSection theme={theme} />,
                   <EquipmentClassificationSection theme={theme} />,
-                  // <TechnicalCharacteristicsSection theme={theme} />,
+                  <TechnicalCharacteristicsSection theme={theme} />,
                   // <MaintenanceSection theme={theme} />,
                   // <InspectionSection theme={theme} />, //yet not ready
                   // <AccessoriesSection theme={theme} />, //yet not ready

@@ -49,14 +49,14 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(({
       <Controller
         name={name}
         control={control}
-        render={({ field, fieldState: { error } }) => (
+        render={({ field: { onChange, value: fieldValue }, fieldState: { error } }) => (
           <>
             {readOnly ? (
               <Input
                 readOnly
                 ref={ref}
                 id={`${name}-date`}
-                value={value}
+                value={value || ''}
                 className={cn(
                   'w-full',
                   theme === 'dark'
@@ -72,26 +72,25 @@ const DateField = React.forwardRef<HTMLInputElement, DateFieldProps>(({
                     variant={"outline"}
                     className={cn(
                       'w-full pl-3 font-normal',
-                      !field.value && 'text-muted-foreground',
+                      !fieldValue && 'text-muted-foreground',
                       theme === 'dark'
                         ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
                         : 'bg-white border-gray-300 hover:bg-white'
                     )}
                   >
-                    {field.value
-                      ? (format(field.value, "PPP"))
-                      : (<span>{placeholder}</span>)
+                    {fieldValue
+                      ? format(fieldValue, "PPP")
+                      : <span>{placeholder || "Seleccione una fecha"}</span>
                     }
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date()}
                     initialFocus
+                    mode="single"
+                    onSelect={onChange}
+                    selected={fieldValue}
                   />
                 </PopoverContent>
               </Popover>

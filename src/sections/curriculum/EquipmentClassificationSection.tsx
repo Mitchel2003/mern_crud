@@ -13,9 +13,9 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
     <HeaderCustom
       to="component"
       theme={theme}
-      title="Clasificación del Equipo"
-      className="text-2xl font-bold"
-      span="Informacion sensible"
+      title="Clasificación del equipo"
+      className="text-2xl font-light"
+      span="Información sensible"
       iconSpan="warn"
     />
 
@@ -24,7 +24,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <SelectField
         theme={theme}
         label="Tipo"
-        name="type_device"
+        name="typeClassification"
         placeholder="Seleccionar tipo"
         options={[
           { label: "fijo", value: "fijo" },
@@ -33,7 +33,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       />
       <SelectField
         theme={theme}
-        name="classification_by_use"
+        name="useClassification"
         label="Clasificación por Uso"
         placeholder="Seleccionar clasificación"
         options={[
@@ -58,7 +58,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <SelectField
         theme={theme}
         name="riskClassification"
-        label="Clasificación Riesgo"
+        label="Clasificación riesgo"
         placeholder="Seleccionar riesgo"
         options={[
           { label: "I", value: "I" },
@@ -74,7 +74,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <CheckboxField
         theme={theme}
         isMultiple={true}
-        name="power-supply"
+        name="powerSupply"
         label="Fuentes de alimentacion"
         options={['agua', 'aire', 'gas', 'vapor', 'electricidad']}
       />
@@ -98,12 +98,11 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <CheckboxField
         theme={theme}
         isMultiple={true}
-        name="technology-predominant"
-        label="Tecnología Predominante"
+        name="technologyPredominant"
+        label="Tecnología predominante"
         options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
       />
     </div>
-
   </div>
 )
 

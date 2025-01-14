@@ -69,8 +69,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           theme={theme}
           iconSpan="warn"
           span="Campos obligatorios"
-          title="Detalles Asociados"
-          className="text-2xl font-bold"
+          title="Detalles asociados"
+          className="text-2xl font-light"
         />
 
         {/* ---------------------- details about the acquisition ---------------------- */}
@@ -78,35 +78,32 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
           <DateField
             theme={theme}
             name="datePurchase"
-            label="Fecha de Compra"
+            label="Fecha compra"
             placeholder="Seleccionar fecha"
           />
           <DateField
             theme={theme}
             name="dateInstallation"
-            label="Fecha de Instalación"
+            label="Fecha instalación"
             placeholder="Seleccionar fecha"
           />
           <DateField
             theme={theme}
             name="dateOperation"
-            label="Fecha de Inicio de Operación"
+            label="Fecha inicio operación"
             placeholder="Seleccionar fecha"
           />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {/* i need implement select field with "another" option */} {/* working here... */}
           <SelectField
             theme={theme}
             name="acquisition"
-            label="Tipo de Adquisición"
+            label="Tipo adquisición"
             placeholder="Seleccionar tipo"
             options={[
               { label: "compra", value: "compra" },
-              { label: "comodato", value: "comodato" },
-              { label: "alquiler", value: "alquiler" },
-              { label: "otro", value: "otro" }
+              { label: "alquiler", value: "alquiler" }
             ]}
           />
           <SelectField
@@ -118,7 +115,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               { label: "Ninguna", value: "n/a" },
               { label: "6 meses", value: "6" },
               { label: "1 año", value: "12" },
-              { label: "2 años", value: "24" }
+              { label: "otro", value: "otro" }
             ]}
           />
           <InputField
