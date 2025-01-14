@@ -23,16 +23,20 @@ export const curriculumSchema = z.object({
     .max(50, "El nombre debe tener menos de 50 caracteres"),
   brand: z
     .string({ required_error: "La marca es requerida" })
-    .min(1, "Debes seleccionar una marca"),
+    .min(1, "Debes seleccionar una marca")
+    .max(50, "La marca debe tener menos de 50 caracteres"),
   serie: z
     .string({ required_error: "La serie es requerida" })
-    .min(1, "Debes seleccionar una serie"),
+    .min(1, "Debes seleccionar una serie")
+    .max(50, "La serie debe tener menos de 50 caracteres"),
   modelEquip: z
     .string({ required_error: "El modelo es requerido" })
-    .min(1, "Debes seleccionar un modelo"),
+    .min(1, "Debes seleccionar un modelo")
+    .max(50, "El modelo debe tener menos de 50 caracteres"),
   healthRecord: z
     .string({ required_error: "El registro invima es requerido" })
-    .min(1, "Debes seleccionar un registro invima"),
+    .min(1, "Debes seleccionar un registro invima")
+    .max(50, "El registro invima debe tener menos de 50 caracteres"),
   photoUrl: z.array(
     z.object({
       file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
@@ -54,15 +58,9 @@ export const curriculumSchema = z.object({
     .nullable(),
 
   //details
-  datePurchase: z
-    .string()
-    .datetime(),
-  dateInstallation: z
-    .string()
-    .datetime(),
-  dateOperation: z
-    .string()
-    .datetime(),
+  datePurchase: z.date({ required_error: "La fecha de adquisición es requerida" }),
+  dateInstallation: z.date({ required_error: "La fecha de instalación es requerida" }),
+  dateOperation: z.date({ required_error: "La fecha de operación es requerida" }),
   acquisition: z
     .string({ required_error: "Fecha de adquisición del equipo es requerida" })
     .min(1, "Debes seleccionar una fecha de adquisición"),
@@ -113,7 +111,7 @@ export const curriculumSchema = z.object({
   inspection: z
     .string({ required_error: "El proveedor es requerido" })
     .min(1, "Debes seleccionar un proveedor"),
-  supplier: z
+  /*supplier: z
     .string({ required_error: "El proveedor es requerido" })
     .min(1, "Debes seleccionar un proveedor"),
   manufacturer: z
@@ -121,7 +119,32 @@ export const curriculumSchema = z.object({
     .min(1, "Debes seleccionar un fabricante"),
   representative: z
     .string({ required_error: "El representante es requerido" })
-    .min(1, "Debes seleccionar un representante"),
+    .min(1, "Debes seleccionar un representante"),*/
+
+  // Campos para crear nuevo representante
+  /* newRepresentative: z.object({
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+    phone: z.string().optional(),
+    city: z.string().optional()
+  }).optional(),
+
+  // Campos para crear nuevo proveedor 
+  newSupplier: z.object({
+    name: z.string().optional(),
+    email: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    nit: z.string().optional()
+  }).optional(),
+
+  // Campos para crear nuevo fabricante
+  newManufacturer: z.object({
+    name: z.string().optional(), 
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    city: z.string().optional()
+  }).optional() */
 })
 
 export const stakeholderSchema = z.object({

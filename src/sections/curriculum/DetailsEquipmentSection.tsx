@@ -1,21 +1,64 @@
-import IterableCustomCard from '#/common/fields/CardIterable'
+//import IterableCustomCard from '#/common/fields/CardIterable'
 import HeaderCustom from '#/common/elements/HeaderCustom'
-import AlertDialog from '#/common/elements/AlertDialog'
+//import AlertDialog from '#/common/elements/AlertDialog'
 import SelectField from '#/common/fields/Select'
 import InputField from '#/common/fields/Input'
 import DateField from '#/common/fields/Date'
-import { Button } from '#/ui/button'
 
-import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
-import { useCurriculumForm, useDetailsEquipmentCV } from '@/hooks/auth/useFormatForm'
+//import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { Mail } from 'lucide-react'
+//import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+//import { useFormatMutation } from '@/hooks/query/useFormatQuery'
+//import { Mail } from 'lucide-react'
 
 interface DetailsEquipmentProps extends ThemeContextProps { }
 
 const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { detailsData: options } = useCurriculumForm();
+  //const { detailsData: options } = useCurriculumForm();
+  //const { confirmAction } = useDialogConfirm();
+  /*const { createFormat } = useFormatMutation('');
+  
+  // Función genérica para manejar la creación de stakeholders
+  /*const handleCreateStakeholder = async (type: 'representative' | 'supplier' | 'manufacturer') => {
+    const formData = methods.getValues(`new${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    if (!formData) return;
+
+    try {
+      // Usar el hook existente para crear
+      await createFormat(formData);
+      
+      // Limpiar campos después de crear
+      methods.setValue(`new${type.charAt(0).toUpperCase() + type.slice(1)}`, undefined);
+      
+      // Recargar opciones
+      await options.refetch();
+      
+    } catch (error) {
+      console.error('Error creating stakeholder:', error);
+    }
+  };*/
+
+  /*const stakeholderFields = {
+    representative: [
+      { name: "newRepresentative.name", label: "Nombre" },
+      { name: "newRepresentative.email", label: "Email", type: "email" as InputType, icon: Mail },
+      { name: "newRepresentative.phone", label: "Teléfono" },
+      { name: "newRepresentative.city", label: "Ciudad" }
+    ],
+    supplier: [
+      { name: "newSupplier.name", label: "Nombre" },
+      { name: "newSupplier.email", label: "Email", type: "email" as InputType, icon: Mail },
+      { name: "newSupplier.address", label: "Dirección" },
+      { name: "newSupplier.phone", label: "Teléfono" },
+      { name: "newSupplier.nit", label: "NIT" }
+    ],
+    manufacturer: [
+      { name: "newManufacturer.name", label: "Nombre" },
+      { name: "newManufacturer.email", label: "Email", type: "email" as InputType, icon: Mail },
+      { name: "newManufacturer.phone", label: "Teléfono" },
+      { name: "newManufacturer.city", label: "Ciudad" }
+    ]
+  };*/
 
   return (
     <>
@@ -87,8 +130,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         </div>
 
         {/* ---------------------- information references ---------------------- */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* info about the representative */}
+        {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -100,13 +143,22 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
             <IterableCustomCard
               theme={theme}
-              name="add-representative"
+              name="newRepresentative"
               titleButton="Nuevo representante"
-              fields={representativeFields({ theme, name: "representative" })}
+              fields={stakeholderFields.representative.map(field => ({
+                name: field.name,
+                component: <InputField {...field} theme={theme} />
+              }))}
+              onSubmit={() => {
+                confirmAction({
+                  title: 'Agregar representante',
+                  action: () => handleCreateStakeholder('representative'),
+                  description: '¿Deseas añadir un representante?'
+                })
+              }}
             />
           </div>
 
-          {/* info about the distributor */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -118,13 +170,22 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
             <IterableCustomCard
               theme={theme}
-              name="add-supplier"
+              name="newSupplier"
               titleButton="Nuevo proveedor"
-              fields={supplierFields({ theme, name: "supplier" })}
+              fields={stakeholderFields.supplier.map(field => ({
+                name: field.name,
+                component: <InputField {...field} theme={theme} />
+              }))}
+              onSubmit={() => {
+                confirmAction({
+                  title: 'Agregar proveedor',
+                  action: () => handleCreateStakeholder('supplier'),
+                  description: '¿Deseas añadir un proveedor?'
+                });
+              }}
             />
           </div>
 
-          {/* info about the manufacturer */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -136,16 +197,27 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
             <IterableCustomCard
               theme={theme}
-              name="add-manufacturer"
+              name="newManufacturer"
               titleButton="Nuevo fabricante"
-              fields={manufacturerFields({ theme, name: "manufacturer" })}
+              fields={stakeholderFields.manufacturer.map(field => ({
+                name: field.name,
+                component: <InputField {...field} theme={theme} />
+              }))}
+              onSubmit={() => {
+                confirmAction({
+                  title: 'Agregar fabricante',
+                  action: () => handleCreateStakeholder('manufacturer'),
+                  description: '¿Deseas añadir un fabricante?'
+                });
+              }}
             />
           </div>
 
         </div>
+        */}
       </div>
 
-      <AlertDialog
+      {/*<AlertDialog
         open={show}
         theme={theme}
         title={title}
@@ -156,94 +228,9 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         onConfirm={handleConfirm}
         variant={isDestructive ? "destructive" : "default"}
       />
+      */}
     </>
   )
 }
 
 export default DetailsEquipmentSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-interface fieldsProps extends ThemeContextProps { name: string }
-const representativeFields = ({ theme, name }: fieldsProps) => {
-  const { handleSubmit } = useDetailsEquipmentCV.useRepresentative()
-  const { confirmAction } = useDialogConfirm()
-  return [{
-    name: name,
-    component:
-      <form
-        className='flex flex-col gap-2'
-        onSubmit={(e) => {
-          confirmAction({
-            title: 'Agregar representante',
-            action: () => { handleSubmit(e) },
-            description: `¿Deseas añadir un representante? Este será visible para los demás equipos`,
-          })
-        }}
-      >
-        <InputField name="name" label="Nombre" theme={theme} />
-        <InputField name="email" type="email" label="Email" icon={Mail} theme={theme} />
-        <InputField name="phone" label="Teléfono" theme={theme} />
-        <InputField name="city" label="Ciudad" theme={theme} />
-        <Button variant="outline" type="submit"> Guardar </Button>
-      </form>
-  }]
-}
-
-const supplierFields = ({ theme, name }: fieldsProps) => {
-  const { handleSubmit } = useDetailsEquipmentCV.useSupplier()
-  const { confirmAction } = useDialogConfirm()
-  return [{
-    name: name,
-    component:
-      <form
-        className='flex flex-col gap-2'
-        onSubmit={(e) => {
-          confirmAction({
-            title: 'Agregar proveedor',
-            action: () => { handleSubmit(e) },
-            description: `¿Deseas añadir un proveedor? Este será visible para los demás equipos`,
-          })
-        }}
-      >
-        <InputField name="name" label="Nombre" theme={theme} />
-        <InputField name="email" label="Email" theme={theme} />
-        <InputField name="address" label="Dirección" theme={theme} />
-        <InputField name="phone" label="Teléfono" theme={theme} />
-        <InputField name="nit" label="NIT" theme={theme} />
-        <Button variant="outline" type="submit"> Guardar </Button>
-      </form>
-  }]
-}
-
-//puedes notar que estamos usando estas funciones para manejar cada targeta iterable (tipo submit)
-//con el cual creamos los diferentes representantes (representante, proveedor u fabricante)
-//el detalle que como podras percatarte que al crear una funcion para cada representante es una redundancia
-//por que si miras bien los lugares en donde llamo estas funciones, podremos ver que lo unico que cambia en cada
-//una de las funciones es el nombre, entonces podriamos crear una sola funcion que el name sea generico osea (representative | supplier | manufacturer)
-//la situacion es que si queremos implementar esto tendremos que ajustar el hook principal, porque ciertamente llamamos al mismo
-//useDetailsEquipment el cual es una clase que tiene las funciones especificas para cada caso (representative | supplier | manufacturer)
-const manufacturerFields = ({ theme, name }: fieldsProps) => {
-  const { handleSubmit } = useDetailsEquipmentCV.useRepresentative()
-  const { confirmAction } = useDialogConfirm()
-  return [{
-    name: name,
-    component:
-      <form
-        className='flex flex-col gap-2'
-        onSubmit={(e) => {
-          confirmAction({
-            title: 'Agregar fabricante',
-            action: () => { handleSubmit(e) },
-            description: `¿Deseas añadir un fabricante? Este será visible para los demás equipos`,
-          })
-        }}
-      >
-        <InputField name="name" label="Nombre" theme={theme} />
-        <InputField name="email" type="email" label="Email" icon={Mail} theme={theme} />
-        <InputField name="phone" label="Teléfono" theme={theme} />
-        <InputField name="city" label="Ciudad" theme={theme} />
-        <Button variant="outline" type="submit"> Guardar </Button>
-      </form>
-  }]
-}

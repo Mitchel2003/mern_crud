@@ -11,6 +11,7 @@ import { Button } from '#/ui/button'
 interface CardFieldProps { name: string, component: ReactElement }
 interface CardIterableFieldProps extends ThemeContextProps {
   fields: CardFieldProps[]
+  onSubmit?: () => void
   titleButton?: string
   limit?: number
   name: string
@@ -19,9 +20,10 @@ interface CardIterableFieldProps extends ThemeContextProps {
 const CardIterable = ({
   titleButton = 'Agregar',
   limit = 1,
+  onSubmit,
   fields,
   theme,
-  name
+  name,
 }: CardIterableFieldProps) => {
   const { control } = useFormContext()
   const { fields: items, append, remove } = useFieldArray({ control, name })
@@ -108,6 +110,16 @@ const CardIterable = ({
                   />
                 )
               })}
+              
+              {onSubmit && (
+                <Button 
+                  variant="outline" 
+                  onClick={onSubmit}
+                  className="mt-2"
+                >
+                  Guardar
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>

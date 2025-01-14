@@ -9,10 +9,12 @@ import { useFormContext, Controller } from 'react-hook-form'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
+export type InputType = 'text' | 'number' | 'email' | 'password'
+
 interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
-  type?: 'text' | 'number' | 'email' | 'password'
   placeholder?: string
   icon?: LucideIcon
+  type?: InputType
   label: string
   name: string
 }

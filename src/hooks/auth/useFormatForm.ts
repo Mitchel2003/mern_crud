@@ -136,15 +136,15 @@ class DetailsEquipmentCV {
     const { data: suppliers } = fetchFormatByQuery<SupplierHeadquarter>('supplierHeadquarter', { headquarter: id })
 
     const mapValues = (data: Curriculum) => ({
-      datePurchase: data.datePurchase,
-      dateInstallation: data.dateInstallation,
-      dateOperation: data.dateOperation,
+      datePurchase: data.datePurchase ? new Date(data.datePurchase) : undefined,
+      dateInstallation: data.dateInstallation ? new Date(data.dateInstallation) : undefined,
+      dateOperation: data.dateOperation ? new Date(data.dateOperation) : undefined,
       acquisition: data.acquisition,
       warranty: data.warranty,
       price: data.price,
-      representative: data.representative?._id,
-      manufacturer: data.manufacturer?._id,
-      supplier: data.supplier?._id,
+      //representative: data.representative?._id,
+      //manufacturer: data.manufacturer?._id,
+      //supplier: data.supplier?._id,
     })
 
     const submitData = (data: CurriculumFormProps) => ({
@@ -204,7 +204,7 @@ export const useDetailsEquipmentCV = DetailsEquipmentCV.getInstance()
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default values--------------------------------------------------*/
-const curriculumDefaultValues = {
+const curriculumDefaultValues: CurriculumFormProps = {
   //helpers fields not has been sent to database
   headquarter: '', //helper locationData
   area: '', //helper locationData
@@ -216,16 +216,16 @@ const curriculumDefaultValues = {
   serie: '', //basicData
   modelEquip: '', //basicData
   healthRecord: '', //basicData
-  photoUrl: [{ file: undefined }], //basicData (create after that cv)
+  photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
 
   characteristics: '',
   technicalCharacteristics: [],
   recommendationsManufacturer: '',
 
   //working here...
-  datePurchase: '', //datailsEquipment
-  dateOperation: '', //datailsEquipment
-  dateInstallation: '', //datailsEquipment
+  datePurchase: new Date(), //datailsEquipment
+  dateOperation: new Date(), //datailsEquipment
+  dateInstallation: new Date(), //datailsEquipment
   acquisition: '', //datailsEquipment
   warranty: '', //datailsEquipment
   price: '', //datailsEquipment
@@ -246,7 +246,7 @@ const curriculumDefaultValues = {
 
   //relationship
   inspection: '',
-  supplier: '', //datailsEquipment
-  manufacturer: '', //datailsEquipment
-  representative: '', //datailsEquipment
+  //supplier: '', //datailsEquipment
+  //manufacturer: '', //datailsEquipment
+  //representative: '', //datailsEquipment
 }
