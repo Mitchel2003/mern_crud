@@ -48,7 +48,6 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
 
         <IterableCard
           limit={5}
-          flex={'wrap'}
           theme={theme}
           name="accessories"
           fields={accessoriesFields}
