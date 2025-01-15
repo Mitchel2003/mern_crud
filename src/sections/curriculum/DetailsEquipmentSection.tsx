@@ -113,8 +113,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             placeholder="Seleccionar garantía"
             options={[
               { label: "Ninguna", value: "n/a" },
-              { label: "6 meses", value: "6" },
-              { label: "1 año", value: "12" },
+              { label: "6 meses", value: "6 meses" },
+              { label: "1 año", value: "12 meses" },
               { label: "otro", value: "otro" }
             ]}
           />

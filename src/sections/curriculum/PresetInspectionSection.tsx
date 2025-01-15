@@ -1,75 +1,49 @@
 import HeaderCustom from "#/common/elements/HeaderCustom"
-import IterableCard from "#/common/fields/CardIterable"
+import CardIterable from "#/common/fields/CardIterable"
 import CheckboxField from "#/common/fields/Checkbox"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { FormProvider, useForm } from "react-hook-form"
+import { useInspectionCV } from "@/hooks/auth/useFormatForm"
+import { DialogField } from "@/interfaces/props.interface"
 
 interface PresetInspectionProps extends ThemeContextProps { }
 const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
-  const methods = useForm()
-
-  const inspectionFields = [
-    {
-      name: "name_inspection",
-      component:
-        <InputField
-          theme={theme}
-          name="name_inspection"
-          label="Nombre de la configuración"
-          placeholder="Digite un nombre distintivo"
-        />
-    },
-    {
-      name: "inspection",
-      component:
-        <div className="mt-4">
-          <CheckboxField
-            theme={theme}
-            name="inspection"
-            isMultiple={true}
-            label='Lista de inspecciones'
-            options={inspectionOptions}
-          />
-        </div>
-    }
-  ]
+  // const { inspectionData: options } = useCurriculumForm()
 
   return (
-    <FormProvider {...methods}>
-      <div className="space-y-6">
-        <HeaderCustom
-          to="component"
+    <div className="space-y-6">
+      <HeaderCustom
+        to="component"
+        theme={theme}
+        title="Inspección"
+        className="text-2xl font-light"
+        span="Establece las inspecciones correspondientes a este equipo"
+        iconSpan="warn"
+      />
+
+      <div className="grid grid-cols-1 gap-4">
+        <SelectField
           theme={theme}
-          title="Inspección"
-          className="text-2xl font-bold"
-          span="Establece las inspecciones correspondientes a este equipo"
-          iconSpan="warn"
+          name="inspection"
+          label="Lista de configuraciones preestablecidas"
+          placeholder="Seleccione una configuración"
+          options={[]}
+          //span
+          span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
+          iconSpan="info"
         />
 
-        <div className="grid grid-cols-1 gap-4">
-          <SelectField
-            theme={theme}
-            name="inspectionPreset"
-            label="Lista de configuraciones preestablecidas"
-            placeholder="Seleccione una configuración"
-            options={[{ label: "N/A", value: "na" }]}
-            //span
-            span="¿No encuentras lo que buscas? - Puedes agregar una configuración"
-            iconSpan="info"
-          />
-
-          <IterableCard
-            theme={theme}
-            name="inspection"
-            fields={inspectionFields}
-            titleButton="Agregar configuración"
-          />
-        </div>
+        <CardIterable
+          theme={theme}
+          name="inspection"
+          fields={inspectionFields({ theme })}
+          titleButton="Agregar configuración"
+        />
       </div>
-    </FormProvider>
+    </div>
   )
 }
 
@@ -77,6 +51,35 @@ export default PresetInspectionSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
+// Campos del formulario
+const inspectionFields = ({ theme }: ThemeContextProps): DialogField[] => {
+  const { handleSubmit } = useInspectionCV.useInspection()
+  const { confirmAction } = useDialogConfirm()
+  return [
+    {
+      name: "name",
+      component:
+        <InputField
+          theme={theme}
+          name="name"
+          label="Nombre de la configuración"
+          placeholder="Digite un nombre distintivo"
+        />
+    },
+    {
+      name: "typeInspection",
+      component:
+        <CheckboxField
+          theme={theme}
+          isMultiple={true}
+          name="typeInspection"
+          label='Lista de inspecciones'
+          options={inspectionOptions}
+        />
+    }
+  ]
+}
+
 const inspectionOptions = [
   "Pedal", "Reles", "On/off", "Agujas", "Teclado", "Jeringas", "Sensores", "Pantalla", "Objetivos", "Aperturas",
   "Inspección física", "Manómetro", "Líneas de reactivos", "Manómetros", "Pieza de alta", "Transductores", "Jeringa triple",

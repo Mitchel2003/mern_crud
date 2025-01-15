@@ -1,4 +1,4 @@
-import { Area, Headquarter, Office, Service, Curriculum } from "@/interfaces/context.interface"
+import { Area, Headquarter, Office, Service, Curriculum, Client } from "@/interfaces/context.interface"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
@@ -9,9 +9,9 @@ import { useEffect } from "react"
 
 import {
   curriculumSchema, CurriculumFormProps,
-  stakeholderSchema, StakeholderFormProps,
-  supplierSchema, SupplierFormProps
+  inspectionSchema, InspectionFormProps
 } from "@/schemas/format.schema"
+import { useQueryUser } from "../query/useUserQuery"
 
 /*--------------------------------------------------hooks use form--------------------------------------------------*/
 /**
@@ -23,15 +23,18 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { fetchFormatById } = useQueryFormat()
   const { createFormat, updateFormat } = useFormatMutation("cv")
   const { data: cv } = fetchFormatById<Curriculum>('cv', id as string)
+
+  const equipmentData = useEquipmentClassificationCV()
   const technicalData = useTechnicalCharacteristicsCV()
   const detailsData = useDetailsEquipmentCV.render()
+  const maintenanceData = useMaintenanceCV()
   const locationData = useLocationCV()
   const basicData = useBasicDataCV(id)
 
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: curriculumDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => { loadData() }, [id])
@@ -41,15 +44,21 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       ...locationData.mapValues(cv),
       ...basicData.mapValues(cv),
       ...detailsData.mapValues(cv),
+      ...equipmentData.mapValues(cv),
+      ...maintenanceData.mapValues(cv),
       ...technicalData.mapValues(cv),
     })
   }
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
+      console.log(e)
       const data = {
         ...locationData.submitData(e),
         ...basicData.submitData(e),
+        ...detailsData.submitData(e),
+        ...equipmentData.submitData(e),
+        ...maintenanceData.submitData(e),
         ...technicalData.submitData(e),
       }
       id ? updateFormat({ id, data }) : createFormat(data)
@@ -62,8 +71,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     id,
     methods,
     ...handleSubmit,
-    locationData: locationData.options,
     basicData: basicData.files,
+    locationData: locationData.options,
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -80,12 +89,16 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 /*--------------------------------------------------locationData--------------------------------------------------*/
 const useLocationCV = () => {
   const { fetchAllLocations } = useQueryLocation()
+  const { fetchAllUsers } = useQueryUser()
+
+  const { data: clients } = fetchAllUsers<Client>('client')
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
   const { data: services } = fetchAllLocations<Service>('service')
   const { data: offices } = fetchAllLocations<Office>('office')
   const { data: areas } = fetchAllLocations<Area>('area')
 
   const mapValues = (data: Curriculum) => ({
+    client: data.office.area.headquarter?.client?._id,
     headquarter: data.office.area.headquarter?._id,
     area: data.office.area?._id,
     office: data.office?._id,
@@ -97,7 +110,7 @@ const useLocationCV = () => {
     office: data.office
   })
 
-  return { mapValues, submitData, options: { headquarters, services, offices, areas } }
+  return { mapValues, submitData, options: { clients, headquarters, services, offices, areas } }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -120,8 +133,7 @@ const useBasicDataCV = (id?: string) => {
     brand: data.brand,
     serie: data.serie,
     modelEquip: data.modelEquip,
-    healthRecord: data.healthRecord,
-    photoUrl: data.photoUrl || [],
+    healthRecord: data.healthRecord
   })
 
   return { files, mapValues, submitData }
@@ -164,81 +176,140 @@ class DetailsEquipmentCV {
       submitData
     }
   }
-
-  /*------------- representative -------------*/
-  useRepresentative() {//to handle representative
-    const { createFormat } = useFormatMutation('representative')
-    const methods = useForm<StakeholderFormProps>({
-      resolver: zodResolver(stakeholderSchema),
-      defaultValues: this.defaultStakeholder,
-      mode: "onChange",
-    })
-    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
-    return { methods, ...handleSubmit }
-  }
-
-  /*------------- supplier -------------*/
-  useSupplier() {//to handle supplier
-    const { createFormat } = useFormatMutation('supplier')
-    const methods = useForm<SupplierFormProps>({
-      resolver: zodResolver(supplierSchema),
-      defaultValues: this.defaultSupplier,
-      mode: "onChange",
-    })
-    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
-    return { methods, ...handleSubmit }
-  }
-
-  /*------------- manufacturer -------------*/
-  useManufacturer() {//to handle manufacturer
-    const { createFormat } = useFormatMutation('manufacturer')
-    const methods = useForm<StakeholderFormProps>({
-      resolver: zodResolver(stakeholderSchema),
-      defaultValues: this.defaultStakeholder,
-      mode: "onChange",
-    })
-    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
-    return { methods, ...handleSubmit }
-  }
 }
 export const useDetailsEquipmentCV = DetailsEquipmentCV.getInstance()
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------technicalCharacteristics--------------------------------------------------*/
-const useTechnicalCharacteristicsCV = () => {
+/*--------------------------------------------------equipmentClassification--------------------------------------------------*/
+const useEquipmentClassificationCV = () => {
   const mapValues = (data: Curriculum) => ({
-    voltage: data.technicalCharacteristics?.voltage,
-    amperage: data.technicalCharacteristics?.amperage,
-    power: data.technicalCharacteristics?.power,
-    frequency: data.technicalCharacteristics?.frequency,
-    capacity: data.technicalCharacteristics?.capacity,
-    pressure: data.technicalCharacteristics?.pressure,
-    speed: data.technicalCharacteristics?.speed,
-    humidity: data.technicalCharacteristics?.humidity,
-    temperature: data.technicalCharacteristics?.temperature,
-    weight: data.technicalCharacteristics?.weight,
+    useClassification: data.useClassification,
+    typeClassification: data.typeClassification,
+    biomedicalClassification: data.biomedicalClassification,
+    riskClassification: data.riskClassification,
+    technologyPredominant: data.technologyPredominant,
+    powerSupply: data.powerSupply,
   })
 
   const submitData = (data: CurriculumFormProps) => ({
-    voltage: data.technicalCharacteristics?.voltage,
-    amperage: data.technicalCharacteristics?.amperage,
-    power: data.technicalCharacteristics?.power,
-    frequency: data.technicalCharacteristics?.frequency,
-    capacity: data.technicalCharacteristics?.capacity,
-    pressure: data.technicalCharacteristics?.pressure,
-    speed: data.technicalCharacteristics?.speed,
-    humidity: data.technicalCharacteristics?.humidity,
-    temperature: data.technicalCharacteristics?.temperature,
-    weight: data.technicalCharacteristics?.weight,
+    useClassification: data.useClassification,
+    typeClassification: data.typeClassification,
+    biomedicalClassification: data.biomedicalClassification,
+    riskClassification: data.riskClassification,
+    technologyPredominant: data.technologyPredominant,
+    powerSupply: data.powerSupply,
   })
 
   return { mapValues, submitData }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------maintenance--------------------------------------------------*/
+const useMaintenanceCV = () => {
+  const mapValues = (data: Curriculum) => ({
+    employmentMaintenance: data.employmentMaintenance,
+    frequencyMaintenance: data.frequencyMaintenance,
+    typeMaintenance: data.typeMaintenance,
+    manualsMaintenance: data.manualsMaintenance,
+  })
+
+  const submitData = (data: CurriculumFormProps) => ({
+    employmentMaintenance: data.employmentMaintenance,
+    frequencyMaintenance: data.frequencyMaintenance,
+    typeMaintenance: data.typeMaintenance,
+    manualsMaintenance: data.manualsMaintenance,
+  })
+
+  return { mapValues, submitData }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------technicalCharacteristics--------------------------------------------------*/
+const useTechnicalCharacteristicsCV = () => {
+  const mapValues = (data: Curriculum) => ({
+    technicalCharacteristics: {
+      voltage: data.technicalCharacteristics?.voltage,
+      amperage: data.technicalCharacteristics?.amperage,
+      power: data.technicalCharacteristics?.power,
+      frequency: data.technicalCharacteristics?.frequency,
+      capacity: data.technicalCharacteristics?.capacity,
+      pressure: data.technicalCharacteristics?.pressure,
+      speed: data.technicalCharacteristics?.speed,
+      humidity: data.technicalCharacteristics?.humidity,
+      temperature: data.technicalCharacteristics?.temperature,
+      weight: data.technicalCharacteristics?.weight,
+    }
+  })
+
+  const submitData = (data: CurriculumFormProps) => ({
+    technicalCharacteristics: {
+      voltage: data.technicalCharacteristics?.voltage,
+      amperage: data.technicalCharacteristics?.amperage,
+      power: data.technicalCharacteristics?.power,
+      frequency: data.technicalCharacteristics?.frequency,
+      capacity: data.technicalCharacteristics?.capacity,
+      pressure: data.technicalCharacteristics?.pressure,
+      speed: data.technicalCharacteristics?.speed,
+      humidity: data.technicalCharacteristics?.humidity,
+      temperature: data.technicalCharacteristics?.temperature,
+      weight: data.technicalCharacteristics?.weight,
+    }
+  })
+
+  return { mapValues, submitData }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------inspection--------------------------------------------------*/
+class InspectionCV {
+  private static instance: InspectionCV
+  readonly defaultInspection = { name: '', typeInspection: [] }
+
+  public static getInstance(): InspectionCV {
+    if (!InspectionCV.instance) { InspectionCV.instance = new InspectionCV() }
+    return InspectionCV.instance
+  }
+
+  /*------------- render -------------*/
+  // render() {
+  //   const { fetchAllFormats } = useQueryFormat()
+  //   const { data: inspections } = fetchAllFormats<Inspection>('inspection')
+
+  //   const mapValues = (data: Curriculum) => ({
+  //     name: data.inspection.name,
+  //     typeInspection: data.inspection.typeInspection
+  //   })
+
+  //   const submitData = (data: CurriculumFormProps) => ({
+  //     inspection: data.inspection
+  //   })
+
+  //   return {
+  //     mapValues,
+  //     submitData,
+  //     options: inspections?.map((e) => ({ value: e._id, label: e.name })) || [],
+  //   }
+  // }
+
+  /*------------- inspection -------------*/
+  useInspection() {//to handle inspection
+    const { createFormat } = useFormatMutation('inspection')
+    const methods = useForm<InspectionFormProps>({
+      resolver: zodResolver(inspectionSchema),
+      defaultValues: this.defaultInspection,
+      mode: "onChange",
+    })
+    const handleSubmit = useFormSubmit({ onSubmit: async (e: any) => { createFormat(e); methods.reset() } }, methods)
+    return { methods, ...handleSubmit }
+  }
+}
+export const useInspectionCV = InspectionCV.getInstance()
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------default values--------------------------------------------------*/
 const curriculumDefaultValues: CurriculumFormProps = {
   //helpers fields not has been sent to database
+  client: '', //helper locationData
   headquarter: '', //helper locationData
   area: '', //helper locationData
   office: '', //locationData
@@ -251,9 +322,6 @@ const curriculumDefaultValues: CurriculumFormProps = {
   healthRecord: '', //basicData
   photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
 
-  characteristics: '',
-  recommendationsManufacturer: '',
-
   datePurchase: null, //datailsEquipment
   dateOperation: null, //datailsEquipment
   dateInstallation: null, //datailsEquipment
@@ -262,35 +330,35 @@ const curriculumDefaultValues: CurriculumFormProps = {
   price: '', //datailsEquipment
 
   //equipment
-  useClassification: '',
-  typeClassification: '',
-  biomedicalClassification: '',
-  riskClassification: '',
-  technologyPredominant: [],
-  powerSupply: [],
+  useClassification: '', //equipmentClassification
+  typeClassification: '', //equipmentClassification
+  biomedicalClassification: '', //equipmentClassification
+  riskClassification: '', //equipmentClassification
+  technologyPredominant: [], //equipmentClassification
+  powerSupply: [], //equipmentClassification
 
   //technical characteristics
   technicalCharacteristics: {
-    voltage: '',
-    amperage: '',
-    power: '',
-    frequency: '',
-    capacity: '',
-    pressure: '',
-    speed: '',
-    humidity: '',
-    temperature: '',
-    weight: '',
+    voltage: '', //technicalCharacteristics
+    amperage: '', //technicalCharacteristics
+    power: '', //technicalCharacteristics
+    frequency: '', //technicalCharacteristics
+    capacity: '', //technicalCharacteristics
+    pressure: '', //technicalCharacteristics
+    speed: '', //technicalCharacteristics
+    humidity: '', //technicalCharacteristics
+    temperature: '', //technicalCharacteristics
+    weight: '', //technicalCharacteristics
   },
 
   //maintenance
-  employmentMaintenance: '',
-  frequencyMaintenance: '',
-  typeMaintenance: [],
-  manualsMaintenance: '',
+  employmentMaintenance: '', //maintenance
+  frequencyMaintenance: '', //maintenance
+  typeMaintenance: [], //maintenance
+  manualsMaintenance: '', //maintenance
 
   //relationship
-  inspection: '',
+  // inspection: '',
   //supplier: '', //datailsEquipment
   //manufacturer: '', //datailsEquipment
   //representative: '', //datailsEquipment

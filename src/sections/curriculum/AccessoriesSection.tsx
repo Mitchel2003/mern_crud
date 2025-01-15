@@ -3,12 +3,9 @@ import IterableCard from "#/common/fields/CardIterable"
 import InputField from "#/common/fields/Input"
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { FormProvider, useForm } from "react-hook-form"
 
 interface AccessoriesProps extends ThemeContextProps { }
-
 const AccessoriesSection = ({ theme }: AccessoriesProps) => {
-  const methods = useForm<AccessoriesProps>()
 
   const accessoriesFields = [
     {
@@ -20,46 +17,45 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
       component: <InputField name="type" theme={theme} label="Tipo" />
     },
     {
-      name: "series",
-      component: <InputField name="series" theme={theme} label="Serie" />
+      name: "serie",
+      component: <InputField name="serie" theme={theme} label="Serie" />
     },
     {
-      name: "model",
-      component: <InputField name="model" theme={theme} label="Modelo" />
+      name: "modelEquip",
+      component: <InputField name="modelEquip" theme={theme} label="Modelo" />
     }
   ]
 
   return (
-    <FormProvider {...methods}>
-      <div className="space-y-6">
+    <div className="space-y-6">
+      <HeaderCustom
+        to="component"
+        theme={theme}
+        title="Accesorios"
+        className="text-2xl font-bold"
+        span="Máximo 10 accesorios"
+        iconSpan="alert"
+      />
+
+      <div className="grid grid-cols-1 gap-2">
         <HeaderCustom
           to="component"
           theme={theme}
-          title="Accesorios"
-          className="text-2xl font-bold"
-          span="Máximo 10 accesorios"
-          iconSpan="alert"
+          title="Crea accesorios para este equipo"
+          span="Referencia periféricos, herramientas, etc."
+          iconSpan="info"
         />
 
-        <div className="grid grid-cols-1 gap-2">
-          <HeaderCustom
-            to="component"
-            theme={theme}
-            title="Crea accesorios para este equipo"
-            span="Referencia periféricos, herramientas, etc."
-            iconSpan="info"
-          />
-
-          <IterableCard
-            limit={10}
-            theme={theme}
-            name="accessories"
-            fields={accessoriesFields}
-            titleButton="Añadir accesorio para este equipo"
-          />
-        </div>
+        <IterableCard
+          limit={5}
+          flex={'wrap'}
+          theme={theme}
+          name="accessories"
+          fields={accessoriesFields}
+          titleButton="Añadir accesorio para este equipo"
+        />
       </div>
-    </FormProvider>
+    </div>
   )
 }
 

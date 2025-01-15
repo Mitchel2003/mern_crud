@@ -3,6 +3,9 @@ import { z } from "zod"
 /*--------------------------------------------------curriculum--------------------------------------------------*/
 export const curriculumSchema = z.object({
   //location
+  client: z
+    .string({ required_error: "El cliente es requerido" })
+    .min(1, "Debes seleccionar un cliente"),
   headquarter: z
     .string({ required_error: "La sede es requerida" })
     .min(1, "Debes seleccionar una sede"),
@@ -27,15 +30,15 @@ export const curriculumSchema = z.object({
     .max(50, "La marca debe tener menos de 50 caracteres"),
   serie: z
     .string({ required_error: "La serie es requerida" })
-    .min(1, "Debes seleccionar una serie")
+    .min(3, "Debes seleccionar una serie")
     .max(50, "La serie debe tener menos de 50 caracteres"),
   modelEquip: z
     .string({ required_error: "El modelo es requerido" })
-    .min(1, "Debes seleccionar un modelo")
+    .min(3, "Debes seleccionar un modelo")
     .max(50, "El modelo debe tener menos de 50 caracteres"),
   healthRecord: z
     .string({ required_error: "El registro invima es requerido" })
-    .min(1, "Debes seleccionar un registro invima")
+    .min(3, "Debes seleccionar un registro invima")
     .max(50, "El registro invima debe tener menos de 50 caracteres"),
   photoUrl: z.array(
     z.object({
@@ -45,42 +48,30 @@ export const curriculumSchema = z.object({
     })
   ).optional().default([]),
 
-  //another
-  characteristics: z
-    .string({ required_error: "Las características son requeridas" })
-    .min(1, "Debes seleccionar una característica"),
-  recommendationsManufacturer: z
-    .string()
-    .optional()
-    .nullable(),
-
   //details
   datePurchase: z.date({ required_error: "La fecha de adquisición es requerida" }).nullable(),
   dateInstallation: z.date({ required_error: "La fecha de instalación es requerida" }).nullable(),
   dateOperation: z.date({ required_error: "La fecha de operación es requerida" }).nullable(),
   acquisition: z
     .string({ required_error: "Tipo adquisición del equipo es requerida" })
-    .min(1, "Debes seleccionar un tipo de adquisición"),
+    .min(3, "Debes seleccionar un tipo de adquisición"),
   warranty: z
     .string({ required_error: "Garantía del equipo es requerida" })
-    .min(1, "Debes seleccionar una garantía"),
+    .min(3, "Debes seleccionar una garantía"),
   price: z
     .string({ required_error: "Precio del equipo es requerido" })
-    .min(4, "Debes proporcionar un precio")
-    .refine(data => { return /^[0-9]+$/.test(data) }, {
-      message: "El precio debe contener solo números", path: ["price"]
-    }),
+    .min(4, "Debes proporcionar un precio"),
 
   //equipment
   useClassification: z
     .string({ required_error: "Clasificación de uso del equipo es requerida" })
-    .min(1, "Debes seleccionar una clasificación de uso"),
+    .min(3, "Debes seleccionar una clasificación de uso"),
   typeClassification: z
     .string({ required_error: "Clasificación de tipo del equipo es requerida" })
-    .min(1, "Debes seleccionar una clasificación de tipo"),
+    .min(3, "Debes seleccionar una clasificación de tipo"),
   biomedicalClassification: z
     .string({ required_error: "Clasificación biomédica del equipo es requerida" })
-    .min(1, "Debes seleccionar una clasificación biomédica"),
+    .min(3, "Debes seleccionar una clasificación biomédica"),
   riskClassification: z
     .string({ required_error: "Clasificación de riesgo del equipo es requerida" })
     .min(1, "Debes seleccionar una clasificación de riesgo"),
@@ -109,22 +100,22 @@ export const curriculumSchema = z.object({
   //maintenance
   employmentMaintenance: z
     .string({ required_error: "Empleo del mantenimiento es requerido" })
-    .min(1, "Debes seleccionar un empleo de mantenimiento"),
+    .min(3, "Debes seleccionar un empleo de mantenimiento"),
   frequencyMaintenance: z
     .string({ required_error: "Frecuencia de mantenimiento es requerida" })
-    .min(1, "Debes seleccionar una frecuencia de mantenimiento"),
+    .min(3, "Debes seleccionar una frecuencia de mantenimiento"),
   typeMaintenance: z
     .array(z.string({ required_error: "Tipos de mantenimiento son requeridos" }))
     .min(1, "Debes seleccionar al menos un tipo de mantenimiento"),
   manualsMaintenance: z
     .string({ required_error: "Manuales de mantenimiento son requeridos" })
-    .min(1, "Debes seleccionar un manual de mantenimiento"),
+    .min(3, "Debes seleccionar un manual de mantenimiento"),
 
   //relationship
-  inspection: z
-    .string({ required_error: "El proveedor es requerido" })
-    .min(1, "Debes seleccionar un proveedor"),
-  /*supplier: z
+  /*inspection: z
+    .string({ required_error: "La inspección es requerida" })
+    .min(1, "Debes seleccionar una inspección"),
+  supplier: z
     .string({ required_error: "El proveedor es requerido" })
     .min(1, "Debes seleccionar un proveedor"),
   manufacturer: z
@@ -158,6 +149,8 @@ export const curriculumSchema = z.object({
     phone: z.string().optional(),
     city: z.string().optional()
   }).optional() */
+}).refine(data => { return /^[0-9]+$/.test(data.price) }, {
+  message: "El precio debe contener solo números", path: ["price"]
 })
 
 export const stakeholderSchema = z.object({
@@ -204,6 +197,20 @@ export const supplierSchema = z.object({
 }).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
   message: "El teléfono debe contener solo números", path: ["phone"]
 })
+
+export const inspectionSchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).min(1, "Debes seleccionar un nombre para la inspección"),
+  typeInspection: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
+})
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------accessories--------------------------------------------------*/
+export const accessorySchema = z.object({
+  name: z.string({ required_error: "El nombre es requerido" }).min(3, "El nombre debe tener al menos 3 caracteres"),
+  type: z.string({ required_error: "El tipo es requerido" }).min(3, "El tipo debe tener al menos 3 caracteres"),
+  serie: z.string({ required_error: "La serie es requerida" }).min(3, "La serie debe tener al menos 3 caracteres"),
+  modelEquip: z.string({ required_error: "El modelo es requerido" }).min(3, "El modelo debe tener al menos 3 caracteres"),
+})
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------maintenance--------------------------------------------------*/
@@ -234,3 +241,4 @@ export type CurriculumFormProps = z.infer<typeof curriculumSchema>
 export type MaintenanceFormProps = z.infer<typeof maintenanceSchema>
 export type StakeholderFormProps = z.infer<typeof stakeholderSchema>
 export type SupplierFormProps = z.infer<typeof supplierSchema>
+export type InspectionFormProps = z.infer<typeof inspectionSchema>

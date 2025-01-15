@@ -15,8 +15,8 @@ import DetailsEquipmentSection from "./DetailsEquipmentSection"
 // import CharacteristicsSection from "./CharacteristicsSection"
 // import EngineerServiceSection from "./EngineerServiceSection"
 // import InspectionSection from "./PresetInspectionSection"
-// import MaintenanceSection from "./MaintenanceSection"
-// import AccessoriesSection from "./AccessoriesSection"
+import MaintenanceSection from "./MaintenanceSection"
+//import AccessoriesSection from "./AccessoriesSection"
 import BasicDataSection from "./BasicDataSection"
 import LocationSection from "./LocationSection"
 
@@ -61,10 +61,10 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
                   <BasicDataSection theme={theme} />,
                   <DetailsEquipmentSection theme={theme} />,
                   <EquipmentClassificationSection theme={theme} />,
+                  <MaintenanceSection theme={theme} />,
+                  // <InspectionSection theme={theme} />,
                   <TechnicalCharacteristicsSection theme={theme} />,
-                  // <MaintenanceSection theme={theme} />,
-                  // <InspectionSection theme={theme} />, //yet not ready
-                  // <AccessoriesSection theme={theme} />, //yet not ready
+                  //<AccessoriesSection theme={theme} />, //yet not ready
                   // <CharacteristicsSection theme={theme} />,
                   // <EngineerServiceSection theme={theme} />
                 ]} />

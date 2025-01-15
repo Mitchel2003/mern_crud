@@ -13,46 +13,46 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => (
       to="component"
       theme={theme}
       title="Mantenimiento"
-      className="text-2xl font-bold"
+      className="text-2xl font-light"
+      span="Campos opcionales"
+      iconSpan="info"
     />
 
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <SelectField
         theme={theme}
-        name="performing_maintenance"
-        label="Realización de Mantenimiento"
+        name="employmentMaintenance"
+        label="Realización mantenimiento"
         placeholder="Seleccionar tipo"
         options={[
-          { label: "Propio", value: "own" },
-          { label: "Contratado", value: "contracted" }
+          { label: "Propio", value: "propio" },
+          { label: "Contratado", value: "contratado" }
         ]}
       />
       <CheckboxField
         theme={theme}
         isMultiple={true}
-        name="type-maintenance"
-        label="Tipo de Mantenimiento"
-        options={['Preventivo', 'Correctivo', 'Predictivo']}
+        name="typeMaintenance"
+        label="Tipo mantenimiento"
+        options={['preventivo', 'correctivo', 'predictivo']}
       />
     </div>
 
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <SelectField
         theme={theme}
-        name="frequency_maintenance"
-        label="Frecuencia de Mantenimiento"
+        name="frequencyMaintenance"
+        label="Frecuencia mantenimiento"
         placeholder="Seleccionar frecuencia"
         options={[
-          { label: "3 meses", value: "3" },
-          { label: "4 meses", value: "4" },
-          { label: "6 meses", value: "6" },
-          { label: "12 meses", value: "12" }
+          { label: "6 meses", value: "6 meses" },
+          { label: "1 año", value: "12 meses" }
         ]}
       />
       <CheckboxField
         theme={theme}
-        name="manuales"
         label="Manuales"
+        name="manualsMaintenance"
         options={['servicio', 'componentes', 'usuario', 'despiece']}
       />
     </div>

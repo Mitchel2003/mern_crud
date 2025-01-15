@@ -10,10 +10,12 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
   const { locationData: options } = useCurriculumForm()
   const { watch } = useFormContext()
 
+  const clientId = watch('client')
   const headquarterId = watch('headquarter')
   const officeId = watch('office')
   const areaId = watch('area')
 
+  const headquarters = options.headquarters?.filter((head) => head.client?._id === clientId)
   const areas = options.areas?.filter((area) => area.headquarter?._id === headquarterId)
   const offices = options.offices?.filter((office) => office.area?._id === areaId)
   const services = options.services?.filter((service) => {
@@ -32,14 +34,21 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
         className="text-2xl font-light"
         span="Propocione la referencia de ubicacion"
       />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
 
         {/* -------------------- Selects -------------------- */}
+        <SelectField
+          label="Cliente"
+          theme={theme}
+          name="client"
+          options={options.clients?.map((c) => ({ label: c.name, value: c._id })) || []}
+          placeholder="Seleccionar cliente"
+        />
         <SelectField
           label="Sede"
           theme={theme}
           name="headquarter"
-          options={options.headquarters?.map((h) => ({ label: h.address, value: h._id })) || []}
+          options={headquarters?.map((h) => ({ label: `${h.name} - ${h.address}`, value: h._id })) || []}
           placeholder="Seleccionar sede"
         />
         <SelectField
