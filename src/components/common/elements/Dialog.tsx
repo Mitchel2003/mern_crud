@@ -40,7 +40,7 @@ const Dialog = ({
   >
     <DialogContent
       aria-describedby={description ? 'dialog-description' : undefined}
-      className={cn('sm:max-w-[425px]', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
+      className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
     >
       {/* Header */}
       <DialogHeader>

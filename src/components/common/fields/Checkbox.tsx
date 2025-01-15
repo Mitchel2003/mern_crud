@@ -57,9 +57,9 @@ const CheckboxField = React.forwardRef<HTMLButtonElement, CheckboxFieldProps>(({
                   <CheckboxOption
                     ref={ref}
                     key={index}
-                    id={`${name}-${index}`}
                     theme={theme}
                     label={option}
+                    id={`${name}-${index}`}
                     checked={isMultiple
                       ? field.value?.includes(option)
                       : field.value === option
@@ -107,7 +107,6 @@ const CheckboxField = React.forwardRef<HTMLButtonElement, CheckboxFieldProps>(({
 CheckboxField.displayName = 'CheckboxField'
 
 export default CheckboxField
-
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
@@ -140,7 +139,7 @@ const CheckboxOption = React.forwardRef<HTMLButtonElement, CheckboxOptionProps>(
     <label
       htmlFor={id}
       className={cn(
-        'text-sm font-medium leading-none',
+        'text-sm font-medium leading-none cursor-pointer',
         'peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
         theme === 'dark' ? 'text-zinc-200' : 'text-gray-700'
       )}

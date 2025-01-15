@@ -110,10 +110,10 @@ const CardIterable = ({
                   />
                 )
               })}
-              
+
               {onSubmit && (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={onSubmit}
                   className="mt-2"
                 >
