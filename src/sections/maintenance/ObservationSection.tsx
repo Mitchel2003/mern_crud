@@ -8,9 +8,9 @@ import { CheckProps } from "@/interfaces/props.interface"
 import { Check, X, Clock } from "lucide-react"
 
 const statusOptions: CheckProps[] = [
-  { name: 'good', label: 'Buen estado', color: 'green', icon: Check },
-  { name: 'wait', label: 'En espera de repuestos', color: 'yellow', icon: Clock },
-  { name: 'out', label: 'Fuera de servicio', color: 'red', icon: X },
+  { name: 'bueno', label: 'Buen estado', color: 'green', icon: Check },
+  { name: 'pendiente', label: 'En espera de repuestos', color: 'yellow', icon: Clock },
+  { name: 'inactivo', label: 'Fuera de servicio', color: 'red', icon: X },
 ]
 
 interface ObservationSectionProps extends ThemeContextProps { }
