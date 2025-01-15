@@ -4,9 +4,7 @@ import CheckboxField from "#/common/fields/Checkbox"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 
-import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useInspectionCV } from "@/hooks/auth/useFormatForm"
 import { DialogField } from "@/interfaces/props.interface"
 
 interface PresetInspectionProps extends ThemeContextProps { }
@@ -53,8 +51,6 @@ export default PresetInspectionSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 // Campos del formulario
 const inspectionFields = ({ theme }: ThemeContextProps): DialogField[] => {
-  const { handleSubmit } = useInspectionCV.useInspection()
-  const { confirmAction } = useDialogConfirm()
   return [
     {
       name: "name",

@@ -1,7 +1,8 @@
-import { Area, Headquarter, Office, Service, Curriculum, Client } from "@/interfaces/context.interface"
+import { Area, Headquarter, Office, Service, Curriculum, Client, Maintenance } from "@/interfaces/context.interface"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
+import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Metadata } from "@/interfaces/db.interface"
 import { useForm } from "react-hook-form"
@@ -9,9 +10,10 @@ import { useEffect } from "react"
 
 import {
   curriculumSchema, CurriculumFormProps,
-  inspectionSchema, InspectionFormProps
+  inspectionSchema, InspectionFormProps,
+  maintenanceSchema,
+  MaintenanceFormProps
 } from "@/schemas/format.schema"
-import { useQueryUser } from "../query/useUserQuery"
 
 /*--------------------------------------------------hooks use form--------------------------------------------------*/
 /**
@@ -52,7 +54,6 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
-      console.log(e)
       const data = {
         ...locationData.submitData(e),
         ...basicData.submitData(e),
@@ -73,6 +74,57 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     ...handleSubmit,
     basicData: basicData.files,
     locationData: locationData.options,
+  }
+}
+
+/**
+ * Hook principal que orquesta los sub-hooks
+ * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
+  const { fetchFormatById } = useQueryFormat()
+  const { createFormat, updateFormat } = useFormatMutation("maintenance")
+  const { data: mt } = fetchFormatById<Maintenance>('maintenance', id as string)
+
+  const referenceData = useReferenceMT()
+  const observationData = useObservationMT()
+  const engineerServiceData = useEngineerServiceMT()
+
+  const methods = useForm<MaintenanceFormProps>({
+    resolver: zodResolver(maintenanceSchema),
+    defaultValues: maintenanceDefaultValues,
+    mode: "onChange",
+  })
+
+  useEffect(() => { loadData() }, [id])
+
+  const loadData = async () => {
+    mt && methods.reset({
+      ...referenceData.mapValues(mt),
+      ...observationData.mapValues(mt),
+      ...engineerServiceData.mapValues(mt),
+    })
+  }
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: any) => {
+      const data = {
+        ...referenceData.submitData(e),
+        ...observationData.submitData(e),
+        ...engineerServiceData.submitData(e),
+      }
+      id ? updateFormat({ id, data }) : createFormat(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    id,
+    methods,
+    ...handleSubmit,
+    referenceData: referenceData.options,
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -306,6 +358,71 @@ class InspectionCV {
 export const useInspectionCV = InspectionCV.getInstance()
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------referenceData--------------------------------------------------*/
+const useReferenceMT = () => {
+  const { fetchAllUsers } = useQueryUser()
+  const { fetchAllFormats } = useQueryFormat()
+
+  const { data: clients } = fetchAllUsers<Client>('client')
+  const { data: curriculums } = fetchAllFormats<Curriculum>('cv')
+
+  const mapValues = (data: Maintenance) => ({
+    client: data.curriculum.office.area.headquarter?.client?._id,
+    nameClient: data.curriculum.office.area.headquarter?.client?.name,
+    nitClient: data.curriculum.office.area.headquarter?.client?.nit,
+    curriculum: data.curriculum._id,
+  })
+
+  const submitData = (data: MaintenanceFormProps) => ({
+    curriculum: data.curriculum,
+  })
+
+  return {
+    mapValues,
+    submitData,
+    options: { clients, curriculums }
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------observationMT--------------------------------------------------*/
+const useObservationMT = () => {
+  const mapValues = (data: Maintenance) => ({
+    observations: data.observations,
+    statusEquipment: data.statusEquipment,
+    dateMaintenance: data.dateMaintenance ? new Date(data.dateMaintenance) : null,
+    dateNextMaintenance: data.dateNextMaintenance ? new Date(data.dateNextMaintenance) : null,
+  })
+
+  const submitData = (data: MaintenanceFormProps) => ({
+    observations: data.observations,
+    statusEquipment: data.statusEquipment,
+    dateMaintenance: data.dateMaintenance,
+    dateNextMaintenance: data.dateNextMaintenance,
+  })
+
+  return { mapValues, submitData }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------engineerServiceMT--------------------------------------------------*/
+const useEngineerServiceMT = () => {
+  const mapValues = (data: Maintenance) => ({
+    receivedBy: data.receivedBy,
+    nameEngineer: data.nameEngineer,
+    invimaEngineer: data.invimaEngineer,
+  })
+
+  const submitData = (data: MaintenanceFormProps) => ({
+    receivedBy: data.receivedBy,
+    nameEngineer: data.nameEngineer,
+    invimaEngineer: data.invimaEngineer,
+  })
+
+  return { mapValues, submitData }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------default values--------------------------------------------------*/
 const curriculumDefaultValues: CurriculumFormProps = {
   //helpers fields not has been sent to database
@@ -362,4 +479,26 @@ const curriculumDefaultValues: CurriculumFormProps = {
   //supplier: '', //datailsEquipment
   //manufacturer: '', //datailsEquipment
   //representative: '', //datailsEquipment
+}
+
+const maintenanceDefaultValues: MaintenanceFormProps = {
+  //helpers fields not has been sent to database
+  client: '', //helper clientData
+  nameClient: '', //helper clientData
+  nitClient: '', //helper clientData
+
+  //timestandard
+  dateNextMaintenance: null,
+  dateMaintenance: null,
+
+  //maintenance
+  statusEquipment: '',
+  observations: '',
+
+  //received
+  receivedBy: '',
+  nameEngineer: '',
+  invimaEngineer: '',
+
+  curriculum: '',
 }

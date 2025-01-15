@@ -7,24 +7,31 @@ import React from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/ui/select"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import { FormItem, FormMessage } from "#/ui/form"
+import { Input } from "#/ui/input"
 
 interface SelectFieldProps<T = string> extends HeaderSpanProps, ThemeContextProps {
-  name: string
-  label?: string
-  className?: string
-  placeholder?: string
   options: SelectOptionProps<T>[]
+  placeholder?: string
+  className?: string
+  disabled?: boolean
+  readOnly?: boolean
+  label?: string
+  value?: string
+  name: string
 }
 
 const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
-  theme,
-  span,
-  name,
-  label,
-  options,
-  iconSpan,
+  placeholder,
   className,
-  placeholder
+  readOnly,
+  iconSpan,
+  options,
+  disabled,
+  theme,
+  value,
+  label,
+  name,
+  span,
 }, ref) => {
   const { control } = useFormContext()
 
@@ -47,14 +54,30 @@ const SelectField = React.forwardRef<HTMLButtonElement, SelectFieldProps>(({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <>
-            <SelectWrapper
-              {...field}
-              ref={ref}
-              id={`${name}-select`}
-              theme={theme}
-              options={options}
-              placeholder={placeholder}
-            />
+            {readOnly ? (
+              <Input
+                readOnly
+                ref={ref as any}
+                id={`${name}-select`}
+                value={value || options.find(opt => opt.value === field.value)?.label || ''}
+                className={cn(
+                  'w-full',
+                  theme === 'dark'
+                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                    : 'bg-gray-100 border-gray-300 text-gray-900'
+                )}
+              />
+            ) : (
+              <SelectWrapper
+                {...field}
+                ref={ref}
+                theme={theme}
+                options={options}
+                disabled={disabled}
+                id={`${name}-select`}
+                placeholder={placeholder}
+              />
+            )}
 
             {error && (
               <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
@@ -75,30 +98,32 @@ export default SelectField
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 interface SelectProps<T = string> extends ThemeContextProps {
-  value: T
-  id: string
-  placeholder?: string
-  isSearchable?: boolean
   options: SelectOptionProps<T>[]
   onChange: (value: T) => void
+  isSearchable?: boolean
+  placeholder?: string
+  disabled?: boolean
+  id: string
+  value: T
 }
 
-// Componente para select simple
 const SelectWrapper = React.forwardRef<HTMLButtonElement, SelectProps>(({
-  id,
+  disabled,
+  options,
+  onChange,
   theme,
   value,
-  options,
+  id,
   placeholder,
-  onChange
 }, ref) => (
-  <Select onValueChange={onChange} value={value?.toString()}>
-    {/* Trigger */}
+  <Select onValueChange={onChange} value={value?.toString()} disabled={disabled}>
     <SelectTrigger
       id={id}
       ref={ref}
+      disabled={disabled}
       className={cn(
         "flex h-9 w-full items-center justify-between",
+        disabled && "opacity-50 cursor-not-allowed",
         theme === "dark"
           ? "bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600"
           : "bg-white border-gray-300 text-gray-900 hover:bg-gray-100"

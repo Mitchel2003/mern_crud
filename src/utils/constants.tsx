@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, UserCircle, FilesIcon, Building2, UserPlus, UserCog2, Building, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, UserPenIcon, HomeIcon, BriefcaseIcon, DoorOpen, LucideMapPinned, LucideMap } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, HomeIcon, BriefcaseIcon, DoorOpen, LucideMapPinned, LucideMap } from 'lucide-react'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -76,7 +76,7 @@ export const links = () => {
       icon: TerminalSquare,
       label: 'Panel del usuario',
     },
-    {/** users **/
+    /*{// users
       label: 'Usuarios',
       icon: UserCircle,
       subItems: [
@@ -96,7 +96,7 @@ export const links = () => {
           label: 'Administradores',
         }
       ]
-    },
+    },*/
     {/** forms **/
       icon: FilesIcon,
       label: 'Formularios',

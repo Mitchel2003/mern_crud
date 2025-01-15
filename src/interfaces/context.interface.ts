@@ -121,17 +121,13 @@ export type Maintenance = BaseMDB & {
   //maintenance
   typeMaintenance: string
   statusEquipment: string
-  faultEquipment: boolean
-  faultDescription: string
-  inspections: string[]
   observations: string
 
   //references
   receivedBy: string
   nameEngineer: string
   invimaEngineer: string
-  equipment: Equipment
-  headquarter: Headquarter
+  curriculum: Curriculum
 }
 export type Curriculum = BaseMDB & {
   //basicData
@@ -142,9 +138,6 @@ export type Curriculum = BaseMDB & {
   modelEquip: string
   healthRecord: string
   photoUrl: Metadata[]
-
-  characteristics: string
-  recommendationsManufacturer: string
 
   //detailsEquipment
   datePurchase: string

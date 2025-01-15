@@ -40,7 +40,7 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div ref={ref} className="flex flex-col md:flex-row gap-4">
+            <div ref={ref} className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {options.map((option) => (
                 <StatusButton
                   key={option.name}

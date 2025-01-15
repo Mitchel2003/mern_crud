@@ -215,26 +215,26 @@ export const accessorySchema = z.object({
 
 /*--------------------------------------------------maintenance--------------------------------------------------*/
 export const maintenanceSchema = z.object({
+  //helpers fields not has been sent to database
+  client: z.string({ required_error: "El cliente es requerido" }).min(1, "Debes seleccionar un cliente"),
+  curriculum: z.string({ required_error: "El ID del currículum es requerido" }).min(1, "Debes seleccionar un currículum"),
+  nameClient: z.string().optional(),
+  nitClient: z.string().optional(),
+
   //timestandard
-  dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }),
-  dateMaintenance: z.date().optional(),
+  dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }).nullable(),
+  dateMaintenance: z.date().optional().nullable(),
 
   //maintenance
-  typeMaintenance: z.string({ required_error: "El tipo de mantenimiento es requerido" }).min(1, "Debes seleccionar un tipo de mantenimiento"),
   statusEquipment: z.string({ required_error: "El estado del equipo es requerido" }).min(1, "Debes seleccionar un estado del equipo"),
-  faultEquipment: z.boolean().optional().default(false),
-  faultDescription: z.string({ required_error: "La descripción de la falla es requerida" }).min(1, "Debes seleccionar una descripción de la falla"),
-  inspections: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
   observations: z.string({ required_error: "Las observaciones son requeridas" }).min(1, "Debes seleccionar una observación"),
 
   //received
   receivedBy: z.string({ required_error: "El nombre de la persona que recibe es requerido" }).min(1, "Debes seleccionar una persona que recibe"),
   nameEngineer: z.string({ required_error: "El nombre del ingeniero es requerido" }).min(1, "Debes seleccionar un ingeniero"),
-  invimaEngineer: z.string({ required_error: "El INVIMA del ingeniero es requerido" }).min(1, "Debes seleccionar un INVIMA"),
-
-  //references
-  equipment: z.string({ required_error: "El ID del equipo es requerido" }).min(1, "Debes seleccionar un equipo"),
-  headquarter: z.string({ required_error: "El ID de la sede es requerido" }).min(1, "Debes seleccionar una sede"),
+  invimaEngineer: z.string({ required_error: "El INVIMA del ingeniero es requerido" }).min(1, "Debes seleccionar un INVIMA")
+}).refine(data => { return data.dateNextMaintenance }, {
+  message: "La fecha del próximo mantenimiento es requerida", path: ["dateNextMaintenance"]
 })
 
 export type CurriculumFormProps = z.infer<typeof curriculumSchema>
