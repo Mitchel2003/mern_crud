@@ -1,4 +1,3 @@
-import ImagePreview from '#/common/elements/ImagePreview'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import InputField from '#/common/fields/Input'
 
@@ -34,14 +33,6 @@ const EngineerServiceSection = ({ theme }: EngineerServiceProps) => (
           placeholder="Ingrese el registro asociado"
         />
       </div>
-
-      {/* -------------------- Image preview -------------------- */}
-      <ImagePreview
-        theme={theme}
-        control={form.control}
-        name="logo_client"
-        label="Logotipo del cliente asociado"
-      />
     </div>
   </div>
 )
