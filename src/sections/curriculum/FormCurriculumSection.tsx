@@ -2,6 +2,7 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { FormProvider } from "react-hook-form"
+import React, { useMemo } from "react"
 import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
@@ -12,11 +13,7 @@ import { Card, CardContent } from "#/ui/card"
 import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
 import EquipmentClassificationSection from "./EquipmentClassificationSection"
 import DetailsEquipmentSection from "./DetailsEquipmentSection"
-// import CharacteristicsSection from "./CharacteristicsSection"
-// import EngineerServiceSection from "./EngineerServiceSection"
-// import InspectionSection from "./PresetInspectionSection"
 import MaintenanceSection from "./MaintenanceSection"
-//import AccessoriesSection from "./AccessoriesSection"
 import BasicDataSection from "./BasicDataSection"
 import LocationSection from "./LocationSection"
 
@@ -27,6 +24,28 @@ interface FormCurriculumSectionProps extends ThemeContextProps {
 
 const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionProps) => {
   const { open, methods, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, () => { onChange('table') })
+
+  const formSections = useMemo(() => [
+    <LocationSection key="location" theme={theme} />,
+    <BasicDataSection key="basic" theme={theme} />,
+    <DetailsEquipmentSection key="details" theme={theme} />,
+    <EquipmentClassificationSection key="equipment" theme={theme} />,
+    <MaintenanceSection key="maintenance" theme={theme} />,
+    <TechnicalCharacteristicsSection key="technical" theme={theme} />,
+  ], [theme])
+
+  const confirmDialog = useMemo(() => (
+    <AlertDialog
+      open={open}
+      theme={theme}
+      onConfirm={onConfirm}
+      onOpenChange={() => setOpen(false)}
+      description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo curriculum"}`}
+      confirmLabel="Confirmar"
+      cancelLabel="Cancelar"
+      title="Confirmación"
+    />
+  ), [open, theme, onConfirm, setOpen, id])
 
   return (
     <>
@@ -56,19 +75,9 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
 
               {/* -------------------- Content form -------------------- */}
               <CardContent className="pt-6 space-y-8">
-                <RenderFormat format={[
-                  <LocationSection theme={theme} />,
-                  <BasicDataSection theme={theme} />,
-                  <DetailsEquipmentSection theme={theme} />,
-                  <EquipmentClassificationSection theme={theme} />,
-                  <MaintenanceSection theme={theme} />,
-                  // <InspectionSection theme={theme} />,
-                  <TechnicalCharacteristicsSection theme={theme} />,
-                  //<AccessoriesSection theme={theme} />, //yet not ready
-                  // <CharacteristicsSection theme={theme} />,
-                  // <EngineerServiceSection theme={theme} />
-                ]} />
+                <RenderFormat format={formSections} />
               </CardContent>
+
               <SubmitFooter
                 theme={theme}
                 to="/form/curriculum"
@@ -80,18 +89,9 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
         </form>
       </FormProvider>
 
-      <AlertDialog
-        open={open}
-        theme={theme}
-        onConfirm={onConfirm}
-        onOpenChange={() => setOpen(false)}
-        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo curriculum"}`}
-        confirmLabel="Confirmar"
-        cancelLabel="Cancelar"
-        title="Confirmación"
-      />
+      {confirmDialog}
     </>
   )
 }
 
-export default FormCurriculumSection          
+export default React.memo(FormCurriculumSection)          
