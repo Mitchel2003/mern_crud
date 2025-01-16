@@ -20,14 +20,14 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
       <InputField
         theme={theme}
-        label="Voltaje"
-        placeholder="Voltaje"
+        label="Voltaje (V)"
+        placeholder="Voltaje (V)"
         name="technicalCharacteristics.voltage"
       />
       <InputField
         theme={theme}
-        label="Amperaje"
-        placeholder="Amperaje"
+        label="Amperaje (A)"
+        placeholder="Amperaje (A)"
         name="technicalCharacteristics.amperage"
       />
       <InputField
@@ -38,8 +38,8 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
         />
       <InputField
         theme={theme}
-        label="Frecuencia"
-        placeholder="Frecuencia"
+        label="Frecuencia (Hz)"
+        placeholder="Frecuencia (Hz)"
         name="technicalCharacteristics.frequency"
       />
       <InputField
@@ -65,14 +65,14 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
       />
       <InputField
         theme={theme}
-        label="Humedad"
-        placeholder="Humedad"
+        label="Humedad (%)"
+        placeholder="Humedad (%)"
         name="technicalCharacteristics.humidity"
       />
       <InputField
         theme={theme}
-        label="Temp (C°)"
-        placeholder="Temp (C°)"
+        label="Temperatura (C°)"
+        placeholder="Temperatura (C°)"
         name="technicalCharacteristics.temperature"
       />
       <InputField

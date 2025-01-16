@@ -1,3 +1,4 @@
+import { areaDefaultValues, cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, serviceDefaultValues, stateDefaultValues } from "@/utils/constants"
 import { City, Client, Country, State, Headquarter, Area, Office, Service } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
@@ -15,15 +16,7 @@ import {
   areaSchema, AreaFormProps,
   officeSchema, OfficeFormProps,
   serviceSchema, ServiceFormProps,
-} from "@/schemas/location.schema"
-
-const countryDefaultValues = { name: '' }
-const stateDefaultValues = { name: '', country: '' }
-const cityDefaultValues = { name: '', state: '' }
-const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
-const areaDefaultValues = { name: '', headquarter: '' }
-const officeDefaultValues = { name: '', area: '', services: [] }
-const serviceDefaultValues = { name: '' }
+} from "@/schemas/location/location.schema"
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de servicios
@@ -41,7 +34,9 @@ export const useServiceForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    service && methods.reset({ name: service.name })
+    service && methods.reset({
+      name: service.name
+    })
   }, [service])
 
   const handleSubmit = useFormSubmit({
@@ -80,8 +75,8 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     office && methods.reset({
       name: office.name,
-      area: office.area?._id,
-      services: office.services
+      area: office.area?._id || '',
+      services: office.services || []
     })
   }, [office, methods.reset])
 
@@ -98,7 +93,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     isLoading,
     ...handleSubmit,
     optionsService: services?.map((e) => ({ value: e.name, label: e.name, icon: HandHelpingIcon })) || [],
-    optionsArea: areas?.map((e) => ({ value: e._id, label: `${e.name} - ${e.headquarter.address} - ${e.headquarter.client.name}` })) || [],
+    optionsArea: areas?.map((e) => ({ value: e._id, label: `${e.name} - ${e.headquarter?.address || ''} - ${e.headquarter?.client?.name || ''}` })) || [],
   }
 }
 
@@ -122,7 +117,7 @@ export const useAreaForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     area && methods.reset({
       name: area.name,
-      headquarter: area.headquarter?._id
+      headquarter: area.headquarter?._id || ''
     })
   }, [area, headquarters])
 
@@ -138,7 +133,7 @@ export const useAreaForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: headquarters?.map((e) => ({ label: `${e.name} - ${e.client.name}`, value: e._id })) || []
+    options: headquarters?.map((e) => ({ value: e._id, label: `${e.name} - ${e.client?.name || ''}` })) || []
   }
 }
 
@@ -164,8 +159,8 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     headquarter && methods.reset({
       name: headquarter.name,
       address: headquarter.address,
-      client: headquarter.client?._id,
-      city: headquarter.city?._id
+      city: headquarter.city?._id || '',
+      client: headquarter.client?._id || ''
     })
   }, [headquarter, cities, clients])
 
@@ -181,8 +176,8 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    optionsCity: cities?.map((e) => ({ label: e.name, value: e._id })) || [],
-    optionsClient: clients?.map((e) => ({ label: e.name, value: e._id })) || [],
+    optionsCity: cities?.map((e) => ({ value: e._id, label: e.name })) || [],
+    optionsClient: clients?.map((e) => ({ value: e._id, label: e.name })) || [],
   }
 }
 
@@ -204,11 +199,17 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    city && methods.reset({ name: city.name, state: city.state?._id })
+    city && methods.reset({
+      name: city.name,
+      state: city.state?._id || ''
+    })
   }, [city, states])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
     onSuccess
   }, methods)
 
@@ -216,7 +217,7 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: states?.map((e) => ({ label: e.name, value: e._id })) || []
+    options: states?.map((e) => ({ value: e._id, label: e.name })) || []
   }
 }
 
@@ -238,11 +239,17 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    state && methods.reset({ name: state.name, country: state.country?._id })
+    state && methods.reset({
+      name: state.name,
+      country: state.country?._id || ''
+    })
   }, [state, countries])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
     onSuccess
   }, methods)
 
@@ -250,7 +257,7 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: countries?.map((e) => ({ label: e.name, value: e._id })) || []
+    options: countries?.map((e) => ({ value: e._id, label: e.name })) || []
   }
 }
 
@@ -270,11 +277,16 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
   })
 
   useEffect(() => {
-    country && methods.reset({ name: country.name })
+    country && methods.reset({
+      name: country.name
+    })
   }, [country])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => { id ? updateLocation({ id, data }) : createLocation(data); methods.reset() },
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
     onSuccess
   }, methods)
 

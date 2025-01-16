@@ -10,8 +10,8 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
   const { locationData: options } = useCurriculumForm()
   const { watch } = useFormContext()
 
-  const clientId = watch('client')
   const headquarterId = watch('headquarter')
+  const clientId = watch('client')
   const officeId = watch('office')
   const areaId = watch('area')
 

@@ -1,4 +1,6 @@
 import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, HomeIcon, BriefcaseIcon, DoorOpen, LucideMapPinned, LucideMap } from 'lucide-react'
+import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
+import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -181,3 +183,103 @@ export const links = () => {
       : (user?.role === 'medical' ? navMedicalItems : navEngineerItems)
   )
 }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default format values--------------------------------------------------*/
+/**
+ * Valores predeterminados para el formulario de currículum
+ * @type {CurriculumFormProps}
+ */
+export const curriculumDefaultValues: CurriculumFormProps = {
+  //helpers fields not has been sent to database
+  client: '', //helper locationData
+  headquarter: '', //helper locationData
+  area: '', //helper locationData
+  office: '', //locationData
+  service: '', //locationData
+
+  name: '', //basicData
+  brand: '', //basicData
+  serie: '', //basicData
+  modelEquip: '', //basicData
+  healthRecord: '', //basicData
+  photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
+
+  datePurchase: null, //datailsEquipment
+  dateOperation: null, //datailsEquipment
+  dateInstallation: null, //datailsEquipment
+  acquisition: '', //datailsEquipment
+  warranty: '', //datailsEquipment
+  price: '', //datailsEquipment
+
+  //equipment
+  useClassification: '', //equipmentClassification
+  typeClassification: '', //equipmentClassification
+  biomedicalClassification: '', //equipmentClassification
+  riskClassification: '', //equipmentClassification
+  technologyPredominant: [], //equipmentClassification
+  powerSupply: [], //equipmentClassification
+
+  //technical characteristics
+  technicalCharacteristics: {
+    voltage: '', //technicalCharacteristics
+    amperage: '', //technicalCharacteristics
+    power: '', //technicalCharacteristics
+    frequency: '', //technicalCharacteristics
+    capacity: '', //technicalCharacteristics
+    pressure: '', //technicalCharacteristics
+    speed: '', //technicalCharacteristics
+    humidity: '', //technicalCharacteristics
+    temperature: '', //technicalCharacteristics
+    weight: '', //technicalCharacteristics
+  },
+
+  //maintenance
+  employmentMaintenance: '', //maintenance
+  frequencyMaintenance: '', //maintenance
+  typeMaintenance: [], //maintenance
+  manualsMaintenance: '', //maintenance
+
+  //relationship
+  // inspection: '',
+  //supplier: '', //datailsEquipment
+  //manufacturer: '', //datailsEquipment
+  //representative: '', //datailsEquipment
+}
+/*---------------------------------------------------------------------------------------------------------*/
+/**
+ * Valores predeterminados para el formulario de mantenimiento
+ * @type {MaintenanceFormProps}
+ */
+export const maintenanceDefaultValues: MaintenanceFormProps = {
+  //helpers fields not has been sent to database
+  client: '', //helper clientData
+  nameClient: '', //helper clientData
+  nitClient: '', //helper clientData
+
+  //timestandard
+  dateNextMaintenance: null,
+  dateMaintenance: null,
+
+  //maintenance
+  statusEquipment: '',
+  observations: '',
+
+  //received
+  receivedBy: '',
+  nameEngineer: '',
+  invimaEngineer: '',
+
+  curriculum: '',
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default location values--------------------------------------------------*/
+export const countryDefaultValues = { name: '' }
+export const stateDefaultValues = { name: '', country: '' }
+export const cityDefaultValues = { name: '', state: '' }
+export const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
+export const areaDefaultValues = { name: '', headquarter: '' }
+export const officeDefaultValues = { name: '', area: '', services: [] }
+export const serviceDefaultValues = { name: '' }
+/*---------------------------------------------------------------------------------------------------------*/

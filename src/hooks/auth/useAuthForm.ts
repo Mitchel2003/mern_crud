@@ -13,7 +13,7 @@ import {
 
   userSchema, UserFormProps,
   clientSchema, ClientFormProps,
-} from "@/schemas/auth.schema"
+} from "@/schemas/auth/auth.schema"
 
 const forgotPasswordDefaultValues = { email: '' }
 const loginDefaultValues = { email: '', password: '' }
@@ -60,7 +60,7 @@ export const useForgotPasswordForm = () => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useUserForm = (id?: string, onSuccess?: () => void) => {
-  const { data: locations, isLoading } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
+  const { data: headquarters, isLoading } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
   const { data: user } = useQueryUser().fetchUserById<User>('user', id as string)
   const { signup: createUser } = useAuthContext()
   const { updateUser } = useUserMutation('user')
@@ -88,7 +88,7 @@ export const useUserForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: locations?.map((e) => ({ value: e._id, label: `${e.client.name} - ${e.address} - ${e.city.name}`, icon: MapPinHouseIcon })) || []
+    options: headquarters?.map((e) => ({ value: e._id, label: `${e.client?.name || ''} - ${e.address} - ${e.city?.name || ''}`, icon: MapPinHouseIcon })) || []
   }
 }
 
