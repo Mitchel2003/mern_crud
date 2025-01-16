@@ -107,8 +107,8 @@ const useMaintenanceActions = ({ maintenance, onChange }: MaintenanceActionsProp
     onClick: () => {
       confirmAction({
         title: 'Editar Mantenimiento',
-        description: `¿Deseas editar el mantenimiento para el equipo "${maintenance.curriculum.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/maintenance/${maintenance._id}`) }
+        description: `¿Deseas editar el mantenimiento de "${maintenance.nameEngineer}"?`,
+        action: () => { onChange('form'); navigate(`/form/maintenance/${maintenance._id}`) }
       })
     }
   }, {
@@ -119,7 +119,7 @@ const useMaintenanceActions = ({ maintenance, onChange }: MaintenanceActionsProp
       confirmAction({
         isDestructive: true,
         title: 'Eliminar Mantenimiento',
-        description: `¿Estás seguro que deseas eliminar el mantenimiento para el equipo "${maintenance.curriculum.name}"?`,
+        description: `¿Estás seguro que deseas eliminar el mantenimiento de "${maintenance.nameEngineer}"?`,
         action: () => deleteFormat({ id: maintenance._id })
       })
     }

@@ -20,7 +20,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
         iconSpan="info"
         title="Información general"
         className="text-2xl font-light"
-        span="Propocione los datos basicos del equipo"
+        span="Datos básicos del equipo"
       />
 
       {/* -------------------- Basic data -------------------- */}

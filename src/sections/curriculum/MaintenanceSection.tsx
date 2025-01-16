@@ -14,8 +14,8 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => (
       theme={theme}
       title="Mantenimiento"
       className="text-2xl font-light"
-      span="Campos opcionales"
-      iconSpan="info"
+      span="Definir mantenimiento"
+      iconSpan="alert"
     />
 
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

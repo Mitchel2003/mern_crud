@@ -122,7 +122,7 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
       confirmAction({
         title: 'Editar Curriculum',
         description: `¿Deseas editar el curriculum "${curriculum.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/curriculum/${curriculum._id}`) }
+        action: () => { onChange('form'); navigate(`/form/curriculum/${curriculum._id}`) }
       })
     }
   }, {

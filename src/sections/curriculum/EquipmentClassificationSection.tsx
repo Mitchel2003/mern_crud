@@ -34,7 +34,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <SelectField
         theme={theme}
         name="useClassification"
-        label="Clasificación por Uso"
+        label="Clasificación por uso"
         placeholder="Seleccionar clasificación"
         options={[
           { label: "medico", value: "medico" },
@@ -45,7 +45,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => (
       <SelectField
         theme={theme}
         name="biomedicalClassification"
-        label="Clasificación Biomédica"
+        label="Clasificación biomédica"
         placeholder="Seleccionar clasificación"
         options={[
           { label: "diagnostico", value: "diagnostico" },

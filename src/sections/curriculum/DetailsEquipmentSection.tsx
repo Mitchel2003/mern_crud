@@ -67,9 +67,9 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         <HeaderCustom
           to="component"
           theme={theme}
-          iconSpan="warn"
-          span="Campos obligatorios"
+          iconSpan="info"
           title="Detalles asociados"
+          span="Información de adquisición y más"
           className="text-2xl font-light"
         />
 
@@ -123,7 +123,6 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             name="price"
             label="Valor"
             span='opcional'
-            iconSpan='info'
             placeholder="Valor del equipo"
           />
         </div>
