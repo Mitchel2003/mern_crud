@@ -30,7 +30,13 @@ const useLocationCV = () => {
   return {
     mapValues,
     submitData,
-    options: { clients, headquarters, services, offices, areas }
+    options: {
+      clients: clients || [],
+      headquarters: headquarters || [],
+      services: services || [],
+      offices: offices || [],
+      areas: areas || []
+    }
   }
 }
 

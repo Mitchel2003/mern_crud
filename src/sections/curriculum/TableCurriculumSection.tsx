@@ -12,6 +12,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/constants"
 import { Pencil, Trash } from "lucide-react"
+import { Eye } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -116,6 +117,16 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
   const navigate = useNavigate()
 
   return [{
+    icon: Eye,
+    label: "Ver",
+    onClick: () => {
+      confirmAction({
+        title: 'Ver Curriculum',
+        description: `¿Deseas ver el curriculum "${curriculum.name}"?`,
+        action: () => { onChange('form'); navigate(`/form/curriculum/preview/${curriculum._id}`) }
+      })
+    }
+  }, {
     icon: Pencil,
     label: "Editar",
     onClick: () => {
@@ -138,4 +149,4 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
       })
     }
   }]
-} 
+}

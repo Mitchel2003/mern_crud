@@ -26,9 +26,9 @@ const useBasicDataCV = (id?: string) => {
   })
 
   return {
-    files,
     mapValues,
-    submitData
+    submitData,
+    files: files || []
   }
 }
 

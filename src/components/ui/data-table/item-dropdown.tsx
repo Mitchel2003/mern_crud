@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "#/ui/dropdown-menu"
+import { MoreHorizontal, type LucideIcon } from "lucide-react"
 import { ActionProps } from "@/interfaces/props.interface"
-import { MoreHorizontal } from "lucide-react"
 import { Button } from "#/ui/button"
 import { cn } from "@/lib/utils"
 import React from "react"
@@ -11,14 +11,16 @@ interface ItemDropdownProps {
   contentClassName?: string
   actions: ActionProps[]
   menuLabel?: string
+  icon?: LucideIcon
 }
 
 const ItemDropdown = React.forwardRef<HTMLButtonElement, ItemDropdownProps>(({
-  actions,
+  icon: Icon = MoreHorizontal,
+  menuLabel = "Acciones",
   triggerClassName,
   contentClassName,
-  menuLabel = "Acciones",
-  align = "end"
+  align = "end",
+  actions,
 }, ref) => {
   return (
     <DropdownMenu>
@@ -29,7 +31,7 @@ const ItemDropdown = React.forwardRef<HTMLButtonElement, ItemDropdownProps>(({
           className={cn("h-8 w-8 p-0", triggerClassName)}
         >
           <span className="sr-only">Abrir menú</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <Icon className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
 

@@ -8,8 +8,8 @@ import { UserProvider } from "@/context/UserContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
+import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Maintenance from "@/pages/Maintenance";
-import Curriculum from "@/pages/Curriculum";
 import Client from "@/pages/Client";
 
 import Headquarter from "@/pages/Headquarter";
@@ -51,6 +51,7 @@ function App() {
                       <Route path="/form/curriculum" element={<Curriculum />} />
                       <Route path="/form/curriculums" element={<Curriculum />} />
                       <Route path="/form/curriculum/:id" element={<Curriculum />} />
+                      <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculum />} />
 
                       <Route path="/form/maintenance" element={<Maintenance />} />
                       <Route path="/form/maintenances" element={<Maintenance />} />

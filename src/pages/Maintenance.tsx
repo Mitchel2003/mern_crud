@@ -4,7 +4,7 @@ import { useThemeContext } from '@/context/ThemeContext'
 import { Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 
-const MaintenanceForm = () => {
+const Maintenance = () => {
   const { theme } = useThemeContext()
   const { id } = useParams()
 
@@ -15,4 +15,4 @@ const MaintenanceForm = () => {
   )
 }
 
-export default MaintenanceForm
+export default Maintenance

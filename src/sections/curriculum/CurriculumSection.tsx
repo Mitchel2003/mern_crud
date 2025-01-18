@@ -21,8 +21,8 @@ const CurriculumSection = ({ theme, id }: CurriculumSectionProps) => {
         <div className="flex flex-col md:flex-row items-center justify-between">
           <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Curriculum </h1>
           <TabsList>
-            <TabsTrigger value="table">Tabla</TabsTrigger>
-            <TabsTrigger value="form">Formulario</TabsTrigger>
+            <TabsTrigger value="table">Listado</TabsTrigger>
+            <TabsTrigger value="form">Nuevo</TabsTrigger>
           </TabsList>
         </div>
 
