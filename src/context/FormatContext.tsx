@@ -65,16 +65,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta
-   * tenemos un opcional para poblar con el cual podemos ejercer relaciones
-   * @param {string} type - El tipo de formato.
-   * @param {object} query - La consulta.
-   * @param {string} populate - El campo a poblar; corresponde a la relacion del formato (ej: 'city.state.country')
+   * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
+   * @param {string} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
-  const getByQuery = async (type: FormatType, query: object, populate?: string): Promise<any[]> => {
+  const getByQuery = async (type: FormatType, query: string): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
-      const response = await useApi(type).getByQuery(query, populate)
+      const response = await useApi(type).getByQuery(query)
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })

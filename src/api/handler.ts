@@ -1,6 +1,7 @@
+import { Query } from "@/interfaces/db.interface";
 import axios from "./axios"
 
-export const getRequest = async (endpoint: string, params?: object) => axios.get(endpoint, { ...params })
+export const getRequest = async (endpoint: string, params?: Query) => axios.get(`${endpoint}${params?.query ? `/${params.query}` : ''}`)
 export const postRequest = async (endpoint: string, data: object | undefined) => axios.post(endpoint, data)
 export const putRequest = async (endpoint: string, data: object) => axios.put(endpoint, data)
 export const deleteRequest = async (endpoint: string, data?: object) => axios.delete(endpoint, { ...data })
@@ -9,7 +10,7 @@ export const useApi = (type: string) => ({
   // crud functions
   getAll: (data?: object) => getRequest(buildEndpoint({ type, action: 'many' }), data),
   getById: (id: string) => getRequest(buildEndpoint({ type, action: 'one', id })),
-  getByQuery: (query: object, populate?: string) => getRequest(buildEndpoint({ type, action: 'many' }), { query, populate }),
+  getByQuery: (query: string) => getRequest(buildEndpoint({ type, action: 'many' }), { query }),
   create: (data: object) => postRequest(buildEndpoint({ type, action: 'void' }), data),
   update: (id: string, data: object) => putRequest(buildEndpoint({ type, action: 'one', id }), data),
   delete: (id: string) => deleteRequest(buildEndpoint({ type, action: 'one', id })),
@@ -63,24 +64,42 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  * headquarter: /location => backend = api/location/headquarter,
  */
 const getBase = (type: string): string | undefined => {
-  /*-------------------------files-------------------------*/
-  if (['file'].includes(type)) return '/storage'
-  /*-------------------------user-------------------------*/
-  if (['user', 'client'].includes(type)) return undefined
-  /*-------------------------authentication-------------------------*/
-  if (['login', 'logout', 'on-auth', 'register', 'forgot-password'].includes(type)) return '/auth'
-  /*-------------------------format-------------------------*/
-  if (['cv', 'maintenance', 'equipment'].includes(type)) return '/form' //globals
-
-  //maintenance
-  if (['check', 'checkMaintenance'].includes(type)) return '/form/maintenance'
-  //equipment
-  if (['calibration', 'reminder', 'calibrationEquipment'].includes(type)) return '/form/equipment'
-  //curriculum
-  if (['inspection', 'typeInspection', 'accessory'].includes(type)) return '/form/cv'
-  if (['supplier', 'manufacturer', 'representative'].includes(type)) return '/form/cv/stakeholder'
-  if (['supplierHeadquarter', 'manufacturerHeadquarter', 'representativeHeadquarter'].includes(type)) return '/form/cv/stakeholder'
-  /*-------------------------location-------------------------*/
-  if (['country', 'state', 'city', 'headquarter', 'area', 'office', 'service'].includes(type)) return '/location'
+  switch (type) {
+    /*-------------------------files-------------------------*/
+    case 'file': return '/storage'
+    /*-------------------------user-------------------------*/
+    case 'user':
+    case 'client': return undefined
+    /*-------------------------authentication-------------------------*/
+    case 'login':
+    case 'logout':
+    case 'on-auth':
+    case 'register':
+    case 'forgot-password': return '/auth'
+    /*-------------------------format-------------------------*/
+    case 'cv': return '/form'
+    case 'maintenance': return '/form/maintenance'
+    case 'equipment': return '/form/equipment'
+    case 'reminder':
+    case 'calibration':
+    case 'calibrationEquipment': return '/form/equipment'
+    case 'inspection':
+    case 'typeInspection':
+    case 'accessory': return '/form/cv'
+    case 'supplier':
+    case 'manufacturer':
+    case 'representative':
+    case 'supplierHeadquarter':
+    case 'manufacturerHeadquarter':
+    case 'representativeHeadquarter': return '/form/cv/stakeholder'
+    /*-------------------------location-------------------------*/
+    case 'country':
+    case 'state':
+    case 'city':
+    case 'headquarter':
+    case 'area':
+    case 'office':
+    case 'service': return '/location'
+  }
   return undefined
 }

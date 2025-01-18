@@ -7,7 +7,7 @@ import { LocationType } from '@/interfaces/context.interface'
 const QUERY_KEYS = {
   locations: (path: LocationType) => ['locations', path],
   location: (path: LocationType, id: string) => ['location', path, id],
-  search: (path: LocationType, query: object) => ['locations', 'search', path, query]
+  search: (path: LocationType, query: string) => ['locations', 'search', path, query]
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -32,9 +32,9 @@ export const useQueryLocation = (): QueryReact_Location => {
   })
 
   // Buscar ubicación por término
-  const fetchLocationByQuery = <T>(path: LocationType, query: object, populate?: string) => useQuery({
+  const fetchLocationByQuery = <T>(path: LocationType, query: string) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => location.getByQuery<T>(path, query, populate),
+    queryFn: () => location.getByQuery<T>(path, query),
     select: (data) => data || [],
     enabled: Boolean(query)
   })

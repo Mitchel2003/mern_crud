@@ -11,7 +11,7 @@ export interface DeleteMutationProps { id: string }
 export type QueryReact_User = {
   fetchAllUsers: <T>(path: UserType) => UseQueryResult<T[], Error>
   fetchUserById: <T>(path: UserType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchUserByQuery: <T>(path: UserType, query: object, populate?: string) => UseQueryResult<T[], Error>
+  fetchUserByQuery: <T>(path: UserType, query: string) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {
   createUser: UseMutateFunction<void, Error, object, unknown>
@@ -26,7 +26,7 @@ export type CustomMutation_User = {
 export type QueryReact_Location = {
   fetchAllLocations: <T>(path: LocationType) => UseQueryResult<T[], Error>
   fetchLocationById: <T>(path: LocationType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchLocationByQuery: <T>(path: LocationType, query: object, populate?: string) => UseQueryResult<T[], Error>
+  fetchLocationByQuery: <T>(path: LocationType, query: string) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Location = {
   createLocation: UseMutateFunction<void, Error, object, unknown>
@@ -41,7 +41,7 @@ export type CustomMutation_Location = {
 export type QueryReact_Format = {
   fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
   fetchFormatById: <T>(path: FormatType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchFormatByQuery: <T>(path: FormatType, query: object, populate?: string) => UseQueryResult<T[], Error>
+  fetchFormatByQuery: <T>(path: FormatType, query: string) => UseQueryResult<T[], Error>
   fetchAllFiles: <T>(path: FormatType, data: FileDB) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Format = {

@@ -65,16 +65,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todas las ubicaciones de un tipo específico por una consulta
-   * tenemos un opcional para poblar con el cual podemos ejercer relaciones
-   * @param {string} type - El tipo de ubicación.
-   * @param {object} query - La consulta.
-   * @param {string} populate - El campo a poblar; corresponde a la relacion de la ubicacion (ej: 'city.state.country')
+   * @param {string} type - El tipo de ubicación, se utiliza para construir el endpoint.
+   * @param {string} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
-  const getByQuery = async (type: LocationType, query: object, populate?: string): Promise<any[]> => {
+  const getByQuery = async (type: LocationType, query: string): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
-      const response = await useApi(type).getByQuery(query, populate)
+      const response = await useApi(type).getByQuery(query)
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })

@@ -65,16 +65,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
-   * tenemos un opcional para poblar con el cual podemos ejercer relaciones
-   * @param {string} type - El tipo de usuario.
-   * @param {object} query - La consulta.
-   * @param {string} populate - El campo a poblar; corresponde a la relacion del usuario (ej: 'user.headquarter')
+   * @param {string} type - El tipo de usuario, se utiliza para construir el endpoint.
+   * @param {string} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
-  const getByQuery = async (type: UserType, query: object, populate?: string): Promise<any[]> => {
+  const getByQuery = async (type: UserType, query: string): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
-      const response = await useApi(type).getByQuery(query, populate)
+      const response = await useApi(type).getByQuery(query)
       return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })

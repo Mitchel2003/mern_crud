@@ -9,7 +9,7 @@ const QUERY_KEYS = {
   formats: (path: FormatType) => ['formats', path],
   format: (path: FormatType, id: string) => ['format', path, id],
   files: (path: FormatType, data: object) => ['files', path, data],
-  search: (path: FormatType, query: object) => ['formats', 'search', path, query],
+  search: (path: FormatType, query: string) => ['formats', 'search', path, query],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -34,9 +34,9 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   // Buscar formato por término
-  const fetchFormatByQuery = <T>(path: FormatType, query: object, populate?: string) => useQuery({
+  const fetchFormatByQuery = <T>(path: FormatType, query: string) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => format.getByQuery<T>(path, query, populate),
+    queryFn: () => format.getByQuery<T>(path, query),
     select: (data) => data || [],
     enabled: Boolean(query)
   })

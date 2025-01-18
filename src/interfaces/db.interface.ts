@@ -15,6 +15,7 @@ export function isAxiosResponse(e: unknown): e is AxiosResponse {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
+export type Query = Record<string, any>
 export type BaseMDB = {
   _id: string
   createdAt: Date
