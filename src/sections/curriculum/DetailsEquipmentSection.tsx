@@ -6,6 +6,7 @@ import InputField from '#/common/fields/Input'
 import DateField from '#/common/fields/Date'
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
+import { ConfirmTriggerProps } from '@/interfaces/props.interface'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
 import DetailsCV from '@/hooks/format/curriculum/useDetailsCV'
@@ -15,18 +16,36 @@ interface DetailsEquipmentProps extends ThemeContextProps { }
 
 const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { getValues, setValue, formState: { dirtyFields, errors } } = useFormContext()
+  const { getValues, setValue, trigger, formState: { dirtyFields, errors } } = useFormContext()
   const { onSubmit: onSubmitRep } = DetailsCV.useRepresentative()
   const { onSubmit: onSubmitMan } = DetailsCV.useManufacturer()
   const { onSubmit: onSubmitSup } = DetailsCV.useSupplier()
   const { detailsData: options } = useCurriculumForm()
 
-  const isFieldsDirty = (fieldName: string) => {
+  /**
+   * Función para verificar si hay errores en un campo, esto nos ayuda a manejar el "disabled" en el formulario
+   * @param fieldName - Nombre del campo, corresponde a cualquier campo del schema de curriculum
+   */
+  const hasErrors = (fieldName: string) => !!errors[fieldName]
+
+  /**
+   * Función para verificar si hay cambios en un campo del formulario, esto nos ayuda a manejar el "disabled" en el formulario
+   * @param fieldName - Nombre del campo que se va a verificar, en este caso es un stakeholder. { representative, supplier, manufacturer }
+   */
+  const isDirtyStakeholder = (fieldName: string) => {
     const fields = dirtyFields[fieldName] as Record<string, boolean>[]
     return fields?.[0]?.name && fields[0]?.phone && (fields[0]?.city || fields[0]?.country)
   }
 
-  const hasErrors = (fieldName: string) => !!errors[fieldName]
+  /**
+   * Nos permite confirmar la accion de guardar
+   * @param {ConfirmTriggerProps} param
+   */
+  const ConfirmTrigger = async ({ onSubmit, resetData, description, fieldName, title }: ConfirmTriggerProps) => {
+    const isValid = await trigger(fieldName)
+    const action = async () => { await onSubmit(getValues(fieldName)[0]); setValue(fieldName, [resetData]) }
+    isValid && confirmAction({ title, description, action })
+  }
 
   return (
     <>
@@ -111,18 +130,15 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="newRepresentative"
               titleButton="Nuevo representante"
-              disabled={!isFieldsDirty('newRepresentative') || hasErrors('newRepresentative')}
+              disabled={!isDirtyStakeholder('newRepresentative') || hasErrors('newRepresentative')}
               fields={representativeFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
-              onSubmit={() =>
-                confirmAction({
-                  title: 'Agregar representante',
-                  description: '¿Deseas añadir un representante?',
-                  action: async () => {
-                    await onSubmitRep(getValues('newRepresentative')[0])
-                    setValue('newRepresentative', [{ name: '', phone: '', city: '' }])
-                  },
-                })
-              }
+              onSubmit={() => ConfirmTrigger({
+                resetData: { name: '', phone: '', city: '' },
+                description: '¿Deseas añadir un representante?',
+                fieldName: 'newRepresentative',
+                title: 'Agregar representante',
+                onSubmit: onSubmitRep,
+              })}
             />
           </div>
 
@@ -140,18 +156,15 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="newSupplier"
               titleButton="Nuevo proveedor"
-              disabled={!isFieldsDirty('newSupplier') || hasErrors('newSupplier')}
+              disabled={!isDirtyStakeholder('newSupplier') || hasErrors('newSupplier')}
               fields={supplierFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
-              onSubmit={() =>
-                confirmAction({
-                  title: 'Agregar proveedor',
-                  description: '¿Deseas añadir un proveedor?',
-                  action: async () => {
-                    await onSubmitSup(getValues('newSupplier')[0])
-                    setValue('newSupplier', [{ name: '', phone: '', city: '' }])
-                  },
-                })
-              }
+              onSubmit={() => ConfirmTrigger({
+                resetData: { name: '', phone: '', city: '' },
+                description: '¿Deseas añadir un proveedor?',
+                fieldName: 'newSupplier',
+                title: 'Agregar proveedor',
+                onSubmit: onSubmitSup,
+              })}
             />
           </div>
 
@@ -169,18 +182,15 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               theme={theme}
               name="newManufacturer"
               titleButton="Nuevo fabricante"
-              disabled={!isFieldsDirty('newManufacturer') || hasErrors('newManufacturer')}
+              disabled={!isDirtyStakeholder('newManufacturer') || hasErrors('newManufacturer')}
               fields={manufacturerFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
-              onSubmit={() => {
-                confirmAction({
-                  title: 'Agregar fabricante',
-                  description: '¿Deseas añadir un fabricante?',
-                  action: async () => {
-                    await onSubmitMan(getValues('newManufacturer')[0])
-                    setValue('newManufacturer', [{ name: '', phone: '', country: '' }])
-                  },
-                })
-              }}
+              onSubmit={() => ConfirmTrigger({
+                resetData: { name: '', phone: '', country: '' },
+                description: '¿Deseas añadir un fabricante?',
+                fieldName: 'newManufacturer',
+                title: 'Agregar fabricante',
+                onSubmit: onSubmitMan,
+              })}
             />
           </div>
         </div>
@@ -214,7 +224,7 @@ const representativeFields = [
 const supplierFields = [
   { name: "newSupplier.name", label: "Nombre" },
   { name: "newSupplier.phone", label: "Teléfono" },
-  { name: "newSupplier.country", label: "País" }
+  { name: "newSupplier.city", label: "Ciudad" }
 ]
 
 const manufacturerFields = [

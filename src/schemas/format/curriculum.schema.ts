@@ -132,16 +132,10 @@ export const curriculumSchema = z.object({
         .min(3, "El nombre debe tener al menos 3 caracteres")
         .max(50, "El nombre debe tener menos de 50 caracteres"),
       phone: z
-        .string()
-        .min(6, "El teléfono debe tener al menos 6 dígitos")
-        .max(15, "El teléfono debe tener menos de 15 dígitos")
-        .refine(val => /^[0-9]+$/.test(val), {
-          message: "El teléfono debe contener solo números"
-        }),
+        .string().transform(val => val.trim())
+        .refine(val => val === '' || /^[0-9]+$/.test(val), { message: "El teléfono debe contener solo números" }),
       city: z
         .string()
-        .min(3, "La ciudad debe tener al menos 3 caracteres")
-        .max(50, "La ciudad debe tener menos de 50 caracteres")
     })
   ).optional().default([]),
 
@@ -152,16 +146,10 @@ export const curriculumSchema = z.object({
         .min(3, "El nombre debe tener al menos 3 caracteres")
         .max(50, "El nombre debe tener menos de 50 caracteres"),
       phone: z
-        .string()
-        .min(6, "El teléfono debe tener al menos 6 dígitos")
-        .max(15, "El teléfono debe tener menos de 15 dígitos")
-        .refine(val => /^[0-9]+$/.test(val), {
-          message: "El teléfono debe contener solo números"
-        }),
+        .string().transform(val => val.trim())
+        .refine(val => val === '' || /^[0-9]+$/.test(val), { message: "El teléfono debe contener solo números" }),
       city: z
         .string()
-        .min(3, "La ciudad debe tener al menos 3 caracteres")
-        .max(50, "La ciudad debe tener menos de 50 caracteres")
     })
   ).optional().default([]),
 
@@ -172,16 +160,10 @@ export const curriculumSchema = z.object({
         .min(3, "El nombre debe tener al menos 3 caracteres")
         .max(50, "El nombre debe tener menos de 50 caracteres"),
       phone: z
-        .string()
-        .min(6, "El teléfono debe tener al menos 6 dígitos")
-        .max(15, "El teléfono debe tener menos de 15 dígitos")
-        .refine(val => /^[0-9]+$/.test(val), {
-          message: "El teléfono debe contener solo números"
-        }),
+        .string().transform(val => val.trim())
+        .refine(val => val === '' || /^[0-9]+$/.test(val), { message: "El teléfono debe contener solo números" }),
       country: z
         .string()
-        .min(3, "El país debe tener al menos 3 caracteres")
-        .max(50, "El país debe tener menos de 50 caracteres")
     })
   ).optional().default([]),
 })

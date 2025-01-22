@@ -60,7 +60,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createRepresentative(stakeholder)
+      const data = await createRepresentative({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
 
@@ -77,7 +77,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createSupplier(stakeholder)
+      const data = await createSupplier({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
 
@@ -94,7 +94,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createManufacturer(stakeholder)
+      const data = await createManufacturer({ ...stakeholder, phone: stakeholder.phone || 'n/r', country: stakeholder.country || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
 

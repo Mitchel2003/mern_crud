@@ -90,3 +90,10 @@ export interface DialogField {
   component: React.ReactElement
   name: string
 }
+export interface ConfirmTriggerProps {
+  onSubmit: (data: any) => Promise<void>
+  resetData: Record<string, any>
+  description: string
+  fieldName: string
+  title: string
+}
