@@ -10,9 +10,10 @@ import { Button } from '#/ui/button'
 
 interface CardFieldProps { name: string, component: ReactElement }
 interface CardIterableFieldProps extends ThemeContextProps {
+  onSubmit?: (e: React.MouseEvent) => void
   fields: CardFieldProps[]
-  onSubmit?: () => void
   titleButton?: string
+  disabled?: boolean
   limit?: number
   name: string
 }
@@ -21,6 +22,7 @@ const CardIterable = ({
   titleButton = 'Agregar',
   limit = 1,
   onSubmit,
+  disabled,
   fields,
   theme,
   name,
@@ -47,7 +49,7 @@ const CardIterable = ({
           variant="outline"
           onClick={handleAppend}
           className={cn(
-            'flex text-sm h-[5vh]',
+            'flex w-full text-sm h-[5vh]',
             theme === 'dark'
               ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
               : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
@@ -113,6 +115,7 @@ const CardIterable = ({
 
               {onSubmit && (
                 <Button
+                  disabled={disabled}
                   variant="outline"
                   onClick={onSubmit}
                   className="mt-2"

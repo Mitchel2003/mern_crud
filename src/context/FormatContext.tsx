@@ -84,14 +84,17 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * Crea un nuevo formato
    * @param {string} type - El tipo de formato.
    * @param {object} data - Los datos del formato.
+   * @returns {Promise<any>} Los datos del formato creado.
    */
-  const create = async (type: FormatType, data: object): Promise<void> => {
+  const create = async (type: FormatType, data: object): Promise<any> => {
     setLoadingStatus('Creando...')
     try {
-      await useApi(type).create(data)
+      const response = await useApi(type).create(data)
       notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
@@ -100,14 +103,17 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {string} type - El tipo de formato.
    * @param {string} id - El ID del formato.
    * @param {object} data - Los datos del formato.
+   * @returns {Promise<any>} Los datos del formato actualizado.
    */
-  const update = async (type: FormatType, id: string, data: object): Promise<void> => {
+  const update = async (type: FormatType, id: string, data: object): Promise<any> => {
     setLoadingStatus('Actualizando...')
     try {
-      await useApi(type).update(id, data)
+      const response = await useApi(type).update(id, data)
       notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
@@ -115,14 +121,17 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * Elimina un formato existente
    * @param {string} type - El tipo de formato.
    * @param {string} id - El ID del formato.
+   * @returns {Promise<any>} Los datos del formato eliminado.
    */
-  const delete_ = async (type: FormatType, id: string): Promise<void> => {
+  const delete_ = async (type: FormatType, id: string): Promise<any> => {
     setLoadingStatus('Eliminando...')
     try {
-      await useApi(type).delete(id)
+      const response = await useApi(type).delete(id)
       notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/

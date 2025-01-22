@@ -68,6 +68,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
   /**
    * Mutation para crear un formato
    * @param {object} data - La data del documento a crear.
+   * @returns {Promise<any>} Los datos del formato creado.
    */
   const createMutation = useMutation({
     mutationFn: async (data: object) => await create(path, data),
@@ -77,6 +78,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
   /**
    * Mutation para actualizar un formato
    * @param {object} data - La data del documento a actualizar.
+   * @returns {Promise<any>} Los datos del formato actualizado.
    */
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: UpdateMutationProps) => await update(path, id, data),
@@ -89,6 +91,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
   /**
    * Mutation para eliminar un formato
    * @param {string} _id - Corresponde al uid default del formato.
+   * @returns {Promise<any>} Los datos del formato eliminado.
    */
   const deleteMutation = useMutation({
     mutationFn: async ({ id }: DeleteMutationProps) => await deleteFormat(path, id),
@@ -125,11 +128,11 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
   })
 
   return {
-    createFormat: createMutation.mutate,
-    updateFormat: updateMutation.mutate,
-    deleteFormat: deleteMutation.mutate,
-    createFile: createFileMutation.mutate,
-    deleteFile: deleteFileMutation.mutate,
+    createFormat: createMutation.mutateAsync,
+    updateFormat: updateMutation.mutateAsync,
+    deleteFormat: deleteMutation.mutateAsync,
+    createFile: createFileMutation.mutateAsync,
+    deleteFile: deleteFileMutation.mutateAsync,
     isLoading: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
   }
 }

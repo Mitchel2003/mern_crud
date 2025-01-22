@@ -34,19 +34,6 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
     <TechnicalCharacteristicsSection key="technical" theme={theme} />,
   ], [theme])
 
-  const confirmDialog = useMemo(() => (
-    <AlertDialog
-      open={open}
-      theme={theme}
-      onConfirm={onConfirm}
-      onOpenChange={() => setOpen(false)}
-      description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo curriculum"}`}
-      confirmLabel="Confirmar"
-      cancelLabel="Cancelar"
-      title="Confirmación"
-    />
-  ), [open, theme, onConfirm, setOpen, id])
-
   return (
     <>
       <FormProvider {...methods}>
@@ -89,9 +76,18 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
         </form>
       </FormProvider>
 
-      {confirmDialog}
+      <AlertDialog
+        open={open}
+        theme={theme}
+        onConfirm={onConfirm}
+        onOpenChange={() => setOpen(false)}
+        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo curriculum"}`}
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+        title="Confirmación"
+      />
     </>
   )
 }
 
-export default React.memo(FormCurriculumSection)          
+export default React.memo(FormCurriculumSection)

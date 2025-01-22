@@ -3,7 +3,11 @@
 ### Vite + TypeScript
 
 ### --------------------------------------Typescript documentation-------------------------------------- ###
-## Diferencias entre Controller y FormField (react-hook-form):===============================================================================================
+react-hook-form (advanced): [text](https://www.react-hook-form.com/advanced-usage/)
+### ---------------------------------------------------------------------------------------------------- ###
+
+### ---------------------------------------------------------------------------------------------------- ###
+## Diferencias entre Controller y FormField (react-hook-form)
 ### Controller:
   Propósito: El Controller es un componente de react-hook-form diseñado específicamente para manejar componentes controlados. Esto es especialmente útil para componentes personalizados o de terceros que no exponen directamente el ref o no son compatibles con el registro automático de react-hook-form.
   Funcionamiento: Proporciona un render prop que recibe un objeto con propiedades como field y fieldState. El field contiene métodos como onChange, onBlur, value, etc., que se deben pasar al componente controlado para que react-hook-form pueda gestionar su estado.

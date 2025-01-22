@@ -1,5 +1,5 @@
 import { FormatType, LocationType, UserType } from "@/interfaces/context.interface"
-import { UseMutateFunction, UseQueryResult } from "@tanstack/react-query"
+import { UseMutateAsyncFunction, UseMutateFunction, UseQueryResult } from "@tanstack/react-query"
 import { FileDB } from "@/interfaces/db.interface"
 
 export interface FileMutationProps extends FileDB { }
@@ -45,11 +45,11 @@ export type QueryReact_Format = {
   fetchAllFiles: <T>(path: FormatType, data: FileDB) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Format = {
-  createFormat: UseMutateFunction<void, Error, object, unknown>
-  updateFormat: UseMutateFunction<void, Error, UpdateMutationProps, unknown>
-  deleteFormat: UseMutateFunction<void, Error, DeleteMutationProps, unknown>
-  createFile: UseMutateFunction<void, Error, FileMutationProps, unknown>
-  deleteFile: UseMutateFunction<void, Error, FileMutationProps, unknown>
+  createFormat: UseMutateAsyncFunction<any, Error, object, unknown>
+  updateFormat: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
+  deleteFormat: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
+  createFile: UseMutateAsyncFunction<void, Error, FileMutationProps, unknown>
+  deleteFile: UseMutateAsyncFunction<void, Error, FileMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/

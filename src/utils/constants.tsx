@@ -241,10 +241,16 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   manualsMaintenance: '', //maintenance
 
   //relationship
-  // inspection: '',
-  //supplier: '', //datailsEquipment
-  //manufacturer: '', //datailsEquipment
-  //representative: '', //datailsEquipment
+  inspection: '',
+  supplier: '', //datailsEquipment
+  manufacturer: '', //datailsEquipment
+  representative: '', //datailsEquipment
+
+  /*---------------------------------------------------------------------------------------------------------*/
+  //helpers fields not has been sent to database "curriculum"
+  newSupplier: [],
+  newManufacturer: [],
+  newRepresentative: [],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /**

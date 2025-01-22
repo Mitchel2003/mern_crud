@@ -84,16 +84,16 @@ export const curriculumSchema = z.object({
   //technical characteristics
   technicalCharacteristics: z
     .object({
-      voltage: z.string().optional(),
-      amperage: z.string().optional(),
-      power: z.string().optional(),
-      frequency: z.string().optional(),
-      capacity: z.string().optional(),
-      pressure: z.string().optional(),
-      speed: z.string().optional(),
-      humidity: z.string().optional(),
-      temperature: z.string().optional(),
-      weight: z.string().optional(),
+      voltage: z.string(),
+      amperage: z.string(),
+      power: z.string(),
+      frequency: z.string(),
+      capacity: z.string(),
+      pressure: z.string(),
+      speed: z.string(),
+      humidity: z.string(),
+      temperature: z.string(),
+      weight: z.string(),
     }).optional(),
 
   //maintenance
@@ -111,7 +111,7 @@ export const curriculumSchema = z.object({
     .min(3, "Debes seleccionar un manual de mantenimiento"),
 
   //relationship
-  /*inspection: z
+  inspection: z
     .string({ required_error: "La inspección es requerida" })
     .min(1, "Debes seleccionar una inspección"),
   supplier: z
@@ -122,77 +122,68 @@ export const curriculumSchema = z.object({
     .min(1, "Debes seleccionar un fabricante"),
   representative: z
     .string({ required_error: "El representante es requerido" })
-    .min(1, "Debes seleccionar un representante"),*/
+    .min(1, "Debes seleccionar un representante"),
 
-  // Campos para crear nuevo representante
-  /* newRepresentative: z.object({
-    name: z.string().optional(),
-    email: z.string().email().optional(),
-    phone: z.string().optional(),
-    city: z.string().optional()
-  }).optional(),
+  //stakeholder (representative, supplier, manufacturer)
+  newRepresentative: z.array(
+    z.object({
+      name: z
+        .string()
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
+      phone: z
+        .string()
+        .min(6, "El teléfono debe tener al menos 6 dígitos")
+        .max(15, "El teléfono debe tener menos de 15 dígitos")
+        .refine(val => /^[0-9]+$/.test(val), {
+          message: "El teléfono debe contener solo números"
+        }),
+      city: z
+        .string()
+        .min(3, "La ciudad debe tener al menos 3 caracteres")
+        .max(50, "La ciudad debe tener menos de 50 caracteres")
+    })
+  ).optional().default([]),
 
-  // Campos para crear nuevo proveedor 
-  newSupplier: z.object({
-    name: z.string().optional(),
-    email: z.string().optional(),
-    address: z.string().optional(),
-    phone: z.string().optional(),
-    nit: z.string().optional()
-  }).optional(),
+  newSupplier: z.array(
+    z.object({
+      name: z
+        .string()
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
+      phone: z
+        .string()
+        .min(6, "El teléfono debe tener al menos 6 dígitos")
+        .max(15, "El teléfono debe tener menos de 15 dígitos")
+        .refine(val => /^[0-9]+$/.test(val), {
+          message: "El teléfono debe contener solo números"
+        }),
+      city: z
+        .string()
+        .min(3, "La ciudad debe tener al menos 3 caracteres")
+        .max(50, "La ciudad debe tener menos de 50 caracteres")
+    })
+  ).optional().default([]),
 
-  // Campos para crear nuevo fabricante
-  newManufacturer: z.object({
-    name: z.string().optional(), 
-    email: z.string().optional(),
-    phone: z.string().optional(),
-    city: z.string().optional()
-  }).optional() */
-})
-
-export const stakeholderSchema = z.object({
-  name: z
-    .string({ required_error: "El nombre es requerido" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(50, "El nombre debe tener menos de 50 caracteres"),
-  email: z
-    .string({ required_error: "El email es requerido" })
-    .email("Correo electrónico inválido"),
-  phone: z
-    .string({ required_error: "El telefono es requerido" })
-    .min(6, "El teléfono es requerido")
-    .max(15, "El teléfono es demasiado largo"),
-  city: z
-    .string({ required_error: "La ciudad es requerida" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(50, "El nombre debe tener menos de 50 caracteres")
-    .optional(),
-}).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
-  message: "El teléfono debe contener solo números", path: ["phone"]
-})
-
-export const supplierSchema = z.object({
-  name: z
-    .string({ required_error: "El nombre es requerido" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(50, "El nombre debe tener menos de 50 caracteres"),
-  email: z
-    .string({ required_error: "El email es requerido" })
-    .email("Correo electrónico inválido"),
-  phone: z
-    .string({ required_error: "El telefono es requerido" })
-    .min(6, "El teléfono es requerido")
-    .max(15, "El teléfono es demasiado largo"),
-  address: z
-    .string({ required_error: "La dirección es requerida" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(30, "El nombre debe tener menos de 50 caracteres"),
-  nit: z
-    .string({ required_error: "El NIT es requerido" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(30, "El nombre debe tener menos de 50 caracteres")
-}).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
-  message: "El teléfono debe contener solo números", path: ["phone"]
+  newManufacturer: z.array(
+    z.object({
+      name: z
+        .string()
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
+      phone: z
+        .string()
+        .min(6, "El teléfono debe tener al menos 6 dígitos")
+        .max(15, "El teléfono debe tener menos de 15 dígitos")
+        .refine(val => /^[0-9]+$/.test(val), {
+          message: "El teléfono debe contener solo números"
+        }),
+      country: z
+        .string()
+        .min(3, "El país debe tener al menos 3 caracteres")
+        .max(50, "El país debe tener menos de 50 caracteres")
+    })
+  ).optional().default([]),
 })
 
 export const inspectionSchema = z.object({
@@ -210,6 +201,4 @@ export const accessorySchema = z.object({
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 export type CurriculumFormProps = z.infer<typeof curriculumSchema>
-export type StakeholderFormProps = z.infer<typeof stakeholderSchema>
-export type SupplierFormProps = z.infer<typeof supplierSchema>
 export type InspectionFormProps = z.infer<typeof inspectionSchema>

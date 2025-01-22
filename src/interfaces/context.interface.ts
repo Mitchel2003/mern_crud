@@ -44,7 +44,7 @@ export type AuthContext = {
 
 /*--------------------------------------------------UserContext--------------------------------------------------*/
 interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
-interface Permissions { overwrite: Overwrite; headquarters: [] }
+interface Permissions { overwrite: Overwrite; headquarters: string[] }
 export type UserType = 'client' | 'user'
 
 export type User = BaseMDB & { uid: string; role: string; email: string; username: string; permissions: Permissions } | null
@@ -100,13 +100,13 @@ export type TypeInspection = BaseMDB & { name: string, inactive: Boolean }
 export type Inspection = BaseMDB & { name: string, typeInspection: TypeInspection[], inactive: Boolean }
 export type Accessory = BaseMDB & { name: string, brand: string, serie: string, modelEquip: string }
 
-export type Supplier = BaseMDB & { name: string, email: string, address: string, phone: string, nit: string }
-export type Manufacturer = BaseMDB & { name: string, email: string, phone: string, city: string }
-export type Representative = BaseMDB & { name: string, email: string, phone: string, city: string }
+export type Supplier = BaseMDB & { name: string, phone: string, city: string }
+export type Manufacturer = BaseMDB & { name: string, phone: string, country: string }
+export type Representative = BaseMDB & { name: string, phone: string, city: string }
 
-export type RepresentativeHeadquarter = BaseMDB & { headquarter: Headquarter, representative: Representative }
-export type ManufacturerHeadquarter = BaseMDB & { headquarter: Headquarter, manufacturer: Manufacturer }
-export type SupplierHeadquarter = BaseMDB & { headquarter: Headquarter, supplier: Supplier }
+export type RepresentativeHeadquarter = BaseMDB & { headquarter: string, representative: Representative }
+export type ManufacturerHeadquarter = BaseMDB & { headquarter: string, manufacturer: Manufacturer }
+export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Supplier }
 
 export type Equipment = BaseMDB & {
   dateNextMaintenance: Date
@@ -196,9 +196,9 @@ export type FormatContext = {
   getAll: <T>(type: FormatType) => Promise<T[]>
   getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: FormatType, query: string) => Promise<T[]>
-  create: (type: FormatType, data: object) => Promise<void>
-  update: (type: FormatType, id: string, data: object) => Promise<void>
-  delete: (type: FormatType, id: string) => Promise<void>
+  create: (type: FormatType, data: object) => Promise<any>
+  update: (type: FormatType, id: string, data: object) => Promise<any>
+  delete: (type: FormatType, id: string) => Promise<any>
   // file operations
   getAllFiles: <T>(type: FormatType, data: FileDB) => Promise<T[]>
   uploadFiles: (type: FormatType, data: FileDB) => Promise<void>

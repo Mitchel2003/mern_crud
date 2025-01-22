@@ -60,6 +60,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     methods,
     ...handleSubmit,
     basicData: basicData.files,
+    detailsData: detailsData.options,
     locationData: locationData.options,
   }
 }

@@ -1,64 +1,32 @@
-//import IterableCustomCard from '#/common/fields/CardIterable'
 import HeaderCustom from '#/common/elements/HeaderCustom'
-//import AlertDialog from '#/common/elements/AlertDialog'
+import CardIterable from '#/common/fields/CardIterable'
+import AlertDialog from '#/common/elements/AlertDialog'
 import SelectField from '#/common/fields/Select'
 import InputField from '#/common/fields/Input'
 import DateField from '#/common/fields/Date'
 
-//import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
+import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-//import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
-//import { useFormatMutation } from '@/hooks/query/useFormatQuery'
-//import { Mail } from 'lucide-react'
+import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import DetailsCV from '@/hooks/format/curriculum/useDetailsCV'
+import { useFormContext } from 'react-hook-form'
 
 interface DetailsEquipmentProps extends ThemeContextProps { }
 
 const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
-  //const { detailsData: options } = useCurriculumForm();
-  //const { confirmAction } = useDialogConfirm();
-  /*const { createFormat } = useFormatMutation('');
-  
-  // Función genérica para manejar la creación de stakeholders
-  /*const handleCreateStakeholder = async (type: 'representative' | 'supplier' | 'manufacturer') => {
-    const formData = methods.getValues(`new${type.charAt(0).toUpperCase() + type.slice(1)}`);
-    if (!formData) return;
+  const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
+  const { getValues, setValue, formState: { dirtyFields, errors } } = useFormContext()
+  const { onSubmit: onSubmitRep } = DetailsCV.useRepresentative()
+  const { onSubmit: onSubmitMan } = DetailsCV.useManufacturer()
+  const { onSubmit: onSubmitSup } = DetailsCV.useSupplier()
+  const { detailsData: options } = useCurriculumForm()
 
-    try {
-      // Usar el hook existente para crear
-      await createFormat(formData);
-      
-      // Limpiar campos después de crear
-      methods.setValue(`new${type.charAt(0).toUpperCase() + type.slice(1)}`, undefined);
-      
-      // Recargar opciones
-      await options.refetch();
-      
-    } catch (error) {
-      console.error('Error creating stakeholder:', error);
-    }
-  };*/
+  const isFieldsDirty = (fieldName: string) => {
+    const fields = dirtyFields[fieldName] as Record<string, boolean>[]
+    return fields?.[0]?.name && fields[0]?.phone && (fields[0]?.city || fields[0]?.country)
+  }
 
-  /*const stakeholderFields = {
-    representative: [
-      { name: "newRepresentative.name", label: "Nombre" },
-      { name: "newRepresentative.email", label: "Email", type: "email" as InputType, icon: Mail },
-      { name: "newRepresentative.phone", label: "Teléfono" },
-      { name: "newRepresentative.city", label: "Ciudad" }
-    ],
-    supplier: [
-      { name: "newSupplier.name", label: "Nombre" },
-      { name: "newSupplier.email", label: "Email", type: "email" as InputType, icon: Mail },
-      { name: "newSupplier.address", label: "Dirección" },
-      { name: "newSupplier.phone", label: "Teléfono" },
-      { name: "newSupplier.nit", label: "NIT" }
-    ],
-    manufacturer: [
-      { name: "newManufacturer.name", label: "Nombre" },
-      { name: "newManufacturer.email", label: "Email", type: "email" as InputType, icon: Mail },
-      { name: "newManufacturer.phone", label: "Teléfono" },
-      { name: "newManufacturer.city", label: "Ciudad" }
-    ]
-  };*/
+  const hasErrors = (fieldName: string) => !!errors[fieldName]
 
   return (
     <>
@@ -128,8 +96,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         </div>
 
         {/* ---------------------- information references ---------------------- */}
-        {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* -------------------- Representative -------------------- */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -137,26 +105,28 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               label="Representante"
               className='text-2xl font-light'
               placeholder="Seleccionar representante"
-              options={options.representative}
+              options={options.representatives}
             />
-            <IterableCustomCard
+            <CardIterable
               theme={theme}
               name="newRepresentative"
               titleButton="Nuevo representante"
-              fields={stakeholderFields.representative.map(field => ({
-                name: field.name,
-                component: <InputField {...field} theme={theme} />
-              }))}
-              onSubmit={() => {
+              disabled={!isFieldsDirty('newRepresentative') || hasErrors('newRepresentative')}
+              fields={representativeFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
+              onSubmit={() =>
                 confirmAction({
                   title: 'Agregar representante',
-                  action: () => handleCreateStakeholder('representative'),
-                  description: '¿Deseas añadir un representante?'
+                  description: '¿Deseas añadir un representante?',
+                  action: async () => {
+                    await onSubmitRep(getValues('newRepresentative')[0])
+                    setValue('newRepresentative', [{ name: '', phone: '', city: '' }])
+                  },
                 })
-              }}
+              }
             />
           </div>
 
+          {/* -------------------- Supplier -------------------- */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -164,26 +134,28 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               label="Proveedor"
               className='text-2xl font-light'
               placeholder="Seleccionar proveedor"
-              options={options.supplier}
+              options={options.suppliers}
             />
-            <IterableCustomCard
+            <CardIterable
               theme={theme}
               name="newSupplier"
               titleButton="Nuevo proveedor"
-              fields={stakeholderFields.supplier.map(field => ({
-                name: field.name,
-                component: <InputField {...field} theme={theme} />
-              }))}
-              onSubmit={() => {
+              disabled={!isFieldsDirty('newSupplier') || hasErrors('newSupplier')}
+              fields={supplierFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
+              onSubmit={() =>
                 confirmAction({
                   title: 'Agregar proveedor',
-                  action: () => handleCreateStakeholder('supplier'),
-                  description: '¿Deseas añadir un proveedor?'
-                });
-              }}
+                  description: '¿Deseas añadir un proveedor?',
+                  action: async () => {
+                    await onSubmitSup(getValues('newSupplier')[0])
+                    setValue('newSupplier', [{ name: '', phone: '', city: '' }])
+                  },
+                })
+              }
             />
           </div>
 
+          {/* -------------------- Manufacturer -------------------- */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
@@ -191,31 +163,30 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
               label="Fabricante"
               className='text-2xl font-light'
               placeholder="Seleccionar fabricante"
-              options={options.manufacturer}
+              options={options.manufacturers}
             />
-            <IterableCustomCard
+            <CardIterable
               theme={theme}
               name="newManufacturer"
               titleButton="Nuevo fabricante"
-              fields={stakeholderFields.manufacturer.map(field => ({
-                name: field.name,
-                component: <InputField {...field} theme={theme} />
-              }))}
+              disabled={!isFieldsDirty('newManufacturer') || hasErrors('newManufacturer')}
+              fields={manufacturerFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => {
                 confirmAction({
                   title: 'Agregar fabricante',
-                  action: () => handleCreateStakeholder('manufacturer'),
-                  description: '¿Deseas añadir un fabricante?'
-                });
+                  description: '¿Deseas añadir un fabricante?',
+                  action: async () => {
+                    await onSubmitMan(getValues('newManufacturer')[0])
+                    setValue('newManufacturer', [{ name: '', phone: '', country: '' }])
+                  },
+                })
               }}
             />
           </div>
-
         </div>
-        */}
       </div>
 
-      {/*<AlertDialog
+      <AlertDialog
         open={show}
         theme={theme}
         title={title}
@@ -226,9 +197,28 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
         onConfirm={handleConfirm}
         variant={isDestructive ? "destructive" : "default"}
       />
-      */}
     </>
   )
 }
 
 export default DetailsEquipmentSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const representativeFields = [
+  { name: "newRepresentative.name", label: "Nombre" },
+  { name: "newRepresentative.phone", label: "Teléfono" },
+  { name: "newRepresentative.city", label: "Ciudad" }
+]
+
+const supplierFields = [
+  { name: "newSupplier.name", label: "Nombre" },
+  { name: "newSupplier.phone", label: "Teléfono" },
+  { name: "newSupplier.country", label: "País" }
+]
+
+const manufacturerFields = [
+  { name: "newManufacturer.name", label: "Nombre" },
+  { name: "newManufacturer.phone", label: "Teléfono" },
+  { name: "newManufacturer.country", label: "País" }
+]

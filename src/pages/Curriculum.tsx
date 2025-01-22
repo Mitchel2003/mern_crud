@@ -34,8 +34,8 @@ export const PreviewCurriculum = () => {
   return (
     <Suspense fallback={<DashboardSkeleton theme={theme} />}>
       <PreviewCurriculumSection
-        inspection={ins}
         accessories={acc}
+        inspection={ins}
         curriculum={cv}
         files={files}
       />
