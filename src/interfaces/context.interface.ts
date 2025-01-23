@@ -1,4 +1,4 @@
-import { BaseMDB, FileDB, Metadata } from "@/interfaces/db.interface"
+import { BaseMDB, FileReferenceDB, Metadata } from "@/interfaces/db.interface"
 
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
@@ -54,7 +54,7 @@ export type UserContext = {
   loading: boolean
   getAll: <T>(type: UserType) => Promise<T[]>
   getById: <T>(type: UserType, id: string) => Promise<T | undefined>
-  getByQuery: <T>(type: UserType, query: string) => Promise<T[]>
+  getByQuery: <T>(type: UserType, query: object) => Promise<T[]>
   create: (type: UserType, data: object) => Promise<void>
   update: (type: UserType, id: string, data: object) => Promise<void>
   delete: (type: UserType, id: string) => Promise<void>
@@ -76,7 +76,7 @@ export type LocationContext = {
   loading: boolean
   getAll: <T>(type: LocationType) => Promise<T[]>
   getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
-  getByQuery: <T>(type: LocationType, query: string) => Promise<T[]>
+  getByQuery: <T>(type: LocationType, query: object) => Promise<T[]>
   create: (type: LocationType, data: object) => Promise<void>
   update: (type: LocationType, id: string, data: object) => Promise<void>
   delete: (type: LocationType, id: string) => Promise<void>
@@ -92,12 +92,11 @@ export type FormatType =
   //equipment
   | 'calibration' | 'reminder' | 'calibrationEquipment'
   //curriculum
-  | 'inspection' | 'typeInspection' | 'accessory'
+  | 'inspection' | 'accessory'
   | 'supplier' | 'manufacturer' | 'representative'
   | 'representativeHeadquarter' | 'supplierHeadquarter' | 'manufacturerHeadquarter'
 
-export type TypeInspection = BaseMDB & { name: string, inactive: Boolean }
-export type Inspection = BaseMDB & { name: string, typeInspection: TypeInspection[], inactive: Boolean }
+export type Inspection = BaseMDB & { name: string, typeInspection: string[], inactive: Boolean }
 export type Accessory = BaseMDB & { name: string, brand: string, serie: string, modelEquip: string }
 
 export type Supplier = BaseMDB & { name: string, phone: string, city: string }
@@ -195,13 +194,13 @@ export type FormatContext = {
   loading: boolean
   getAll: <T>(type: FormatType) => Promise<T[]>
   getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
-  getByQuery: <T>(type: FormatType, query: string) => Promise<T[]>
+  getByQuery: <T>(type: FormatType, query: object) => Promise<T[]>
   create: (type: FormatType, data: object) => Promise<any>
   update: (type: FormatType, id: string, data: object) => Promise<any>
   delete: (type: FormatType, id: string) => Promise<any>
   // file operations
-  getAllFiles: <T>(type: FormatType, data: FileDB) => Promise<T[]>
-  uploadFiles: (type: FormatType, data: FileDB) => Promise<void>
-  deleteFile: (type: FormatType, data: FileDB) => Promise<void>
+  getAllFiles: <T>(type: FormatType, data: FileReferenceDB) => Promise<T[]>
+  uploadFiles: (type: FormatType, data: FileReferenceDB) => Promise<void>
+  deleteFile: (type: FormatType, data: FileReferenceDB) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/

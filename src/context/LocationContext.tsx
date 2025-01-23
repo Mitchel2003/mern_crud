@@ -66,10 +66,10 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todas las ubicaciones de un tipo específico por una consulta
    * @param {string} type - El tipo de ubicación, se utiliza para construir el endpoint.
-   * @param {string} query - La consulta, corresponde a un criterio de busqueda.
+   * @param {object} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
-  const getByQuery = async (type: LocationType, query: string): Promise<any[]> => {
+  const getByQuery = async (type: LocationType, query: object): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
       const response = await useApi(type).getByQuery(query)

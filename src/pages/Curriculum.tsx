@@ -27,7 +27,7 @@ export const PreviewCurriculum = () => {
   // Obtener el curriculum por id
   const { fetchFormatById, fetchAllFiles, fetchFormatByQuery } = useQueryFormat()
   const { data: files } = fetchAllFiles<Metadata>('file', { id, ref: 'preview' })
-  const { data: acc } = fetchFormatByQuery<Accessory>('accessory', id)
+  const { data: acc } = fetchFormatByQuery<Accessory>('accessory', { curriculum: id})
   const { data: ins } = fetchFormatById<Inspection>('inspection', id)
   const { data: cv } = fetchFormatById<CurriculumType>('cv', id)
 

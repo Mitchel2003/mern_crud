@@ -16,7 +16,7 @@ import { Curriculum, Maintenance } from '@/interfaces/context.interface'
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
-  const { maintenanceData, equipmentData, technicalData, locationData, detailsData, basicData } = formatHooks.curriculum()
+  const { inspectionData, maintenanceData, equipmentData, technicalData, locationData, detailsData, basicData } = formatHooks.curriculum()
   const { data: cv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
   const { createFormat, updateFormat } = useFormatMutation("cv")
 
@@ -30,24 +30,26 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 
   const loadData = async () => {
     cv && methods.reset({
-      ...locationData.mapValues(cv),
-      ...basicData.mapValues(cv),
-      ...detailsData.mapValues(cv),
-      ...equipmentData.mapValues(cv),
+      ...inspectionData.mapValues(cv),
       ...maintenanceData.mapValues(cv),
       ...technicalData.mapValues(cv),
+      ...equipmentData.mapValues(cv),
+      ...detailsData.mapValues(cv),
+      ...basicData.mapValues(cv),
+      ...locationData.mapValues(cv),
     })
   }
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
       const data = {
-        ...locationData.submitData(e),
-        ...basicData.submitData(e),
-        ...detailsData.submitData(e),
-        ...equipmentData.submitData(e),
+        ...inspectionData.submitData(e),
         ...maintenanceData.submitData(e),
         ...technicalData.submitData(e),
+        ...equipmentData.submitData(e),
+        ...detailsData.submitData(e),
+        ...basicData.submitData(e),
+        ...locationData.submitData(e),
       }
       id ? updateFormat({ id, data }) : createFormat(data)
       methods.reset()
@@ -62,6 +64,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     basicData: basicData.files,
     detailsData: detailsData.options,
     locationData: locationData.options,
+    inspectionData: inspectionData.options
   }
 }
 

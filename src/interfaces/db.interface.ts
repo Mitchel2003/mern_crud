@@ -15,7 +15,6 @@ export function isAxiosResponse(e: unknown): e is AxiosResponse {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-export type Query = Record<string, any>
 export type BaseMDB = {
   _id: string
   createdAt: Date
@@ -25,7 +24,7 @@ export interface Metadata {
   name: string
   url: string
 }
-export interface FileDB {
+export interface FileReferenceDB {
   filename?: string
   files?: File[]
   ref: string

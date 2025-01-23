@@ -66,10 +66,10 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
    * @param {string} type - El tipo de usuario, se utiliza para construir el endpoint.
-   * @param {string} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
+   * @param {object} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
-  const getByQuery = async (type: UserType, query: string): Promise<any[]> => {
+  const getByQuery = async (type: UserType, query: object): Promise<any[]> => {
     setLoadingStatus('Buscando por consulta...')
     try {
       const response = await useApi(type).getByQuery(query)

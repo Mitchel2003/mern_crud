@@ -7,7 +7,7 @@ import { useUserContext } from '@/context/UserContext'
 const QUERY_KEYS = {
   users: (path: UserType) => ['users', path],
   user: (path: UserType, id: string) => ['user', path, id],
-  search: (path: UserType, query: string) => ['users', 'search', path, query]
+  search: (path: UserType, query: object) => ['users', 'search', path, query]
 }
 
 /**
@@ -35,7 +35,7 @@ export const useQueryUser = (): QueryReact_User => {
   })
 
   // Buscar usuario por término
-  const fetchUserByQuery = <T>(path: UserType, query: string) => useQuery({
+  const fetchUserByQuery = <T>(path: UserType, query: object) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
     queryFn: () => user.getByQuery<T>(path, query),
     select: (data) => data || [],

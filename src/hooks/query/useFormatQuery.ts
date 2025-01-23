@@ -1,15 +1,15 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { FileReferenceDB } from '@/interfaces/db.interface'
 import { FormatType } from '@/interfaces/context.interface'
 import { useFormatContext } from '@/context/FormatContext'
-import { FileDB } from '@/interfaces/db.interface'
 
 // Keys constantes para mejor mantenimiento
 const QUERY_KEYS = {
   formats: (path: FormatType) => ['formats', path],
   format: (path: FormatType, id: string) => ['format', path, id],
   files: (path: FormatType, data: object) => ['files', path, data],
-  search: (path: FormatType, query: string) => ['formats', 'search', path, query],
+  search: (path: FormatType, query: object) => ['formats', 'search', path, query],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -34,7 +34,7 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   // Buscar formato por término
-  const fetchFormatByQuery = <T>(path: FormatType, query: string) => useQuery({
+  const fetchFormatByQuery = <T>(path: FormatType, query: object) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
     queryFn: () => format.getByQuery<T>(path, query),
     select: (data) => data || [],
@@ -42,7 +42,7 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   // Obtener todos los archivos de un formato
-  const fetchAllFiles = <T>(path: FormatType, data: FileDB) => useQuery({
+  const fetchAllFiles = <T>(path: FormatType, data: FileReferenceDB) => useQuery({
     queryKey: QUERY_KEYS.files(path, data),
     queryFn: () => format.getAllFiles<T>(path, data),
     select: (data) => data || [],

@@ -8,7 +8,6 @@ import { useAuthContext } from "@/context/AuthContext"
 /** This hook is used to get the data of the details section of the curriculum form */
 class DetailsCV {
   private static instance: DetailsCV
-  readonly defaultStakeholder = []
 
   public static getInstance(): DetailsCV {
     if (!DetailsCV.instance) { DetailsCV.instance = new DetailsCV() }

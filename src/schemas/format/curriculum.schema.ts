@@ -166,21 +166,17 @@ export const curriculumSchema = z.object({
         .string()
     })
   ).optional().default([]),
-})
 
-export const inspectionSchema = z.object({
-  name: z.string({ required_error: "El nombre es requerido" }).min(1, "Debes seleccionar un nombre para la inspección"),
-  typeInspection: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
-})
-
-export const accessorySchema = z.object({
-  name: z.string({ required_error: "El nombre es requerido" }).min(3, "El nombre debe tener al menos 3 caracteres"),
-  type: z.string({ required_error: "El tipo es requerido" }).min(3, "El tipo debe tener al menos 3 caracteres"),
-  serie: z.string({ required_error: "La serie es requerida" }).min(3, "La serie debe tener al menos 3 caracteres"),
-  modelEquip: z.string({ required_error: "El modelo es requerido" }).min(3, "El modelo debe tener al menos 3 caracteres"),
+  newInspection: z.array(
+    z.object({
+      name: z
+        .string()
+        .min(1, "Debes seleccionar un nombre para la inspección"),
+      typeInspection: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
+    })
+  ).optional().default([])
 })
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 export type CurriculumFormProps = z.infer<typeof curriculumSchema>
-export type InspectionFormProps = z.infer<typeof inspectionSchema>

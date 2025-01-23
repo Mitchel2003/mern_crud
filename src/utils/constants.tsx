@@ -241,7 +241,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   manualsMaintenance: '', //maintenance
 
   //relationship
-  inspection: '',
+  inspection: '', //inspection
   supplier: '', //datailsEquipment
   manufacturer: '', //datailsEquipment
   representative: '', //datailsEquipment
@@ -251,6 +251,9 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   newSupplier: [],
   newManufacturer: [],
   newRepresentative: [],
+
+  //helpers fields not has been sent to database "inspection"
+  newInspection: []
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /**
