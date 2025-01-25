@@ -61,7 +61,7 @@ class DetailsCV {
     const onSubmit = async (stakeholder: any) => {
       const data = await createRepresentative({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
-      if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
+      if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de representante')
 
       //create relation between representative and headquarters
       await Promise.all(userHeadquarters.map(async e => createRepresentativeHeadquarter({ representative: data?._id, headquarter: e._id })))
@@ -78,7 +78,7 @@ class DetailsCV {
     const onSubmit = async (stakeholder: any) => {
       const data = await createSupplier({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
-      if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
+      if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de proveedor')
 
       //create relation between supplier and headquarters
       await Promise.all(userHeadquarters.map(async e => createSupplierHeadquarter({ supplier: data?._id, headquarter: e._id })))
@@ -95,7 +95,7 @@ class DetailsCV {
     const onSubmit = async (stakeholder: any) => {
       const data = await createManufacturer({ ...stakeholder, phone: stakeholder.phone || 'n/r', country: stakeholder.country || 'n/r' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
-      if (!userHeadquarters?.length) throw new Error('No hay sedes disponibles')
+      if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de fabricante')
 
       //create relation between manufacturer and headquarters
       await Promise.all(userHeadquarters.map(async e => createManufacturerHeadquarter({ manufacturer: data?._id, headquarter: e._id })))
