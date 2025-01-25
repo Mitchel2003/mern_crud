@@ -6,44 +6,19 @@ import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
-import { ConfirmTriggerProps, DialogField } from "@/interfaces/props.interface"
 import InspectionCV from '@/hooks/format/curriculum/useInspectionCV'
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
-import { useFormContext } from "react-hook-form"
+import { DialogField } from "@/interfaces/props.interface"
+import { useFormUtils } from '@/hooks/core/useFormUtils'
 
 interface PresetInspectionProps extends ThemeContextProps { }
 
 const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
-  const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { getValues, setValue, trigger, formState: { dirtyFields, errors } } = useFormContext()
+  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
+  const { hasErrors, isDirtyField, ConfirmTrigger } = useFormUtils()
   const { inspectionData: options } = useCurriculumForm()
   const { onSubmit } = InspectionCV.useInspection()
-
-  /**
-   * Función para verificar si hay errores en un campo, esto nos ayuda a manejar el "disabled" en el formulario
-   * @param fieldName - Nombre del campo, corresponde a cualquier campo del schema de curriculum
-   */
-  const hasErrors = (fieldName: string) => !!errors[fieldName]
-
-  /**
-   * Función para verificar si hay cambios en un campo del formulario, esto nos ayuda a manejar el "disabled" en el formulario
-   * @param fieldName - Nombre del campo que se va a verificar, en este caso es inspeccion.
-   */
-  const isDirtyInspection = (fieldName: string) => {
-    const fields = dirtyFields[fieldName] as Record<string, boolean>[]
-    return fields?.[0]?.name && fields[0]?.typeInspection
-  }
-
-  /**
-   * Nos permite confirmar la accion de guardar
-   * @param {ConfirmTriggerProps} param
-   */
-  const ConfirmTrigger = async ({ onSubmit, resetData, description, fieldName, title }: ConfirmTriggerProps) => {
-    const isValid = await trigger(fieldName)
-    const action = async () => { await onSubmit(getValues(fieldName)[0]); setValue(fieldName, [resetData]) }
-    isValid && confirmAction({ title, description, action })
-  }
 
   return (
     <>
@@ -73,7 +48,7 @@ const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
             name="newInspection"
             titleButton="Nueva inspección"
             fields={inspectionFields({ theme })}
-            disabled={!isDirtyInspection('newInspection') || hasErrors('newInspection')}
+            disabled={!isDirtyField('newInspection', ['name', 'typeInspection']) || hasErrors('newInspection')}
             onSubmit={() => ConfirmTrigger({
               resetData: { name: '', typeInspection: [] },
               description: '¿Deseas añadir una inspección?',
@@ -132,6 +107,6 @@ const inspectionOptions = [
   "Inspección física", "Manómetro", "Líneas de reactivos", "Manómetros", "Pieza de alta", "Transductores", "Jeringa triple",
   "Instrumentos del equipo", "Líneas de desecho", "Prueba de baterías", "Pruebas de seguridad", "Pruebas de funcionamiento",
   "Revisión y ajustes hidráulicos", "Revisión y ajustes eléctricos", "Revisión y ajustes mecánicos", "Revisión y ajustes neumáticos",
-  "Sensores", "Cámaras de wbc/rbc", "Desempeño del equipo", "Revoluciones y/o velocidad", "Ventilación de fuga a tierra",
+  "Cámaras de wbc/rbc", "Desempeño del equipo", "Revoluciones y/o velocidad", "Ventilación de fuga a tierra",
   "Verificación de polo a tierra", "Verificación de presión", "Verificación de temperatura"
 ]

@@ -27,11 +27,11 @@ const PreviewCurriculumSection = ({ curriculum, inspection, accessories, files }
                 Código: FHV-01 | Versión: 02 | Vigente desde: 01-08-2019
               </p>
             </div>
-            {curriculum.photoUrl && (
+            {files && (
               <div className="relative w-32 h-32">
                 <img
                   className="object-contain rounded-lg border border-purple-100"
-                  src={curriculum.photoUrl[0].url || "/placeholder.svg"}
+                  src={files[0].url || "/placeholder.svg"}
                   alt="Equipment"
                 />
               </div>
@@ -278,37 +278,6 @@ const PreviewCurriculumSection = ({ curriculum, inspection, accessories, files }
                       </div>
                     </ScrollArea>
                   </div>
-                </div>
-              </section>
-              <Separator />
-            </>
-          )}
-
-          {/* Service Engineer */}
-          {curriculum.serviceEngineer && (
-            <>
-              <section className="bg-gradient-to-br from-purple-50/50 to-white p-6 rounded-lg border border-purple-100">
-                <h2 className="text-xl font-semibold mb-4 text-purple-950">Ingeniero de Servicio</h2>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-purple-900">Nombre del ingeniero</p>
-                      <p className="text-sm text-purple-600">{curriculum.serviceEngineer.name}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-purple-900">Registro INVIMA</p>
-                      <p className="text-sm text-purple-600">{curriculum.serviceEngineer.invima}</p>
-                    </div>
-                  </div>
-                  {files?.map((file) => file.name === 'engineer' && (
-                    <div className="relative w-32 h-32 bg-white rounded-lg p-2 border border-purple-100">
-                      <img
-                        src={file.url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
-                        className="object-contain p-2"
-                        alt="Service Engineer Logo"
-                      />
-                    </div>
-                  ))}
                 </div>
               </section>
               <Separator />

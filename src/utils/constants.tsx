@@ -205,6 +205,9 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   healthRecord: '', //basicData
   photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
 
+  characteristics: '', //characteristics
+  recommendationsManufacturer: '', //characteristics
+
   datePurchase: null, //datailsEquipment
   dateOperation: null, //datailsEquipment
   dateInstallation: null, //datailsEquipment
@@ -252,8 +255,9 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   newManufacturer: [],
   newRepresentative: [],
 
-  //helpers fields not has been sent to database "inspection"
-  newInspection: []
+  //helpers fields not has been sent to database "inspection and accessories"
+  newInspection: [],
+  newAccessories: []
 }
 /*---------------------------------------------------------------------------------------------------------*/
 /**

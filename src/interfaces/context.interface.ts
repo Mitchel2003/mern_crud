@@ -1,4 +1,4 @@
-import { BaseMDB, FileReferenceDB, Metadata } from "@/interfaces/db.interface"
+import { BaseMDB, FileReferenceDB } from "@/interfaces/db.interface"
 
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
@@ -96,8 +96,8 @@ export type FormatType =
   | 'supplier' | 'manufacturer' | 'representative'
   | 'representativeHeadquarter' | 'supplierHeadquarter' | 'manufacturerHeadquarter'
 
-export type Inspection = BaseMDB & { name: string, typeInspection: string[], inactive: Boolean }
-export type Accessory = BaseMDB & { name: string, brand: string, serie: string, modelEquip: string }
+export type Inspection = BaseMDB & { name: string, typeInspection: { name: string }[], inactive: Boolean }
+export type Accessory = BaseMDB & { name: string, type: string, serie: string, modelEquip: string, curriculum: Curriculum }
 
 export type Supplier = BaseMDB & { name: string, phone: string, city: string }
 export type Manufacturer = BaseMDB & { name: string, phone: string, country: string }
@@ -137,11 +137,10 @@ export type Curriculum = BaseMDB & {
   service: string
   modelEquip: string
   healthRecord: string
-  photoUrl: Metadata[]
 
   //complements
   characteristics: string
-  manufacturerRecommendations: string
+  recommendationsManufacturer: string
 
   //detailsEquipment
   datePurchase: string
@@ -178,9 +177,6 @@ export type Curriculum = BaseMDB & {
   frequencyMaintenance: string
   typeMaintenance: string[]
   manualsMaintenance: string
-
-  //serviceEngineer
-  serviceEngineer: { name: string; invima: string }
 
   //relationship
   office: Office

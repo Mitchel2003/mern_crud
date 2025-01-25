@@ -1,6 +1,8 @@
 import useEquipmentClassification from './useEquipClassificationCV'
 import useTechnicalCharacteristics from './useTechCharacteristicsCV'
-import useMaintenanceData from './useMaintenanceCV'
+import useCharacteristics from './useCharacteristicsCV'
+import useMaintenance from './useMaintenanceCV'
+import useAccessories from './useAccessoryCV'
 import useInspection from './useInspectionCV'
 import useBasicData from './useBasicDataCV'
 import useLocation from './useLocationCV'
@@ -10,13 +12,17 @@ import useDetails from './useDetailsCV'
 export const useCurriculumSections = () => {
   const equipmentData = useEquipmentClassification()
   const technicalData = useTechnicalCharacteristics()
+  const characteristicsData = useCharacteristics()
   const inspectionData = useInspection.render()
-  const maintenanceData = useMaintenanceData()
+  const maintenanceData = useMaintenance()
   const detailsData = useDetails.render()
+  const accessoryData = useAccessories()
   const locationData = useLocation()
   const basicData = useBasicData()
 
   return {
+    characteristicsData,
+    accessoryData,
     inspectionData,
     maintenanceData,
     technicalData,
@@ -25,13 +31,4 @@ export const useCurriculumSections = () => {
     basicData,
     locationData,
   }
-}
-
-export {
-  useEquipmentClassification,
-  useTechnicalCharacteristics,
-  useMaintenanceData,
-  useBasicData,
-  useLocation,
-  useDetails
 }

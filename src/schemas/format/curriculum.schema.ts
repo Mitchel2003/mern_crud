@@ -47,6 +47,14 @@ export const curriculumSchema = z.object({
     })
   ).optional().default([]),
 
+  //characteristics
+  characteristics: z
+    .string({ required_error: "Características son requeridas" })
+    .min(5, "Debes ingresar al menos 5 caracteres"),
+  recommendationsManufacturer: z
+    .string({ required_error: "Las recomendaciones del fabricante son requeridas" })
+    .min(5, "Debes ingresar al menos 5 caracteres"),
+
   //details
   datePurchase: z.date().optional().nullable(),
   dateInstallation: z.date().optional().nullable(),
@@ -171,8 +179,26 @@ export const curriculumSchema = z.object({
     z.object({
       name: z
         .string()
-        .min(1, "Debes seleccionar un nombre para la inspección"),
+        .min(5, "El nombre debe tener al menos 5 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
       typeInspection: z.array(z.string({ required_error: "Las inspecciones son requeridas" })).min(1, "Debes seleccionar al menos una inspección"),
+    })
+  ).optional().default([]),
+
+  newAccessories: z.array(
+    z.object({
+      name: z
+        .string()
+        .min(1, "Debes seleccionar un nombre para el accesorio"),
+      type: z
+        .string()
+        .min(1, "Debes seleccionar un tipo"),
+      serie: z
+        .string()
+        .min(1, "Debes seleccionar una serie"),
+      modelEquip: z
+        .string()
+        .min(1, "Debes seleccionar un modelo"),
     })
   ).optional().default([])
 })

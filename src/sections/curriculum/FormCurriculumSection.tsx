@@ -13,7 +13,9 @@ import { Card, CardContent } from "#/ui/card"
 import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
 import EquipmentClassificationSection from "./EquipmentClassificationSection"
 import DetailsEquipmentSection from "./DetailsEquipmentSection"
+import CharacteristicsSection from "./CharacteristicsSection"
 import InspectionSection from "./PresetInspectionSection"
+import AccessoriesSection from "./AccessoriesSection"
 import MaintenanceSection from "./MaintenanceSection"
 import BasicDataSection from "./BasicDataSection"
 import LocationSection from "./LocationSection"
@@ -34,6 +36,8 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
     <TechnicalCharacteristicsSection key="technical" theme={theme} />,
     <MaintenanceSection key="maintenance" theme={theme} />,
     <InspectionSection key="inspection" theme={theme} />,
+    <AccessoriesSection key="accessory" theme={theme} />,
+    <CharacteristicsSection key="characteristics" theme={theme} />
   ], [theme])
 
   return (

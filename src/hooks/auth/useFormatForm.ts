@@ -8,7 +8,8 @@ import { useEffect } from 'react'
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
-import { Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { Accessory, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { processFile } from '@/lib/utils'
 
 /**
  * Hook principal que orquesta los sub-hooks de curriculum
@@ -16,9 +17,13 @@ import { Curriculum, Maintenance } from '@/interfaces/context.interface'
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
-  const { inspectionData, maintenanceData, equipmentData, technicalData, locationData, detailsData, basicData } = formatHooks.curriculum()
+  const { characteristicsData, accessoryData, inspectionData, maintenanceData, equipmentData, technicalData, locationData, detailsData, basicData } = formatHooks.curriculum()
+  const { createFormat: createAcc, deleteFormat: deleteAcc } = useFormatMutation("accessory")
+  const { createFormat: createCV, updateFormat: updateCV } = useFormatMutation("cv")
+  const { createFile, deleteFile } = useFormatMutation("file")
+
+  const { data: acc } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
   const { data: cv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
-  const { createFormat, updateFormat } = useFormatMutation("cv")
 
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
@@ -30,6 +35,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 
   const loadData = async () => {
     cv && methods.reset({
+      ...characteristicsData.mapValues(cv),
+      ...accessoryData.mapValues(acc),
       ...inspectionData.mapValues(cv),
       ...maintenanceData.mapValues(cv),
       ...technicalData.mapValues(cv),
@@ -43,6 +50,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
       const data = {
+        ...characteristicsData.submitData(e),
+        ...accessoryData.submitData(e),
         ...inspectionData.submitData(e),
         ...maintenanceData.submitData(e),
         ...technicalData.submitData(e),
@@ -51,7 +60,29 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
         ...basicData.submitData(e),
         ...locationData.submitData(e),
       }
-      id ? updateFormat({ id, data }) : createFormat(data)
+      id ? (
+        updateCV({ id, data }).then(async () => {
+          const { data: existingAccessories } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
+          await Promise.all(existingAccessories?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
+          await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })) || [])
+
+          data.photoUrl && await deleteFile({ id, ref: 'preview', filename: 'img' }).then(async () => {//delete previous file conditionally
+            const { name, type, size } = data.photoUrl
+            const base64 = await processFile(data.photoUrl)
+            const file = { buffer: base64, originalname: name, mimetype: type, size }
+            await createFile({ files: [file], filename: 'img', ref: 'preview', id })
+          })
+        })
+      ) : (
+        createCV(data).then(async (e) => {
+          await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: e._id })))
+          if (!data.photoUrl) return
+          const { name, type, size } = data.photoUrl
+          const base64 = await processFile(data.photoUrl)
+          const file = { buffer: base64, originalname: name, mimetype: type, size }
+          await createFile({ files: [file], filename: 'img', ref: 'preview', id: e._id, unique: true })
+        })
+      )
       methods.reset()
     },
     onSuccess
@@ -61,7 +92,6 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     id,
     methods,
     ...handleSubmit,
-    basicData: basicData.files,
     detailsData: detailsData.options,
     locationData: locationData.options,
     inspectionData: inspectionData.options

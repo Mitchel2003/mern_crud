@@ -24,7 +24,7 @@ const CharacteristicsSection = ({ theme }: CharacteristicsProps) => (
       />
       <AreaField
         theme={theme}
-        name="recommendations_manufacturer"
+        name="recommendationsManufacturer"
         label="Recomendaciones del Fabricante"
         placeholder="Ingrese las recomendaciones del fabricante"
       />

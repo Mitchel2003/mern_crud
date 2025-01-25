@@ -6,35 +6,15 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 
 interface AccessoriesProps extends ThemeContextProps { }
 const AccessoriesSection = ({ theme }: AccessoriesProps) => {
-
-  const accessoriesFields = [
-    {
-      name: "name",
-      component: <InputField name="name" theme={theme} label="Nombre" />
-    },
-    {
-      name: "type",
-      component: <InputField name="type" theme={theme} label="Tipo" />
-    },
-    {
-      name: "serie",
-      component: <InputField name="serie" theme={theme} label="Serie" />
-    },
-    {
-      name: "modelEquip",
-      component: <InputField name="modelEquip" theme={theme} label="Modelo" />
-    }
-  ]
-
   return (
     <div className="space-y-6">
       <HeaderCustom
         to="component"
         theme={theme}
-        title="Accesorios"
-        className="text-2xl font-bold"
-        span="Máximo 10 accesorios"
         iconSpan="alert"
+        title="Accesorios"
+        span="Máximo 5 accesorios"
+        className="text-2xl font-light"
       />
 
       <div className="grid grid-cols-1 gap-2">
@@ -49,9 +29,9 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
         <IterableCard
           limit={5}
           theme={theme}
-          name="accessories"
-          fields={accessoriesFields}
+          name="newAccessories"
           titleButton="Añadir accesorio para este equipo"
+          fields={accessoriesFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
         />
       </div>
     </div>
@@ -59,3 +39,12 @@ const AccessoriesSection = ({ theme }: AccessoriesProps) => {
 }
 
 export default AccessoriesSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const accessoriesFields = [
+  { name: "newAccessories.name", label: "Nombre" },
+  { name: "newAccessories.type", label: "Tipo" },
+  { name: "newAccessories.serie", label: "Serie" },
+  { name: "newAccessories.modelEquip", label: "Modelo" }
+]

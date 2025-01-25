@@ -26,7 +26,8 @@ export interface Metadata {
 }
 export interface FileReferenceDB {
   filename?: string
-  files?: File[]
+  unique?: boolean
+  files?: any[]
   ref: string
   id: string
 }

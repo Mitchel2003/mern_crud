@@ -1,16 +1,12 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import CardIterable from '#/common/fields/CardIterable'
-import ItemPhoto from '#/pages/curriculum/ItemPhoto'
 import InputField from '#/common/fields/Input'
 import ImageField from '#/common/fields/Image'
 
 interface BasicDataProps extends ThemeContextProps { }
 
 const BasicDataSection = ({ theme }: BasicDataProps) => {
-  const { basicData: files, id } = useCurriculumForm()
-
   return (
     <div className="space-y-6">
       {/* -------------------- Header -------------------- */}
@@ -62,16 +58,12 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
         </div>
 
         <div className="md:col-span-5">
-          {/* preview of the image */}
-          {files && files.length > 0 && <ItemPhoto theme={theme} image={files[0]} id={id as string} />}
-
-          {/* input of the image */}
           <CardIterable
+            limit={1}
             theme={theme}
             name="photoUrl"
-            fields={fields({ theme })}
             titleButton="Agregar imagen"
-            limit={1 - (files?.length ?? 0)}
+            fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
           />
         </div>
       </div>
@@ -83,14 +75,4 @@ export default BasicDataSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const fields = ({ theme }: ThemeContextProps) => [{
-  name: "file",
-  component: (
-    <ImageField
-      name="file"
-      theme={theme}
-      sizeImage="w-60 h-60"
-      label="Imagen del equipo"
-    />
-  )
-}]
+const fields = [{ name: "photoUrl.file", label: "Imagen del equipo", sizeImage: "w-60 h-60" }]
