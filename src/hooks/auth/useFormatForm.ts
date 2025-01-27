@@ -92,6 +92,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     id,
     methods,
     ...handleSubmit,
+    basicData: basicData.options,
+    equipmentData: basicData.cvs,
     detailsData: detailsData.options,
     locationData: locationData.options,
     inspectionData: inspectionData.options

@@ -1,5 +1,6 @@
 import { Curriculum, Inspection, Accessory, ThemeContextProps } from "@/interfaces/context.interface"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/ui/table"
+import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Card, CardContent, CardHeader } from "#/ui/card"
 import { Metadata } from "@/interfaces/db.interface"
@@ -7,7 +8,6 @@ import { ScrollArea } from "#/ui/scroll-area"
 import { Separator } from "#/ui/separator"
 import { Badge } from "#/ui/badge"
 import { cn } from "@/lib/utils"
-import DashboardSkeleton from "@/components/common/skeletons/DashboardSkeleton"
 
 interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 

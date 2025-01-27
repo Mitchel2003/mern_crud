@@ -1,4 +1,6 @@
+import InputSearchableField from '#/common/fields/InputSearchable'
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import CardIterable from '#/common/fields/CardIterable'
 import InputField from '#/common/fields/Input'
@@ -7,6 +9,8 @@ import ImageField from '#/common/fields/Image'
 interface BasicDataProps extends ThemeContextProps { }
 
 const BasicDataSection = ({ theme }: BasicDataProps) => {
+  const { basicData: nameOptions } = useCurriculumForm()
+
   return (
     <div className="space-y-6">
       {/* -------------------- Header -------------------- */}
@@ -24,10 +28,11 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
         <div className="grid gap-4 md:col-span-5 md:grid-cols-2">
           {/* input of 2 columns */}
           <div className="md:col-span-2">
-            <InputField
+            <InputSearchableField
               name="name"
-              label="Nombre"
               theme={theme}
+              label="Nombre"
+              options={nameOptions}
               placeholder="Nombre del equipo"
             />
           </div>
