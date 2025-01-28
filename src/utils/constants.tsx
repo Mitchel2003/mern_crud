@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, Users, BriefcaseBusiness } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, BriefcaseBusiness, Users } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -298,6 +298,12 @@ export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] af
 
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/
 export const navigationTabs = [{
+  value: 'client',
+  label: 'Clientes',
+  icon: <Users className='h-4 w-4' />,
+  paths: ['/clients', '/client', '/client/'],
+  baseRoute: '/clients'
+}, {
   label: 'Sedes',
   value: 'headquarters',
   icon: <Building2 className='h-4 w-4' />,

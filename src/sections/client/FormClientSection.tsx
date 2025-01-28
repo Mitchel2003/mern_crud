@@ -36,8 +36,8 @@ const FormClientSection = ({ id, theme, onChange }: FormClientSectionProps) => {
             >
               <HeaderForm
                 theme={theme}
-                title={id ? "Edición de ciudad" : "Registro de ciudad"}
-                description={id ? "Actualiza los datos de la ciudad" : "Diligencia la información para registrar una ciudad"}
+                title={id ? "Edición de cliente" : "Registro de cliente"}
+                description={id ? "Actualiza los datos del cliente" : "Diligencia la información para registrar un cliente"}
               />
               <CardContent className="py-6 space-y-6">
                 <InputField

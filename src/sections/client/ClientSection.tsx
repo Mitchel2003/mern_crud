@@ -1,8 +1,8 @@
 import { defaultStyles, activeStyles, navigationTabs } from '@/utils/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { PlusCircle, TableProperties, Users } from 'lucide-react'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
+import { PlusCircle, TableProperties } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -25,28 +25,19 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
         </h1>
       </div>
 
-      <Tabs value={tab} onValueChange={handle} className="w-full">
+      <Tabs value={tab} onValueChange={handle}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Navigation action tabs */}
           <TabsList className={cn("mb-4 md:mb-0",
             "bg-muted/60 backdrop-blur transition-all",
             "supports-[backdrop-filter]:bg-background/60"
           )}>
-            <TabsTrigger
-              value={'table'}
-              onClick={() => { handleTab('/clients') }}
-              className={getStateTab(['/clients', '/client', '/client/'])}
-            >
-              Clientes
-              <span className="duration-200 group-hover:scale-110"> <Users className='h-4 w-4' /> </span>
-            </TabsTrigger>
-
             {navigationTabs.map(({ value, label, icon, paths, baseRoute }) => (
               <TabsTrigger
                 key={value}
-                value={value}
                 className={getStateTab(paths)}
                 onClick={() => { handleTab(baseRoute) }}
+                value={paths.includes(route) ? 'table' : value}
               >
                 {label}
                 <span className="duration-200 group-hover:scale-110"> {icon} </span>
