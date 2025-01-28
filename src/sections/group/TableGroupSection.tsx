@@ -1,6 +1,6 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { Area, ThemeContextProps } from "@/interfaces/context.interface"
+import { Group, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -14,18 +14,18 @@ import { formatDate } from "@/utils/constants"
 import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-interface TableAreaSectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface AreaActionsProps { area: Area; onChange: (value: string) => void }
+interface TableGroupSectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface GroupActionsProps { group: Group; onChange: (value: string) => void }
 
 /**
- * Permite construir un componente de tabla para mostrar las áreas
+ * Permite construir un componente de tabla para mostrar los grupos
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con las áreas, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los grupos, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableAreaSection = ({ theme, onChange }: TableAreaSectionProps) => {
+const TableGroupSection = ({ theme, onChange }: TableGroupSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: areas } = useQueryLocation().fetchAllLocations<Area>('area')
+  const { data: groups } = useQueryLocation().fetchAllLocations<Group>('group')
 
   return (
     <>
@@ -36,7 +36,7 @@ const TableAreaSection = ({ theme, onChange }: TableAreaSectionProps) => {
         )}>
           <DataTable
             filterColumn="name"
-            data={areas || []}
+            data={groups || []}
             columns={columns(onChange)}
           />
         </Card>
@@ -57,32 +57,22 @@ const TableAreaSection = ({ theme, onChange }: TableAreaSectionProps) => {
   )
 }
 
-export default TableAreaSection
+export default TableGroupSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Hook para crear las columnas de la tabla de áreas
+ * Hook para crear las columnas de la tabla de grupos
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
- * @returns Array de columnas para la tabla de áreas
+ * @returns Array de columnas para la tabla de grupos
  */
-const columns = (onChange: (value: string) => void): ColumnDef<Area>[] => [
+const columns = (onChange: (value: string) => void): ColumnDef<Group>[] => [
   {
     accessorKey: "name",
-    header: "Nombre del área"
+    header: "Nombre del grupo"
   },
   {
-    header: "Sede",
-    accessorKey: "headquarter",
-    cell: ({ row }) => row.original.headquarter?.name || 'Sin sede'
-  },
-  {
-    header: "Cliente",
-    accessorKey: "client",
-    cell: ({ row }) => row.original.headquarter?.client?.name || 'Sin cliente'
-  },
-  {
-    header: "Ciudad",
-    accessorKey: "city",
-    cell: ({ row }) => row.original.headquarter?.city?.name || 'Sin ciudad'
+    header: "Servicios",
+    accessorKey: "services",
+    cell: ({ row }) => row.original.services.map((e) => e).join(', ') || 'Sin servicios'
   },
   {
     accessorKey: "updatedAt",
@@ -91,17 +81,17 @@ const columns = (onChange: (value: string) => void): ColumnDef<Area>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useAreaActions({ area: row.original, onChange })} />
+    cell: ({ row }) => <ItemDropdown actions={useGroupActions({ group: row.original, onChange })} />
   }
 ]
 
 /**
- * Hook personalizado para manejar las acciones del dropdown de áreas
- * @param area - El área sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para el área
+ * Hook personalizado para manejar las acciones del dropdown de grupos
+ * @param group - El grupo sobre el que se realizarán las acciones
+ * @returns Array de acciones disponibles para el grupo
  */
-const useAreaActions = ({ area, onChange }: AreaActionsProps): ActionProps[] => {
-  const { deleteLocation } = useLocationMutation('area')
+const useGroupActions = ({ group, onChange }: GroupActionsProps): ActionProps[] => {
+  const { deleteLocation } = useLocationMutation('group')
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
@@ -110,9 +100,9 @@ const useAreaActions = ({ area, onChange }: AreaActionsProps): ActionProps[] => 
     label: "Editar",
     onClick: () => {
       confirmAction({
-        title: 'Editar Área',
-        description: `¿Deseas editar el área "${area.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/area/${area._id}`) }
+        title: 'Editar Grupo',
+        description: `¿Deseas editar el grupo "${group.name}"?`,
+        action: () => { onChange('form'); navigate(`/location/group/${group._id}`) }
       })
     }
   }, {
@@ -122,10 +112,10 @@ const useAreaActions = ({ area, onChange }: AreaActionsProps): ActionProps[] => 
     onClick: () => {
       confirmAction({
         isDestructive: true,
-        title: 'Eliminar Área',
-        description: `¿Estás seguro que deseas eliminar el área "${area.name}"?`,
-        action: () => deleteLocation({ id: area._id })
+        title: 'Eliminar Grupo',
+        description: `¿Estás seguro que deseas eliminar el grupo "${group.name}"?`,
+        action: () => deleteLocation({ id: group._id })
       })
     }
   }]
-} 
+}

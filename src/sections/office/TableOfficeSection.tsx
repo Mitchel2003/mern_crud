@@ -75,19 +75,14 @@ const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
     cell: ({ row }) => row.original.services.map((e) => e).join(', ') || 'Sin servicios'
   },
   {
-    header: "Área",
-    accessorKey: "area",
-    cell: ({ row }) => row.original.area?.name || 'Sin área'
-  },
-  {
     header: "Sede",
     accessorKey: "headquarter",
-    cell: ({ row }) => row.original.area?.headquarter?.address || 'Sin sede'
+    cell: ({ row }) => row.original?.headquarter?.address || 'Sin sede'
   },
   {
     header: "Cliente",
     accessorKey: "client",
-    cell: ({ row }) => row.original.area?.headquarter?.client?.name || 'Sin cliente'
+    cell: ({ row }) => row.original?.headquarter?.client?.name || 'Sin cliente'
   },
   {
     accessorKey: "updatedAt",

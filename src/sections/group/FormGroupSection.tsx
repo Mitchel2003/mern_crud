@@ -1,5 +1,5 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useAreaForm } from "@/hooks/auth/useLocationForm"
+import { useGroupForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
@@ -7,17 +7,17 @@ import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
-import SelectField from "#/common/fields/Select"
+import SelectMulti from "#/common/fields/SelectMulti"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
 
-interface FormAreaSectionProps extends ThemeContextProps {
+interface FormGroupSectionProps extends ThemeContextProps {
   onChange: (value: string) => void
   id: string | undefined
 }
 
-const FormAreaSection = ({ id, theme, onChange }: FormAreaSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useAreaForm(id, () => { onChange('table') })
+const FormGroupSection = ({ id, theme, onChange }: FormGroupSectionProps) => {
+  const { open, methods, isLoading, optionsService, setOpen, onConfirm, handleSubmit } = useGroupForm(id, () => { onChange('table') })
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -36,28 +36,30 @@ const FormAreaSection = ({ id, theme, onChange }: FormAreaSectionProps) => {
             >
               <HeaderForm
                 theme={theme}
-                title={id ? "Edición de área" : "Registro de área"}
-                description={id ? "Actualiza los datos del área" : "Diligencia la información para registrar un área"}
+                title={id ? "Edición de grupo" : "Registro de grupo"}
+                description={id ? "Actualiza los datos del grupo" : "Diligencia la información para registrar un grupo"}
               />
               <CardContent className="py-6 space-y-6">
                 <InputField
                   theme={theme}
                   name="name"
                   label="Nombre"
-                  placeholder="Nombre del área"
+                  placeholder="Nombre del grupo"
                   type="text"
                 />
-                <SelectField
-                  label="Sede"
+                <SelectMulti
                   theme={theme}
-                  name="headquarter"
-                  options={options}
-                  placeholder="Selecciona la sede"
+                  name="services"
+                  iconSpan="info"
+                  label="Servicios"
+                  options={optionsService}
+                  placeholder="Selecciona los servicios"
+                  span="Selecciona varios servicios para este grupo"
                 />
               </CardContent>
               <SubmitFooter
                 theme={theme}
-                to="/location/areas"
+                to="/location/groups"
                 disabled={!methods.formState.isDirty}
                 onCancel={() => { methods.reset(); onChange('table') }}
               />
@@ -71,7 +73,7 @@ const FormAreaSection = ({ id, theme, onChange }: FormAreaSectionProps) => {
         theme={theme}
         onConfirm={onConfirm}
         onOpenChange={() => setOpen(false)}
-        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará una nueva área"}`}
+        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo grupo"}`}
         confirmLabel="Confirmar"
         cancelLabel="Cancelar"
         title="Confirmación"
@@ -80,4 +82,4 @@ const FormAreaSection = ({ id, theme, onChange }: FormAreaSectionProps) => {
   )
 }
 
-export default FormAreaSection 
+export default FormGroupSection

@@ -85,9 +85,9 @@ const getBase = (type: string): string | undefined => {
     case 'country':
     case 'state':
     case 'city':
-    case 'headquarter':
-    case 'area':
+    case 'group':
     case 'office':
+    case 'headquarter':
     case 'service': return '/location'
   }
   return undefined

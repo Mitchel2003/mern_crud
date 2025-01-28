@@ -16,8 +16,8 @@ import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
 import Office from "@/pages/Office";
 import Service from "@/pages/Serv";
+import Group from "@/pages/Group";
 import State from "@/pages/State";
-import Area from "@/pages/Area";
 import City from "@/pages/City";
 
 import Dashboard from "@/pages/Dashboard";
@@ -75,6 +75,10 @@ function App() {
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                       {/* location routes */}
+                      <Route path="/location/group" element={<Group />} /> {/*new group*/}
+                      <Route path="/location/groups" element={<Group />} /> {/*list groups*/}
+                      <Route path="/location/group/:id" element={<Group />} /> {/*edit group*/}
+
                       <Route path="/location/service" element={<Service />} /> {/*new service*/}
                       <Route path="/location/services" element={<Service />} /> {/*list services*/}
                       <Route path="/location/service/:id" element={<Service />} /> {/*edit service*/}
@@ -82,10 +86,6 @@ function App() {
                       <Route path="/location/office" element={<Office />} /> {/*new office*/}
                       <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
                       <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}
-
-                      <Route path="/location/area" element={<Area />} /> {/*new area*/}
-                      <Route path="/location/areas" element={<Area />} /> {/*list areas*/}
-                      <Route path="/location/area/:id" element={<Area />} /> {/*edit area*/}
 
                       <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
                       <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}

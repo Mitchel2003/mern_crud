@@ -1,5 +1,15 @@
 import { z } from "zod"
 
+export const groupSchema = z.object({
+  name: z
+    .string({ required_error: "El nombre es requerido" })
+    .min(3, "El nombre debe tener al menos 3 caracteres")
+    .max(50, "El nombre debe tener menos de 50 caracteres"),
+  services: z
+    .array(z.string({ required_error: "El servicio es requerido" }))
+    .min(1, "Debes seleccionar al menos un servicio")
+})
+
 export const serviceSchema = z.object({
   name: z
     .string({ required_error: "El nombre es requerido" })
@@ -12,22 +22,12 @@ export const officeSchema = z.object({
     .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
-  area: z
-    .string({ required_error: "El área es requerida" })
-    .min(1, "Debes seleccionar un área"),
+  headquarter: z
+    .string({ required_error: "La sede es requerida" })
+    .min(1, "Debes seleccionar una sede"),
   services: z
     .array(z.string({ required_error: "El servicio es requerido" }))
     .min(1, "Debes seleccionar al menos un servicio")
-})
-
-export const areaSchema = z.object({
-  name: z
-    .string({ required_error: "El nombre es requerido" })
-    .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(50, "El nombre debe tener menos de 50 caracteres"),
-  headquarter: z
-    .string({ required_error: "La sede es requerida" })
-    .min(1, "Debes seleccionar una sede")
 })
 
 export const headquarterSchema = z.object({
@@ -78,6 +78,6 @@ export type CityFormProps = z.infer<typeof citySchema>
 export type StateFormProps = z.infer<typeof stateSchema>
 export type CountryFormProps = z.infer<typeof countrySchema>
 export type HeadquarterFormProps = z.infer<typeof headquarterSchema>
-export type AreaFormProps = z.infer<typeof areaSchema>
+export type GroupFormProps = z.infer<typeof groupSchema>
 export type OfficeFormProps = z.infer<typeof officeSchema>
 export type ServiceFormProps = z.infer<typeof serviceSchema>

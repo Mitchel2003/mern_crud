@@ -4,13 +4,13 @@ import { useTabs } from '@/hooks/core/useTabs'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-import TableAreaSection from './TableAreaSection'
-import FormAreaSection from './FormAreaSection'
-const route = '/location/area'
+import TableGroupSection from './TableGroupSection'
+import FormGroupSection from './FormGroupSection'
+const route = '/location/group'
 
-interface AreaSectionProps extends ThemeContextProps { id: string | undefined }
+interface GroupSectionProps extends ThemeContextProps { id: string | undefined }
 
-const AreaSection = ({ theme, id }: AreaSectionProps) => {
+const GroupSection = ({ theme, id }: GroupSectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useTabs({ id, setTab, to: route })
 
@@ -19,7 +19,7 @@ const AreaSection = ({ theme, id }: AreaSectionProps) => {
       <Tabs value={tab} onValueChange={handle}>
         {/* tabs header */}
         <div className="flex flex-col md:flex-row items-center justify-between">
-          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Áreas </h1>
+          <h1 className={cn('text-3xl font-roboto-slab font-bold', theme === 'dark' ? 'text-white' : 'text-black')}> Grupos </h1>
           <TabsList>
             <TabsTrigger value="table">Tabla</TabsTrigger>
             <TabsTrigger value="form">Formulario</TabsTrigger>
@@ -28,13 +28,13 @@ const AreaSection = ({ theme, id }: AreaSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableAreaSection
+          <TableGroupSection
             theme={theme}
             onChange={handle}
           />
         </TabsContent>
         <TabsContent value="form">
-          <FormAreaSection
+          <FormGroupSection
             id={id}
             theme={theme}
             onChange={handle}
@@ -45,4 +45,4 @@ const AreaSection = ({ theme, id }: AreaSectionProps) => {
   )
 }
 
-export default AreaSection 
+export default GroupSection 

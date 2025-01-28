@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, HomeIcon, BriefcaseIcon, DoorOpen, LucideMapPinned, LucideMap } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, Users, BriefcaseBusiness } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -118,33 +118,27 @@ export const links = () => {
     {/** institution **/
       label: 'Clientes',
       icon: Building2,
-      href: '/clients',
+      href: '/clients'
+    },
+    {// complementaries
+      label: 'Complementarios',
+      icon: GitPullRequestArrowIcon,
       subItems: [
-        {// offices
-          label: 'Oficinas',
-          icon: BriefcaseIcon,
+        {// clients
+          label: 'Clientes',
+          icon: DoorOpen,
           subItems: [
+            {// groups
+              icon: ChartBarStackedIcon,
+              label: 'Grupos',
+              href: '/location/groups',
+            },
             {// services
               label: 'Servicios',
               icon: LucideHandHelping,
               href: '/location/services',
             },
-            {// consultories
-              icon: DoorOpen,
-              label: 'Consultorios',
-              href: '/location/offices',
-            }
           ]
-        },
-        {// areas
-          icon: LucideMapPinned,
-          label: 'Areas',
-          href: '/location/areas',
-        },
-        {// headquarters
-          label: 'Sedes',
-          icon: HomeIcon,
-          href: '/location/headquarters',
         },
         {/** locations **/
           label: 'Ubicaciones',
@@ -292,7 +286,28 @@ export const countryDefaultValues = { name: '' }
 export const stateDefaultValues = { name: '', country: '' }
 export const cityDefaultValues = { name: '', state: '' }
 export const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
-export const areaDefaultValues = { name: '', headquarter: '' }
-export const officeDefaultValues = { name: '', area: '', services: [] }
+export const officeDefaultValues = { name: '', headquarter: '', services: [] }
+export const groupDefaultValues = { name: '', services: [] }
 export const serviceDefaultValues = { name: '' }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default style values--------------------------------------------------*/
+export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
+export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default navigation routes--------------------------------------------------*/
+export const navigationTabs = [{
+  label: 'Sedes',
+  value: 'headquarters',
+  icon: <Building2 className='h-4 w-4' />,
+  paths: ['/location/headquarters', '/location/headquarter', '/location/headquarter/'],
+  baseRoute: '/location/headquarters'
+}, {
+  value: 'offices',
+  label: 'Consultorios',
+  icon: <BriefcaseBusiness className='h-4 w-4' />,
+  paths: ['/location/offices', '/location/office', '/location/office/'],
+  baseRoute: '/location/offices'
+}]
 /*---------------------------------------------------------------------------------------------------------*/

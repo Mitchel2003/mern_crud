@@ -18,7 +18,7 @@ interface FormOfficeSectionProps extends ThemeContextProps {
 }
 
 const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
-  const { open, methods, isLoading, optionsArea, optionsService, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, optionsHeadquarter, optionsService, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -49,11 +49,11 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
                   type="text"
                 />
                 <SelectField
-                  name="area"
-                  label="Área"
+                  label="Sede"
                   theme={theme}
-                  options={optionsArea}
-                  placeholder="Selecciona el área"
+                  name="headquarter"
+                  options={optionsHeadquarter}
+                  placeholder="Selecciona la sede"
                 />
                 <SelectMulti
                   theme={theme}
