@@ -29,7 +29,7 @@ const TableServiceSection = ({ theme, onChange }: TableServiceSectionProps) => {
 
   return (
     <>
-      <div className="container mx-auto py-10">
+      <div className="container p-0">
         <Card className={cn(
           "p-4 border-rounded-md shadow-md",
           theme === "dark" ? "bg-zinc-900/80" : "bg-white"

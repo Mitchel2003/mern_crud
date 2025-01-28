@@ -28,7 +28,7 @@ const FormMaintenanceSection = ({ id, theme, onChange }: FormMaintenanceSectionP
           <div className="flex justify-center">
             <Card
               className={cn(
-                'relative my-10 w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
+                'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
                 'backdrop-filter backdrop-blur-lg',
                 theme === 'dark'
                   ? 'bg-zinc-800/90 hover:shadow-purple-900/60'

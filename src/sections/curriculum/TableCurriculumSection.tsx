@@ -8,11 +8,10 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
 
+import { Pencil, Trash, Eye } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/constants"
-import { Pencil, Trash } from "lucide-react"
-import { Eye } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -30,7 +29,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
 
   return (
     <>
-      <div className="container mx-auto py-10">
+      <div className="container p-0">
         <Card className={cn(
           "p-4 border-rounded-md shadow-md",
           theme === "dark" ? "bg-zinc-900/80" : "bg-white"
@@ -81,19 +80,14 @@ const columns = (onChange: (value: string) => void): ColumnDef<Curriculum>[] => 
     cell: ({ row }) => row.original?.office?.name || 'Sin oficina'
   },
   {
-    header: "Área",
-    accessorKey: "area",
-    cell: ({ row }) => row.original?.office?.area?.name || 'Sin área'
-  },
-  {
     header: "Sede",
     accessorKey: "headquarter",
-    cell: ({ row }) => row.original?.office?.area?.headquarter?.address || 'Sin sede'
+    cell: ({ row }) => row.original?.office?.headquarter?.address || 'Sin sede'
   },
   {
     header: "Cliente",
     accessorKey: "client",
-    cell: ({ row }) => row.original?.office?.area?.headquarter?.client?.name || 'Sin cliente'
+    cell: ({ row }) => row.original?.office?.headquarter?.client?.name || 'Sin cliente'
   },
   {
     accessorKey: "updatedAt",

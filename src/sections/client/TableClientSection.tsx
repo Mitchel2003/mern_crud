@@ -18,10 +18,10 @@ interface TableClientSectionProps extends ThemeContextProps { onChange: (value: 
 interface ClientActionsProps { client: Client; onChange: (value: string) => void }
 
 /**
- * Permite construir un componente de tabla para mostrar las ciudades
+ * Permite construir un componente de tabla para mostrar las clientes
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con las ciudades, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con las clientes, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableClientSection = ({ theme, onChange }: TableClientSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
