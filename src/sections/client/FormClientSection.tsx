@@ -9,8 +9,8 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
+import { Separator } from "#/ui/separator"
 import { Mail } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
 
 interface FormClientSectionProps extends ThemeContextProps {
   onChange: (value: string) => void

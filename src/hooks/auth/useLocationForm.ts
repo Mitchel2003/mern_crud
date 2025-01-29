@@ -19,6 +19,42 @@ import {
 } from "@/schemas/location/location.schema"
 
 /**
+ * Hook personalizado para manejar el formulario de creación o actualización de servicios
+ * @param id - ID del servicio a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useServiceForm = (id?: string, onSuccess?: () => void) => {
+  const { data: service } = useQueryLocation().fetchLocationById<Service>('service', id as string)
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('service')
+
+  const methods = useForm<ServiceFormProps>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues: serviceDefaultValues,
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {
+    service && methods.reset({
+      name: service.name
+    })
+  }, [service])
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data: any) => {
+      id ? updateLocation({ id, data }) : createLocation(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit
+  }
+}
+
+/**
  * Hook personalizado para manejar el formulario de creación o actualización de grupos
  * @param id - ID del grupo a actualizar, si no se proporciona, la request corresponde a crear
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
@@ -55,42 +91,6 @@ export const useGroupForm = (id?: string, onSuccess?: () => void) => {
     isLoading,
     ...handleSubmit,
     optionsService: services?.map((e) => ({ value: e.name, label: e.name, icon: HandHelpingIcon })) || [],
-  }
-}
-
-/**
- * Hook personalizado para manejar el formulario de creación o actualización de servicios
- * @param id - ID del servicio a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useServiceForm = (id?: string, onSuccess?: () => void) => {
-  const { data: service } = useQueryLocation().fetchLocationById<Service>('service', id as string)
-  const { createLocation, updateLocation, isLoading } = useLocationMutation('service')
-
-  const methods = useForm<ServiceFormProps>({
-    resolver: zodResolver(serviceSchema),
-    defaultValues: serviceDefaultValues,
-    mode: "onSubmit",
-  })
-
-  useEffect(() => {
-    service && methods.reset({
-      name: service.name
-    })
-  }, [service])
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
-      id ? updateLocation({ id, data }) : createLocation(data)
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    isLoading,
-    ...handleSubmit
   }
 }
 

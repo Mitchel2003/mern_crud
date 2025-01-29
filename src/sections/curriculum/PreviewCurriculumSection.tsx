@@ -48,9 +48,9 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
             <section>
               <h2 className="text-xl font-semibold mb-4">Cliente</h2>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <Badge variant="outline">{cv.office.area.headquarter.client.name}</Badge>
-                <Badge variant="outline">{cv.office.area.headquarter.name}</Badge>
-                <Badge variant="outline">{cv.office.area.name}</Badge>
+                <Badge variant="outline">{cv.office.headquarter.client.name}</Badge>
+                <Badge variant="outline">{cv.office.headquarter.name}</Badge>
+                <Badge variant="outline">{cv.office.name}</Badge>
                 <Badge variant="outline">{cv.office.name}</Badge>
                 <Badge variant="outline">{cv.service}</Badge>
               </div>
