@@ -33,6 +33,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 
   useEffect(() => { loadData() }, [id])
 
+  /** Carga los datos del currículo en el formulario */
   const loadData = async () => {
     cv && methods.reset({
       ...characteristicsData.mapValues(cv),
@@ -47,6 +48,11 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     })
   }
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
       const data = {

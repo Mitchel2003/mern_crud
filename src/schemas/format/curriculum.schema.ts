@@ -8,9 +8,6 @@ export const curriculumSchema = z.object({
   headquarter: z
     .string({ required_error: "La sede es requerida" })
     .min(1, "Debes seleccionar una sede"),
-  area: z
-    .string({ required_error: "El área es requerida" })
-    .min(1, "Debes seleccionar un área"),
   office: z
     .string({ required_error: "La oficina es requerida" })
     .min(1, "Debes seleccionar una oficina"),

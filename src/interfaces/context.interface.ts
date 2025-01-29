@@ -68,7 +68,7 @@ export type Country = BaseMDB & { name: string }
 export type State = BaseMDB & { name: string; country: Country }
 export type City = BaseMDB & { name: string; state: State }
 export type Headquarter = BaseMDB & { name: string; address: string; client: Client; city: City }
-export type Office = BaseMDB & { name: string; services: string[]; headquarter: Headquarter }
+export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
 export type Group = BaseMDB & { name: string; services: string[] }
 export type Service = BaseMDB & { name: string }
 

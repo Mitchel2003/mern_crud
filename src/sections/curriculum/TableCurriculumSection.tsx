@@ -1,6 +1,6 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
-import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { Accessory, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -106,9 +106,19 @@ const columns = (onChange: (value: string) => void): ColumnDef<Curriculum>[] => 
  * @returns Array de acciones disponibles para la oficina
  */
 const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps): ActionProps[] => {
-  const { deleteFormat } = useFormatMutation('cv')
+  const { deleteFormat: deleteAcc } = useFormatMutation('accessory')
+  const { deleteFormat: deleteCv } = useFormatMutation('cv')
+  const { deleteFile: deleteImg } = useFormatMutation('file')
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
+
+  const handleDelete = async (id: string) => {
+    await deleteCv({ id }).then(async () => {
+      const { data: existingAccessories } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
+      await Promise.all(existingAccessories?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
+      await deleteImg({ id, ref: 'preview', filename: 'img' })
+    })
+  }
 
   return [{
     icon: Eye,
@@ -139,7 +149,7 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
         isDestructive: true,
         title: 'Eliminar Curriculum',
         description: `¿Estás seguro que deseas eliminar el curriculum "${curriculum.name}"?`,
-        action: () => deleteFormat({ id: curriculum._id })
+        action: () => { handleDelete(curriculum._id) }
       })
     }
   }]

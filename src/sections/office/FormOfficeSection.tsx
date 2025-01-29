@@ -11,6 +11,7 @@ import SelectMulti from "#/common/fields/SelectMulti"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
+import { HandHelpingIcon } from "lucide-react"
 
 interface FormOfficeSectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -18,8 +19,10 @@ interface FormOfficeSectionProps extends ThemeContextProps {
 }
 
 const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
-  const { open, methods, isLoading, optionsHeadquarter, optionsService, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
+  const groupName = methods.watch('group')
 
+  const groupSelected = options.groups.find((g) => g.name === groupName)
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
     <>
@@ -41,28 +44,40 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
                 description={id ? "Actualiza los datos del consultorio" : "Diligencia la información para registrar un consultorio"}
               />
               <CardContent className="py-6 space-y-6">
-                <InputField
-                  theme={theme}
-                  name="name"
-                  label="Nombre"
-                  placeholder="Nombre del consultorio"
-                  type="text"
-                />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InputField
+                    theme={theme}
+                    name="name"
+                    label="Nombre"
+                    placeholder="Nombre del consultorio"
+                    type="text"
+                  />
+                  <SelectField
+                    label="Sede"
+                    theme={theme}
+                    name="headquarter"
+                    span="Indica una sede referencia"
+                    placeholder="Selecciona la sede"
+                    options={options.headquarter?.map((e) => ({ value: e._id, label: `${e.name} - ${e.address || ''} - ${e.client?.name || ''}` })) || []}
+                  />
+                </div>
                 <SelectField
-                  label="Sede"
+                  name="group"
                   theme={theme}
-                  name="headquarter"
-                  options={optionsHeadquarter}
-                  placeholder="Selecciona la sede"
+                  label="Grupos"
+                  iconSpan="info"
+                  span="Refiere al grupo al que pertenece este consultorio"
+                  placeholder="Selecciona el grupo"
+                  options={options.groups?.map((e) => ({ value: e.name, label: e.name })) || []}
                 />
                 <SelectMulti
                   theme={theme}
                   name="services"
-                  iconSpan="info"
+                  iconSpan="warn"
                   label="Servicios"
-                  options={optionsService}
                   placeholder="Selecciona los servicios"
                   span="Selecciona varios servicios para este consultorio"
+                  options={groupSelected?.services?.map((e) => ({ value: e, label: e, icon: HandHelpingIcon })) || []}
                 />
               </CardContent>
               <SubmitFooter

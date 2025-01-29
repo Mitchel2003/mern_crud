@@ -24,10 +24,10 @@ import {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useGroupForm = (id?: string, onSuccess?: () => void) => {
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('group')
   const { fetchAllLocations, fetchLocationById } = useQueryLocation()
   const { data: group } = fetchLocationById<Group>('group', id as string)
   const { data: services } = fetchAllLocations<Service>('service')
-  const { createLocation, updateLocation, isLoading } = useLocationMutation('group')
 
   const methods = useForm<GroupFormProps>({
     resolver: zodResolver(groupSchema),
@@ -100,11 +100,11 @@ export const useServiceForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
-  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
-  const { data: office } = fetchLocationById<Office>('office', id as string)
-  const { data: services } = fetchAllLocations<Service>('service')
-  const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
   const { createLocation, updateLocation, isLoading } = useLocationMutation('office')
+  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
+  const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
+  const { data: office } = fetchLocationById<Office>('office', id as string)
+  const { data: groups } = fetchAllLocations<Group>('group')
 
   const methods = useForm<OfficeFormProps>({
     resolver: zodResolver(officeSchema),
@@ -115,6 +115,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     office && methods.reset({
       name: office.name,
+      group: office.group || '',
       services: office.services || [],
       headquarter: office.headquarter?._id || ''
     })
@@ -132,8 +133,10 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    optionsService: services?.map((e) => ({ value: e.name, label: e.name, icon: HandHelpingIcon })) || [],
-    optionsHeadquarter: headquarters?.map((e) => ({ value: e._id, label: `${e.name} - ${e.address || ''} - ${e.client?.name || ''}` })) || [],
+    options: {
+      groups: groups || [],
+      headquarter: headquarters || [],
+    }
   }
 }
 
@@ -143,11 +146,13 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
+  const { createLocation, updateLocation, isLoading } = useLocationMutation('headquarter')
   const { fetchAllLocations, fetchLocationById } = useQueryLocation()
   const { data: headquarter } = fetchLocationById<Headquarter>('headquarter', id as string)
   const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
+  const { data: countries } = fetchAllLocations<Country>('country')
+  const { data: states } = fetchAllLocations<State>('state')
   const { data: cities } = fetchAllLocations<City>('city')
-  const { createLocation, updateLocation, isLoading } = useLocationMutation('headquarter')
 
   const methods = useForm<HeadquarterFormProps>({
     resolver: zodResolver(headquarterSchema),
@@ -160,13 +165,16 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
       name: headquarter.name,
       address: headquarter.address,
       city: headquarter.city?._id || '',
-      client: headquarter.client?._id || ''
+      client: headquarter.client?._id || '',
+      state: headquarter.city.state?._id || '',
+      country: headquarter.city.state.country?._id || ''
     })
   }, [headquarter, cities, clients])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: any) => {
-      id ? updateLocation({ id, data }) : createLocation(data)
+      const format = { name: data.name, city: data.city, client: data.client, address: data.address }
+      id ? updateLocation({ id, data: format }) : createLocation(format)
       methods.reset()
     },
     onSuccess
@@ -176,8 +184,12 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    optionsCity: cities?.map((e) => ({ value: e._id, label: e.name })) || [],
-    optionsClient: clients?.map((e) => ({ value: e._id, label: e.name })) || [],
+    options: {
+      cities: cities || [],
+      states: states || [],
+      clients: clients || [],
+      countries: countries || [],
+    }
   }
 }
 
@@ -187,10 +199,10 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useCityForm = (id?: string, onSuccess?: () => void) => {
-  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
-  const { data: states } = fetchAllLocations<State>('state')
-  const { data: city } = fetchLocationById<City>('city', id as string)
   const { createLocation, updateLocation, isLoading } = useLocationMutation('city')
+  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
+  const { data: city } = fetchLocationById<City>('city', id as string)
+  const { data: states } = fetchAllLocations<State>('state')
 
   const methods = useForm<CityFormProps>({
     resolver: zodResolver(citySchema),
@@ -227,10 +239,10 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useStateForm = (id?: string, onSuccess?: () => void) => {
-  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
-  const { data: countries } = fetchAllLocations<Country>('country')
-  const { data: state } = fetchLocationById<State>('state', id as string)
   const { createLocation, updateLocation, isLoading } = useLocationMutation('state')
+  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
+  const { data: state } = fetchLocationById<State>('state', id as string)
+  const { data: countries } = fetchAllLocations<Country>('country')
 
   const methods = useForm<StateFormProps>({
     resolver: zodResolver(stateSchema),

@@ -1,4 +1,4 @@
-import { Client, Headquarter, Service, Office, Area, Curriculum } from "@/interfaces/context.interface"
+import { Client, Headquarter, Service, Office, Curriculum } from "@/interfaces/context.interface"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
@@ -12,12 +12,10 @@ const useLocationCV = () => {
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
   const { data: services } = fetchAllLocations<Service>('service')
   const { data: offices } = fetchAllLocations<Office>('office')
-  const { data: areas } = fetchAllLocations<Area>('area')
 
   const mapValues = (cv: Curriculum) => ({
-    client: cv.office.area.headquarter?.client?._id,
-    headquarter: cv.office.area.headquarter?._id,
-    area: cv.office.area?._id,
+    client: cv.office.headquarter?.client?._id,
+    headquarter: cv.office.headquarter?._id,
     office: cv.office?._id,
     service: cv.service
   })
@@ -35,7 +33,6 @@ const useLocationCV = () => {
       headquarters: headquarters || [],
       services: services || [],
       offices: offices || [],
-      areas: areas || []
     }
   }
 }

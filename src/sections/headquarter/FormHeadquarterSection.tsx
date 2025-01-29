@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils"
 
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import HeaderCustom from "#/common/elements/HeaderCustom"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
+import { Separator } from "#/ui/separator"
 
 interface FormHeadquarterSectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -17,7 +19,12 @@ interface FormHeadquarterSectionProps extends ThemeContextProps {
 }
 
 const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionProps) => {
-  const { open, methods, isLoading, optionsClient, optionsCity, setOpen, onConfirm, handleSubmit } = useHeadquarterForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useHeadquarterForm(id, () => { onChange('table') })
+  const countryId = methods.watch('country')
+  const stateId = methods.watch('state')
+
+  const states = id ? options?.states : options?.states?.filter((head) => head.country?._id === countryId)
+  const cities = id ? options?.cities : options?.cities?.filter((head) => head.state?._id === stateId)
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -40,34 +47,62 @@ const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionP
                 description={id ? "Actualiza los datos de la sede" : "Diligencia la información para registrar una sede"}
               />
               <CardContent className="py-6 space-y-6">
-                <InputField
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InputField
+                    theme={theme}
+                    name="name"
+                    label="Nombre"
+                    placeholder="Nombre de la sede"
+                    type="text"
+                  />
+                  <InputField
+                    theme={theme}
+                    name="address"
+                    label="Dirección"
+                    placeholder="Dirección de la sede"
+                    type="text"
+                  />
+                </div>
+                <Separator />
+
+                <HeaderCustom
+                  to="component"
                   theme={theme}
-                  name="name"
-                  label="Nombre"
-                  placeholder="Nombre de la sede"
-                  type="text"
-                />
-                <InputField
-                  theme={theme}
-                  name="address"
-                  label="Dirección"
-                  placeholder="Dirección de la sede"
-                  type="text"
+                  iconSpan="info"
+                  title="Referencias"
+                  className="text-2xl font-light"
+                  span="Información de la ubicación"
                 />
                 <SelectField
                   name="client"
                   theme={theme}
                   label="Cliente"
-                  options={optionsClient}
                   placeholder="Selecciona el cliente"
+                  options={options.clients?.map((c) => ({ label: c.name, value: c._id })) || []}
                 />
-                <SelectField
-                  name="city"
-                  theme={theme}
-                  label="Ciudad"
-                  options={optionsCity}
-                  placeholder="Selecciona la ciudad"
-                />
+                <div className="grid gap-4 md:grid-cols-3">
+                  <SelectField
+                    name="country"
+                    theme={theme}
+                    label="País"
+                    options={options.countries?.map((c) => ({ label: c.name, value: c._id })) || []}
+                    placeholder="Selecciona el país"
+                  />
+                  <SelectField
+                    name="state"
+                    theme={theme}
+                    label="Departamento"
+                    options={states?.map((c) => ({ label: c.name, value: c._id })) || []}
+                    placeholder="Selecciona el departamento"
+                  />
+                  <SelectField
+                    name="city"
+                    theme={theme}
+                    label="Ciudad"
+                    options={cities?.map((c) => ({ label: c.name, value: c._id })) || []}
+                    placeholder="Selecciona la ciudad"
+                  />
+                </div>
               </CardContent>
               <SubmitFooter
                 theme={theme}

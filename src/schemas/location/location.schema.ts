@@ -22,12 +22,15 @@ export const officeSchema = z.object({
     .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
     .max(50, "El nombre debe tener menos de 50 caracteres"),
-  headquarter: z
-    .string({ required_error: "La sede es requerida" })
-    .min(1, "Debes seleccionar una sede"),
+  group: z
+    .string({ required_error: "El grupo es requerido" })
+    .min(1, "Debes seleccionar al menos un grupo"),
   services: z
     .array(z.string({ required_error: "El servicio es requerido" }))
-    .min(1, "Debes seleccionar al menos un servicio")
+    .min(1, "Debes seleccionar al menos un servicio"),
+  headquarter: z
+    .string({ required_error: "La sede es requerida" })
+    .min(1, "Debes seleccionar una sede")
 })
 
 export const headquarterSchema = z.object({
@@ -44,7 +47,13 @@ export const headquarterSchema = z.object({
     .min(1, "Debes seleccionar un cliente"),
   city: z
     .string({ required_error: "La ciudad es requerida" })
-    .min(1, "Debes seleccionar una ciudad")
+    .min(1, "Debes seleccionar una ciudad"),
+  state: z
+    .string({ required_error: "El estado es requerido" })
+    .min(1, "Debes seleccionar un estado"),
+  country: z
+    .string({ required_error: "El país es requerido" })
+    .min(1, "Debes seleccionar un país")
 })
 
 export const citySchema = z.object({

@@ -10,6 +10,7 @@ import HeaderForm from "#/common/elements/HeaderForm"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
 import { Mail } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 
 interface FormClientSectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -40,35 +41,43 @@ const FormClientSection = ({ id, theme, onChange }: FormClientSectionProps) => {
                 description={id ? "Actualiza los datos del cliente" : "Diligencia la información para registrar un cliente"}
               />
               <CardContent className="py-6 space-y-6">
-                <InputField
-                  theme={theme}
-                  name="name"
-                  type="text"
-                  label="Nombre"
-                  placeholder="Nombre del cliente"
-                />
-                <InputField
-                  theme={theme}
-                  icon={Mail}
-                  type="email"
-                  name="email"
-                  label="Email"
-                  placeholder="Email del cliente"
-                />
-                <InputField
-                  theme={theme}
-                  type="text"
-                  name="phone"
-                  label="Teléfono"
-                  placeholder="Teléfono del cliente"
-                />
-                <InputField
-                  theme={theme}
-                  name="nit"
-                  label="NIT"
-                  type="text"
-                  placeholder="NIT del cliente"
-                />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InputField
+                    theme={theme}
+                    name="name"
+                    type="text"
+                    label="Nombre"
+                    placeholder="Nombre del cliente"
+                  />
+                  <InputField
+                    theme={theme}
+                    icon={Mail}
+                    type="email"
+                    name="email"
+                    label="Email"
+                    placeholder="Email del cliente"
+                  />
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InputField
+                    theme={theme}
+                    type="text"
+                    name="phone"
+                    label="Teléfono"
+                    placeholder="Teléfono del cliente"
+                  />
+                  <InputField
+                    theme={theme}
+                    name="nit"
+                    label="NIT"
+                    type="text"
+                    placeholder="NIT del cliente"
+                  />
+                </div>
+
+                <Separator />
+
+                {/** add image to upload (engineer)*/}
               </CardContent>
               <SubmitFooter
                 theme={theme}

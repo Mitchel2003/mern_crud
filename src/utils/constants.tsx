@@ -188,7 +188,6 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   //helpers fields not has been sent to database
   client: '', //helper locationData
   headquarter: '', //helper locationData
-  area: '', //helper locationData
   office: '', //locationData
   service: '', //locationData
 
@@ -285,8 +284,8 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
 export const countryDefaultValues = { name: '' }
 export const stateDefaultValues = { name: '', country: '' }
 export const cityDefaultValues = { name: '', state: '' }
-export const headquarterDefaultValues = { name: '', address: '', client: '', city: '' }
-export const officeDefaultValues = { name: '', headquarter: '', services: [] }
+export const headquarterDefaultValues = { name: '', address: '', client: '', city: '', state: '', country: '' }
+export const officeDefaultValues = { name: '', group: '', headquarter: '', services: [] }
 export const groupDefaultValues = { name: '', services: [] }
 export const serviceDefaultValues = { name: '' }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -298,7 +297,7 @@ export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] af
 
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/
 export const navigationTabs = [{
-  value: 'client',
+  value: 'clients',
   label: 'Clientes',
   icon: <Users className='h-4 w-4' />,
   paths: ['/clients', '/client', '/client/'],

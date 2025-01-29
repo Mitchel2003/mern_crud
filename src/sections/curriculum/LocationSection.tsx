@@ -13,11 +13,9 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
   const headquarterId = watch('headquarter')
   const clientId = watch('client')
   const officeId = watch('office')
-  const areaId = watch('area')
 
   const headquarters = options.headquarters?.filter((head) => head.client?._id === clientId)
-  const areas = options.areas?.filter((area) => area.headquarter?._id === headquarterId)
-  const offices = options.offices?.filter((office) => office.area?._id === areaId)
+  const offices = options.offices?.filter((office) => office.headquarter?._id === headquarterId)
   const services = options.services?.filter((service) => {
     const office = offices?.find((office) => office._id === officeId)
     return office?.services.includes(service.name)
@@ -34,7 +32,7 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
         className="text-2xl font-light"
         span="Propocione la referencia de ubicacion"
       />
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
 
         {/* -------------------- Selects -------------------- */}
         <SelectField
@@ -50,13 +48,6 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
           name="headquarter"
           options={headquarters?.map((h) => ({ label: `${h.name} - ${h.address}`, value: h._id })) || []}
           placeholder="Seleccionar sede"
-        />
-        <SelectField
-          name="area"
-          label="Area"
-          theme={theme}
-          options={areas?.map((a) => ({ label: a.name, value: a._id })) || []}
-          placeholder="Seleccionar area"
         />
         <SelectField
           theme={theme}
