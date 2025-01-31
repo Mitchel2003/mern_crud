@@ -97,3 +97,20 @@ export interface ConfirmTriggerProps {
   fieldName: string
   title: string
 }
+
+// step-form
+export interface AddOn {
+  subtitle: string;
+  checked: boolean;
+  title: string;
+  price: number;
+  id: number;
+}
+export type FormItems = {
+  plan: 'arcade' | 'advanced' | 'pro';
+  yearly: boolean;
+  addOns: AddOn[];
+  phone: string;
+  email: string;
+  name: string;
+};

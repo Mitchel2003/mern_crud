@@ -1,3 +1,4 @@
+import ClientFlowSection from "@/sections/flow/client/ClientFlowSection"
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import ClientSection from "@/sections/client/ClientSection"
 import { useThemeContext } from "@/context/ThemeContext"
@@ -16,3 +17,15 @@ const Client = () => {
 }
 
 export default Client
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------preview--------------------------------------------------*/
+export const ClientFlow = () => {
+  const { theme } = useThemeContext()
+
+  return (
+    <Suspense fallback={<DashboardSkeleton theme={theme} />}>
+      <ClientFlowSection theme={theme} />
+    </Suspense>
+  )
+}

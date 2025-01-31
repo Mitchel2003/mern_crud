@@ -90,9 +90,9 @@ export const useUserMutation = (path: UserType): CustomMutation_User => {
   })
 
   return {
-    createUser: createMutation.mutate,
-    updateUser: updateMutation.mutate,
-    deleteUser: deleteMutation.mutate,
+    createUser: createMutation.mutateAsync,
+    updateUser: updateMutation.mutateAsync,
+    deleteUser: deleteMutation.mutateAsync,
     isLoading: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
   }
 }

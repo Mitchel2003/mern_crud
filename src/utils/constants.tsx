@@ -118,7 +118,19 @@ export const links = () => {
     {/** institution **/
       label: 'Clientes',
       icon: Building2,
-      href: '/clients'
+      href: '/clients',
+      subItems: [
+        {// new client
+          icon: UserPlus,
+          href: '/newClient',
+          label: 'Nuevo',
+        },
+        {// management clients
+          icon: Users,
+          href: '/clients',
+          label: 'Gestionar',
+        }
+      ]
     },
     {// complementaries
       label: 'Complementarios',
@@ -288,6 +300,40 @@ export const headquarterDefaultValues = { name: '', address: '', client: '', cit
 export const officeDefaultValues = { name: '', group: '', headquarter: '', services: [] }
 export const groupDefaultValues = { name: '', services: [] }
 export const serviceDefaultValues = { name: '' }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default auth values--------------------------------------------------*/
+export const forgotPasswordDefaultValues = { email: '' }
+export const loginDefaultValues = { email: '', password: '' }
+export const clientDefaultValues = { name: '', email: '', phone: '', nit: '' }
+export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
+export const clientFlowDefaultValues = {
+  //client
+  client: {
+    name: '',
+    email: '',
+    phone: '',
+    nit: '',
+  },
+
+  //headquarter
+  headquarter: [{
+    name: '',
+    address: '',
+    client: '',
+    city: '',
+    state: '',
+    country: '',
+  }],
+
+  //office
+  office: [{
+    name: '',
+    group: '',
+    services: [],
+    headquarter: '',
+  }]
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default style values--------------------------------------------------*/

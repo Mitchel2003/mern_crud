@@ -9,8 +9,8 @@ import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
 import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
+import Client, { ClientFlow } from "@/pages/Client";
 import Maintenance from "@/pages/Maintenance";
-import Client from "@/pages/Client";
 
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
@@ -70,6 +70,7 @@ function App() {
                       {/* <Route path="/users/admins" element={<Admin />} /> {/*list admins*/}
                       {/* <Route path="/user/admin/:id" element={<Admin />} /> {/*edit admin*/}
 
+                      <Route path="/newClient" element={<ClientFlow />} /> {/*new client*/}
                       <Route path="/client" element={<Client />} /> {/*new client*/}
                       <Route path="/clients" element={<Client />} /> {/*list clients*/}
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}

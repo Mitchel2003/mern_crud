@@ -1,5 +1,5 @@
-import { UseMutateAsyncFunction, UseMutateFunction, UseQueryResult } from "@tanstack/react-query"
 import { FormatType, LocationType, UserType } from "@/interfaces/context.interface"
+import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
 import { FileReferenceDB } from "@/interfaces/db.interface"
 
 export interface FileMutationProps extends FileReferenceDB { }
@@ -14,9 +14,9 @@ export type QueryReact_User = {
   fetchUserByQuery: <T>(path: UserType, query: object) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {
-  createUser: UseMutateFunction<void, Error, object, unknown>
-  updateUser: UseMutateFunction<void, Error, UpdateMutationProps, unknown>
-  deleteUser: UseMutateFunction<void, Error, DeleteMutationProps, unknown>
+  createUser: UseMutateAsyncFunction<any, Error, object, unknown>
+  updateUser: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
+  deleteUser: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -29,9 +29,9 @@ export type QueryReact_Location = {
   fetchLocationByQuery: <T>(path: LocationType, query: object) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Location = {
-  createLocation: UseMutateFunction<void, Error, object, unknown>
-  updateLocation: UseMutateFunction<void, Error, UpdateMutationProps, unknown>
-  deleteLocation: UseMutateFunction<void, Error, DeleteMutationProps, unknown>
+  createLocation: UseMutateAsyncFunction<any, Error, object, unknown>
+  updateLocation: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
+  deleteLocation: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/

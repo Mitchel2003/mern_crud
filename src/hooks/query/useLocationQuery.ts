@@ -87,9 +87,9 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
   })
 
   return {
-    createLocation: createMutation.mutate,
-    updateLocation: updateMutation.mutate,
-    deleteLocation: deleteMutation.mutate,
+    createLocation: createMutation.mutateAsync,
+    updateLocation: updateMutation.mutateAsync,
+    deleteLocation: deleteMutation.mutateAsync,
     isLoading: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
   }
 }

@@ -1,24 +1,21 @@
+import { forgotPasswordDefaultValues, loginDefaultValues, clientDefaultValues, userDefaultValues, clientFlowDefaultValues } from "@/utils/constants"
+import { Country, State, City, Client, Headquarter, User, Group } from "@/interfaces/context.interface"
+import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
-import { Client, Headquarter, User } from "@/interfaces/context.interface"
-import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MapPinHouseIcon } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useEffect } from "react"
 import {
   loginSchema, LoginFormProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 
   userSchema, UserFormProps,
   clientSchema, ClientFormProps,
+  clientFlowSchema, ClientFlowProps
 } from "@/schemas/auth/auth.schema"
-
-const forgotPasswordDefaultValues = { email: '' }
-const loginDefaultValues = { email: '', password: '' }
-const clientDefaultValues = { name: '', email: '', phone: '', nit: '' }
-const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
 
 /*--------------------------------------------------useAuthForm--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de inicio de sesión */
@@ -127,4 +124,55 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
     ...handleSubmit,
   }
 }
-/*---------------------------------------------------------------------------------------------------------*/
+
+/**
+ * Hook personalizado para manejar el formulario de creación de nuevo cliente
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useClientFlow = (onSuccess?: () => void) => {
+  const [currentStep, setCurrentStep] = useState<'client' | 'headquarter' | 'office'>('client')
+  const { createLocation: createHeadquarter } = useLocationMutation('headquarter')
+  const { createLocation: createOffice } = useLocationMutation('office')
+  const { createUser: createClient } = useUserMutation('client')
+
+  const { fetchAllLocations } = useQueryLocation()
+  const { data: countries, isLoading: isLoadingCountries } = fetchAllLocations<Country>('country')
+  const { data: groups, isLoading: isLoadingGroups } = fetchAllLocations<Group>('group')
+  const { data: states, isLoading: isLoadingStates } = fetchAllLocations<State>('state')
+  const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
+
+  const methods = useForm<ClientFlowProps>({
+    resolver: zodResolver(clientFlowSchema),
+    defaultValues: clientFlowDefaultValues,
+    mode: "onSubmit"
+  })
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data) => {
+      const client = await createClient(data.client)
+      const headquarter = await createHeadquarter({ ...data.headquarter, client: client._id })
+      await createOffice({ ...data.office, headquarter: headquarter._id })
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    currentStep,
+    setCurrentStep,
+    ...handleSubmit,
+    options: {
+      headquarter: {
+        states: states || [],
+        cities: cities || [],
+        countries: countries || [],
+        isLoading: isLoadingCountries || isLoadingStates || isLoadingCities
+      },
+      office: {
+        groups: groups || [],
+        isLoading: isLoadingGroups
+      }
+    }
+  }
+}

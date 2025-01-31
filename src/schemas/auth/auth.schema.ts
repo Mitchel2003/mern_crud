@@ -1,3 +1,4 @@
+import { headquarterSchema, officeSchema } from "@/schemas/location/location.schema"
 import { z } from "zod"
 
 /*--------------------------------------------------authSchema--------------------------------------------------*/
@@ -57,6 +58,14 @@ export const clientSchema = z.object({
 }).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
   message: "El teléfono debe contener solo números", path: ["phone"]
 })
+
+export const clientFlowSchema = z.object({
+  client: clientSchema,
+  headquarter: z
+    .array(headquarterSchema.extend({ client: z.string().optional() })),
+  office: z
+    .array(officeSchema.extend({ headquarter: z.string().optional() }))
+})
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------types--------------------------------------------------*/
@@ -65,4 +74,6 @@ export type ForgotPasswordFormProps = z.infer<typeof forgotPasswordSchema>
 
 export type UserFormProps = z.infer<typeof userSchema>
 export type ClientFormProps = z.infer<typeof clientSchema>
+
+export type ClientFlowProps = z.infer<typeof clientFlowSchema>
 /*---------------------------------------------------------------------------------------------------------*/
