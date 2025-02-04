@@ -11,7 +11,7 @@ const Format = createContext<FormatContext>(undefined)
 
 /**
  * Hook personalizado para acceder al contexto de formato.
- * @throws {Error} Si se intenta usar fuera del LocationProvider.
+ * @throws {Error} Si se intenta usar fuera del FormatProvider.
  */
 export const useFormatContext = () => {
   const context = useContext(Format)

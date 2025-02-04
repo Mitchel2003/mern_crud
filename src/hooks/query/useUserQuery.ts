@@ -59,6 +59,7 @@ export const useUserMutation = (path: UserType): CustomMutation_User => {
   /**
    * Mutation para crear un usuario
    * @param {object} data - La data del documento a crear.
+   * @returns {Promise<any>} Los datos del usuario creado.
    */
   const createMutation = useMutation({
     mutationFn: async (data: object) => await create(path, data),
@@ -68,6 +69,7 @@ export const useUserMutation = (path: UserType): CustomMutation_User => {
   /**
    * Mutation para actualizar un usuario
    * @param {object} data - La data del documento a actualizar.
+   * @returns {Promise<any>} Los datos del usuario actualizado.
    */
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: UpdateMutationProps) => await update(path, id, data),
@@ -80,6 +82,7 @@ export const useUserMutation = (path: UserType): CustomMutation_User => {
   /**
    * Mutation para eliminar un usuario
    * @param {string} _id - Corresponde al uid default del usuario.
+   * @returns {Promise<any>} Los datos del usuario eliminado.
    */
   const deleteMutation = useMutation({
     mutationFn: async ({ id }: DeleteMutationProps) => await deleteUser(path, id),

@@ -84,14 +84,17 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * Crea una nueva ubicación
    * @param {string} type - El tipo de ubicación.
    * @param {object} data - Los datos de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación creada.
    */
-  const create = async (type: LocationType, data: object): Promise<void> => {
+  const create = async (type: LocationType, data: object): Promise<any> => {
     setLoadingStatus('Creando...')
     try {
-      await useApi(type).create(data)
+      const response = await useApi(type).create(data)
       notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
@@ -100,14 +103,17 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @param {string} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
    * @param {object} data - Los datos de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación actualizada.
    */
-  const update = async (type: LocationType, id: string, data: object): Promise<void> => {
+  const update = async (type: LocationType, id: string, data: object): Promise<any> => {
     setLoadingStatus('Actualizando...')
     try {
-      await useApi(type).update(id, data)
+      const response = await useApi(type).update(id, data)
       notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
@@ -115,14 +121,17 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * Elimina una ubicación existente
    * @param {string} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación eliminada.
    */
-  const delete_ = async (type: LocationType, id: string): Promise<void> => {
+  const delete_ = async (type: LocationType, id: string): Promise<any> => {
     setLoadingStatus('Eliminando...')
     try {
-      await useApi(type).delete(id)
+      const response = await useApi(type).delete(id)
       notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/

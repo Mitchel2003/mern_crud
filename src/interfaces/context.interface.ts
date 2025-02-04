@@ -55,9 +55,9 @@ export type UserContext = {
   getAll: <T>(type: UserType) => Promise<T[]>
   getById: <T>(type: UserType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: UserType, query: object) => Promise<T[]>
-  create: (type: UserType, data: object) => Promise<void>
-  update: (type: UserType, id: string, data: object) => Promise<void>
-  delete: (type: UserType, id: string) => Promise<void>
+  create: (type: UserType, data: object) => Promise<any>
+  update: (type: UserType, id: string, data: object) => Promise<any>
+  delete: (type: UserType, id: string) => Promise<any>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -77,9 +77,9 @@ export type LocationContext = {
   getAll: <T>(type: LocationType) => Promise<T[]>
   getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: LocationType, query: object) => Promise<T[]>
-  create: (type: LocationType, data: object) => Promise<void>
-  update: (type: LocationType, id: string, data: object) => Promise<void>
-  delete: (type: LocationType, id: string) => Promise<void>
+  create: (type: LocationType, data: object) => Promise<any>
+  update: (type: LocationType, id: string, data: object) => Promise<any>
+  delete: (type: LocationType, id: string) => Promise<any>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

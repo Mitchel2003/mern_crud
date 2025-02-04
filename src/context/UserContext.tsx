@@ -84,45 +84,54 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * Crea un nuevo usuario de un tipo específico
    * @param {string} type - El tipo de usuario.
    * @param {object} data - Los datos del usuario.
+   * @returns {Promise<any>} Los datos del usuario creado.
    */
-  const create = async (type: UserType, data: object): Promise<void> => {
+  const create = async (type: UserType, data: object): Promise<any> => {
     setLoadingStatus('Creando...')
     try {
-      await useApi(type).create(data)
+      const response = await useApi(type).create(data)
       notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
   /**
-   * Actualiza un usuario existente de un tipo específico
+   * Actualiza un usuario existente
    * @param {string} type - El tipo de usuario.
    * @param {string} id - El ID del usuario.
    * @param {object} data - Los datos del usuario.
+   * @returns {Promise<any>} Los datos del usuario actualizado.
    */
-  const update = async (type: UserType, id: string, data: object): Promise<void> => {
+  const update = async (type: UserType, id: string, data: object): Promise<any> => {
     setLoadingStatus('Actualizando...')
     try {
-      await useApi(type).update(id, data)
+      const response = await useApi(type).update(id, data)
       notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
 
   /**
-   * Elimina un usuario existente de un tipo específico
+   * Elimina un usuario existente
    * @param {string} type - El tipo de usuario.
    * @param {string} id - El ID del usuario.
+   * @returns {Promise<any>} Los datos del usuario eliminado.
    */
-  const delete_ = async (type: UserType, id: string): Promise<void> => {
+  const delete_ = async (type: UserType, id: string): Promise<any> => {
     setLoadingStatus('Eliminando...')
     try {
-      await useApi(type).delete(id)
+      const response = await useApi(type).delete(id)
       notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
+      return response.data
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+      return undefined
     } finally { setLoadingStatus() }
   }
   /*---------------------------------------------------------------------------------------------------------*/

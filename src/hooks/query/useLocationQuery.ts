@@ -56,6 +56,7 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
   /**
    * Mutation para crear una ubicación
    * @param {object} data - La data del documento a crear.
+   * @returns {Promise<any>} Los datos de la ubicación creada.
    */
   const createMutation = useMutation({
     mutationFn: async (data: object) => await create(path, data),
@@ -65,6 +66,7 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
   /**
    * Mutation para actualizar una ubicación
    * @param {object} data - La data del documento a actualizar.
+   * @returns {Promise<any>} Los datos de la ubicación actualizada.
    */
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: UpdateMutationProps) => await update(path, id, data),
@@ -77,6 +79,7 @@ export const useLocationMutation = (path: LocationType): CustomMutation_Location
   /**
    * Mutation para eliminar una ubicación
    * @param {string} _id - Corresponde al uid default de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación eliminada.
    */
   const deleteMutation = useMutation({
     mutationFn: async ({ id }: DeleteMutationProps) => await deleteLocation(path, id),
