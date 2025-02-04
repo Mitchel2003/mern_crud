@@ -12,9 +12,9 @@ const useReferenceMT = () => {
   const { data: curriculums } = fetchAllFormats<Curriculum>('cv')
 
   const mapValues = (data: Maintenance) => ({
-    client: data.curriculum.office.area.headquarter?.client?._id,
-    nameClient: data.curriculum.office.area.headquarter?.client?.name,
-    nitClient: data.curriculum.office.area.headquarter?.client?.nit,
+    client: data.curriculum.office.headquarter?.client?._id,
+    nameClient: data.curriculum.office.headquarter?.client?.name,
+    nitClient: data.curriculum.office.headquarter?.client?.nit,
     curriculum: data.curriculum._id,
   })
 

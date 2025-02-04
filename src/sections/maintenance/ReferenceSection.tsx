@@ -13,7 +13,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
   const clientId = watch('client')
 
   const client = options.clients?.find((client) => client._id === clientId)
-  const curriculum = options.curriculums?.filter((curriculum) => curriculum.office.area.headquarter?.client?._id === clientId)
+  const curriculum = options.curriculums?.filter((curriculum) => curriculum.office.headquarter?.client?._id === clientId)
 
   return (
     <div className="space-y-4">
