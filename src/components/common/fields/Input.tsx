@@ -54,12 +54,11 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
               <Input
                 {...field}
                 ref={ref}
-                id={`${name}-input`}
-                type={showPassword ? 'text' : type}
                 autoComplete='off'
+                id={`${name}-input`}
                 placeholder={placeholder}
-                className={cn(
-                  (type === 'email' || type === 'password') && 'pl-10',
+                type={showPassword ? 'text' : type}
+                className={cn((type === 'email' || type === 'password') && 'pl-10',
                   theme === 'dark'
                     ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
                     : 'bg-white border-gray-300 text-gray-900'

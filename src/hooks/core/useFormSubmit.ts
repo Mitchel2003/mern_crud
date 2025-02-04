@@ -20,5 +20,5 @@ export const useFormSubmit = <T extends FieldValues>({ onSubmit, onSuccess }: Fo
     onSuccess?.()
   }
 
-  return { open, setOpen, onConfirm, handleSubmit }
+  return { open, setOpen, handleSubmit, onConfirm }
 }

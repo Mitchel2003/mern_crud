@@ -36,7 +36,7 @@ const useBasicDataCV = (id?: string) => {
     mapValues,
     submitData,
     cvs: processedCvs,
-    options: processedCvs.map(cv => ({ value: cv.name, label: cv.name })) 
+    options: processedCvs.map(cv => ({ value: cv.name, label: cv.name }))
   }
 }
 
