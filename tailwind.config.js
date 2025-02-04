@@ -11,6 +11,14 @@ export default {
     'focus:ring-green-500',
     'focus:ring-yellow-500',
     'focus:ring-red-500',
+    //text-color => ClientFlow (step-form-sidebar.tsx)
+    "text-green-400",
+    "text-blue-500",
+    "text-orange-400",
+    "text-purple-200",
+    "text-red-600",
+    "text-indigo-300",
+    "text-pink-400"
   ],
   prefix: "",
   theme: {

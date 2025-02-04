@@ -321,15 +321,12 @@ export const clientFlowDefaultValues = {
     name: '',
     address: '',
     client: '',
-    city: '',
-    state: '',
-    country: '',
+    city: ''
   }],
 
   //office
   office: [{
     name: '',
-    group: '',
     services: [],
     headquarter: '',
   }]

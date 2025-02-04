@@ -1,5 +1,5 @@
 import { forgotPasswordDefaultValues, loginDefaultValues, clientDefaultValues, userDefaultValues, clientFlowDefaultValues } from "@/utils/constants"
-import { Country, State, City, Client, Headquarter, User, Group } from "@/interfaces/context.interface"
+import { City, Client, Headquarter, User, Group } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
@@ -136,22 +136,36 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createUser: createClient } = useUserMutation('client')
 
   const { fetchAllLocations } = useQueryLocation()
-  const { data: countries, isLoading: isLoadingCountries } = fetchAllLocations<Country>('country')
   const { data: groups, isLoading: isLoadingGroups } = fetchAllLocations<Group>('group')
-  const { data: states, isLoading: isLoadingStates } = fetchAllLocations<State>('state')
   const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
 
   const methods = useForm<ClientFlowProps>({
     resolver: zodResolver(clientFlowSchema),
     defaultValues: clientFlowDefaultValues,
-    mode: "onSubmit"
+    mode: "onChange"
   })
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data) => {
+    onSubmit: async (data) => {//working here... (check this)
       const client = await createClient(data.client)
-      const headquarter = await createHeadquarter({ ...data.headquarter, client: client._id })
-      await createOffice({ ...data.office, headquarter: headquarter._id })
+      // Create headquarter in parallel
+      await Promise.all(
+        data.headquarter.map(async (hq: any) => {
+          const headquarter = await createHeadquarter({ ...hq, client: client._id })
+
+          // Find offices for this headquarter
+          const officesForThisHq = data.office.filter((office: any) => office.headquarter.address === hq.address)
+
+          // Create offices in parallel
+          officesForThisHq.length > 0 && await Promise.all(
+            officesForThisHq.map(async (office: any) =>
+              await createOffice({ name: office.name, services: office.services, headquarter: headquarter._id })
+            )
+          )
+
+          return headquarter
+        })
+      )
       methods.reset()
     },
     onSuccess
@@ -163,16 +177,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
     setCurrentStep,
     ...handleSubmit,
     options: {
-      headquarter: {
-        states: states || [],
-        cities: cities || [],
-        countries: countries || [],
-        isLoading: isLoadingCountries || isLoadingStates || isLoadingCities
-      },
-      office: {
-        groups: groups || [],
-        isLoading: isLoadingGroups
-      }
+      office: { groups: groups || [], isLoading: isLoadingGroups },
+      headquarter: { cities: cities || [], isLoading: isLoadingCities }
     }
   }
 }

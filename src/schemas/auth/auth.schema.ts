@@ -1,4 +1,3 @@
-import { headquarterSchema, officeSchema } from "@/schemas/location/location.schema"
 import { z } from "zod"
 
 /*--------------------------------------------------authSchema--------------------------------------------------*/
@@ -61,10 +60,38 @@ export const clientSchema = z.object({
 
 export const clientFlowSchema = z.object({
   client: clientSchema,
-  headquarter: z
-    .array(headquarterSchema.extend({ client: z.string().optional() })),
-  office: z
-    .array(officeSchema.extend({ headquarter: z.string().optional() }))
+  headquarter: z.array(
+    z.object({
+      name: z
+        .string({ required_error: "El nombre es requerido" })
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
+      address: z
+        .string({ required_error: "La dirección es requerida" })
+        .min(3, "La dirección debe tener al menos 3 caracteres")
+        .max(100, "La dirección debe tener menos de 100 caracteres"),
+      client: z
+        .string({ required_error: "El cliente es requerido" })
+        .min(1, "Debes seleccionar un cliente"),
+      city: z
+        .string({ required_error: "La ciudad es requerida" })
+        .min(1, "Debes seleccionar una ciudad")
+    })
+  ),
+  office: z.array(
+    z.object({
+      name: z
+        .string({ required_error: "El nombre es requerido" })
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres"),
+      headquarter: z
+        .string({ required_error: "La sede es requerida" })
+        .min(1, "Debes seleccionar una sede"),
+      services: z
+        .array(z.string({ required_error: "El servicio es requerido" }))
+        .min(1, "Debes seleccionar al menos un servicio")
+    })
+  )
 })
 /*---------------------------------------------------------------------------------------------------------*/
 

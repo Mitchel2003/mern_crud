@@ -5,8 +5,8 @@ import { Mail } from "lucide-react"
 
 const ClientForm = ({ theme }: ThemeContextProps) => {
   return (
-    <FormWrapper title="Cliente" description="Proporcione la información del cliente.">
-      <div className="w-full flex flex-col gap-5">
+    <FormWrapper theme={theme} title="Cliente" description="Proporcione la información del cliente.">
+      <div className="flex flex-col gap-5">
         <InputField theme={theme} label="Nombre" name="client.name" placeholder="Nombre del cliente" />
         <InputField theme={theme} label="Email" name="client.email" placeholder="Email del cliente" icon={Mail} type="email" />
         <InputField theme={theme} label="Teléfono" name="client.phone" placeholder="Teléfono del cliente" />

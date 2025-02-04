@@ -1,9 +1,9 @@
-import { ThemeContextProps, Group } from "@/interfaces/context.interface"
+import { ThemeContextProps, Group, Headquarter } from "@/interfaces/context.interface"
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
-import { UseFormGetValues, UseFormWatch } from "react-hook-form"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
 import SelectMulti from "#/common/fields/SelectMulti"
+import { UseFormGetValues } from "react-hook-form"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 import { HandHelpingIcon } from "lucide-react"
@@ -11,20 +11,23 @@ import { HandHelpingIcon } from "lucide-react"
 interface OfficeFormProps extends ThemeContextProps {
   options: { isLoading: boolean, groups: Group[] }
   getValues: UseFormGetValues<any>,
-  watch: UseFormWatch<any>,
 }
 
-const OfficeForm = ({ theme, watch, getValues, options }: OfficeFormProps) => {
-  const headquarter = getValues('headquarter')
-  const groupName = watch('office.group')
+const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
+  const headquarter = getValues('headquarter') || []
+  const headquarters = headquarter.map((e: Headquarter) => ({ label: `${e.name} - ${e.address}`, value: e.address }))
 
-  const headquarters = headquarter?.name ? [{ label: `${headquarter.name} - ${headquarter.address}`, value: headquarter.address }] : []
-  const groupSelected = options.groups.find((g) => g.name === groupName)
+  //to fill multi select with services-group
+  const serviceOptions = options.groups?.flatMap(group => (
+    group.services.map(service => ({ value: service, label: `${service} - ${group.name}`, icon: HandHelpingIcon }))
+  )) || []
+
   if (options.isLoading) return <DashboardSkeleton theme={theme} />
   return (
     <FormWrapper
+      theme={theme}
       title="Consultorio"
-      description="Proporcione la información del consultorio."
+      description="Configura los consultorios de la sede"
     >
       <IterableCard
         limit={100}
@@ -32,10 +35,38 @@ const OfficeForm = ({ theme, watch, getValues, options }: OfficeFormProps) => {
         name="office"
         titleButton="Añadir consultorio para esta sede"
         fields={[
-          { name: "office.name", component: <InputField theme={theme} name="name" label="Nombre" placeholder="Nombre de la sede" /> },
-          { name: "office.headquarter", component: <SelectField theme={theme} name="headquarter" label="Sede" placeholder="Selecciona la sede" span="Indica una sede referencia" options={headquarters} /> },
-          { name: "office.group", component: <SelectField theme={theme} name="group" label="Grupos" placeholder="Selecciona el grupo" span="Refiere al grupo al que pertenece este consultorio" iconSpan="info" options={options.groups?.map((e) => ({ value: e.name, label: e.name })) || []} /> },
-          { name: "office.services", component: <SelectMulti theme={theme} name="services" label="Servicios" placeholder="Selecciona los servicios" span="Selecciona varios servicios para este consultorio" iconSpan="warn" options={groupSelected?.services?.map((e) => ({ value: e, label: e, icon: HandHelpingIcon })) || []} /> }
+          {
+            name: "office.name",
+            component: <InputField
+              theme={theme}
+              name="name"
+              label="Nombre"
+              placeholder="Nombre del consultorio"
+            />
+          },
+          {
+            name: "office.headquarter",
+            component: <SelectField
+              theme={theme}
+              label="Sede"
+              name="headquarter"
+              options={headquarters}
+              placeholder="Selecciona la sede"
+              span="Indica una sede referencia"
+            />
+          },
+          {
+            name: "office.services",
+            component: <SelectMulti
+              theme={theme}
+              iconSpan="warn"
+              name="services"
+              label="Servicios"
+              options={serviceOptions}
+              placeholder="Selecciona los servicios"
+              span="Selecciona varios servicios para este consultorio"
+            />
+          }
         ]}
       />
     </FormWrapper>

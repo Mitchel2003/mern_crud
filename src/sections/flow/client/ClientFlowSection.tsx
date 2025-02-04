@@ -1,12 +1,14 @@
-import SuccessMessage from "@/components/ui/step-form/step-form-success-message";
-import SideBar, { Step } from "@/components/ui/step-form/step-form-sidebar";
+import SuccessMessage from "#/ui/step-form/step-form-success-message";
 import { ThemeContextProps } from "@/interfaces/context.interface";
+import SideBar, { Step } from "#/ui/step-form/step-form-sidebar";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useClientFlow } from "@/hooks/auth/useAuthForm";
 import AlertDialog from "#/common/elements/AlertDialog";
 import { useStepForm } from "@/hooks/core/useStepForm";
 import { AnimatePresence } from "framer-motion";
 import { FormProvider } from "react-hook-form";
 import { Button } from "#/ui/button";
+import { cn } from "@/lib/utils";
 
 import HeadquarterFormFlow from "./HeadquarterFormFlow"
 import ClientFormFlow from "./ClientFormFlow"
@@ -15,41 +17,49 @@ import OfficeFormFlow from "./OfficeFormFlow"
 interface ClientFLowSectionProps extends ThemeContextProps { }
 
 const ClientFlowSection = ({ theme }: ClientFLowSectionProps) => {
-  const { goTo, next, previous, index, showMessage, isLastStep, isFirstStep } = useStepForm(3)
   const { open, methods, options, onConfirm, setOpen, handleSubmit } = useClientFlow()
+  const { goTo, next, previous, index, showMessage, isLastStep, isFirstStep } = useStepForm({
+    validationFields,
+    steps: 3,
+    methods,
+  })
 
   return (
     <>
-      <div
-        className={`flex justify-between ${index === 1 ? "h-[600px] md:h-[500px]" : "h-[500px]"}
-        w-11/12 max-w-4xl relative m-1 rounded-lg border border-neutral-700 bg-[#262626] p-4`}
-      >
-        {!showMessage ? (<SideBar goTo={goTo} currentStepIndex={index} steps={CLIENT_FORM_STEPS} />) : null}
-        <main className={`${showMessage ? "w-full" : "w-full md:mt-5 md:w-[65%]"}`}>
-          {showMessage ? (
-            <AnimatePresence mode="wait">
-              <SuccessMessage />
-            </AnimatePresence>
-          ) : (
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit} className="w-full flex flex-col justify-between h-full">
-                <AnimatePresence mode="wait">
-                  {index === 0 && <ClientFormFlow key="step1" {...methods} theme={theme} />}
-                  {index === 1 && <HeadquarterFormFlow key="step2" {...methods} theme={theme} options={options?.headquarter || []} />}
-                  {index === 2 && <OfficeFormFlow key="step3" {...methods} theme={theme} options={options?.office || []} />}
-                </AnimatePresence>
+      <div className="container mx-auto p-6">
+        <div className={cn('flex w-full p-4 justify-between rounded-lg border',
+          theme === 'dark' ? 'bg-zinc-800' : 'bg-white'
+        )}>
+          {/** SideBar */}
+          {!showMessage ? <SideBar goTo={goTo} theme={theme} currentStepIndex={index} steps={CLIENT_FORM_STEPS} /> : null}
 
-              </form>
-            </FormProvider>
-          )}
-          <WrapperNextStep
-            next={next}
-            theme={theme}
-            previous={previous}
-            isLastStep={isLastStep}
-            isFirstStep={isFirstStep}
-          />
-        </main>
+          {/** Main */}
+          <main className={cn('w-full', !showMessage && 'md:mt-5 md:w-[70%]')}>
+            {showMessage ? (
+              <AnimatePresence mode="wait">
+                <SuccessMessage />
+              </AnimatePresence>
+            ) : (
+              <FormProvider {...methods}>
+                <form onSubmit={handleSubmit} className="flex flex-col justify-between">
+                  <AnimatePresence mode="wait">
+                    {index === 0 && <ClientFormFlow key="step1" {...methods} theme={theme} />}
+                    {index === 1 && <HeadquarterFormFlow key="step2" {...methods} theme={theme} options={options?.headquarter || []} />}
+                    {index === 2 && <OfficeFormFlow key="step3" {...methods} theme={theme} options={options?.office || []} />}
+                  </AnimatePresence>
+
+                  <WrapperNextStep
+                    next={next}
+                    theme={theme}
+                    previous={previous}
+                    isLastStep={isLastStep}
+                    isFirstStep={isFirstStep}
+                  />
+                </form>
+              </FormProvider>
+            )}
+          </main>
+        </div>
       </div>
 
       <AlertDialog
@@ -76,38 +86,37 @@ interface WrapperNextStepProps extends ThemeContextProps {
   previous: () => void
   next: () => void
 }
-const WrapperNextStep = ({ isFirstStep, isLastStep, previous, next }: WrapperNextStepProps) => {
+const WrapperNextStep = ({ theme, isFirstStep, isLastStep, previous, next }: WrapperNextStepProps) => {
   return (
-    <div className="w-full items-center flex justify-between">
-      <div className="">
+    <div className="w-full items-center flex justify-between mt-6">
+      <div className="flex items-center">
         <Button
           type="button"
           variant="ghost"
           onClick={previous}
-          className={`${isFirstStep ? "invisible" : "visible p-0 text-neutral-200 hover:text-white"}`}
+          className={cn(isFirstStep && 'invisible', 'transition-all duration-300 transform hover:scale-105',
+            theme === 'dark'
+              ? 'bg-zinc-800 text-zinc-100 hover:bg-zinc-900 shadow-md border border-zinc-700'
+              : 'bg-white text-gray-900 hover:bg-zinc-100 shadow-md border border-gray-200 '
+          )}
         >
+          <ChevronLeft className="h-4 w-4" />
           Atras
         </Button>
       </div>
       <div className="flex items-center">
-        <div className="relative after:pointer-events-none after:absolute after:inset-px after:rounded-[11px] after:shadow-highlight after:shadow-white/10 focus-within:after:shadow-[#77f6aa] after:transition">
-          {isLastStep ? (
-            <Button
-              type="submit"
-              className="relative text-neutral-200 bg-neutral-900 border border-black/20 shadow-black/10 rounded-xl hover:text-white"
-            >
-              Confirmar
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              onClick={(e) => { e.preventDefault(); next() }}
-              className="relative text-neutral-200 bg-neutral-900 border border-black/20 shadow-black/10 rounded-xl hover:text-white"
-            >
-              Siguiente
-            </Button>
+        <Button
+          type={isLastStep ? "submit" : "button"}
+          onClick={(e) => { if (!isLastStep) { e.preventDefault(); next() } }}
+          className={cn('transition-all duration-300 transform hover:scale-105',
+            theme === 'dark'
+              ? 'bg-zinc-800 text-zinc-100 hover:bg-zinc-900 shadow-md border border-zinc-700'
+              : 'bg-white text-gray-900 hover:bg-zinc-100 shadow-md border border-gray-200 '
           )}
-        </div>
+        >
+          {isLastStep ? 'Confirmar' : 'Siguiente'}
+          {isLastStep ? <Check className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </Button>
       </div>
     </div>
   )
@@ -118,3 +127,9 @@ const CLIENT_FORM_STEPS: Step[] = [
   { id: 1, label: "Paso 2", title: "Sede Principal" },
   { id: 2, label: "Paso 3", title: "Consultorios" },
 ]
+
+const validationFields = {
+  0: ['client.name', 'client.email', 'client.phone', 'client.nit'],
+  1: [{ subfield: 'headquarter' }],
+  2: [{ subfield: 'office' }]
+}
