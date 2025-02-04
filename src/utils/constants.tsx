@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, BriefcaseBusiness, Users } from 'lucide-react'
+import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, BriefcaseBusiness, Users, UserSquare } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -116,8 +116,8 @@ export const links = () => {
       ]
     },
     {/** institution **/
-      label: 'Clientes',
-      icon: Building2,
+      label: 'Gestion de clientes',
+      icon: UserSquare,
       href: '/clients',
       subItems: [
         {// new client
@@ -128,7 +128,7 @@ export const links = () => {
         {// management clients
           icon: Users,
           href: '/clients',
-          label: 'Gestionar',
+          label: 'Clientes',
         }
       ]
     },
@@ -308,28 +308,9 @@ export const loginDefaultValues = { email: '', password: '' }
 export const clientDefaultValues = { name: '', email: '', phone: '', nit: '' }
 export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
 export const clientFlowDefaultValues = {
-  //client
-  client: {
-    name: '',
-    email: '',
-    phone: '',
-    nit: '',
-  },
-
-  //headquarter
-  headquarter: [{
-    name: '',
-    address: '',
-    client: '',
-    city: ''
-  }],
-
-  //office
-  office: [{
-    name: '',
-    services: [],
-    headquarter: '',
-  }]
+  client: { name: '', email: '', phone: '', nit: '' },
+  headquarter: [{ name: '', address: '', city: '' }],
+  office: [{ headquarter: '', services: [], name: '' }]
 }
 /*---------------------------------------------------------------------------------------------------------*/
 

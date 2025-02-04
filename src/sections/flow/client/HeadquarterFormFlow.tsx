@@ -3,25 +3,29 @@ import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import InputSearchableField from "#/common/fields/InputSearchable"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
-import { UseFormGetValues } from "react-hook-form"
-import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
-import { Separator } from "#/ui/separator"
 
 interface HeadquarterFormProps extends ThemeContextProps {
   options: { isLoading: boolean, cities: City[] }
-  getValues: UseFormGetValues<any>
 }
 
-const HeadquarterForm = ({ theme, getValues, options }: HeadquarterFormProps) => {
-  const client = getValues('client')
-  const clients = client?.name ? [{ label: `${client.name} - ${client.phone}`, value: client.nit }] : []
-
+const HeadquarterForm = ({ theme, options }: HeadquarterFormProps) => {
   //to fill select searchable with cities-state-country
   const cityOptions = options.cities?.map((c) => ({
     value: c?._id,
     label: `${c.name || 'sin nombre'} - ${c.state?.name || 'sin departamento'} - ${c.state?.country?.name || 'sin país'}`
   })) || []
+
+  // const cityOptions = useMemo(() =>
+  //   options.groups?.flatMap(group => (
+  //     group.services.map(service => ({
+  //       value: service,
+  //       label: `${service} - ${group.name}`,
+  //       icon: HandHelpingIcon
+  //     }))
+  //   )) || [],
+  //   [options.groups]
+  // )
 
   if (options.isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -52,20 +56,6 @@ const HeadquarterForm = ({ theme, getValues, options }: HeadquarterFormProps) =>
               label="Dirección"
               name={`headquarter.address`}
               placeholder="Dirección de la sede"
-            />
-          },
-          {
-            name: "separator",
-            component: <Separator />
-          },
-          {
-            name: `headquarter.client`,
-            component: <SelectField
-              theme={theme}
-              label="Cliente"
-              options={clients}
-              name={`headquarter.client`}
-              placeholder="Selecciona el cliente"
             />
           },
           {

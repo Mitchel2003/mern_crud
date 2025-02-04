@@ -70,26 +70,28 @@ export const clientFlowSchema = z.object({
         .string({ required_error: "La dirección es requerida" })
         .min(3, "La dirección debe tener al menos 3 caracteres")
         .max(100, "La dirección debe tener menos de 100 caracteres"),
-      client: z
-        .string({ required_error: "El cliente es requerido" })
-        .min(1, "Debes seleccionar un cliente"),
       city: z
         .string({ required_error: "La ciudad es requerida" })
         .min(1, "Debes seleccionar una ciudad")
+        .refine(
+          (value) => {
+            const regularExpression = /^[0-9a-fA-F]{24}$/;/* standard uid */ return regularExpression.test(value)
+          }, { message: "Debes seleccionar una ciudad de la lista proporcionada" }
+        )
     })
   ),
   office: z.array(
     z.object({
-      name: z
-        .string({ required_error: "El nombre es requerido" })
-        .min(3, "El nombre debe tener al menos 3 caracteres")
-        .max(50, "El nombre debe tener menos de 50 caracteres"),
       headquarter: z
         .string({ required_error: "La sede es requerida" })
         .min(1, "Debes seleccionar una sede"),
       services: z
         .array(z.string({ required_error: "El servicio es requerido" }))
-        .min(1, "Debes seleccionar al menos un servicio")
+        .min(1, "Debes seleccionar al menos un servicio"),
+      name: z
+        .string({ required_error: "El nombre es requerido" })
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(50, "El nombre debe tener menos de 50 caracteres")
     })
   )
 })

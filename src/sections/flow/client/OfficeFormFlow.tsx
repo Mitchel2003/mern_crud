@@ -7,6 +7,7 @@ import { UseFormGetValues } from "react-hook-form"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 import { HandHelpingIcon } from "lucide-react"
+import { useMemo } from 'react'
 
 interface OfficeFormProps extends ThemeContextProps {
   options: { isLoading: boolean, groups: Group[] }
@@ -15,12 +16,19 @@ interface OfficeFormProps extends ThemeContextProps {
 
 const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
   const headquarter = getValues('headquarter') || []
-  const headquarters = headquarter.map((e: Headquarter) => ({ label: `${e.name} - ${e.address}`, value: e.address }))
+  const headquarters = headquarter.some((e: Headquarter) => e.name)
+    ? headquarter.map((e: Headquarter) => ({ value: `${e.name}-${e.address}`, label: `${e.name} - ${e.address}` })) : []
 
-  //to fill multi select with services-group
-  const serviceOptions = options.groups?.flatMap(group => (
-    group.services.map(service => ({ value: service, label: `${service} - ${group.name}`, icon: HandHelpingIcon }))
-  )) || []
+  const serviceOptions = useMemo(() =>
+    options.groups?.flatMap(group => (
+      group.services.map(service => ({
+        value: service,
+        label: `${service} - ${group.name}`,
+        icon: HandHelpingIcon
+      }))
+    )) || [],
+    [options.groups]
+  )
 
   if (options.isLoading) return <DashboardSkeleton theme={theme} />
   return (
@@ -36,15 +44,6 @@ const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
         titleButton="Añadir consultorio para esta sede"
         fields={[
           {
-            name: "office.name",
-            component: <InputField
-              theme={theme}
-              name="name"
-              label="Nombre"
-              placeholder="Nombre del consultorio"
-            />
-          },
-          {
             name: "office.headquarter",
             component: <SelectField
               theme={theme}
@@ -52,7 +51,6 @@ const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
               name="headquarter"
               options={headquarters}
               placeholder="Selecciona la sede"
-              span="Indica una sede referencia"
             />
           },
           {
@@ -65,6 +63,15 @@ const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
               options={serviceOptions}
               placeholder="Selecciona los servicios"
               span="Selecciona varios servicios para este consultorio"
+            />
+          },
+          {
+            name: "office.name",
+            component: <InputField
+              theme={theme}
+              name="name"
+              label="Nombre"
+              placeholder="Nombre del consultorio"
             />
           }
         ]}

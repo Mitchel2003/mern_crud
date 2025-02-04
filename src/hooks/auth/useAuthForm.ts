@@ -146,24 +146,24 @@ export const useClientFlow = (onSuccess?: () => void) => {
   })
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data) => {//working here... (check this)
+    onSubmit: async (data) => {
       const client = await createClient(data.client)
-      // Create headquarter in parallel
       await Promise.all(
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, client: client._id })
-
-          // Find offices for this headquarter
-          const officesForThisHq = data.office.filter((office: any) => office.headquarter.address === hq.address)
-
-          // Create offices in parallel
-          officesForThisHq.length > 0 && await Promise.all(
-            officesForThisHq.map(async (office: any) =>
-              await createOffice({ name: office.name, services: office.services, headquarter: headquarter._id })
-            )
+          const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
+          offices.length > 0 && await Promise.all(
+            offices.map(async (off: any) => {
+              // Obtener el grupo del primer servicio usando el serviceGroupMap
+              const group = off.serviceGroupMap?.get(off.services[0])
+              return createOffice({
+                name: off.name,
+                services: off.services,
+                group,
+                headquarter: headquarter._id
+              })
+            })
           )
-
-          return headquarter
         })
       )
       methods.reset()

@@ -51,11 +51,12 @@ const InputSearchableField = React.forwardRef<HTMLInputElement, InputSearchableF
               {...field}
               ref={ref}
               options={options}
+              value={field.value}
               disabled={disabled}
               placeholder={placeholder}
-              className={cn(
+              onChange={(e) => { field.onChange(e.target.value) }}
+              className={cn(disabled && "opacity-50 cursor-not-allowed",
                 error && "border-red-500",
-                disabled && "opacity-50 cursor-not-allowed",
                 className
               )}
             />
@@ -67,6 +68,6 @@ const InputSearchableField = React.forwardRef<HTMLInputElement, InputSearchableF
   )
 })
 
-InputSearchableField.displayName = "SearchableInputField"
+InputSearchableField.displayName = "InputSearchableField"
 
 export default InputSearchableField
