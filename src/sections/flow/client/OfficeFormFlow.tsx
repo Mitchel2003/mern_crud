@@ -16,8 +16,12 @@ interface OfficeFormProps extends ThemeContextProps {
 
 const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
   const headquarter = getValues('headquarter') || []
-  const headquarters = headquarter.some((e: Headquarter) => e.name)
-    ? headquarter.map((e: Headquarter) => ({ value: `${e.name}-${e.address}`, label: `${e.name} - ${e.address}` })) : []
+
+  const headquarterOptions = useMemo(() =>
+    headquarter.some((e: Headquarter) => e.name)
+      ? headquarter.map((e: Headquarter) => ({ value: `${e.name}-${e.address}`, label: `${e.name} - ${e.address}` })) : [],
+    [headquarter]
+  )
 
   const serviceOptions = useMemo(() =>
     options.groups?.flatMap(group => (
@@ -49,7 +53,7 @@ const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
               theme={theme}
               label="Sede"
               name="headquarter"
-              options={headquarters}
+              options={headquarterOptions}
               placeholder="Selecciona la sede"
             />
           },

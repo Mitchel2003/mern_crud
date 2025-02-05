@@ -152,18 +152,17 @@ export const useClientFlow = (onSuccess?: () => void) => {
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, client: client._id })
           const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
-          offices.length > 0 && await Promise.all(
-            offices.map(async (off: any) => {
-              // Obtener el grupo del primer servicio usando el serviceGroupMap
-              const group = off.serviceGroupMap?.get(off.services[0])
-              return createOffice({
-                name: off.name,
-                services: off.services,
-                group,
-                headquarter: headquarter._id
-              })
+          if (!offices.length) return
+
+          await Promise.all(offices.map(async (office) => {
+            const serviceGroup = groups?.find(group => group.services.includes(office.services[0]))
+            await createOffice({
+              name: office.name,
+              services: office.services,
+              headquarter: headquarter._id,
+              group: serviceGroup?.name ?? 'n/r'
             })
-          )
+          }))
         })
       )
       methods.reset()

@@ -11,7 +11,6 @@ export const useFormSubmit = <T extends FieldValues>({ onSubmit, onSuccess }: Fo
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault()
-    console.log(methods.getValues())
     methods.trigger().then(isValid => isValid && setOpen(true))
   }
 
