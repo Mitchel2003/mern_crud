@@ -15,7 +15,7 @@ const User = createContext<UserContext>(undefined)
  */
 export const useUserContext = () => {
   const context = useContext(User)
-  if (!context) throw new Error('Error al intentar usar userContext')
+  if (!context) throw new Error('useUser must be used within a UserProvider')
   return context
 }
 

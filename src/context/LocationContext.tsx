@@ -15,7 +15,7 @@ const Location = createContext<LocationContext>(undefined)
  */
 export const useLocationContext = () => {
   const context = useContext(Location)
-  if (!context) throw new Error('Error al intentar usar locationContext')
+  if (!context) throw new Error('useLocation must be used within a LocationProvider')
   return context
 }
 

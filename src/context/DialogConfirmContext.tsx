@@ -10,7 +10,7 @@ const DialogConfirm = createContext<DialogConfirmContext>(undefined)
  */
 export const useDialogConfirmContext = () => {
   const context = useContext(DialogConfirm)
-  if (!context) throw new Error('Error al intentar usar dialogConfirmContext')
+  if (!context) throw new Error('useDialogConfirm must be used within a DialogConfirmProvider')
   return context
 }
 

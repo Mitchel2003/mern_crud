@@ -15,7 +15,7 @@ const Format = createContext<FormatContext>(undefined)
  */
 export const useFormatContext = () => {
   const context = useContext(Format)
-  if (!context) throw new Error('Error al intentar usar formatContext')
+  if (!context) throw new Error('useFormat must be used within a FormatProvider')
   return context
 }
 
