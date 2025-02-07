@@ -1,8 +1,8 @@
 import { ThemeContextProps, Headquarter } from "@/interfaces/context.interface"
+import { groupsCollection as groups } from "@/utils/constants"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
 import SelectMulti from "#/common/fields/SelectMulti"
-import { groupsCollection } from "@/utils/constants"
 import { UseFormGetValues } from "react-hook-form"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
@@ -26,14 +26,14 @@ const OfficeForm = ({ theme, getValues }: OfficeFormProps) => {
   )
 
   const serviceOptions = useMemo(() =>
-    groupsCollection?.flatMap(group => (
+    groups?.flatMap(group => (
       group.services.map(service => ({
         label: `${service} - ${group.name}`,
         icon: HandHelpingIcon,
         value: service
       }))
     )) || [],
-    [groupsCollection]
+    [groups]
   )
 
   return (

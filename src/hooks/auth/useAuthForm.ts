@@ -1,14 +1,20 @@
-import { forgotPasswordDefaultValues, loginDefaultValues, clientDefaultValues, userDefaultValues, clientFlowDefaultValues } from "@/utils/constants"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { City, Client, Headquarter, User } from "@/interfaces/context.interface"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { groupsCollection } from "@/utils/constants"
 import { MapPinHouseIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import {
+  userDefaultValues,
+  loginDefaultValues,
+  clientDefaultValues,
+  clientFlowDefaultValues,
+  groupsCollection as groups,
+  forgotPasswordDefaultValues,
+} from "@/utils/constants"
 import {
   loginSchema, LoginFormProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
@@ -155,7 +161,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
           if (!offices.length) return
 
           await Promise.all(offices.map(async (office) => {
-            const serviceGroup = groupsCollection?.find(group => group.services.includes(office.services[0]))
+            const serviceGroup = groups?.find(group => group.services.includes(office.services[0]))
             await createOffice({
               name: office.name,
               services: office.services,
