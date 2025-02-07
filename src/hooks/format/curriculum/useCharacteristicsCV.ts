@@ -9,8 +9,8 @@ const useCharacteristicsCV = () => {
   })
 
   const submitData = (data: CurriculumFormProps) => ({
-    characteristics: data.characteristics,
-    recommendationsManufacturer: data.recommendationsManufacturer
+    characteristics: data?.characteristics ?? 'n/r',
+    recommendationsManufacturer: data?.recommendationsManufacturer ?? 'n/r'
   })
 
   return { mapValues, submitData }

@@ -45,7 +45,7 @@ const ClientFlowSection = ({ theme }: ClientFLowSectionProps) => {
                   <AnimatePresence mode="wait">
                     {index === 0 && <ClientFormFlow key="step1" {...methods} theme={theme} />}
                     {index === 1 && <HeadquarterFormFlow key="step2" {...methods} theme={theme} options={options?.headquarter || []} />}
-                    {index === 2 && <OfficeFormFlow key="step3" {...methods} theme={theme} options={options?.office || []} />}
+                    {index === 2 && <OfficeFormFlow key="step3" {...methods} theme={theme} />}
                   </AnimatePresence>
 
                   <WrapperNextStep

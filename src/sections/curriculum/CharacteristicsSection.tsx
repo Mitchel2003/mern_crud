@@ -9,10 +9,10 @@ const CharacteristicsSection = ({ theme }: CharacteristicsProps) => (
     <HeaderCustom
       to="component"
       theme={theme}
-      title="Características"
-      className="text-2xl font-bold"
-      span="Maximo 100 caracteres"
       iconSpan="warn"
+      title="Características"
+      span="Campos opcionales"
+      className="text-2xl font-light"
     />
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

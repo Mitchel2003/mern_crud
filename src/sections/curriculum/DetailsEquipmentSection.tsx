@@ -64,7 +64,8 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             placeholder="Seleccionar tipo"
             options={[
               { label: "compra", value: "compra" },
-              { label: "alquiler", value: "alquiler" }
+              { label: "alquiler", value: "alquiler" },
+              { label: "comodato", value: "comodato" }
             ]}
           />
           <SelectField

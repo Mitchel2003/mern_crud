@@ -47,10 +47,10 @@ export const curriculumSchema = z.object({
   //characteristics
   characteristics: z
     .string({ required_error: "Características son requeridas" })
-    .min(5, "Debes ingresar al menos 5 caracteres"),
+    .optional(),
   recommendationsManufacturer: z
     .string({ required_error: "Las recomendaciones del fabricante son requeridas" })
-    .min(5, "Debes ingresar al menos 5 caracteres"),
+    .optional(),
 
   //details
   datePurchase: z.date().optional().nullable(),

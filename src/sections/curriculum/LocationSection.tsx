@@ -1,5 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
+import { groupsCollection as groups } from "@/utils/constants"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"
@@ -16,9 +17,9 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
 
   const headquarters = options.headquarters?.filter((head) => head.client?._id === clientId)
   const offices = options.offices?.filter((office) => office.headquarter?._id === headquarterId)
-  const services = options.services?.filter((service) => {
-    const office = offices?.find((office) => office._id === officeId)
-    return office?.services.includes(service.name)
+  const services = groups.flatMap(group => group.services).filter(service => {
+    const office = offices?.find(office => office._id === officeId)
+    return office?.services.includes(service)
   })
 
   return (
@@ -60,7 +61,7 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
           theme={theme}
           name="service"
           label="Servicio"
-          options={services?.map((s) => ({ label: s.name, value: s.name })) || []}
+          options={services?.map((s) => ({ label: s, value: s })) || []}
           placeholder="Seleccionar servicio"
         />
       </div>

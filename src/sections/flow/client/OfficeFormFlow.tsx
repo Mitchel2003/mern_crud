@@ -1,8 +1,8 @@
-import { ThemeContextProps, Group, Headquarter } from "@/interfaces/context.interface"
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
+import { ThemeContextProps, Headquarter } from "@/interfaces/context.interface"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
 import SelectMulti from "#/common/fields/SelectMulti"
+import { groupsCollection } from "@/utils/constants"
 import { UseFormGetValues } from "react-hook-form"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
@@ -10,31 +10,32 @@ import { HandHelpingIcon } from "lucide-react"
 import { useMemo } from 'react'
 
 interface OfficeFormProps extends ThemeContextProps {
-  options: { isLoading: boolean, groups: Group[] }
-  getValues: UseFormGetValues<any>,
+  getValues: UseFormGetValues<any>
 }
 
-const OfficeForm = ({ theme, getValues, options }: OfficeFormProps) => {
+const OfficeForm = ({ theme, getValues }: OfficeFormProps) => {
   const headquarter = getValues('headquarter') || []
 
   const headquarterOptions = useMemo(() =>
     headquarter.some((e: Headquarter) => e.name)
-      ? headquarter.map((e: Headquarter) => ({ value: `${e.name}-${e.address}`, label: `${e.name} - ${e.address}` })) : [],
+      ? headquarter.map((e: Headquarter) => ({
+        label: `${e.name} - ${e.address}`,
+        value: `${e.name}-${e.address}`
+      })) : [],
     [headquarter]
   )
 
   const serviceOptions = useMemo(() =>
-    options.groups?.flatMap(group => (
+    groupsCollection?.flatMap(group => (
       group.services.map(service => ({
-        value: service,
         label: `${service} - ${group.name}`,
-        icon: HandHelpingIcon
+        icon: HandHelpingIcon,
+        value: service
       }))
     )) || [],
-    [options.groups]
+    [groupsCollection]
   )
 
-  if (options.isLoading) return <DashboardSkeleton theme={theme} />
   return (
     <FormWrapper
       theme={theme}

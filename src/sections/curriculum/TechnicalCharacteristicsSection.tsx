@@ -26,8 +26,8 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
       />
       <InputField
         theme={theme}
-        label="Amperaje (A)"
-        placeholder="Amperaje (A)"
+        label="Corriente (A)"
+        placeholder="Corriente (A)"
         name="technicalCharacteristics.amperage"
       />
       <InputField
@@ -35,7 +35,7 @@ const TechnicalCharacteristicsSection = ({ theme }: TechnicalCharacteristicsProp
         label="Potencia"
         placeholder="Potencia"
         name="technicalCharacteristics.power"
-        />
+      />
       <InputField
         theme={theme}
         label="Frecuencia (Hz)"

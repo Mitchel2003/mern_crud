@@ -1,10 +1,11 @@
 import { forgotPasswordDefaultValues, loginDefaultValues, clientDefaultValues, userDefaultValues, clientFlowDefaultValues } from "@/utils/constants"
-import { City, Client, Headquarter, User, Group } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
+import { City, Client, Headquarter, User } from "@/interfaces/context.interface"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { groupsCollection } from "@/utils/constants"
 import { MapPinHouseIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -136,7 +137,6 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createUser: createClient } = useUserMutation('client')
 
   const { fetchAllLocations } = useQueryLocation()
-  const { data: groups, isLoading: isLoadingGroups } = fetchAllLocations<Group>('group')
   const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
 
   const methods = useForm<ClientFlowProps>({
@@ -155,7 +155,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
           if (!offices.length) return
 
           await Promise.all(offices.map(async (office) => {
-            const serviceGroup = groups?.find(group => group.services.includes(office.services[0]))
+            const serviceGroup = groupsCollection?.find(group => group.services.includes(office.services[0]))
             await createOffice({
               name: office.name,
               services: office.services,
@@ -175,9 +175,6 @@ export const useClientFlow = (onSuccess?: () => void) => {
     currentStep,
     setCurrentStep,
     ...handleSubmit,
-    options: {
-      office: { groups: groups || [], isLoading: isLoadingGroups },
-      headquarter: { cities: cities || [], isLoading: isLoadingCities }
-    }
+    options: { headquarter: { cities: cities || [], isLoading: isLoadingCities } }
   }
 }
