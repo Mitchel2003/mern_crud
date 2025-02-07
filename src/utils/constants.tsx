@@ -5,17 +5,11 @@ import { NavItemProps } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
 export const formatDate: Intl.DateTimeFormatOptions = {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false
+  day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
 }
 
 export const links = () => {
   const { isAuth, logout, user } = useAuthContext()
-
   /*--------------------------------------------------guest--------------------------------------------------*/
   const navGuestItems: NavItemProps[] = [
     {/** home **/
@@ -39,7 +33,6 @@ export const links = () => {
       icon: Info
     }
   ]
-  /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------engineer--------------------------------------------------*/
   const navEngineerItems: NavItemProps[] = [
@@ -54,7 +47,6 @@ export const links = () => {
       icon: LogOut,
     }
   ]
-  /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------medical--------------------------------------------------*/
   const navMedicalItems: NavItemProps[] = [
@@ -69,7 +61,6 @@ export const links = () => {
       icon: LogOut,
     }
   ]
-  /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------admin--------------------------------------------------*/
   const navAdminItems: NavItemProps[] = [
@@ -181,7 +172,6 @@ export const links = () => {
       icon: LogOut,
     }
   ]
-  /*---------------------------------------------------------------------------------------------------------*/
 
   return !isAuth ? navGuestItems : (
     user?.role === 'admin'
@@ -314,11 +304,6 @@ export const clientFlowDefaultValues = {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------default style values--------------------------------------------------*/
-export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
-export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
-/*---------------------------------------------------------------------------------------------------------*/
-
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/
 export const navigationTabs = [{
   value: 'clients',
@@ -339,4 +324,31 @@ export const navigationTabs = [{
   paths: ['/location/offices', '/location/office', '/location/office/'],
   baseRoute: '/location/offices'
 }]
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------groups and services--------------------------------------------------*/
+export const groupsCollection: { [key: string]: string[] } = {
+  'Consulta externa': [
+    'Consulta externa general',
+    'Consulta externa especialidades medicas',
+    'Consulta odontologica general',
+    'Consulta odontologica especializada'
+  ],
+  'Apoyo diagnostico y complementación terapéutica': [
+    'Toma de muestras de laboratorio clínico',
+    'Laboratorio de patología',
+    'Laboratorio clínico',
+    'Electrodiagnostico',
+    'Radioterapia'
+  ],
+  'Urgencias': [
+    'Urgencias de baja complejidad',
+    'Urgencias de mediana y alta complejidad'
+  ]
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default style values--------------------------------------------------*/
+export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
+export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
 /*---------------------------------------------------------------------------------------------------------*/
