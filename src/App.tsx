@@ -15,8 +15,6 @@ import Maintenance from "@/pages/Maintenance";
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
 import Office from "@/pages/Office";
-import Service from "@/pages/Serv";
-import Group from "@/pages/Group";
 import State from "@/pages/State";
 import City from "@/pages/City";
 
@@ -76,14 +74,6 @@ function App() {
                       <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
                       {/* location routes */}
-                      <Route path="/location/group" element={<Group />} /> {/*new group*/}
-                      <Route path="/location/groups" element={<Group />} /> {/*list groups*/}
-                      <Route path="/location/group/:id" element={<Group />} /> {/*edit group*/}
-
-                      <Route path="/location/service" element={<Service />} /> {/*new service*/}
-                      <Route path="/location/services" element={<Service />} /> {/*list services*/}
-                      <Route path="/location/service/:id" element={<Service />} /> {/*edit service*/}
-
                       <Route path="/location/office" element={<Office />} /> {/*new office*/}
                       <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
                       <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}

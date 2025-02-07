@@ -1,98 +1,19 @@
-import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, serviceDefaultValues, groupDefaultValues, stateDefaultValues } from "@/utils/constants"
-import { City, Client, Country, State, Headquarter, Office, Service, Group } from "@/interfaces/context.interface"
+import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/utils/constants"
+import { City, Client, Country, State, Headquarter, Office } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { HandHelpingIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 
 import {
   citySchema, CityFormProps,
   stateSchema, StateFormProps,
-  countrySchema, CountryFormProps,
-  headquarterSchema, HeadquarterFormProps,
-  groupSchema, GroupFormProps,
   officeSchema, OfficeFormProps,
-  serviceSchema, ServiceFormProps,
+  countrySchema, CountryFormProps,
+  headquarterSchema, HeadquarterFormProps
 } from "@/schemas/location/location.schema"
-
-/**
- * Hook personalizado para manejar el formulario de creación o actualización de servicios
- * @param id - ID del servicio a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useServiceForm = (id?: string, onSuccess?: () => void) => {
-  const { data: service } = useQueryLocation().fetchLocationById<Service>('service', id as string)
-  const { createLocation, updateLocation, isLoading } = useLocationMutation('service')
-
-  const methods = useForm<ServiceFormProps>({
-    resolver: zodResolver(serviceSchema),
-    defaultValues: serviceDefaultValues,
-    mode: "onSubmit",
-  })
-
-  useEffect(() => {
-    service && methods.reset({
-      name: service.name
-    })
-  }, [service])
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
-      id ? updateLocation({ id, data }) : createLocation(data)
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    isLoading,
-    ...handleSubmit
-  }
-}
-
-/**
- * Hook personalizado para manejar el formulario de creación o actualización de grupos
- * @param id - ID del grupo a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useGroupForm = (id?: string, onSuccess?: () => void) => {
-  const { createLocation, updateLocation, isLoading } = useLocationMutation('group')
-  const { fetchAllLocations, fetchLocationById } = useQueryLocation()
-  const { data: group } = fetchLocationById<Group>('group', id as string)
-  const { data: services } = fetchAllLocations<Service>('service')
-
-  const methods = useForm<GroupFormProps>({
-    resolver: zodResolver(groupSchema),
-    defaultValues: groupDefaultValues,
-    mode: "onSubmit",
-  })
-
-  useEffect(() => {
-    group && methods.reset({
-      name: group.name,
-      services: group.services || [],
-    })
-  }, [group])
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
-      id ? updateLocation({ id, data }) : createLocation(data)
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    isLoading,
-    ...handleSubmit,
-    optionsService: services?.map((e) => ({ value: e.name, label: e.name, icon: HandHelpingIcon })) || [],
-  }
-}
 
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de oficinas
@@ -104,7 +25,6 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   const { fetchAllLocations, fetchLocationById } = useQueryLocation()
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
   const { data: office } = fetchLocationById<Office>('office', id as string)
-  const { data: groups } = fetchAllLocations<Group>('group')
 
   const methods = useForm<OfficeFormProps>({
     resolver: zodResolver(officeSchema),
@@ -133,10 +53,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: {
-      groups: groups || [],
-      headquarter: headquarters || [],
-    }
+    options: { headquarter: headquarters || [] }
   }
 }
 

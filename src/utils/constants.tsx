@@ -1,4 +1,4 @@
-import { LucideHandHelping, LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, DoorOpen, LucideMap, GitPullRequestArrowIcon, ChartBarStackedIcon, BriefcaseBusiness, Users, UserSquare } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -127,22 +127,6 @@ export const links = () => {
       label: 'Complementarios',
       icon: GitPullRequestArrowIcon,
       subItems: [
-        {// clients
-          label: 'Clientes',
-          icon: DoorOpen,
-          subItems: [
-            {// groups
-              icon: ChartBarStackedIcon,
-              label: 'Grupos',
-              href: '/location/groups',
-            },
-            {// services
-              label: 'Servicios',
-              icon: LucideHandHelping,
-              href: '/location/services',
-            },
-          ]
-        },
         {/** locations **/
           label: 'Ubicaciones',
           icon: LucideMap,
@@ -288,8 +272,6 @@ export const stateDefaultValues = { name: '', country: '' }
 export const cityDefaultValues = { name: '', state: '' }
 export const headquarterDefaultValues = { name: '', address: '', client: '', city: '', state: '', country: '' }
 export const officeDefaultValues = { name: '', group: '', headquarter: '', services: [] }
-export const groupDefaultValues = { name: '', services: [] }
-export const serviceDefaultValues = { name: '' }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/
@@ -327,25 +309,34 @@ export const navigationTabs = [{
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------groups and services--------------------------------------------------*/
-export const groupsCollection: { [key: string]: string[] } = {
-  'Consulta externa': [
+export interface ServiceGroup {
+  services: string[];
+  name: string;
+}
+
+export const groupsCollection: ServiceGroup[] = [{
+  name: 'Consulta externa',
+  services: [
     'Consulta externa general',
-    'Consulta externa especialidades medicas',
     'Consulta odontologica general',
-    'Consulta odontologica especializada'
-  ],
-  'Apoyo diagnostico y complementación terapéutica': [
-    'Toma de muestras de laboratorio clínico',
-    'Laboratorio de patología',
-    'Laboratorio clínico',
+    'Consulta odontologica especializada',
+    'Consulta externa especialidades medicas',
+  ]
+}, {
+  name: 'Apoyo diagnostico y complementación terapéutica',
+  services: [
+    'Radioterapia',
     'Electrodiagnostico',
-    'Radioterapia'
-  ],
-  'Urgencias': [
+    'Laboratorio clínico',
+    'Toma de muestras de laboratorio clínico',
+  ]
+}, {
+  name: 'Urgencias',
+  services: [
     'Urgencias de baja complejidad',
     'Urgencias de mediana y alta complejidad'
   ]
-}
+}]
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default style values--------------------------------------------------*/

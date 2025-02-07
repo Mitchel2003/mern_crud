@@ -1,3 +1,4 @@
+import { groupsCollection, type ServiceGroup } from "@/utils/constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useOfficeForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
@@ -22,7 +23,7 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
   const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
   const groupName = methods.watch('group')
 
-  const groupSelected = options.groups.find((g) => g.name === groupName)
+  const groupSelected = groupsCollection.find((group) => group.name === groupName)
   if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
     <>
@@ -68,7 +69,7 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
                   iconSpan="info"
                   span="Refiere al grupo al que pertenece este consultorio"
                   placeholder="Selecciona el grupo"
-                  options={options.groups?.map((e) => ({ value: e.name, label: e.name })) || []}
+                  options={groupsCollection?.map((e) => ({ value: e.name, label: e.name })) || []}
                 />
                 <SelectMulti
                   theme={theme}
