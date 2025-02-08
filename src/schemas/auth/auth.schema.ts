@@ -42,7 +42,7 @@ export const clientSchema = z.object({
   name: z
     .string()
     .min(5, "El nombre es requerido")
-    .max(35, "El nombre es demasiado largo"),
+    .max(50, "El nombre es demasiado largo"),
   email: z
     .string()
     .email("Correo electrónico inválido"),
