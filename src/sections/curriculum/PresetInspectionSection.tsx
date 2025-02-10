@@ -103,10 +103,13 @@ const inspectionFields = ({ theme }: ThemeContextProps): DialogField[] => {
 }
 
 const inspectionOptions = [
-  "Pedal", "Reles", "On/off", "Agujas", "Teclado", "Jeringas", "Sensores", "Pantalla", "Objetivos", "Aperturas",
-  "Inspección física", "Manómetro", "Líneas de reactivos", "Manómetros", "Pieza de alta", "Transductores", "Jeringa triple",
-  "Instrumentos del equipo", "Líneas de desecho", "Prueba de baterías", "Pruebas de seguridad", "Pruebas de funcionamiento",
-  "Revisión y ajustes hidráulicos", "Revisión y ajustes eléctricos", "Revisión y ajustes mecánicos", "Revisión y ajustes neumáticos",
-  "Cámaras de wbc/rbc", "Desempeño del equipo", "Revoluciones y/o velocidad", "Ventilación de fuga a tierra",
-  "Verificación de polo a tierra", "Verificación de presión", "Verificación de temperatura"
+  "Pedal", "Reles", "On/off", "Agujas", "Teclado", "Jeringas", "Sensores", "Poleas", "Accesorios", "Motores",
+  "Otoscopio", "Pantalla", "Objetivos", "Aperturas", "Electrodos", "Transductores", "Jeringa triple", "Inspección física",
+  "Presostato", "Temporizador", "Resistencia", "Manómetros", "Mangeras", "Rodamientos", "Escobillas", "Pieza de alta", "Pieza de baja",
+  "Oftalmoscópio", "Celda de flujo", "Baño serológico", "Bomba peristaltica", "Bombilla o lampara", "Cooler/ventilador", "Electro-valvulas",
+  "Líneas de desecho", "Linea de agua", "Líneas de reactivos", "Mangera peristaltica", "Cámaras de wbc/rbc", "Ventilación de fuga a tierra",
+  "Limpieza general", "Limpieza de sistema optico", "Prueba de baterías", "Pruebas de seguridad", "Pruebas de funcionamiento",
+  "Revisión y ajustes hidráulicos", "Revisión y ajustes eléctricos", "Revisión y ajustes mecánicos", "Revisión y ajustes neumáticos", "Revisión de empaques",
+  "Verificación de polo a tierra", "Verificación de presión", "Verificación de temperatura", "Verificación de volumen", "Verificación de vacio",
+  "Instrumentos del equipo", "Desempeño del equipo", "Rejilla y/o porta objetos", "Ajuste de puertas y/o empaques", "Revoluciones y/o velocidad",
 ]
