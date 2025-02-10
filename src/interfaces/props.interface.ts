@@ -7,10 +7,10 @@ export interface Props { children?: React.ReactNode }
 /*---------------------- ui components ----------------------*/
 // items actions to dropdown (data-table)
 export interface ActionProps {
-  label: string
-  icon: LucideIcon
-  className?: string
   onClick: () => void | Promise<void>
+  className?: string
+  icon: LucideIcon
+  label: string
 }
 
 /*---------------------- Reusables ----------------------*/
