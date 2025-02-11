@@ -3,7 +3,8 @@
 ### Vite + TypeScript
 
 ### --------------------------------------Typescript documentation-------------------------------------- ###
-react-hook-form (advanced): [text](https://www.react-hook-form.com/advanced-usage/)
+//comment
+"!Que cosa tan linda! woooow, eso estuvo increible !eres tan profesional! es increible como no solo entendiste la estructura de mi base de datos, sino que empleamos una solucion escalable y facil de mantener, me fascina, obviamente tuve que ajustar un poco, pero solo un poquito, la idea central me la diste tú, y quiero darte tu merito, es increible, me dejaste sin aliento, wow;"
 ### ---------------------------------------------------------------------------------------------------- ###
 
 ### ---------------------------------------------------------------------------------------------------- ###
