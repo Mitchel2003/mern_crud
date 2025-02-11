@@ -91,28 +91,28 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
         {/* ---------------------- information references ---------------------- */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* -------------------- Representative -------------------- */}
+          {/* -------------------- Manufacturer -------------------- */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
-              name="representative"
-              label="Representante"
+              name="manufacturer"
+              label="Fabricante"
               className='text-2xl font-light'
-              placeholder="Seleccionar representante"
-              options={options.representatives}
+              placeholder="Seleccionar fabricante"
+              options={options.manufacturers}
             />
             <CardIterable
               theme={theme}
-              name="newRepresentative"
-              titleButton="Nuevo representante"
-              disabled={!isDirtyField('newRepresentative', ['name', 'phone', 'city']) || hasErrors('newRepresentative')}
-              fields={representativeFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
+              name="newManufacturer"
+              titleButton="Nuevo fabricante"
+              disabled={!isDirtyField('newManufacturer', ['name', 'phone', 'country']) || hasErrors('newManufacturer')}
+              fields={manufacturerFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => ConfirmTrigger({
-                resetData: { name: '', phone: '', city: '' },
-                description: '¿Deseas añadir un representante?',
-                fieldName: 'newRepresentative',
-                title: 'Agregar representante',
-                onSubmit: onSubmitRep,
+                resetData: { name: '', phone: '', country: '' },
+                description: '¿Deseas añadir un fabricante?',
+                fieldName: 'newManufacturer',
+                title: 'Agregar fabricante',
+                onSubmit: onSubmitMan,
               })}
             />
           </div>
@@ -143,28 +143,28 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             />
           </div>
 
-          {/* -------------------- Manufacturer -------------------- */}
+          {/* -------------------- Representative -------------------- */}
           <div className="flex flex-col gap-2">
             <SelectField
               theme={theme}
-              name="manufacturer"
-              label="Fabricante"
+              name="representative"
+              label="Representante"
               className='text-2xl font-light'
-              placeholder="Seleccionar fabricante"
-              options={options.manufacturers}
+              placeholder="Seleccionar representante"
+              options={options.representatives}
             />
             <CardIterable
               theme={theme}
-              name="newManufacturer"
-              titleButton="Nuevo fabricante"
-              disabled={!isDirtyField('newManufacturer', ['name', 'phone', 'country']) || hasErrors('newManufacturer')}
-              fields={manufacturerFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
+              name="newRepresentative"
+              titleButton="Nuevo representante"
+              disabled={!isDirtyField('newRepresentative', ['name', 'phone', 'city']) || hasErrors('newRepresentative')}
+              fields={representativeFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => ConfirmTrigger({
-                resetData: { name: '', phone: '', country: '' },
-                description: '¿Deseas añadir un fabricante?',
-                fieldName: 'newManufacturer',
-                title: 'Agregar fabricante',
-                onSubmit: onSubmitMan,
+                resetData: { name: '', phone: '', city: '' },
+                description: '¿Deseas añadir un representante?',
+                fieldName: 'newRepresentative',
+                title: 'Agregar representante',
+                onSubmit: onSubmitRep,
               })}
             />
           </div>
