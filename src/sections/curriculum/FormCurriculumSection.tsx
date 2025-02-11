@@ -3,12 +3,11 @@ import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { FormProvider } from "react-hook-form"
 import React, { useMemo } from "react"
-import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
-import { Card, CardContent } from "#/ui/card"
+import { CardContent } from "#/ui/card"
 
 import TechnicalCharacteristicsSection from "./TechnicalCharacteristicsSection"
 import EquipmentClassificationSection from "./EquipmentClassificationSection"
@@ -20,13 +19,21 @@ import MaintenanceSection from "./MaintenanceSection"
 import BasicDataSection from "./BasicDataSection"
 import LocationSection from "./LocationSection"
 
-interface FormCurriculumSectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
-  id: string | undefined
+export interface FooterProps {
+  isSubmitting: boolean
+  onSubmit: () => void
+  onReset: () => void
+  isDirty: boolean
 }
 
-const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionProps) => {
-  const { open, methods, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, () => { onChange('table') })
+interface FormCurriculumSectionProps extends ThemeContextProps {
+  footer?: React.ComponentType<FooterProps>
+  id: string | undefined
+  onChange: () => void
+}
+
+const FormCurriculumSection = ({ id, theme, onChange, footer: Footer }: FormCurriculumSectionProps) => {
+  const { open, methods, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, onChange)
 
   const formSections = useMemo(() => [
     <LocationSection key="location" theme={theme} />,
@@ -44,41 +51,39 @@ const FormCurriculumSection = ({ id, theme, onChange }: FormCurriculumSectionPro
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit}>
-          <div className="flex justify-center">
-            <Card
-              className={cn(
-                'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
-                'backdrop-filter backdrop-blur-lg',
-                theme === 'dark'
-                  ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-                  : 'bg-white hover:shadow-purple-500/60'
-              )}
-            >
-              {/* -------------------- Header form -------------------- */}
-              <HeaderForm
-                theme={theme}
-                title={id ? "Edición hoja de vida de equipo" : "Registro hoja de vida de equipo"}
-                description={id ? "Actualiza los datos de la hoja de vida de equipo" : "Diligencia la información para registrar una hoja de vida de equipo"}
-                breadcrumbs={[
-                  { description: "Codigo: FHV-01" },
-                  { description: "Vigente desde: 01/08/2019" },
-                  { description: "Version: 02" }
-                ]}
-              />
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title={id ? "Edición hoja de vida de equipo" : "Registro hoja de vida de equipo"}
+            description={id ? "Actualiza los datos de la hoja de vida de equipo" : "Diligencia la información para registrar una hoja de vida de equipo"}
+            breadcrumbs={[
+              { description: "Codigo: FHV-01" },
+              { description: "Vigente desde: 01/08/2019" },
+              { description: "Version: 02" }
+            ]}
+          />
 
-              {/* -------------------- Content form -------------------- */}
-              <CardContent className="pt-6 space-y-8">
-                <RenderFormat format={formSections} />
-              </CardContent>
+          {/* -------------------- Content form -------------------- */}
+          <CardContent className="pt-6 space-y-8">
+            <RenderFormat format={formSections} />
+          </CardContent>
 
-              <SubmitFooter
-                theme={theme}
-                to="/form/curriculum"
-                disabled={!methods.formState.isDirty}
-                onCancel={() => { methods.reset(); onChange('table') }}
-              />
-            </Card>
-          </div>
+          {/* -------------------- Footer -------------------- */}
+          {!Footer ? (
+            <SubmitFooter
+              theme={theme}
+              to="/form/curriculum"
+              disabled={!methods.formState.isDirty}
+              onCancel={() => { methods.reset(); onChange?.() }}
+            />
+          ) : (
+            <Footer
+              onReset={methods.reset}
+              onSubmit={handleSubmit}
+              isDirty={methods.formState.isDirty}
+              isSubmitting={methods.formState.isSubmitting}
+            />
+          )}
         </form>
       </FormProvider>
 

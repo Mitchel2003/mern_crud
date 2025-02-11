@@ -2,6 +2,14 @@ import HeaderCustom from "#/common/elements/HeaderCustom"
 import CheckboxField from "#/common/fields/Checkbox"
 import SelectField from "#/common/fields/Select"
 import { Separator } from "#/ui/separator"
+import {
+  biomedicalCollection as biomedicalClassification,
+  technologyCollection as technologyPredominant,
+  typeClassCollection as typeClassification,
+  useClassCollection as useClassification,
+  powerSupplyCollection as powerSupply,
+  riskCollection as risks
+} from '@/utils/constants'
 
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
@@ -43,46 +51,28 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           label="Tipo"
           name="typeClassification"
           placeholder="Seleccionar tipo"
-          options={[
-            { label: "fijo", value: "fijo" },
-            { label: "movil", value: "movil" }
-          ]}
+          options={typeClassification.map(e => ({ label: e, value: e }))}
         />
         <SelectField
           theme={theme}
           name="useClassification"
           label="Clasificación por uso"
           placeholder="Seleccionar clasificación"
-          options={[
-            { label: "medico", value: "medico" },
-            { label: "basico", value: "basico" },
-            { label: "apoyo", value: "apoyo" }
-          ]}
+          options={useClassification.map(e => ({ label: e, value: e }))}
         />
         <SelectField
           theme={theme}
           name="biomedicalClassification"
           label="Clasificación biomédica"
           placeholder="Seleccionar clasificación"
-          options={[
-            { label: "diagnostico", value: "diagnostico" },
-            { label: "tratamiento", value: "tratamiento" },
-            { label: "prevención", value: "prevención" },
-            { label: "rehabilitación", value: "rehabilitación" },
-            { label: "analisis", value: "analisis" }
-          ]}
+          options={biomedicalClassification.map(e => ({ label: e, value: e }))}
         />
         <SelectField
           theme={theme}
           name="riskClassification"
           label="Clasificación riesgo"
           placeholder="Seleccionar riesgo"
-          options={[
-            { label: "I", value: "I" },
-            { label: "IIA", value: "IIA" },
-            { label: "IIB", value: "IIB" },
-            { label: "III", value: "III" }
-          ]}
+          options={risks.map(e => ({ label: e, value: e }))}
         />
       </div>
 
@@ -92,8 +82,8 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           theme={theme}
           isMultiple={true}
           name="powerSupply"
+          options={powerSupply}
           label="Fuentes de alimentacion"
-          options={['agua', 'aire', 'gas', 'vapor', 'electricidad']}
         />
 
         {/* separator vertial to md */}
@@ -117,7 +107,7 @@ const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
           isMultiple={true}
           name="technologyPredominant"
           label="Tecnología predominante"
-          options={['mecanico', 'electrico', 'electronico', 'hidraulico', 'neumatico']}
+          options={technologyPredominant}
         />
       </div>
     </div>

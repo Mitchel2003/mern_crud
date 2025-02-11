@@ -1,6 +1,6 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Accessory, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"

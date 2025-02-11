@@ -1,4 +1,4 @@
-import { FileReferenceDB, isAxiosResponse } from "@/interfaces/db.interface"
+import { FileReferenceDB, isAxiosResponse, Paginate } from "@/interfaces/db.interface"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { useLoadingScreen } from "@/hooks/ui/useLoading"
@@ -77,6 +77,23 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
     } catch (e: unknown) {
       isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
       return []
+    } finally { setLoadingStatus() }
+  }
+
+  /**
+   * Obtiene todos los formatos de un tipo específico por una consulta, aplicando paginación.
+   * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
+   * @param {object} query - La consulta, corresponde a un criterio de busqueda.
+   * @returns {Promise<Paginate<any>>} Un array con los datos de todos los formatos.
+   */
+  const getByPaginate = async (type: FormatType, query: object): Promise<Paginate<any>> => {
+    setLoadingStatus('Buscando por consulta...')
+    try {
+      const response = await useApi(type).getByQuery(query)
+      return response.data
+    } catch (e: unknown) {
+      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+      return { data: [], totalCount: 0, pageCount: 0 }
     } finally { setLoadingStatus() }
   }
 
@@ -204,6 +221,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       getAll,
       getById,
       getByQuery,
+      getByPaginate,
       create,
       update,
       delete: delete_,

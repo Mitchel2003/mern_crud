@@ -1,3 +1,5 @@
+import { AlertCircle, AlertOctagon, AlertTriangle, CircleHelpIcon, Info } from "lucide-react"
+import { Curriculum } from "@/interfaces/context.interface"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -16,4 +18,55 @@ export const processFile = (data: File): Promise<string> => {
     reader.onloadend = () => resolve((reader.result as string).split(',')[1])
     reader.readAsDataURL(data)
   })
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------data-table-advanced--------------------------------------------------*/
+export function formatDate(date: Date | string | number, opts: Intl.DateTimeFormatOptions = {}) {
+  return new Intl.DateTimeFormat("en-US", {
+    year: opts.year ?? "numeric",
+    month: opts.month ?? "long",
+    day: opts.day ?? "numeric",
+    ...opts,
+  }).format(new Date(date))
+}
+
+export function toSentenceCase(str: string) {
+  return str
+    .replace(/_/g, " ")
+    .replace(/([A-Z])/g, " $1")
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase())
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** @see https://github.com/radix-ui/primitives/blob/main/packages/core/primitive/src/primitive.tsx */
+export function composeEventHandlers<E>(
+  originalEventHandler?: (event: E) => void,
+  ourEventHandler?: (event: E) => void,
+  { checkForDefaultPrevented = true } = {},
+) {
+  const handleEvent = (event: E) => {
+    originalEventHandler?.(event)
+    if (checkForDefaultPrevented === false || !(event as unknown as Event).defaultPrevented) {
+      ourEventHandler?.(event)
+    }
+  }
+  return handleEvent
+}
+
+/**
+ * Returns the appropriate risk icon based on the provided risk.
+ * @param risk - The status from curriculum.
+ * @returns A React component representing the risk icon.
+ */
+export function getRiskIcon(risk: Curriculum['riskClassification']) {
+  const risksIcons = {
+    I: AlertOctagon,
+    IIA: AlertTriangle,
+    IIB: AlertCircle,
+    III: Info
+  }
+  return risksIcons[risk] || CircleHelpIcon
 }

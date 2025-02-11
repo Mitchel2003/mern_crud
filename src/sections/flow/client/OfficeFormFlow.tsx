@@ -1,5 +1,5 @@
 import { ThemeContextProps, Headquarter } from "@/interfaces/context.interface"
-import { groupsCollection as groups } from "@/utils/constants"
+import { groupCollection as groups } from "@/utils/constants"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
 import SelectMulti from "#/common/fields/SelectMulti"

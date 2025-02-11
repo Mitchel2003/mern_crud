@@ -1,8 +1,10 @@
-import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from '@/interfaces/hook.interface'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { FileReferenceDB } from '@/interfaces/db.interface'
-import { FormatType } from '@/interfaces/context.interface'
-import { useFormatContext } from '@/context/FormatContext'
+import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
+import { convertToMongoQuery, buildSortOptions, buildPaginationOptions } from "@/lib/mongodb-filters"
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { FileReferenceDB } from "@/interfaces/db.interface"
+import { SearchParams } from "@/types/table-advanced.types"
+import { FormatType } from "@/interfaces/context.interface"
+import { useFormatContext } from "@/context/FormatContext"
 
 // Keys constantes para mejor mantenimiento
 const QUERY_KEYS = {
@@ -41,6 +43,26 @@ export const useQueryFormat = (): QueryReact_Format => {
     enabled: Boolean(query)
   })
 
+  // Buscar formato por término, aplicando paginación y filtros
+  const fetchFormatByPaginate = <T>(path: FormatType, search: SearchParams, filters: any[]) => useQuery({
+    queryKey: [
+      ...QUERY_KEYS.formats(path),
+      search.page,
+      search.perPage,
+      search.sort,
+      search.filters
+    ],
+    queryFn: async () => {
+      const sort = buildSortOptions(search.sort)
+      const query = convertToMongoQuery(search, filters)
+      const paginationOptions = buildPaginationOptions(Number(search.page), Number(search.perPage))
+      return await format.getByPaginate<T>(path, { sort, query, ...paginationOptions })
+    },
+    select: (data) => data || { data: [], totalCount: 0, pageCount: 0 },
+    enabled: Boolean(search.page) && Boolean(search.perPage),
+    initialData: { data: [], totalCount: 0, pageCount: 0 }
+  })
+
   // Obtener todos los archivos de un formato
   const fetchAllFiles = <T>(path: FormatType, data: FileReferenceDB) => useQuery({
     queryKey: QUERY_KEYS.files(path, data),
@@ -54,6 +76,7 @@ export const useQueryFormat = (): QueryReact_Format => {
     fetchAllFormats,
     fetchFormatById,
     fetchFormatByQuery,
+    fetchFormatByPaginate,
     fetchAllFiles
   }
 }

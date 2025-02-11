@@ -1,5 +1,5 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { groupsCollection as groups } from "@/utils/constants"
+import { groupCollection as groups } from "@/utils/constants"
 import { useOfficeForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"

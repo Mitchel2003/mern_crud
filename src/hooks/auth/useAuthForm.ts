@@ -12,7 +12,7 @@ import {
   loginDefaultValues,
   clientDefaultValues,
   clientFlowDefaultValues,
-  groupsCollection as groups,
+  groupCollection as groups,
   forgotPasswordDefaultValues,
 } from "@/utils/constants"
 import {

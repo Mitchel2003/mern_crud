@@ -15,6 +15,12 @@ export function isAxiosResponse(e: unknown): e is AxiosResponse {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
+export interface Paginate<T> {
+  totalCount: number
+  pageCount: number
+  data: T[]
+}
+
 export type BaseMDB = {
   _id: string
   createdAt: Date

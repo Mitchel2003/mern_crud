@@ -1,6 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
-import { groupsCollection as groups } from "@/utils/constants"
+import { groupCollection as groups } from "@/utils/constants"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"

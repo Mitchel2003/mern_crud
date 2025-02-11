@@ -1,6 +1,7 @@
 import { FormatType, LocationType, UserType } from "@/interfaces/context.interface"
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
-import { FileReferenceDB } from "@/interfaces/db.interface"
+import { FileReferenceDB, Paginate } from "@/interfaces/db.interface"
+import { SearchParams } from "@/types/table-advanced.types"
 
 export interface FileMutationProps extends FileReferenceDB { }
 export interface UpdateMutationProps { id: string; data: Partial<any> }
@@ -42,6 +43,7 @@ export type QueryReact_Format = {
   fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
   fetchFormatById: <T>(path: FormatType, id: string) => UseQueryResult<T | undefined, Error>
   fetchFormatByQuery: <T>(path: FormatType, query: object) => UseQueryResult<T[], Error>
+  fetchFormatByPaginate: <T>(path: FormatType, search: SearchParams, filters: any[]) => UseQueryResult<Paginate<T>, Error>
   fetchAllFiles: <T>(path: FormatType, data: FileReferenceDB) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Format = {

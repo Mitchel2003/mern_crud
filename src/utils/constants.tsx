@@ -2,6 +2,7 @@ import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, Us
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
+import { Curriculum } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
 
 export const formatDate: Intl.DateTimeFormatOptions = {
@@ -309,12 +310,8 @@ export const navigationTabs = [{
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------groups and services--------------------------------------------------*/
-export interface ServiceGroup {
-  services: string[];
-  name: string;
-}
-
-export const groupsCollection: ServiceGroup[] = [{
+export interface ServiceGroup { name: string, services: string[] }
+export const groupCollection: ServiceGroup[] = [{
   name: 'Consulta externa',
   services: [
     'Consulta externa general',
@@ -337,6 +334,25 @@ export const groupsCollection: ServiceGroup[] = [{
     'Urgencias de mediana y alta complejidad'
   ]
 }]
+
+export const riskCollection: Curriculum['riskClassification'][] = [
+  'I', 'IIA', 'IIB', 'III'
+]
+export const typeClassCollection: Curriculum['typeClassification'][] = [
+  'fijo', 'móvil'
+]
+export const useClassCollection: Curriculum['useClassification'][] = [
+  'médico', 'básico', 'apóyo'
+]
+export const powerSupplyCollection: Curriculum['powerSupply'] = [
+  'agua', 'aire', 'gas', 'vapor', 'electricidad', 'ninguno'
+]
+export const technologyCollection: Curriculum['technologyPredominant'] = [
+  'mecánico', 'eléctrico', 'electrónico', 'hidráulico', 'neumático'
+]
+export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
+  'diagnóstico', 'tratamiento', 'prevención', 'rehabilitación', 'análisis de laboratorio'
+]
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default style values--------------------------------------------------*/

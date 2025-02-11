@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 
 import TableCurriculumSection from './TableCurriculumSection'
 import FormCurriculumSection from './FormCurriculumSection'
+import { Card } from '@/components/ui/card'
 const route = '/form/curriculum'
 
 interface CurriculumSectionProps extends ThemeContextProps { id: string | undefined }
@@ -53,21 +54,33 @@ const CurriculumSection = ({ theme, id }: CurriculumSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCurriculumSection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableCurriculumSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormCurriculumSection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <CardForm id={id} theme={theme} onChange={() => handle('table')} />
         </TabsContent>
       </Tabs>
     </div>
   )
 }
 
-export default CurriculumSection 
+export default CurriculumSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+interface CardFormCurriculumSectionProps extends ThemeContextProps { id: string | undefined, onChange: () => void }
+const CardForm = ({ id, theme, onChange }: CardFormCurriculumSectionProps) => (
+  <div className="flex justify-center">
+    <Card
+      className={cn(
+        'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
+        'backdrop-filter backdrop-blur-lg',
+        theme === 'dark'
+          ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
+          : 'bg-white hover:shadow-purple-500/60'
+      )}
+    >
+      <FormCurriculumSection id={id} theme={theme} onChange={onChange} />
+    </Card>
+  </div>
+)

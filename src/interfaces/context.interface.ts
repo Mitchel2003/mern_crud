@@ -1,4 +1,4 @@
-import { BaseMDB, FileReferenceDB } from "@/interfaces/db.interface"
+import { BaseMDB, FileReferenceDB, Paginate } from "@/interfaces/db.interface"
 
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
@@ -149,12 +149,12 @@ export type Curriculum = BaseMDB & {
   price: string
 
   //equipment
-  useClassification: string
-  typeClassification: string
-  biomedicalClassification: string
-  riskClassification: string
-  technologyPredominant: string[]
-  powerSupply: string[]
+  useClassification: 'médico' | 'básico' | 'apóyo'
+  typeClassification: 'fijo' | 'móvil'
+  biomedicalClassification: 'diagnóstico' | 'tratamiento' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio'
+  riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
+  technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]
+  powerSupply: ('agua' | 'aire' | 'gas' | 'vapor' | 'electricidad' | 'ninguno')[]
 
   //technical characteristics
   technicalCharacteristics: {
@@ -189,6 +189,7 @@ export type FormatContext = {
   getAll: <T>(type: FormatType) => Promise<T[]>
   getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: FormatType, query: object) => Promise<T[]>
+  getByPaginate: <T>(type: FormatType, query: object) => Promise<Paginate<T>>
   create: (type: FormatType, data: object) => Promise<any>
   update: (type: FormatType, id: string, data: object) => Promise<any>
   delete: (type: FormatType, id: string) => Promise<any>
