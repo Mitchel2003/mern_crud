@@ -23,10 +23,10 @@ class DetailsCV {
       dateOperation: data.dateOperation ? new Date(data.dateOperation) : null,
       acquisition: data.acquisition,
       warranty: data.warranty,
-      price: data.price,
       supplier: data.supplier?._id,
+      manufacturer: data.manufacturer?._id,
       representative: data.representative?._id,
-      manufacturer: data.manufacturer?._id
+      price: data.price === 'n/r' ? '' : data.price
     })
 
     const submitData = (data: CurriculumFormProps) => ({
