@@ -279,7 +279,7 @@ export const officeDefaultValues = { name: '', group: '', headquarter: '', servi
 /*--------------------------------------------------default auth values--------------------------------------------------*/
 export const forgotPasswordDefaultValues = { email: '' }
 export const loginDefaultValues = { email: '', password: '' }
-export const clientDefaultValues = { name: '', email: '', phone: '', nit: '' }
+export const clientDefaultValues = { name: '', email: '', phone: '', nit: '', preview: '', photoUrl: [] }
 export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
 export const clientFlowDefaultValues = {
   client: { name: '', email: '', phone: '', nit: '', photoUrl: [] },

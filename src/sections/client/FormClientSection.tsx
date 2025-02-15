@@ -1,16 +1,19 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useClientForm } from "@/hooks/auth/useAuthForm"
-import { FormProvider } from "react-hook-form"
-import { cn } from "@/lib/utils"
-
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import ImagePreview from "#/common/elements/ImagePreview"
+import CardIterable from "#/common/fields/CardIterable"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
+import ImageField from "#/common/fields/Image"
 import InputField from "#/common/fields/Input"
 import { Card, CardContent } from "#/ui/card"
 import { Separator } from "#/ui/separator"
 import { Mail } from "lucide-react"
+
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useClientForm } from "@/hooks/auth/useAuthForm"
+import { FormProvider } from "react-hook-form"
+import { cn } from "@/lib/utils"
 
 interface FormClientSectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -75,6 +78,24 @@ const FormClientSection = ({ id, theme, onChange }: FormClientSectionProps) => {
                   />
                 </div>
 
+                <div className="md:col-span-5">
+                  <div className={cn(!id || methods.getValues('photoUrl') ? 'hidden' : 'block')}>
+                    <ImagePreview
+                      theme={theme}
+                      name="preview"
+                      alt="imgEquip"
+                      sizeImage='max-w-full max-h-72'
+                    />
+                  </div>
+                  <CardIterable
+                    limit={1}
+                    theme={theme}
+                    name="photoUrl"
+                    titleButton={cn(!id ? 'Agregar imagen' : 'Cambiar imagen')}
+                    fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
+                  />
+                </div>
+
                 <Separator />
 
                 {/** add image to upload (engineer)*/}
@@ -105,3 +126,7 @@ const FormClientSection = ({ id, theme, onChange }: FormClientSectionProps) => {
 }
 
 export default FormClientSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const fields = [{ name: "photoUrl.file", label: "Imagen del equipo", sizeImage: "w-60 h-60" }]
