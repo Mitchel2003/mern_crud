@@ -9,8 +9,8 @@ import { useFormatContext } from "@/context/FormatContext"
 // Keys constantes para mejor mantenimiento
 const QUERY_KEYS = {
   formats: (path: FormatType) => ['formats', path],
+  files: (data: FileReferenceDB) => ['files', data.path],
   format: (path: FormatType, id: string) => ['format', path, id],
-  files: (path: FormatType, data: object) => ['files', path, data],
   search: (path: FormatType, query: object) => ['formats', 'search', path, query],
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -65,10 +65,10 @@ export const useQueryFormat = (): QueryReact_Format => {
 
   // Obtener todos los archivos de un formato
   const fetchAllFiles = <T>(path: FormatType, data: FileReferenceDB) => useQuery({
-    queryKey: QUERY_KEYS.files(path, data),
+    queryKey: QUERY_KEYS.files(data),
     queryFn: () => format.getAllFiles<T>(path, data),
     select: (data) => data || [],
-    enabled: Boolean(data.id),
+    enabled: Boolean(data.path),
     initialData: []
   })
 
@@ -132,10 +132,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
    */
   const createFileMutation = useMutation({
     mutationFn: async (data: FileMutationProps) => await uploadFiles(path, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.format(path, variables.id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(path, variables) })
-    }
+    onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 
   /**
@@ -144,10 +141,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
    */
   const deleteFileMutation = useMutation({
     mutationFn: async (data: FileMutationProps) => await deleteFile(path, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.format(path, variables.id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(path, variables) })
-    }
+    onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 
   return {
@@ -156,6 +150,10 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
     deleteFormat: deleteMutation.mutateAsync,
     createFile: createFileMutation.mutateAsync,
     deleteFile: deleteFileMutation.mutateAsync,
-    isLoading: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
+    isLoading: createMutation.isPending
+      || updateMutation.isPending
+      || deleteMutation.isPending
+      || createFileMutation.isPending
+      || deleteFileMutation.isPending
   }
 }

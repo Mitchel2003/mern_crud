@@ -13,11 +13,12 @@ interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 
 const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) => {
   const { fetchFormatById, fetchAllFiles, fetchFormatByQuery } = useQueryFormat()
-  const { data: files } = fetchAllFiles<Metadata>('file', { id, ref: 'preview' })
-
   const { data: cv, isLoading: isLoadingCv } = fetchFormatById<Curriculum>('cv', id)
   const { data: acc, isLoading: isLoadingAcc } = fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
   const { data: ins, isLoading: isLoadingIns } = fetchFormatById<Inspection>('inspection', cv?.inspection._id as string)
+
+  const { data: imgCli } = fetchAllFiles<Metadata>('file', { path: `client/${cv?.office?.headquarter?.client._id}/preview` })
+  const { data: imgCv } = fetchAllFiles<Metadata>('file', { path: `files/${id}/preview` })
 
   if (isLoadingCv || isLoadingIns || isLoadingAcc) return <DashboardSkeleton theme={theme} />
   return (
@@ -25,17 +26,26 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
       <Card className="max-w-5xl mx-auto border-purple-100">
         <CardHeader className="space-y-2 border-b bg-purple-50/50">
           <div className="flex justify-between items-start">
+            {imgCli && (
+              <div className="relative w-32 h-32">
+                <img
+                  className="object-contain rounded-lg border border-purple-100"
+                  src={imgCli[0]?.url || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
+                  alt="Equipment"
+                />
+              </div>
+            )}
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-purple-950">Hoja de vida de Equipo</h1>
               <p className={cn('text-sm', theme === 'dark' ? ' text-purple-600' : 'text-purple-700')}>
                 Código: FHV-01 | Versión: 02 | Vigente desde: 01-08-2019
               </p>
             </div>
-            {files && (
-              <div className="relative w-32 h-32">
+            {imgCv && (
+              <div className="relative w-48 h-auto">
                 <img
                   className="object-contain rounded-lg border border-purple-100"
-                  src={files[0]?.url || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
+                  src={imgCv[0]?.url || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
                   alt="Equipment"
                 />
               </div>

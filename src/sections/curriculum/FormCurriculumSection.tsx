@@ -36,10 +36,10 @@ const FormCurriculumSection = ({ id, theme, onChange, footer: Footer }: FormCurr
   const { open, methods, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, onChange)
 
   const formSections = useMemo(() => [
-    <LocationSection key="location" theme={theme} />,
-    <BasicDataSection key="basic" theme={theme} />,
+    <LocationSection key="location" theme={theme} id={!!id} />,
+    <BasicDataSection key="basic" theme={theme} id={!!id} />,
     <DetailsEquipmentSection key="details" theme={theme} />,
-    <EquipmentClassificationSection key="equipment" theme={theme} />,
+    <EquipmentClassificationSection key="equipment" theme={theme} id={!!id} />,
     <TechnicalCharacteristicsSection key="technical" theme={theme} />,
     <MaintenanceSection key="maintenance" theme={theme} />,
     <InspectionSection key="inspection" theme={theme} />,

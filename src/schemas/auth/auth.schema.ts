@@ -59,7 +59,32 @@ export const clientSchema = z.object({
 })
 
 export const clientFlowSchema = z.object({
-  client: clientSchema,
+  client: z.object({
+    name: z
+      .string()
+      .min(5, "El nombre es requerido")
+      .max(50, "El nombre es demasiado largo"),
+    email: z
+      .string()
+      .email("Correo electrónico inválido"),
+    phone: z
+      .string()
+      .min(6, "El teléfono es requerido")
+      .max(15, "El teléfono es demasiado largo"),
+    nit: z
+      .string()
+      .min(10, "El NIT es requerido")
+      .max(20, "El NIT es demasiado largo"),
+    photoUrl: z.array(
+      z.object({
+        file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+          .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+          .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+      })
+    ).optional().default([]),
+  }).refine(data => { return /^[0-9]+$/.test(data.phone) },
+    { message: "El teléfono debe contener solo números", path: ["phone"] }
+  ),
   headquarter: z.array(
     z.object({
       name: z

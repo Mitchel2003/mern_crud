@@ -1,16 +1,18 @@
+import { Accessory, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
 import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Metadata } from '@/interfaces/db.interface'
+import { processFile } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 import { useEffect } from 'react'
 
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
-import { Accessory, Curriculum, Maintenance } from '@/interfaces/context.interface'
-import { processFile } from '@/lib/utils'
 
+/*--------------------------------------------------Curriculum--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks de curriculum
  * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
@@ -22,16 +24,19 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { createFormat: createCV, updateFormat: updateCV } = useFormatMutation("cv")
   const { createFile, deleteFile } = useFormatMutation("file")
 
-  const { data: acc } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
-  const { data: cv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
+  const { data: img = [], isLoading: isLoadingImg } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${id}/preview` })
+  const { data: acc = [], isLoading: isLoadingAcc } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
+  const { data: cv, isLoading: isLoadingCv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
+  const isLoading = isLoadingAcc || isLoadingCv || isLoadingImg
 
+  console.log(cv)
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: curriculumDefaultValues,
     mode: "onChange",
   })
 
-  useEffect(() => { loadData() }, [id])
+  useEffect(() => { id && loadData() }, [id, isLoading])
 
   /** Carga los datos del currículo en el formulario */
   const loadData = async () => {
@@ -43,7 +48,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       ...technicalData.mapValues(cv),
       ...equipmentData.mapValues(cv),
       ...detailsData.mapValues(cv),
-      ...basicData.mapValues(cv),
+      ...basicData.mapValues(cv, img),
       ...locationData.mapValues(cv),
     })
   }
@@ -68,15 +73,28 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       }
       id ? (
         updateCV({ id, data }).then(async () => {
-          const { data: existingAccessories } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
-          await Promise.all(existingAccessories?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
-          await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })) || [])
+          const hasChanges = (() => {
+            if (data.newAccessories?.length !== acc.length) return true
+            return acc.some((existingAcc) => {//match each existing accessory with the new
+              const matchingNew = data.newAccessories?.find((newAcc) =>
+                newAcc.modelEquip === existingAcc.modelEquip
+                && newAcc.serie === existingAcc.serie
+                && newAcc.name === existingAcc.name
+                && newAcc.type === existingAcc.type
+              ); return !matchingNew //if dont find match, it means there were changes
+            })
+          })()
 
-          data.photoUrl && await deleteFile({ id, ref: 'preview', filename: 'img' }).then(async () => {//delete previous file conditionally
+          if (hasChanges) {
+            await Promise.all(acc.map(async (acc) => await deleteAcc({ id: acc._id })))
+            await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })))
+          }
+
+          data.photoUrl && await deleteFile({ path: `files/${id}/preview/img` }).then(async () => {
             const { name, type, size } = data.photoUrl
             const base64 = await processFile(data.photoUrl)
             const file = { buffer: base64, originalname: name, mimetype: type, size }
-            await createFile({ files: [file], filename: 'img', ref: 'preview', id })
+            await createFile({ files: [file], path: `files/${id}/preview/img`, unique: true })
           })
         })
       ) : (
@@ -86,7 +104,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
           const { name, type, size } = data.photoUrl
           const base64 = await processFile(data.photoUrl)
           const file = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [file], filename: 'img', ref: 'preview', id: e._id, unique: true })
+          await createFile({ files: [file], path: `files/${e._id}/preview/img`, unique: true })
         })
       )
       methods.reset()
@@ -95,17 +113,18 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   }, methods)
 
   return {
-    id,
     methods,
     ...handleSubmit,
     basicData: basicData.options,
     equipmentData: basicData.cvs,
     detailsData: detailsData.options,
     locationData: locationData.options,
-    inspectionData: inspectionData.options
+    inspectionData: inspectionData.options,
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------Maintenance--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks de maintenance
  * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear

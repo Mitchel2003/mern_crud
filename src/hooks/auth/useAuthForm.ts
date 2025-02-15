@@ -1,12 +1,14 @@
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { City, Client, Headquarter, User } from "@/interfaces/context.interface"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
+import { useFormatMutation } from "@/hooks/query/useFormatQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useAuthContext } from "@/context/AuthContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MapPinHouseIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { processFile } from "@/lib/utils"
 import {
   userDefaultValues,
   loginDefaultValues,
@@ -141,6 +143,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createLocation: createHeadquarter } = useLocationMutation('headquarter')
   const { createLocation: createOffice } = useLocationMutation('office')
   const { createUser: createClient } = useUserMutation('client')
+  const { createFile } = useFormatMutation("file")
 
   const { fetchAllLocations } = useQueryLocation()
   const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
@@ -171,6 +174,12 @@ export const useClientFlow = (onSuccess?: () => void) => {
           }))
         })
       )
+      if (data.client.photoUrl?.[0]?.file) {
+        const { name, type, size } = data.client.photoUrl?.[0]?.file
+        const base64 = await processFile(data.client.photoUrl?.[0]?.file)
+        const file = { buffer: base64, originalname: name, mimetype: type, size }
+        await createFile({ files: [file], path: `client/${client._id}/preview/img`, unique: true })
+      }
       methods.reset()
     },
     onSuccess

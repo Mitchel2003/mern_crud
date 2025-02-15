@@ -16,6 +16,7 @@ export const curriculumSchema = z.object({
     .min(1, "Debes seleccionar un servicio"),
 
   //basicData
+  preview: z.string().optional(),
   name: z
     .string({ required_error: "El nombre es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")

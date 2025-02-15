@@ -36,7 +36,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         )}>
           <DataTable
             filterColumn="name"
-            data={curriculums || []}
+            data={(curriculums as any)?.data as Curriculum[] || []}
             columns={columns(onChange)}
           />
         </Card>
@@ -114,9 +114,9 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
 
   const handleDelete = async (id: string) => {
     await deleteCv({ id }).then(async () => {
-      const { data: existingAccessories } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
-      await Promise.all(existingAccessories?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
-      await deleteImg({ id, ref: 'preview', filename: 'img' })
+      const { data: existing } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
+      await Promise.all(existing?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
+      await deleteImg({ path: `files/${id}/preview/img` })
     })
   }
 

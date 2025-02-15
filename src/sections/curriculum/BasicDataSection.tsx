@@ -1,15 +1,19 @@
 import InputSearchableField from '#/common/fields/InputSearchable'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import ImagePreview from '#/common/elements/ImagePreview'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import CardIterable from '#/common/fields/CardIterable'
+import { useFormContext } from 'react-hook-form'
 import InputField from '#/common/fields/Input'
 import ImageField from '#/common/fields/Image'
+import { cn } from '@/lib/utils'
 
-interface BasicDataProps extends ThemeContextProps { }
+interface BasicDataProps extends ThemeContextProps { id: boolean }
 
-const BasicDataSection = ({ theme }: BasicDataProps) => {
-  const { basicData: nameOptions } = useCurriculumForm()
+const BasicDataSection = ({ id, theme }: BasicDataProps) => {
+  const { basicData: options } = useCurriculumForm()
+  const { getValues } = useFormContext()
 
   return (
     <div className="space-y-6">
@@ -32,7 +36,7 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
               name="name"
               theme={theme}
               label="Nombre"
-              options={nameOptions}
+              options={options}
               placeholder="Nombre del equipo"
             />
           </div>
@@ -63,11 +67,19 @@ const BasicDataSection = ({ theme }: BasicDataProps) => {
         </div>
 
         <div className="md:col-span-5">
+          <div className={cn(!id || getValues('photoUrl') ? 'hidden' : 'block')}>
+            <ImagePreview
+              theme={theme}
+              name="preview"
+              alt="imgEquip"
+              sizeImage='max-w-full max-h-72'
+            />
+          </div>
           <CardIterable
             limit={1}
             theme={theme}
             name="photoUrl"
-            titleButton="Agregar imagen"
+            titleButton={cn(!id ? 'Agregar imagen' : 'Cambiar imagen')}
             fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
           />
         </div>

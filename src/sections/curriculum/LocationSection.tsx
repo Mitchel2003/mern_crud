@@ -5,9 +5,9 @@ import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"
 
-interface LocationSectionProps extends ThemeContextProps { }
+interface LocationSectionProps extends ThemeContextProps { id: boolean }
 
-const LocationSection = ({ theme }: LocationSectionProps) => {
+const LocationSection = ({ id, theme }: LocationSectionProps) => {
   const { locationData: options } = useCurriculumForm()
   const { watch } = useFormContext()
 
@@ -15,11 +15,11 @@ const LocationSection = ({ theme }: LocationSectionProps) => {
   const clientId = watch('client')
   const officeId = watch('office')
 
-  const headquarters = options.headquarters?.filter((head) => head.client?._id === clientId)
-  const offices = options.offices?.filter((office) => office.headquarter?._id === headquarterId)
+  const headquarters = id ? options.headquarters : options.headquarters?.filter((head) => head.client?._id === clientId)
+  const offices = id ? options.offices : options.offices?.filter((office) => office.headquarter?._id === headquarterId)
   const services = groups.flatMap(group => group.services).filter(service => {
     const office = offices?.find(office => office._id === officeId)
-    return office?.services.includes(service)
+    return !id ? office?.services.includes(service) : true
   })
 
   return (

@@ -178,12 +178,13 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   office: '', //locationData
   service: '', //locationData
 
+  preview: '', //basicData
   name: '', //basicData
   brand: '', //basicData
   serie: '', //basicData
   modelEquip: '', //basicData
   healthRecord: '', //basicData
-  photoUrl: [{ file: new File([], '') }], //basicData (create after that cv)
+  photoUrl: [], //basicData (create after that cv)
 
   characteristics: '', //characteristics
   recommendationsManufacturer: '', //characteristics
@@ -281,7 +282,7 @@ export const loginDefaultValues = { email: '', password: '' }
 export const clientDefaultValues = { name: '', email: '', phone: '', nit: '' }
 export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
 export const clientFlowDefaultValues = {
-  client: { name: '', email: '', phone: '', nit: '' },
+  client: { name: '', email: '', phone: '', nit: '', photoUrl: [] },
   headquarter: [{ name: '', address: '', city: '' }],
   office: [{ headquarter: '', services: [], name: '' }]
 }

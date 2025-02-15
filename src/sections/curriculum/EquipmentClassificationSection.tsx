@@ -16,17 +16,17 @@ import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
 import { useFormContext } from "react-hook-form"
 import { useEffect } from 'react'
 
-interface EquipmentClassProps extends ThemeContextProps { }
+interface EquipmentClassProps extends ThemeContextProps { id: boolean }
 
-const EquipmentClassificationSection = ({ theme }: EquipmentClassProps) => {
+const EquipmentClassificationSection = ({ id, theme }: EquipmentClassProps) => {
   const { equipmentData: cvs } = useCurriculumForm()
   const { watch, setValue } = useFormContext()
 
   const curriculumId = watch('name')
-  const selectedCV = cvs?.find(cv => cv.name === curriculumId)
+  const selectedCV = cvs?.find((cv: any) => cv.name === curriculumId)
 
   useEffect(() => {
-    if (!selectedCV) return
+    if (id || !selectedCV) return
     setValue('useClassification', selectedCV.useClassification)
     setValue('riskClassification', selectedCV.riskClassification)
     setValue('biomedicalClassification', selectedCV.biomedicalClassification)
