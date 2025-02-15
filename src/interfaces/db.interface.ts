@@ -31,10 +31,8 @@ export interface Metadata {
   url: string
 }
 export interface FileReferenceDB {
-  filename?: string
   unique?: boolean
   files?: any[]
-  ref: string
-  id: string
+  path: string
 }
 /*---------------------------------------------------------------------------------------------------------*/

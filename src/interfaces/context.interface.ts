@@ -51,7 +51,6 @@ export type User = BaseMDB & { uid: string; role: string; email: string; usernam
 export type Client = BaseMDB & { name: string, email: string, phone: string, nit: string }
 
 export type UserContext = {
-  loading: boolean
   getAll: <T>(type: UserType) => Promise<T[]>
   getById: <T>(type: UserType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: UserType, query: object) => Promise<T[]>
@@ -71,7 +70,6 @@ export type Headquarter = BaseMDB & { name: string; address: string; client: Cli
 export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
 
 export type LocationContext = {
-  loading: boolean
   getAll: <T>(type: LocationType) => Promise<T[]>
   getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: LocationType, query: object) => Promise<T[]>
@@ -185,7 +183,6 @@ export type Curriculum = BaseMDB & {
 }
 
 export type FormatContext = {
-  loading: boolean
   getAll: <T>(type: FormatType) => Promise<T[]>
   getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: FormatType, query: object) => Promise<T[]>

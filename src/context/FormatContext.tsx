@@ -1,11 +1,11 @@
 import { FileReferenceDB, isAxiosResponse, Paginate } from "@/interfaces/db.interface"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
-import { useLoadingScreen } from "@/hooks/ui/useLoading"
 import { Props } from "@/interfaces/props.interface"
+import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 
 const Format = createContext<FormatContext>(undefined)
 
@@ -26,9 +26,8 @@ export const useFormatContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de formato.
  */
 export const FormatProvider = ({ children }: Props): JSX.Element => {
-  const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifySuccess, notifyError } = useNotification()
-  const [loading, setLoading] = useState(false)
+  const { handler } = useLoading()
 
   /**
    * Obtiene todos los formatos de un tipo específico
@@ -36,14 +35,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
   const getAll = async (type: FormatType): Promise<any[]> => {
-    setLoadingStatus('Obteniendo lista...')
-    try {
-      const response = await useApi(type).getAll()
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Obteniendo lista...', async () => {
+      try {
+        return (await useApi(type).getAll()).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -52,15 +51,15 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID del formato.
    * @returns {Promise<any>} Los datos del formato.
    */
-  const getById = async (type: FormatType, id: string): Promise<any | undefined> => {
-    setLoadingStatus('Buscando por identificador...')
-    try {
-      const response = await useApi(type).getById(id)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+  const getById = async (type: FormatType, id: string): Promise<any> => {
+    return handler('Buscando por identificador...', async () => {
+      try {
+        return (await useApi(type).getById(id)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -70,14 +69,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
   const getByQuery = async (type: FormatType, query: object): Promise<any[]> => {
-    setLoadingStatus('Buscando por consulta...')
-    try {
-      const response = await useApi(type).getByQuery(query)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Buscando por consulta...', async () => {
+      try {
+        return (await useApi(type).getByQuery(query)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -87,14 +86,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<Paginate<any>>} Un array con los datos de todos los formatos.
    */
   const getByPaginate = async (type: FormatType, query: object): Promise<Paginate<any>> => {
-    setLoadingStatus('Buscando por consulta...')
-    try {
-      const response = await useApi(type).getByQuery(query)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return { data: [], totalCount: 0, pageCount: 0 }
-    } finally { setLoadingStatus() }
+    return handler('Buscando por consulta...', async () => {
+      try {
+        return (await useApi(type).getByQuery(query)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return { data: [], totalCount: 0, pageCount: 0 }
+      }
+    })
   }
 
   /**
@@ -104,15 +103,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del formato creado.
    */
   const create = async (type: FormatType, data: object): Promise<any> => {
-    setLoadingStatus('Creando...')
-    try {
-      const response = await useApi(type).create(data)
-      notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Creando...', async () => {
+      try {
+        return await useApi(type).create(data).finally(() => notifySuccess({ title: "Éxito", message: "Registro creado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -123,15 +121,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del formato actualizado.
    */
   const update = async (type: FormatType, id: string, data: object): Promise<any> => {
-    setLoadingStatus('Actualizando...')
-    try {
-      const response = await useApi(type).update(id, data)
-      notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Actualizando...', async () => {
+      try {
+        return await useApi(type).update(id, data).finally(() => notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -141,15 +138,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del formato eliminado.
    */
   const delete_ = async (type: FormatType, id: string): Promise<any> => {
-    setLoadingStatus('Eliminando...')
-    try {
-      const response = await useApi(type).delete(id)
-      notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Eliminando...', async () => {
+      try {
+        return await useApi(type).delete(id).finally(() => notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
@@ -162,14 +158,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Array con los metadatos de los archivos
    */
   const getAllFiles = async (type: FormatType, data: FileReferenceDB): Promise<any[]> => {
-    setLoadingStatus('Cargando archivos...')
-    try {
-      const response = await useApi(type).getAll(data)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener archivos", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Cargando archivos...', async () => {
+      try {
+        return (await useApi(type).getAll(data)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener archivos", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -179,45 +175,29 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @example const data = { id: '456', ref: 'preview', files: [file1, file2, file3] }
    */
   const uploadFiles = async (type: FormatType, data: FileReferenceDB): Promise<void> => {
-    setLoadingStatus('Subiendo archivos...')
-    try {
-      await useApi(type).void(data)
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al subir archivos", message: e.response.data.message })
-    } finally { setLoadingStatus() }
+    return handler('Subiendo archivos...', async () => {
+      try { await useApi(type).void(data) }
+      catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al subir archivos", message: e.response.data.message }) }
+    })
   }
 
   /**
    * Elimina un archivo específico
    * @param {FormatType} type - El tipo de formato
    * @param {FileReferenceDB} data - Los datos de la referencia del documento
-   * @example const data = { id: '456', ref: 'preview', filename: 'example' }
+   * @example const data = { path: 'files/123/preview/img' }
    */
   const deleteFile = async (type: FormatType, data: FileReferenceDB): Promise<void> => {
-    setLoadingStatus('Eliminando archivo...')
-    try {
-      await useApi(type).remove(data)
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al eliminar archivo", message: e.response.data.message })
-    } finally { setLoadingStatus() }
+    return handler('Eliminando archivo...', async () => {
+      try { await useApi(type).remove(data) }
+      catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar archivo", message: e.response.data.message }) }
+    })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
-  /*--------------------------------------------------tools--------------------------------------------------*/
-  /**
-   * Actualiza el estado de carga basado en un parametro opcional
-   * si valor del param es distinto a undefined, se muestra el loading
-   * @param {string | undefined} status - El estado de carga.
-   */
-  const setLoadingStatus = (status?: string) => {
-    setLoading(Boolean(status))
-    status ? showLoading(status) : hideLoading()
-  }
-  /*---------------------------------------------------------------------------------------------------------*/
-
+  /*--------------------------------------------------Return context--------------------------------------------------*/
   return (
     <Format.Provider value={{
-      loading,
       getAll,
       getById,
       getByQuery,

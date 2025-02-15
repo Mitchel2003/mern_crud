@@ -1,11 +1,11 @@
 import { LocationContext, LocationType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
-import { useLoadingScreen } from "@/hooks/ui/useLoading"
 import { Props } from "@/interfaces/props.interface"
+import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 
 const Location = createContext<LocationContext>(undefined)
 
@@ -26,9 +26,8 @@ export const useLocationContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de ubicación.
  */
 export const LocationProvider = ({ children }: Props): JSX.Element => {
-  const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifySuccess, notifyError } = useNotification()
-  const [loading, setLoading] = useState(false)
+  const { handler } = useLoading()
 
   /**
    * Obtiene todas las ubicaciones de un tipo específico
@@ -36,14 +35,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
   const getAll = async (type: LocationType): Promise<any[]> => {
-    setLoadingStatus('Obteniendo lista...')
-    try {
-      const response = await useApi(type).getAll()
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Obteniendo lista...', async () => {
+      try {
+        return (await useApi(type).getAll()).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -53,14 +52,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos de la ubicación.
    */
   const getById = async (type: LocationType, id: string): Promise<any | undefined> => {
-    setLoadingStatus('Buscando por identificador...')
-    try {
-      const response = await useApi(type).getById(id)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Buscando por identificador...', async () => {
+      try {
+        return (await useApi(type).getById(id)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -70,14 +69,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
   const getByQuery = async (type: LocationType, query: object): Promise<any[]> => {
-    setLoadingStatus('Buscando por consulta...')
-    try {
-      const response = await useApi(type).getByQuery(query)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Buscando por consulta...', async () => {
+      try {
+        return (await useApi(type).getByQuery(query)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -87,15 +86,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos de la ubicación creada.
    */
   const create = async (type: LocationType, data: object): Promise<any> => {
-    setLoadingStatus('Creando...')
-    try {
-      const response = await useApi(type).create(data)
-      notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Creando...', async () => {
+      try {
+        return await useApi(type).create(data).finally(() => notifySuccess({ title: "Éxito", message: "Registro creado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -106,15 +104,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos de la ubicación actualizada.
    */
   const update = async (type: LocationType, id: string, data: object): Promise<any> => {
-    setLoadingStatus('Actualizando...')
-    try {
-      const response = await useApi(type).update(id, data)
-      notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Actualizando...', async () => {
+      try {
+        return await useApi(type).update(id, data).finally(() => notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -124,33 +121,20 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos de la ubicación eliminada.
    */
   const delete_ = async (type: LocationType, id: string): Promise<any> => {
-    setLoadingStatus('Eliminando...')
-    try {
-      const response = await useApi(type).delete(id)
-      notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Eliminando...', async () => {
+      try {
+        return await useApi(type).delete(id).finally(() => notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
-  /*--------------------------------------------------tools--------------------------------------------------*/
-  /**
-   * Actualiza el estado de carga basado en un parametro opcional
-   * si valor del param es distinto a undefined, se muestra el loading
-   * @param {string | undefined} status - El estado de carga.
-   */
-  const setLoadingStatus = (status?: string) => {
-    setLoading(Boolean(status))
-    status ? showLoading(status) : hideLoading()
-  }
-  /*---------------------------------------------------------------------------------------------------------*/
-
+  /*--------------------------------------------------returns--------------------------------------------------*/
   return (
     <Location.Provider value={{
-      loading,
       getAll,
       getById,
       getByQuery,

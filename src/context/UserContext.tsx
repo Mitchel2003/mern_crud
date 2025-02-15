@@ -1,11 +1,11 @@
 import { UserContext, UserType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
-import { useLoadingScreen } from "@/hooks/ui/useLoading"
 import { Props } from "@/interfaces/props.interface"
+import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 
 const User = createContext<UserContext>(undefined)
 
@@ -26,9 +26,8 @@ export const useUserContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de usuario.
  */
 export const UserProvider = ({ children }: Props): JSX.Element => {
-  const { show: showLoading, hide: hideLoading } = useLoadingScreen()
   const { notifySuccess, notifyError } = useNotification()
-  const [loading, setLoading] = useState(false)
+  const { handler } = useLoading()
 
   /**
    * Obtiene todas los usuarios de un tipo específico
@@ -36,14 +35,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
   const getAll = async (type: UserType): Promise<any[]> => {
-    setLoadingStatus('Obteniendo lista...')
-    try {
-      const response = await useApi(type).getAll()
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Obteniendo lista...', async () => {
+      try {
+        return (await useApi(type).getAll()).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -53,14 +52,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del usuario.
    */
   const getById = async (type: UserType, id: string): Promise<any | undefined> => {
-    setLoadingStatus('Buscando por identificador...')
-    try {
-      const response = await useApi(type).getById(id)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Buscando por identificador...', async () => {
+      try {
+        return (await useApi(type).getById(id)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -70,14 +69,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
   const getByQuery = async (type: UserType, query: object): Promise<any[]> => {
-    setLoadingStatus('Buscando por consulta...')
-    try {
-      const response = await useApi(type).getByQuery(query)
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    } finally { setLoadingStatus() }
+    return handler('Buscando por consulta...', async () => {
+      try {
+        return (await useApi(type).getByQuery(query)).data
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+        return []
+      }
+    })
   }
 
   /**
@@ -87,15 +86,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del usuario creado.
    */
   const create = async (type: UserType, data: object): Promise<any> => {
-    setLoadingStatus('Creando...')
-    try {
-      const response = await useApi(type).create(data)
-      notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Creando...', async () => {
+      try {
+        return await useApi(type).create(data).finally(() => notifySuccess({ title: "Éxito", message: "Registro creado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -106,15 +104,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del usuario actualizado.
    */
   const update = async (type: UserType, id: string, data: object): Promise<any> => {
-    setLoadingStatus('Actualizando...')
-    try {
-      const response = await useApi(type).update(id, data)
-      notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Actualizando...', async () => {
+      try {
+        return await useApi(type).update(id, data).finally(() => notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
 
   /**
@@ -124,33 +121,20 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los datos del usuario eliminado.
    */
   const delete_ = async (type: UserType, id: string): Promise<any> => {
-    setLoadingStatus('Eliminando...')
-    try {
-      const response = await useApi(type).delete(id)
-      notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
-      return response.data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
-      return undefined
-    } finally { setLoadingStatus() }
+    return handler('Eliminando...', async () => {
+      try {
+        return await useApi(type).delete(id).finally(() => notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" }))
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
+        return undefined
+      }
+    })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
-  /*--------------------------------------------------tools--------------------------------------------------*/
-  /**
-   * Actualiza el estado de carga basado en un parametro opcional
-   * si valor del param es distinto a undefined, se muestra el loading
-   * @param {string | undefined} status - El estado de carga.
-   */
-  const setLoadingStatus = (status?: string) => {
-    setLoading(Boolean(status))
-    status ? showLoading(status) : hideLoading()
-  }
-  /*---------------------------------------------------------------------------------------------------------*/
-
+  /*--------------------------------------------------returns--------------------------------------------------*/
   return (
     <User.Provider value={{
-      loading,
       getAll,
       getById,
       getByQuery,
