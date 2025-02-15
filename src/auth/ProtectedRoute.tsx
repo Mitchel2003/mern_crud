@@ -7,8 +7,8 @@ function ProtectedRoute() {
   const { isAuth, loading } = useAuthContext();
   const { theme } = useThemeContext()
 
-  if (loading) return (<DashboardSkeleton theme={theme} />)
-  if (!loading && !isAuth) return (<Navigate to='/auth/login' replace />);
+  if (loading) return <DashboardSkeleton theme={theme} />
+  if (!loading && !isAuth) return <Navigate to='/auth/login' replace />
   return <Outlet />
 }
 
