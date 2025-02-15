@@ -33,7 +33,7 @@ export function convertToMongoQuery(searchParams: SearchParams, validFilters: an
       ? JSON.parse(searchParams.filters)
       : searchParams.filters
 
-    if (!Array.isArray(filters)) return query
+    if (!Array.isArray(filters)) return validFilters
 
     filters.forEach(filter => {
       const { id, value, operator } = filter
