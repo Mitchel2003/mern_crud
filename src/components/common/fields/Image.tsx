@@ -6,8 +6,8 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 
 import { useFormContext, Controller } from 'react-hook-form'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Camera, X } from 'lucide-react'
-import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface ImageFieldProps extends HeaderSpanProps, ThemeContextProps {
@@ -27,14 +27,12 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
   const [preview, setPreview] = useState<string | null>(null)
   const { control } = useFormContext()
 
-  const processFile = (file: File, onChange: (value: any) => void) => {
+  const processFile = useCallback((file: File | null) => {
+    if (!file) return setPreview(null)
     const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreview(reader.result as string)
-      onChange(file)
-    }
+    reader.onloadend = () => setPreview(reader.result as string)
     reader.readAsDataURL(file)
-  }
+  }, [])
 
   return (
     <FormItem>
@@ -52,41 +50,44 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, ...field }, fieldState: { error } }) => (
-          <>
-            <div className={cn(
-              'flex px-auto justify-center rounded-lg border border-dashed',
-              preview ? 'py-[2vh]' : 'py-[6vh]',
-              error && 'border-red-500',
-              theme === 'dark'
-                ? 'bg-zinc-800 border-zinc-600'
-                : 'bg-purple-50/20 border-gray-900/25',
-            )}>
-              {preview ? (
-                <PreviewImage
-                  theme={theme}
-                  size={sizeImage}
-                  preview={preview}
-                  onRemove={() => { setPreview(null); onChange(null) }}
-                />
-              ) : (
-                <UploadPrompt
-                  {...field}
-                  ref={ref}
-                  name={name}
-                  theme={theme}
-                  onChange={(file) => { if (file) processFile(file, onChange) }}
-                />
-              )}
-            </div>
+        render={({ field: { onChange, value, ...field }, fieldState: { error } }) => {
+          useEffect(() => { processFile(value) }, [value, processFile]) // Sync preview
+          return (
+            <>
+              <div className={cn(
+                'flex px-auto justify-center rounded-lg border border-dashed',
+                preview ? 'py-[2vh]' : 'py-[6vh]',
+                error && 'border-red-500',
+                theme === 'dark'
+                  ? 'bg-zinc-800 border-zinc-600'
+                  : 'bg-purple-50/20 border-gray-900/25',
+              )}>
+                {preview ? (
+                  <PreviewImage
+                    theme={theme}
+                    size={sizeImage}
+                    preview={preview}
+                    onRemove={() => onChange(null)}
+                  />
+                ) : (
+                  <UploadPrompt
+                    {...field}
+                    ref={ref}
+                    name={name}
+                    theme={theme}
+                    onChange={(file) => onChange(file)}
+                  />
+                )}
+              </div>
 
-            {error && (
-              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
-                {error.message}
-              </FormMessage>
-            )}
-          </>
-        )}
+              {error && (
+                <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                  {error.message}
+                </FormMessage>
+              )}
+            </>
+          )
+        }}
       />
     </FormItem>
   )

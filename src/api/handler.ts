@@ -3,7 +3,7 @@ import axios from "./axios"
 export const getRequest = async (endpoint: string, params?: Record<string, any>) => axios.get(endpoint, { params, paramsSerializer: { indexes: null /* serializar correctamente los arrays */ } })
 export const postRequest = async (endpoint: string, data: object | undefined) => axios.post(endpoint, data)
 export const putRequest = async (endpoint: string, data: object) => axios.put(endpoint, data)
-export const deleteRequest = async (endpoint: string, data?: object) => axios.delete(endpoint, { ...data })
+export const deleteRequest = async (endpoint: string, params?: object) => axios.delete(endpoint, { params })
 
 export const useApi = (type: string) => ({
   // crud functions

@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 export type InputType = 'text' | 'number' | 'email' | 'password'
 
 interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
+  autoComplete?: boolean
   placeholder?: string
   icon?: LucideIcon
   type?: InputType
@@ -20,6 +21,7 @@ interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
 }
 
 const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
+  autoComplete = true,
   iconSpan = 'none',
   type = "text",
   placeholder,
@@ -27,7 +29,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   theme,
   label,
   name,
-  span
+  span,
 }, ref) => {
   const [showPassword, setShowPassword] = useState(false)
   const { control } = useFormContext()
@@ -54,10 +56,10 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
               <Input
                 {...field}
                 ref={ref}
-                autoComplete='off'
                 id={`${name}-input`}
                 placeholder={placeholder}
                 type={showPassword ? 'text' : type}
+                autoComplete={autoComplete ? 'on' : 'off'}
                 className={cn((type === 'email' || type === 'password') && 'pl-10',
                   theme === 'dark'
                     ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
