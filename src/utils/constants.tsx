@@ -1,4 +1,4 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle, UserCog2Icon } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -70,16 +70,16 @@ export const links = () => {
       icon: TerminalSquare,
       label: 'Panel del usuario',
     },
-    /*{// users
+    {// users
       label: 'Usuarios',
       icon: UserCircle,
       subItems: [
-        {// medicals
-          icon: UserCircle,
-          label: 'Médicos',
-          href: '/users/medicals',
+        {// proveedor of service
+          icon: UserCog2Icon,
+          label: 'Proveedores de servicios',
+          href: '/companies',
         },
-        {// engineers
+        /**{// engineers
           icon: UserPenIcon,
           label: 'Ingenieros',
           href: '/users/engineers',
@@ -88,9 +88,9 @@ export const links = () => {
           icon: UserCog2,
           href: '/users/admins',
           label: 'Administradores',
-        }
+        }*/
       ]
-    },*/
+    },
     {/** forms **/
       icon: FilesIcon,
       label: 'Formularios',
@@ -280,6 +280,7 @@ export const officeDefaultValues = { name: '', group: '', headquarter: '', servi
 export const forgotPasswordDefaultValues = { email: '' }
 export const loginDefaultValues = { email: '', password: '' }
 export const clientDefaultValues = { name: '', email: '', phone: '', nit: '', preview: '', photoUrl: [] }
+export const companyDefaultValues = { name: '', nit: '', invima: '', profesionalLicense: '', previewSignature: '', previewLogo: '' }
 export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
 export const clientFlowDefaultValues = {
   client: { name: '', email: '', phone: '', nit: '', photoUrl: [] },

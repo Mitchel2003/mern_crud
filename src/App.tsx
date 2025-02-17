@@ -11,6 +11,7 @@ import RootLayout from "@/layouts/Root";
 import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Client, { ClientFlow } from "@/pages/Client";
 import Maintenance from "@/pages/Maintenance";
+import Company from "@/pages/Company";
 
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
@@ -56,17 +57,9 @@ function App() {
                       <Route path="/form/maintenance/:id" element={<Maintenance />} />
 
                       {/* user routes */}
-                      {/* <Route path="/users/engineers" element={<Engineer />} /> {/*new engineer*/}
-                      {/* <Route path="/users/engineers" element={<Engineer />} /> {/*list engineers*/}
-                      {/* <Route path="/users/engineer/:id" element={<Engineer />} /> {/*edit engineer*/}
-
-                      {/* <Route path="/users/medical" element={<Medical />} /> {/*new medical*/}
-                      {/* <Route path="/users/medicals" element={<Medical />} /> {/*list medicals*/}
-                      {/* <Route path="/user/medical/:id" element={<Medical />} /> {/*edit medical*/}
-
-                      {/* <Route path="/users/admin" element={<Admin />} /> {/*new admin*/}
-                      {/* <Route path="/users/admins" element={<Admin />} /> {/*list admins*/}
-                      {/* <Route path="/user/admin/:id" element={<Admin />} /> {/*edit admin*/}
+                      <Route path="/company" element={<Company />} /> {/*new company*/}
+                      <Route path="/companies" element={<Company />} /> {/*list companies*/}
+                      <Route path="/company/:id" element={<Company />} /> {/*edit company*/}
 
                       <Route path="/newClient" element={<ClientFlow />} /> {/*new client*/}
                       <Route path="/client" element={<Client />} /> {/*new client*/}

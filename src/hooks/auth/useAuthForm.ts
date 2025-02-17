@@ -1,6 +1,6 @@
+import { City, Client, Company, Headquarter, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
-import { City, Client, Headquarter, User } from "@/interfaces/context.interface"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -15,6 +15,7 @@ import {
   userDefaultValues,
   loginDefaultValues,
   clientDefaultValues,
+  companyDefaultValues,
   clientFlowDefaultValues,
   groupCollection as groups,
   forgotPasswordDefaultValues,
@@ -23,6 +24,7 @@ import {
   userSchema, UserFormProps,
   loginSchema, LoginFormProps,
   clientSchema, ClientFormProps,
+  companySchema, CompanyFormProps,
   clientFlowSchema, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
@@ -130,20 +132,25 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
     onSubmit: async (data: any) => {
       id ? (
         updateUser({ id, data }).then(async () => {
-          if (!data.photoUrl?.[0]?.file) return
-          if (img?.[0]?.url) await deleteFile({ path: `client/${id}/preview/img` })
-          const { name, type, size } = data.photoUrl[0].file
-          const base64 = await processFile(data.photoUrl[0].file)
-          const file = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [file], path: `client/${id}/preview/img`, unique: true })
+          const file: File | undefined = data.photoUrl?.[0]?.file
+          const imageUrl: string | undefined = img?.[0]?.url
+          if (!file) return
+          //building blob
+          if (imageUrl) await deleteFile({ path: `client/${id}/preview/img` })
+          const { name, type, size } = file
+          const base64 = await processFile(file)
+          const blob = { buffer: base64, originalname: name, mimetype: type, size }
+          await createFile({ files: [blob], path: `client/${id}/preview/img`, unique: true })
         })
       ) : (
         createUser(data).then(async () => {
-          if (!data.photoUrl?.[0]?.file) return
-          const { name, type, size } = data.photoUrl[0].file
-          const base64 = await processFile(data.photoUrl[0].file)
-          const file = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [file], path: `client/${id}/preview/img`, unique: true })
+          const file: File | undefined = data.photoUrl?.[0]?.file
+          if (!file) return
+          //building blob
+          const { name, type, size } = file
+          const base64 = await processFile(file)
+          const blob = { buffer: base64, originalname: name, mimetype: type, size }
+          await createFile({ files: [blob], path: `client/${id}/preview/img`, unique: true })
         })
       )
       methods.reset()
@@ -158,6 +165,93 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
   }
 }
 
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de compañías
+ * @param id - ID de la compañía a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useCompanyForm = (id?: string, onSuccess?: () => void) => {
+  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${id}/preview` })
+  const { data: company } = useQueryUser().fetchUserById<Company>('company', id as string)
+  const { createUser, updateUser, isLoading } = useUserMutation('company')
+  const { createFile, deleteFile } = useFormatMutation('file')
+
+  //if found at least one, so disable create company
+  const { data: companies = [] } = useQueryUser().fetchAllUsers<Company>('company')
+
+  const methods = useForm<CompanyFormProps>({
+    resolver: zodResolver(companySchema),
+    defaultValues: companyDefaultValues,
+    mode: "onSubmit",
+  })
+
+  useEffect(() => {
+    if (!id && companies?.length > 0) return onSuccess?.()
+    id && company && methods.reset({
+      nit: company.nit,
+      name: company.name,
+      invima: company.invima,
+      profesionalLicense: company.profesionalLicense,
+      previewLogo: imgs.find(img => img.name.includes('logo'))?.url,
+      previewSignature: imgs.find(img => img.name.includes('signature'))?.url,
+    })
+  }, [company, imgs])
+
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (data: any) => {
+      id ? (
+        await updateUser({ id, data }).then(async () => {
+          const signature: File | undefined = data.photoSignature?.[0]?.file
+          const logo: File | undefined = data.photoLogo?.[0]?.file
+          if (!signature && !logo) return
+
+          const hasSignature = imgs.find(img => img.name.includes('signature'))
+          const hasLogo = imgs.find(img => img.name.includes('logo'))
+
+          const files = [{ file: signature, ref: 'signature', exist: hasSignature }, { file: logo, ref: 'logo', exist: hasLogo }]
+            .filter(f => f.file instanceof File)
+
+          await Promise.all(files.map(async ({ file, exist, ref }) => {
+            if (!file) return
+            exist && await deleteFile({ path: `company/${id}/preview/${ref}` })
+            const { name, type, size } = file
+            const base64 = await processFile(file)
+            const blob = { buffer: base64, originalname: name, mimetype: type, size }
+            await createFile({ files: [blob], path: `company/${id}/preview/${ref}`, unique: true })
+          }))
+        })
+      ) : (
+        createUser(data).then(async (e) => {
+          const signature: File | undefined = data.photoSignature?.[0]?.file
+          const logo: File | undefined = data.photoLogo?.[0]?.file
+          if (!signature && !logo) return
+
+          const files = [{ file: signature, ref: 'signature' }, { file: logo, ref: 'logo' }]
+            .filter(f => f.file instanceof File)
+
+          await Promise.all(files.map(async ({ file, ref }) => {
+            if (!file) return
+            const { name, type, size } = file
+            const base64 = await processFile(file)
+            const blob = { buffer: base64, originalname: name, mimetype: type, size }
+            await createFile({ files: [blob], path: `company/${e._id}/preview/${ref}`, unique: true })
+          }))
+        })
+      )
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    isLoading,
+    ...handleSubmit,
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------useUserForm (form-step)--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación de nuevo cliente
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente

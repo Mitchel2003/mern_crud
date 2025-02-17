@@ -45,9 +45,10 @@ export type AuthContext = {
 /*--------------------------------------------------UserContext--------------------------------------------------*/
 interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
 interface Permissions { overwrite: Overwrite; headquarters: string[] }
-export type UserType = 'client' | 'user'
+export type UserType = 'user' | 'client' | 'company'
 
 export type User = BaseMDB & { uid: string; role: string; email: string; username: string; permissions: Permissions } | null
+export type Company = BaseMDB & { name: string, nit: string, invima: string, profesionalLicense: string }
 export type Client = BaseMDB & { name: string, email: string, phone: string, nit: string }
 
 export type UserContext = {

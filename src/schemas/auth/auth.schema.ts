@@ -66,6 +66,43 @@ export const clientSchema = z.object({
   message: "El teléfono debe contener solo números", path: ["phone"]
 })
 
+export const companySchema = z.object({
+  previewSignature: z.string().optional(),
+  previewLogo: z.string().optional(),
+  name: z
+    .string()
+    .min(5, "El nombre es requerido")
+    .max(50, "El nombre es demasiado largo"),
+  nit: z
+    .string()
+    .min(10, "El NIT es requerido")
+    .max(20, "El NIT es demasiado largo"),
+  invima: z
+    .string()
+    .min(5, "El invima es requerido")
+    .max(50, "El invima es demasiado largo"),
+  profesionalLicense: z
+    .string()
+    .min(5, "La licencia profesional es requerida")
+    .max(50, "La licencia profesional es demasiado larga"),
+  photoSignature: z.array(
+    z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })
+  ).optional().default([]),
+  photoLogo: z.array(
+    z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })
+  ).optional().default([]),
+})
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------userSchema (form-step)--------------------------------------------------*/
 export const clientFlowSchema = z.object({
   client: z.object({
     preview: z.string().optional(),
@@ -137,6 +174,6 @@ export type ForgotPasswordFormProps = z.infer<typeof forgotPasswordSchema>
 
 export type UserFormProps = z.infer<typeof userSchema>
 export type ClientFormProps = z.infer<typeof clientSchema>
-
+export type CompanyFormProps = z.infer<typeof companySchema>
 export type ClientFlowProps = z.infer<typeof clientFlowSchema>
 /*---------------------------------------------------------------------------------------------------------*/

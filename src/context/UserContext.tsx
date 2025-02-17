@@ -37,7 +37,8 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const getAll = async (type: UserType): Promise<any[]> => {
     return handler('Obteniendo lista...', async () => {
       try {
-        return (await useApi(type).getAll()).data
+        const response = await useApi(type).getAll()
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []
@@ -54,7 +55,8 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const getById = async (type: UserType, id: string): Promise<any | undefined> => {
     return handler('Buscando por identificador...', async () => {
       try {
-        return (await useApi(type).getById(id)).data
+        const response = await useApi(type).getById(id)
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
         return undefined
@@ -71,7 +73,8 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const getByQuery = async (type: UserType, query: object): Promise<any[]> => {
     return handler('Buscando por consulta...', async () => {
       try {
-        return (await useApi(type).getByQuery(query)).data
+        const response = await useApi(type).getByQuery(query)
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []
@@ -88,7 +91,9 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const create = async (type: UserType, data: object): Promise<any> => {
     return handler('Creando...', async () => {
       try {
-        return await useApi(type).create(data).finally(() => notifySuccess({ title: "Éxito", message: "Registro creado correctamente" }))
+        const response = await useApi(type).create(data)
+        notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
         return undefined
@@ -106,7 +111,9 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const update = async (type: UserType, id: string, data: object): Promise<any> => {
     return handler('Actualizando...', async () => {
       try {
-        return await useApi(type).update(id, data).finally(() => notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" }))
+        const response = await useApi(type).update(id, data)
+        notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
         return undefined
@@ -123,7 +130,9 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const delete_ = async (type: UserType, id: string): Promise<any> => {
     return handler('Eliminando...', async () => {
       try {
-        return await useApi(type).delete(id).finally(() => notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" }))
+        const response = await useApi(type).delete(id)
+        notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
+        return response.data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
         return undefined

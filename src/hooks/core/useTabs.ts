@@ -32,13 +32,6 @@ export const useTabs = ({ id, setTab, to }: UseTabsProps) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------use tab navigator--------------------------------------------------*/
-export interface TabNavigatorProps {
-  baseRoute: string
-  icon: JSX.Element
-  paths: string[]
-  value: string
-  label: string
-}
 interface UseTabNavigatorProps {
   defaultStyles?: string
   activeStyles?: string

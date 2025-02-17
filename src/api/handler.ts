@@ -59,6 +59,7 @@ const getBase = (type: string): string | undefined => {
     case 'file': return '/storage'
     /*-------------------------user-------------------------*/
     case 'user':
+    case 'company':
     case 'client': return undefined
     /*-------------------------authentication-------------------------*/
     case 'login':
