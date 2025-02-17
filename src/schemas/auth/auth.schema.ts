@@ -74,9 +74,9 @@ export const companySchema = z.object({
     .min(5, "El nombre es requerido")
     .max(50, "El nombre es demasiado largo"),
   nit: z
-    .string()
-    .min(10, "El NIT es requerido")
-    .max(20, "El NIT es demasiado largo"),
+    .string({ required_error: "El NIT es requerido" })
+    .min(6, "El NIT es muy corto")
+    .max(50, "El NIT debe tener menos de 50 caracteres"),
   invima: z
     .string()
     .min(5, "El invima es requerido")

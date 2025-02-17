@@ -182,7 +182,7 @@ export const useCompanyForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<CompanyFormProps>({
     resolver: zodResolver(companySchema),
     defaultValues: companyDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {

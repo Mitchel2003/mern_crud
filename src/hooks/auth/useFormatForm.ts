@@ -29,7 +29,6 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { data: cv, isLoading: isLoadingCv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
   const isLoading = isLoadingAcc || isLoadingCv || isLoadingImg
 
-  console.log(cv)
   const methods = useForm<CurriculumFormProps>({
     resolver: zodResolver(curriculumSchema),
     defaultValues: curriculumDefaultValues,
