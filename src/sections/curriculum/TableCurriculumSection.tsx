@@ -1,8 +1,10 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Accessory, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
-import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
+import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { useCurriculumTable } from "@/hooks/auth/useFormatForm"
+import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 
+import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
@@ -15,18 +17,24 @@ import { formatDate } from "@/utils/constants"
 import { cn } from "@/lib/utils"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface CurriculumActionsProps { curriculum: Curriculum; onChange: (value: string) => void }
+interface ActionsProps {
+  onChange: (value: string) => void
+  onDelete: (id: string) => void
+  curriculum: Curriculum
+}
 
 /**
- * Permite construir un componente de tabla para mostrar los formatos
+ * Permite construir un componente de tabla para mostrar los curriculums
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con los formatos, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: curriculums } = useQueryFormat().fetchAllFormats<Curriculum>('cv')
+  const { data: curriculums, isLoading } = useQueryFormat().fetchAllFormats<Curriculum>('cv')
+  const { handleDelete } = useCurriculumTable()
 
+  if (isLoading) return <DashboardSkeleton theme={theme} />
   return (
     <>
       <div className="container p-0">
@@ -36,8 +44,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         )}>
           <DataTable
             filterColumn="name"
+            columns={useColumns(onChange, handleDelete)}
             data={(curriculums as any)?.data as Curriculum[] || []}
-            columns={columns(onChange)}
           />
         </Card>
       </div>
@@ -58,13 +66,16 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
 }
 
 export default TableCurriculumSection
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Hook para crear las columnas de la tabla de oficinas
+ * Hook para crear las columnas de la tabla de curriculums
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
- * @returns Array de columnas para la tabla de oficinas
+ * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
+ * @returns Array de columnas para la tabla de curriculums
  */
-const columns = (onChange: (value: string) => void): ColumnDef<Curriculum>[] => [
+const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<Curriculum>[] => [
   {
     accessorKey: "name",
     header: "Nombre del curriculum"
@@ -96,31 +107,22 @@ const columns = (onChange: (value: string) => void): ColumnDef<Curriculum>[] => 
   },
   {
     id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useCurriculumActions({ curriculum: row.original, onChange })} />
+    cell: ({ row }) => <Actions curriculum={row.original} onChange={onChange} onDelete={onDelete} />
   }
 ]
 
 /**
- * Hook personalizado para manejar las acciones del dropdown de oficinas
- * @param office - La oficina sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para la oficina
+ * Hook personalizado para manejar las acciones del dropdown de curriculums
+ * @param curriculum - El curriculum sobre el que se realizarán las acciones
+ * @param onChange - La función que se ejecutará cuando se seleccione una acción
+ * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
+ * @returns Array de acciones disponibles para el curriculum
  */
-const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps): ActionProps[] => {
-  const { deleteFormat: deleteAcc } = useFormatMutation('accessory')
-  const { deleteFormat: deleteCv } = useFormatMutation('cv')
-  const { deleteFile: deleteImg } = useFormatMutation('file')
+const Actions = ({ curriculum, onChange, onDelete }: ActionsProps) => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
-  const handleDelete = async (id: string) => {
-    await deleteCv({ id }).then(async () => {
-      const { data: existing } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
-      await Promise.all(existing?.map(async (acc) => await deleteAcc({ id: acc._id })) || [])
-      await deleteImg({ path: `files/${id}/preview/img` })
-    })
-  }
-
-  return [{
+  const actions: ActionProps[] = [{
     icon: Eye,
     label: "Ver",
     onClick: () => {
@@ -149,8 +151,9 @@ const useCurriculumActions = ({ curriculum, onChange }: CurriculumActionsProps):
         isDestructive: true,
         title: 'Eliminar Curriculum',
         description: `¿Estás seguro que deseas eliminar el curriculum "${curriculum.name}"?`,
-        action: () => { handleDelete(curriculum._id) }
+        action: () => { onDelete(curriculum._id) }
       })
     }
   }]
+  return <ItemDropdown actions={actions} />
 }

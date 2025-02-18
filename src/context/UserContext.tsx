@@ -1,7 +1,7 @@
 import { UserContext, UserType } from "@/interfaces/context.interface"
+import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
-import { Props } from "@/interfaces/props.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
@@ -37,8 +37,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const getAll = async (type: UserType): Promise<any[]> => {
     return handler('Obteniendo lista...', async () => {
       try {
-        const response = await useApi(type).getAll()
-        return response.data
+        return (await useApi(type).getAll()).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []
@@ -55,8 +54,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const getById = async (type: UserType, id: string): Promise<any | undefined> => {
     return handler('Buscando por identificador...', async () => {
       try {
-        const response = await useApi(type).getById(id)
-        return response.data
+        return (await useApi(type).getById(id)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
         return undefined
@@ -67,14 +65,14 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
    * @param {string} type - El tipo de usuario, se utiliza para construir el endpoint.
-   * @param {object} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
+   * @param {QueryOptions} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
-  const getByQuery = async (type: UserType, query: object): Promise<any[]> => {
+  const getByQuery = async (type: UserType, query: QueryOptions): Promise<any[]> => {
     return handler('Buscando por consulta...', async () => {
       try {
-        const response = await useApi(type).getByQuery(query)
-        return response.data
+        if ('enabled' in query && query.enabled === false) return []
+        return (await useApi(type).getByQuery(query)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []

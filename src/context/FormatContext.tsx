@@ -1,7 +1,7 @@
 import { FileReferenceDB, isAxiosResponse, Paginate } from "@/interfaces/db.interface"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
+import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
-import { Props } from "@/interfaces/props.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
@@ -37,8 +37,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   const getAll = async (type: FormatType): Promise<any[]> => {
     return handler('Obteniendo lista...', async () => {
       try {
-        const response = await useApi(type).getAll()
-        return response.data
+        return (await useApi(type).getAll()).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []
@@ -55,8 +54,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   const getById = async (type: FormatType, id: string): Promise<any> => {
     return handler('Buscando por identificador...', async () => {
       try {
-        const response = await useApi(type).getById(id)
-        return response.data
+        return (await useApi(type).getById(id)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
         return undefined
@@ -67,14 +65,14 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta
    * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
-   * @param {object} query - La consulta, corresponde a un criterio de busqueda.
+   * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
-  const getByQuery = async (type: FormatType, query: object): Promise<any[]> => {
+  const getByQuery = async (type: FormatType, query: QueryOptions): Promise<any[]> => {
     return handler('Buscando por consulta...', async () => {
       try {
-        const response = await useApi(type).getByQuery(query)
-        return response.data
+        if ('enabled' in query && query.enabled === false) return []
+        return (await useApi(type).getByQuery(query)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
         return []
@@ -85,17 +83,17 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta, aplicando paginación.
    * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
-   * @param {object} query - La consulta, corresponde a un criterio de busqueda.
+   * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<Paginate<any>>} Un array con los datos de todos los formatos.
    */
-  const getByPaginate = async (type: FormatType, query: object): Promise<Paginate<any>> => {
+  const getByPaginate = async (type: FormatType, query: QueryOptions): Promise<Paginate<any>> => {
     return handler('Buscando por consulta...', async () => {
       try {
-        const response = await useApi(type).getByQuery(query)
-        return response.data
+        if ('enabled' in query && query.enabled === false) return { data: [] }
+        return (await useApi(type).getByQuery(query)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-        return { data: [], totalCount: 0, pageCount: 0 }
+        return { data: [] }
       }
     })
   }

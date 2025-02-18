@@ -107,7 +107,7 @@ export const useUserForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useClientForm = (id?: string, onSuccess?: () => void) => {
-  const { data: img = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `client/${id}/preview` })
+  const { data: img = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `client/${id}/preview`, enabled: !!id })
   const { data: client } = useQueryUser().fetchUserById<Client>('client', id as string)
   const { createUser, updateUser, isLoading } = useUserMutation('client')
   const { createFile, deleteFile } = useFormatMutation('file')
@@ -171,7 +171,7 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useCompanyForm = (id?: string, onSuccess?: () => void) => {
-  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${id}/preview` })
+  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${id}/preview`, enabled: !!id })
   const { data: company } = useQueryUser().fetchUserById<Company>('company', id as string)
   const { createUser, updateUser, isLoading } = useUserMutation('company')
   const { createFile, deleteFile } = useFormatMutation('file')

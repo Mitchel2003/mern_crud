@@ -12,13 +12,14 @@ import { cn } from "@/lib/utils"
 interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 
 const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) => {
-  const { fetchFormatById, fetchAllFiles, fetchFormatByQuery } = useQueryFormat()
+  const { fetchFormatById, fetchFormatByQuery, fetchAllFiles } = useQueryFormat()
   const { data: cv, isLoading: isLoadingCv } = fetchFormatById<Curriculum>('cv', id)
-  const { data: acc, isLoading: isLoadingAcc } = fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
   const { data: ins, isLoading: isLoadingIns } = fetchFormatById<Inspection>('inspection', cv?.inspection._id as string)
+  const { data: acc, isLoading: isLoadingAcc } = fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
+  const idCl = cv?.office?.headquarter?.client._id
 
-  const { data: imgCli } = fetchAllFiles<Metadata>('file', { path: `client/${cv?.office?.headquarter?.client._id}/preview` })
-  const { data: imgCv } = fetchAllFiles<Metadata>('file', { path: `files/${id}/preview` })
+  const { data: imgCl } = fetchAllFiles<Metadata>('file', { path: `client/${idCl}/preview`, enabled: !!idCl })
+  const { data: imgCv } = fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
 
   if (isLoadingCv || isLoadingIns || isLoadingAcc) return <DashboardSkeleton theme={theme} />
   return (
@@ -26,11 +27,11 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
       <Card className="max-w-5xl mx-auto border-purple-100">
         <CardHeader className="space-y-2 border-b bg-purple-50/50">
           <div className="flex justify-between items-start">
-            {imgCli && (
+            {imgCl && (
               <div className="relative w-32 h-32">
                 <img
                   className="object-contain rounded-lg border border-purple-100"
-                  src={imgCli[0]?.url || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
+                  src={imgCl[0]?.url || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
                   alt="Equipment"
                 />
               </div>

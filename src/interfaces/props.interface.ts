@@ -13,6 +13,11 @@ export interface ActionProps {
   label: string
 }
 
+// options query
+export interface QueryOptions {
+  [key: string]: any
+  enabled?: boolean
+}
 /*---------------------- Reusables ----------------------*/
 // HeaderCustom
 export interface HeaderSpanProps {
@@ -98,7 +103,7 @@ export interface ConfirmTriggerProps {
   title: string
 }
 
-// step-form
+// Step-form
 export interface AddOn {
   subtitle: string;
   checked: boolean;

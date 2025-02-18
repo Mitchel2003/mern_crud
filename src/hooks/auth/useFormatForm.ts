@@ -6,15 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Metadata } from '@/interfaces/db.interface'
 import { processFile } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
-import { useEffect } from 'react'
 
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
+import { useEffect, useState, useCallback } from 'react'
 
 /*--------------------------------------------------Curriculum--------------------------------------------------*/
 /**
- * Hook principal que orquesta los sub-hooks de curriculum
+ * Hook principal que orquesta los sub-hooks de curriculum para el formulario
  * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
@@ -23,10 +23,11 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { createFormat: createAcc, deleteFormat: deleteAcc } = useFormatMutation("accessory")
   const { createFormat: createCV, updateFormat: updateCV } = useFormatMutation("cv")
   const { createFile, deleteFile } = useFormatMutation("file")
+  const queryFormat = useQueryFormat()
 
-  const { data: img = [], isLoading: isLoadingImg } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${id}/preview` })
-  const { data: acc = [], isLoading: isLoadingAcc } = useQueryFormat().fetchFormatByQuery<Accessory>('accessory', { curriculum: id })
-  const { data: cv, isLoading: isLoadingCv } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
+  const { data: img = [], isLoading: isLoadingImg } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
+  const { data: acc = [], isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
+  const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id as string)
   const isLoading = isLoadingAcc || isLoadingCv || isLoadingImg
 
   const methods = useForm<CurriculumFormProps>({
@@ -38,7 +39,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => { id && loadData() }, [id, isLoading])
 
   /** Carga los datos del currículo en el formulario */
-  const loadData = async () => {
+  const loadData = async () => {// implement callback (suggested)
     cv && methods.reset({
       ...characteristicsData.mapValues(cv),
       ...accessoryData.mapValues(acc),
@@ -119,6 +120,33 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     detailsData: detailsData.options,
     locationData: locationData.options,
     inspectionData: inspectionData.options,
+  }
+}
+
+/** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
+export const useCurriculumTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFormat: deleteAcc } = useFormatMutation("accessory")
+  const { deleteFormat: deleteCv } = useFormatMutation("cv")
+  const { deleteFile } = useFormatMutation("file")
+  const queryFormat = useQueryFormat()
+
+  const { data: accs = [] } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete, enabled: !!onDelete })
+  const { data: img = [] } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete}/preview`, enabled: !!onDelete })
+
+  const deleteCurriculum = useCallback(async (id: string) => {
+    await deleteCv({ id }).then(async () => {
+      accs?.length > 0 && await Promise.all(accs.map(acc => deleteAcc({ id: acc._id })))
+      img?.[0]?.url && await deleteFile({ path: `files/${id}/preview/img` })
+    }).finally(() => setOnDelete(undefined))
+  }, [accs, img, deleteCv, deleteAcc, deleteFile])
+
+  useEffect(() => {
+    onDelete && deleteCurriculum(onDelete)
+  }, [onDelete, deleteCurriculum])
+
+  return {
+    handleDelete: (id: string) => setOnDelete(id)
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
