@@ -1,6 +1,6 @@
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
-import ImagePreview from "#/common/elements/ImagePreview"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import ImagePreview from "#/common/fields/ImagePreview"
 import CardIterable from "#/common/fields/CardIterable"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"

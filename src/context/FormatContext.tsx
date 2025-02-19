@@ -168,8 +168,8 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   const getAllFiles = async (type: FormatType, data: FileReferenceDB): Promise<any[]> => {
     return handler('Cargando archivos...', async () => {
       try {
-        const response = await useApi(type).getAll(data)
-        return response.data
+        if ('enabled' in data && data.enabled === false) return []
+        return (await useApi(type).getAll(data)).data
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al obtener archivos", message: e.response.data.message })
         return []
