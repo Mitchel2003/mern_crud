@@ -1,8 +1,8 @@
 import { Curriculum } from "@/interfaces/context.interface";
 import { DeleteCurriculumDialog } from "./delete-dialog";
+import { exportTableToCSV } from "@/lib/export/cvs";
 import type { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { exportTableToCSV } from "@/lib/export";
 import { Download } from "lucide-react";
 
 interface TasksTableToolbarActionsProps { table: Table<Curriculum> }

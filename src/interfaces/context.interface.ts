@@ -96,9 +96,9 @@ export type FormatType =
 export type Inspection = BaseMDB & { name: string, typeInspection: string[], inactive: Boolean }
 export type Accessory = BaseMDB & { name: string, type: string, serie: string, modelEquip: string, curriculum: Curriculum }
 
-export type Supplier = BaseMDB & { name: string, phone: string, city: string }
-export type Manufacturer = BaseMDB & { name: string, phone: string, country: string }
-export type Representative = BaseMDB & { name: string, phone: string, city: string }
+export type Supplier = BaseMDB & { name: string, phone: string, city: string, [key: string]: string }
+export type Manufacturer = BaseMDB & { name: string, phone: string, country: string, [key: string]: string }
+export type Representative = BaseMDB & { name: string, phone: string, city: string, [key: string]: string }
 
 export type RepresentativeHeadquarter = BaseMDB & { headquarter: string, representative: Representative }
 export type ManufacturerHeadquarter = BaseMDB & { headquarter: string, manufacturer: Manufacturer }

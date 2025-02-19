@@ -4,8 +4,8 @@ import { groupCollection as groups } from "@/utils/constants";
 import { Curriculum } from "@/interfaces/context.interface";
 import { getErrorMessage } from "@/errors/handle-error";
 import { SelectTrigger } from "@radix-ui/react-select";
+import { exportTableToCSV } from "@/lib/export/cvs";
 import type { Table } from "@tanstack/react-table";
-import { exportTableToCSV } from "@/lib/export";
 import * as React from "react";
 import { toast } from "sonner";
 
