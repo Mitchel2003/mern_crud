@@ -1,10 +1,9 @@
 import { Copy, FileText, Mail, Phone, Building2, Info, Tag, Bookmark, Layers, Barcode, ClipboardList, Zap, Cpu, Users2, Calendar, PenTool, Play, ShoppingCart, Shield, DollarSign, Factory, Truck, UserCheck, WrenchIcon, InfoIcon, CalendarIcon } from "lucide-react"
 import { Curriculum, Inspection, Accessory, ThemeContextProps, Company } from "@/interfaces/context.interface"
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
+import { useBase64Image } from "@/hooks/useBase64Img"
 import { Metadata } from "@/interfaces/db.interface"
-import 'react-circular-progressbar/dist/styles.css';
 import { Link } from "react-router-dom"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "#/ui/table"
@@ -18,8 +17,11 @@ import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
 
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
-import { PDFDownloadLink } from '@react-pdf/renderer'
+import { PDFDownloadLink } from "@react-pdf/renderer"
+import "react-circular-progressbar/dist/styles.css"
+import { copyToClipboard } from '@/lib/utils'
 
 interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 
@@ -40,21 +42,20 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
   const isLoadingData = isLoadingCv || isLoadingIns || isLoadingAcc || isLoadingCom
   const isLoadingFile = isLoadingImgCv || isLoadingImgCl || isLoadingImgCom
 
-  const refImgClient = imgClient?.[0]?.url
-  const refImgCom = imgCom?.[0]?.url
+  const { dataUrl: clientLogo } = useBase64Image(imgClient?.[0]?.url);
+  const { dataUrl: companyLogo } = useBase64Image(imgCom?.[0]?.url);
+  console.log({ clientLogo, companyLogo })
 
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text) }
-
-  if (isLoadingData) return <DashboardSkeleton theme={theme} />
+  if (isLoadingData || isLoadingFile) return <DashboardSkeleton theme={theme} />
   return (
     <div className="container mx-auto p-6 space-y-8">
-      {cv && !isLoadingData && !isLoadingFile && (
+      {cv && (
         <PDFDownloadLink
           fileName={`curriculum-${cv._id}.pdf`}
           document={
             <CurriculumPDF
-              clientLogo={refImgClient}
-              companyLogo={refImgCom}
+              companyLogo={companyLogo ?? undefined}
+              clientLogo={clientLogo ?? undefined}
               accessories={acc}
               inspection={ins}
               cv={cv}

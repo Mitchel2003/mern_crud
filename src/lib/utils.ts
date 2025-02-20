@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * This function is used to process a file, specifically a base64 string.
+ * also works to convert a blob to base64
  * @param data - The file to process.
  * @returns {string} A promise that resolves to a base64 string.
  */
@@ -19,6 +20,8 @@ export const processFile = (data: File): Promise<string> => {
     reader.readAsDataURL(data)
   })
 }
+
+export const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text) }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------data-table-advanced--------------------------------------------------*/
