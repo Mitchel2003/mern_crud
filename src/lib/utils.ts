@@ -21,6 +21,10 @@ export const processFile = (data: File): Promise<string> => {
   })
 }
 
+/**
+ * This function is used to copy a string to the clipboard.
+ * @param text Text to copy.
+ */
 export const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text) }
 /*---------------------------------------------------------------------------------------------------------*/
 

@@ -84,7 +84,7 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             theme={theme}
             name="price"
             label="Valor"
-            span='opcional'
+            span="opcional"
             placeholder="Valor del equipo"
           />
         </div>
