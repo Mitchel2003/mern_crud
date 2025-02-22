@@ -21,13 +21,19 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check if secret is available
-        run: echo "Token length: ${#QIITA_TOKEN}"
+        run: |
+          echo "::add-mask::${QIITA_TOKEN}"
+          echo "Token length: $(echo -n "${QIITA_TOKEN}" | wc -c)"
         env:
           QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
-      - uses: actions/checkout@v4
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: increments/qiita-cli/actions/publish@v1
+
+      - name: Publish to Qiita
+        uses: increments/qiita-cli/actions/publish@v1
         with:
-          qiita-token: ${{ secrets.QIITA_TOKEN }}
+          qiita_token: ${{ secrets.QIITA_TOKEN }}
           root: "."
