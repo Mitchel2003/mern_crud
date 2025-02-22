@@ -44,7 +44,16 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
       {cv && (
         <PDFDownloadLink
           fileName={`cv-${cv._id}.pdf`}
-          document={<CurriculumPDF companyLogo={imgCom?.[0]?.url} clientLogo={imgCli?.[0]?.url} accessories={acc} inspection={ins} cv={cv} />}
+          document={
+            <CurriculumPDF
+              companyLogo={imgCom?.[0]?.url}
+              clientLogo={imgCli?.[0]?.url}
+              cvLogo={imgCv?.[0]?.url}
+              accessories={acc}
+              inspection={ins}
+              cv={cv}
+            />
+          }
         >
           {({ loading }) => (
             <Button variant="default" disabled={loading} className="flex items-center gap-2">
