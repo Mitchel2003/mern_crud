@@ -125,7 +125,7 @@ interface CurriculumPDFProps {
   cv: Curriculum
 }
 
-const CurriculumPDF = ({ cv, inspection, accessories, clientLogo, cvLogo }: CurriculumPDFProps) => {
+const CurriculumPDF = ({ cv, accessories, clientLogo, cvLogo }: CurriculumPDFProps) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
