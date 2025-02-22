@@ -25,5 +25,5 @@ jobs:
           fetch-depth: 0
       - uses: increments/qiita-cli/actions/publish@v1
         with:
-          qiita-token: ${{ secrets.7ea592a5a314ab2af1946c8122ea4290144479ec }}
+          qiita-token: 7ea592a5a314ab2af1946c8122ea4290144479ec
           root: "."
