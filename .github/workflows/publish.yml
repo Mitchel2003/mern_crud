@@ -13,13 +13,11 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish_articles:
     runs-on: ubuntu-latest
-    env:
-      QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
