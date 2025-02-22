@@ -20,6 +20,39 @@
   }
 ]
 ```
+
+//default config for github actions (qiita-cli)
+```yaml
+jobs:
+  publish_articles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: increments/qiita-cli/actions/publish@v1
+        with:
+          qiita-token: ${{ secrets.QIITA_TOKEN }}
+          root: "."
+```
+
+//deploy config for github actions (qiita-cli)
+```yaml
+jobs:
+  deploy:
+    environment: Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: increments/qiita-cli/actions/publish@v1
+        with:
+          qiita-token: ${{ secrets.QIITA_TOKEN }}
+          root: "."
+```
 ### ---------------------------------------------------------------------------------------------------- ###
 
 ### ---------------------------------------------------------------------------------------------------- ###
