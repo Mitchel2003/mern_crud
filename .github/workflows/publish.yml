@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Check if secret is available
         run: |
+          if [ -z "${QIITA_TOKEN}" ]; then
+            echo "Error: QIITA_TOKEN is not set"
+            exit 1
+          fi
           echo "::add-mask::${QIITA_TOKEN}"
           echo "Token length: $(echo -n "${QIITA_TOKEN}" | wc -c)"
         env:
@@ -32,8 +36,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Qiita CLI
+        run: npm install -g @qiita/qiita-cli@v1.6.1
+
+      - name: Create credentials file for Qiita CLI
+        run: |
+          mkdir -p ~/.config/qiita-cli
+          echo '{ "access_token": "'"${QIITA_TOKEN}"'" }' > ~/.config/qiita-cli/credentials.json
+          chmod 600 ~/.config/qiita-cli/credentials.json
+        env:
+          QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
+
       - name: Publish to Qiita
         uses: increments/qiita-cli/actions/publish@v1
         with:
-          qiita_token: ${{ secrets.QIITA_TOKEN }}
+          qiita-token: ${{ secrets.QIITA_TOKEN }}
           root: "."
