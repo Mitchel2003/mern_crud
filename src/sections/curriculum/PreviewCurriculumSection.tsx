@@ -23,7 +23,6 @@ interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) => {
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
-
   const { data: com, isLoading: isLoadingCom } = queryUser.fetchAllUsers<Company>('company')
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id)
   const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string)
@@ -46,11 +45,11 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
           fileName={`cv-${cv._id}.pdf`}
           document={
             <CurriculumPDF
-              companyLogo={imgCom?.[0]?.url}
-              clientLogo={imgCli?.[0]?.url}
+              company={com?.[0] as Company}
+              comLogo={imgCom?.[0]?.url}
+              cliLogo={imgCli?.[0]?.url}
               cvLogo={imgCv?.[0]?.url}
               accessories={acc}
-              inspection={ins}
               cv={cv}
             />
           }

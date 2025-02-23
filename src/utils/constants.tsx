@@ -4,6 +4,7 @@ import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { Curriculum } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
+import { StyleSheet } from '@react-pdf/renderer'
 
 export const formatDate: Intl.DateTimeFormatOptions = {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
@@ -361,3 +362,199 @@ export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
 export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
 export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
 /*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------styles PDF--------------------------------------------------*/
+export const styles = StyleSheet.create({
+  page: {
+    padding: '15pt',
+    fontSize: '9pt',
+    fontFamily: 'Helvetica',
+  },
+  // Header section
+  headerContainer: {
+    flexDirection: 'row',
+    marginBottom: '5pt',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    width: '100pt',
+    marginRight: '10pt',
+  },
+  logo: {
+    width: '100pt',
+    height: '50pt',
+  },
+  titleContainer: {
+    flex: 1,
+  },
+  mainTitle: {
+    backgroundColor: '#000000',
+    padding: '4pt',
+    marginBottom: '2pt',
+  },
+  titleText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: '9pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  // Format info section
+  formatInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTop: '1pt solid black',
+    borderBottom: '1pt solid black',
+    padding: '2pt',
+    marginBottom: '5pt',
+  },
+  formatText: {
+    fontSize: '7pt',
+  },
+  // Client section
+  sectionTitle: {
+    backgroundColor: '#000000',
+    padding: '2pt 4pt',
+    marginBottom: '2pt',
+  },
+  sectionTitleText: {
+    color: '#FFFFFF',
+    fontSize: '8pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    borderBottom: '0.5pt solid black',
+    minHeight: '12pt',
+    alignItems: 'center',
+  },
+  infoCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: '2pt 4pt',
+  },
+  col2: { width: '50%' },
+  col3: { width: '33.33%' },
+  col4: { width: '25%' },
+  label: {
+    fontFamily: 'Helvetica-Bold',
+    marginRight: '2pt',
+  },
+  // Equipment section
+  equipmentContainer: {
+    flexDirection: 'row',
+    marginTop: '5pt',
+  },
+  equipmentInfo: {
+    flex: 1,
+    marginRight: '10pt',
+  },
+  equipmentImage: {
+    width: '100pt',
+    height: '100pt',
+  },
+  // Accessories table
+  table: {
+    marginTop: '5pt',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#E5E5E5',
+    borderTop: '0.5pt solid black',
+    borderBottom: '0.5pt solid black',
+  },
+  tableCell: {
+    flex: 1,
+    padding: '2pt 4pt',
+    borderLeft: '0.5pt solid black',
+    borderRight: '0.5pt solid black',
+  },
+  // Technical characteristics
+  techGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  techItem: {
+    width: '20%',
+    padding: '2pt',
+  },
+  // Bio classification section
+  tagContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: '4pt',
+    padding: '2pt 4pt',
+  },
+  tag: {
+    backgroundColor: '#F3F4F6',
+    padding: '2pt 4pt',
+    borderRadius: '2pt',
+    fontSize: '9pt',
+  },
+  classificationSection: {
+    width: '50%',
+    padding: '2pt 4pt',
+    borderRight: '0.5pt solid black',
+  },
+  classificationRow: {
+    flexDirection: 'row',
+  },
+  // Inspections section
+  inspectionTag: {
+    width: '33.33%',
+    fontSize: '8pt',
+    padding: '4pt 8pt',
+    marginBottom: '4pt',
+    borderRadius: '2pt',
+    backgroundColor: '#F3F4F6',
+    textAlign: 'center' as const,
+  },
+  // Characteristics section
+  characteristicsContainer: {
+    flexDirection: 'row',
+    marginTop: '4pt',
+    borderBottom: '0.5pt solid black',
+  },
+  characteristicsCol: {
+    width: '50%',
+    padding: '4pt 8pt',
+  },
+  descriptionText: {
+    fontSize: '9pt',
+    textAlign: 'justify',
+    lineHeight: 1.4,
+  },
+  recommendationsList: {
+    marginTop: '4pt',
+  },
+  recommendationItem: {
+    flexDirection: 'row',
+    marginBottom: '4pt',
+    alignItems: 'flex-start',
+  },
+  recommendationNumber: {
+    width: '12pt',
+    fontSize: '8pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  recommendationText: {
+    flex: 1,
+    fontSize: '9pt',
+    lineHeight: 1.4,
+  },
+  // ServiceProvider section
+  providerContainer: {
+    flexDirection: 'row',
+  },
+  providerInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  providerLogo: {
+    width: '90pt',
+    height: '90pt',
+    marginLeft: '10pt',
+  },
+  providerField: {
+    marginBottom: '8pt',
+  }
+})
