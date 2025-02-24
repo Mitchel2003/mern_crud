@@ -490,13 +490,13 @@ export const styles = StyleSheet.create({
   },
   // Inspections section
   inspectionTag: {
-    width: '33.33%',
+    width: '25%',
     fontSize: '8pt',
     padding: '4pt 8pt',
     marginBottom: '4pt',
     borderRadius: '2pt',
     backgroundColor: '#F3F4F6',
-    textAlign: 'center' as const,
+    textAlign: 'left' as const,
   },
   // Characteristics section
   characteristicsContainer: {
@@ -533,18 +533,38 @@ export const styles = StyleSheet.create({
   },
   // ServiceProvider section
   providerContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
+    borderBottom: '2pt solid black',
+    justifyContent: 'space-between',
   },
   providerInfo: {
     flex: 1,
-    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginLeft: '15pt',
+    alignItems: 'center',
+    paddingRight: '20pt',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  infoGroup: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: '10pt',
+    flexDirection: 'row',
+  },
+  providerLabel: {
+    width: '140pt',
+    fontSize: '10pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  providerValue: {
+    flex: 1,
+    fontSize: '10pt',
   },
   providerLogo: {
-    width: '120pt',
+    width: '140pt',
     height: '90pt',
-    marginLeft: '10pt',
-  },
-  providerField: {
-    marginBottom: '8pt',
+    objectFit: 'contain',
   }
 })

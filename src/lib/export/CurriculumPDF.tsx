@@ -377,7 +377,7 @@ const InspectionsSection = ({ inspections }: { inspections: string[] }) => (
     <View style={[styles.techGrid, { padding: '4pt' }]}>
       {inspections?.map((inspection, index) => (
         <View key={index} style={styles.inspectionTag}>
-          <Text>{`${index + 1}. ${inspection}`}</Text>
+          <Text>{inspection}</Text>
         </View>
       ))}
     </View>
@@ -422,23 +422,23 @@ const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
 /** Proveedor del Servicio */
 const ServiceProviderSection = ({ company, companyLogo }: { company: Company, companyLogo?: string }) => (
   <>
-    <View style={styles.sectionTitle}>
+    <View style={[styles.sectionTitle, { marginBottom: '0pt' }]}>
       <Text style={styles.sectionTitleText}>PROVEEDOR DEL SERVICIO</Text>
     </View>
 
     <View style={styles.providerContainer}>
       {/* Información del proveedor */}
       <View style={styles.providerInfo}>
-        <View style={styles.providerField}>
-          <Text style={styles.label}>Nombre del proveedor:</Text>
-          <Text style={[styles.descriptionText, { marginTop: '2pt' }]}>
+        <View style={styles.infoGroup}>
+          <Text style={styles.providerLabel}>Nombre del proveedor:</Text>
+          <Text style={styles.providerValue}>
             {company.name || 'N/A'}
           </Text>
         </View>
 
-        <View style={styles.providerField}>
-          <Text style={styles.label}>Registro Invima:</Text>
-          <Text style={[styles.descriptionText, { marginTop: '2pt' }]}>
+        <View style={styles.infoGroup}>
+          <Text style={styles.providerLabel}>Registro Invima:</Text>
+          <Text style={styles.providerValue}>
             {company.invima || 'N/A'}
           </Text>
         </View>
