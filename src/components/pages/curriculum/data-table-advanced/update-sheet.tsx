@@ -1,5 +1,6 @@
-import FormCurriculumSection, { FooterProps } from '@/sections/curriculum/FormCurriculumSection';
+import FormCurriculumSection from "@/sections/curriculum/FormCurriculumSection";
 import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface";
+import { FooterFormProps } from "@/interfaces/props.interface"
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import * as React from "react";
@@ -49,7 +50,7 @@ const Footer = React.memo(({
   isSubmitting,
   onSubmit,
   onReset
-}: FooterProps) => {
+}: FooterFormProps) => {
   return (
     <SheetFooter className="gap-2 pt-2 sm:space-x-0">
       <SheetClose asChild>
