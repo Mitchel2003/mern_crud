@@ -3,11 +3,11 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
 import { useState } from 'react'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableCurriculumSection from './TableCurriculumSection'
 import FormCurriculumSection from './FormCurriculumSection'
-import { Card } from '@/components/ui/card'
 const route = '/form/curriculum'
 
 interface CurriculumSectionProps extends ThemeContextProps { id: string | undefined }

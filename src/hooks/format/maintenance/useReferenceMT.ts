@@ -5,11 +5,8 @@ import { useQueryUser } from "@/hooks/query/useUserQuery"
 
 /** This hook is used to get the data of the reference section of the maintenance form */
 const useReferenceMT = () => {
-  const { fetchAllUsers } = useQueryUser()
-  const { fetchAllFormats } = useQueryFormat()
-
-  const { data: clients } = fetchAllUsers<Client>('client')
-  const { data: curriculums } = fetchAllFormats<Curriculum>('cv')
+  const { data: curriculums } = useQueryFormat().fetchAllFormats<Curriculum>('cv')
+  const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
 
   const mapValues = (data: Maintenance) => ({
     client: data.curriculum.office.headquarter?.client?._id,
@@ -25,7 +22,10 @@ const useReferenceMT = () => {
   return {
     mapValues,
     submitData,
-    options: { clients, curriculums }
+    options: {
+      clients,
+      curriculums: (curriculums as any).data || [],
+    }
   }
 }
 

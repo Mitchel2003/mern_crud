@@ -1,6 +1,7 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
+import { useMaintenanceTable } from "@/hooks/auth/useFormatForm"
+import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
@@ -15,10 +16,14 @@ import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface MaintenanceActionsProps { maintenance: Maintenance; onChange: (value: string) => void }
+interface ActionsProps {
+  onDelete: (mt: Maintenance) => void
+  onChange: (value: string) => void
+  maintenance: Maintenance
+}
 
 /**
- * Permite construir un componente de tabla para mostrar los formatos
+ * Permite construir un componente de tabla para mostrar los mantenimientos
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los formatos, posee una configuracion de columnas y un dropdown de acciones
@@ -26,6 +31,7 @@ interface MaintenanceActionsProps { maintenance: Maintenance; onChange: (value: 
 const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: maintenances } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
+  const { handleDelete } = useMaintenanceTable()
 
   return (
     <>
@@ -37,7 +43,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
           <DataTable
             filterColumn="name"
             data={maintenances || []}
-            columns={columns(onChange)}
+            columns={useColumns(onChange, handleDelete)}
           />
         </Card>
       </div>
@@ -58,13 +64,16 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
 }
 
 export default TableMaintenanceSection
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
  * Hook para crear las columnas de la tabla de oficinas
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
+ * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de columnas para la tabla de oficinas
  */
-const columns = (onChange: (value: string) => void): ColumnDef<Maintenance>[] => [
+const useColumns = (onChange: (value: string) => void, onDelete: (mt: Maintenance) => void): ColumnDef<Maintenance>[] => [
   {
     accessorKey: "name",
     header: "Nombre del ingeniero",
@@ -73,7 +82,9 @@ const columns = (onChange: (value: string) => void): ColumnDef<Maintenance>[] =>
   {
     header: "Estado del equipo",
     accessorKey: "statusEquipment",
-    cell: ({ row }) => row.original?.statusEquipment || 'Sin estado'
+    cell: ({ row }) => row.original?.statusEquipment === 'bueno' ? 'bueno ✅' : (
+      row.original?.statusEquipment === 'pendiente' ? 'pendiente⚠️' : 'inactivo❌'
+    )
   },
   {
     accessorKey: "dateNextMaintenance",
@@ -87,21 +98,22 @@ const columns = (onChange: (value: string) => void): ColumnDef<Maintenance>[] =>
   },
   {
     id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useMaintenanceActions({ maintenance: row.original, onChange })} />
+    cell: ({ row }) => <Actions maintenance={row.original} onChange={onChange} onDelete={onDelete} />
   }
 ]
 
 /**
- * Hook personalizado para manejar las acciones del dropdown de oficinas
- * @param office - La oficina sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para la oficina
+ * Hook personalizado para manejar las acciones del dropdown de mantenimientos
+ * @param maintenance - El mantenimiento sobre el que se realizarán las acciones
+ * @param onChange - La función que se ejecutará cuando se seleccione una acción
+ * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
+ * @returns Array de acciones disponibles para el mantenimiento
  */
-const useMaintenanceActions = ({ maintenance, onChange }: MaintenanceActionsProps): ActionProps[] => {
-  const { deleteFormat } = useFormatMutation('maintenance')
+const Actions = ({ maintenance, onChange, onDelete }: ActionsProps) => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
-  return [{
+  const actions: ActionProps[] = [{
     icon: Pencil,
     label: "Editar",
     onClick: () => {
@@ -120,8 +132,9 @@ const useMaintenanceActions = ({ maintenance, onChange }: MaintenanceActionsProp
         isDestructive: true,
         title: 'Eliminar Mantenimiento',
         description: `¿Estás seguro que deseas eliminar el mantenimiento de "${maintenance.nameEngineer}"?`,
-        action: () => deleteFormat({ id: maintenance._id })
+        action: () => onDelete(maintenance)
       })
     }
   }]
+  return <ItemDropdown actions={actions} />
 }

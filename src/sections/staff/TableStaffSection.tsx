@@ -1,7 +1,7 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useCurriculumTable } from "@/hooks/auth/useFormatForm"
-import { useQueryFormat } from "@/hooks/query/useFormatQuery"
+import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 
 import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
@@ -10,17 +10,17 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
 
-import { Pencil, Trash, Eye } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/constants"
+import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-interface TableCurriculumSectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface TableStaffSectionProps extends ThemeContextProps { onChange: (value: string) => void }
 interface ActionsProps {
   onChange: (value: string) => void
   onDelete: (id: string) => void
-  curriculum: Curriculum
+  staff: User
 }
 
 /**
@@ -29,9 +29,9 @@ interface ActionsProps {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps) => {
+const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: curriculums, isLoading } = useQueryFormat().fetchAllFormats<Curriculum>('cv')
+  const { data: staff, isLoading } = useQueryUser().fetchAllUsers<User>('user')
   const { handleDelete } = useCurriculumTable()
 
   if (isLoading) return <DashboardSkeleton theme={theme} />
@@ -44,8 +44,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         )}>
           <DataTable
             filterColumn="name"
+            data={staff || []}
             columns={useColumns(onChange, handleDelete)}
-            data={(curriculums as any)?.data as Curriculum[] || []}
           />
         </Card>
       </div>
@@ -65,7 +65,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
   )
 }
 
-export default TableCurriculumSection
+export default TableStaffSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
@@ -75,30 +75,21 @@ export default TableCurriculumSection
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de columnas para la tabla de curriculums
  */
-const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<Curriculum>[] => [
+const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<User>[] => [
   {
     accessorKey: "name",
-    header: "Nombre del curriculum"
+    header: "Nombre del usuario",
+    cell: ({ row }) => row.original?.username || 'Sin nombre'
   },
   {
-    header: "Servicio",
-    accessorKey: "service",
-    cell: ({ row }) => row.original?.service || 'Sin servicio'
+    header: "Rol",
+    accessorKey: "role",
+    cell: ({ row }) => row.original?.role || 'Sin rol'
   },
   {
-    header: "Oficina",
-    accessorKey: "office",
-    cell: ({ row }) => row.original?.office?.name || 'Sin oficina'
-  },
-  {
-    header: "Sede",
-    accessorKey: "headquarter",
-    cell: ({ row }) => row.original?.office?.headquarter?.address || 'Sin sede'
-  },
-  {
-    header: "Cliente",
-    accessorKey: "client",
-    cell: ({ row }) => row.original?.office?.headquarter?.client?.name || 'Sin cliente'
+    header: "Correo",
+    accessorKey: "email",
+    cell: ({ row }) => row.original?.email || 'Sin correo'
   },
   {
     accessorKey: "updatedAt",
@@ -107,39 +98,29 @@ const useColumns = (onChange: (value: string) => void, onDelete: (id: string) =>
   },
   {
     id: "actions",
-    cell: ({ row }) => <Actions curriculum={row.original} onChange={onChange} onDelete={onDelete} />
+    cell: ({ row }) => <Actions staff={row.original} onChange={onChange} onDelete={onDelete} />
   }
 ]
 
 /**
- * Hook personalizado para manejar las acciones del dropdown de curriculums
- * @param curriculum - El curriculum sobre el que se realizarán las acciones
+ * Hook personalizado para manejar las acciones del dropdown de usuarios
+ * @param staff - El usuario sobre el que se realizarán las acciones
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
- * @returns Array de acciones disponibles para el curriculum
+ * @returns Array de acciones disponibles para el usuario
  */
-const Actions = ({ curriculum, onChange, onDelete }: ActionsProps) => {
+const Actions = ({ staff, onChange, onDelete }: ActionsProps) => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
   const actions: ActionProps[] = [{
-    icon: Eye,
-    label: "Ver",
-    onClick: () => {
-      confirmAction({
-        title: 'Ver Curriculum',
-        description: `¿Deseas ver el curriculum "${curriculum.name}"?`,
-        action: () => { onChange('form'); navigate(`/form/curriculum/preview/${curriculum._id}`) }
-      })
-    }
-  }, {
     icon: Pencil,
     label: "Editar",
     onClick: () => {
       confirmAction({
-        title: 'Editar Curriculum',
-        description: `¿Deseas editar el curriculum "${curriculum.name}"?`,
-        action: () => { onChange('form'); navigate(`/form/curriculum/${curriculum._id}`) }
+        title: 'Editar Usuario',
+        description: `¿Deseas editar el usuario "${staff?.username || 'Sin nombre'}"?`,
+        action: () => { onChange('form'); navigate(`/staff/${staff?._id}`) }
       })
     }
   }, {
@@ -149,9 +130,9 @@ const Actions = ({ curriculum, onChange, onDelete }: ActionsProps) => {
     onClick: () => {
       confirmAction({
         isDestructive: true,
-        title: 'Eliminar Curriculum',
-        description: `¿Estás seguro que deseas eliminar el curriculum "${curriculum.name}"?`,
-        action: () => onDelete(curriculum._id)
+        title: 'Eliminar Usuario',
+        description: `¿Estás seguro que deseas eliminar el usuario "${staff?.username || 'Sin nombre'}"?`,
+        action: () => onDelete(staff?._id as string)
       })
     }
   }]

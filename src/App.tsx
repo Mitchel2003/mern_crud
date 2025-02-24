@@ -12,6 +12,7 @@ import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Client, { ClientFlow } from "@/pages/Client";
 import Maintenance from "@/pages/Maintenance";
 import Company from "@/pages/Company";
+import Staff from "@/pages/Staff";
 
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
@@ -20,7 +21,6 @@ import State from "@/pages/State";
 import City from "@/pages/City";
 
 import Dashboard from "@/pages/Dashboard";
-import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 
@@ -37,10 +37,7 @@ function App() {
                   <Route element={<RootLayout />}>
                     {/* home index */}
                     <Route path="/" index element={<Home />} />
-
-                    {/* auth routes */}
                     <Route path="/auth/login" element={<Login />} />
-                    <Route path="/auth/register" element={<Register />} />
 
                     {/* protected routes */}
                     <Route element={<ProtectedRoute />}>
@@ -57,6 +54,10 @@ function App() {
                       <Route path="/form/maintenance/:id" element={<Maintenance />} />
 
                       {/* user routes */}
+                      <Route path="/staff" element={<Staff />} /> {/*new user*/}
+                      <Route path="/staffs" element={<Staff />} /> {/*list users*/}
+                      <Route path="/staff/:id" element={<Staff />} /> {/*edit user*/}
+
                       <Route path="/company" element={<Company />} /> {/*new company*/}
                       <Route path="/companies" element={<Company />} /> {/*list companies*/}
                       <Route path="/company/:id" element={<Company />} /> {/*edit company*/}

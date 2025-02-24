@@ -1,68 +1,71 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useMaintenanceForm } from "@/hooks/auth/useFormatForm"
+import { FooterFormProps } from "@/interfaces/props.interface"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { FormProvider } from "react-hook-form"
-import { cn } from "@/lib/utils"
+import React, { useMemo } from "react"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
-import { Card, CardContent } from "#/ui/card"
+import { CardContent } from "#/ui/card"
 
 import EngineerServiceSection from "./EngineerServiceSection"
 import ObservationSection from "./ObservationSection"
 import ReferenceSection from "./ReferenceSection"
 
 interface FormMaintenanceSectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
+  footer?: React.ComponentType<FooterFormProps>
   id: string | undefined
+  onChange: () => void
 }
 
-const FormMaintenanceSection = ({ id, theme, onChange }: FormMaintenanceSectionProps) => {
-  const { open, methods, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, () => { onChange('table') })
+const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMaintenanceSectionProps) => {
+  const { open, methods, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
+
+  const formSections = useMemo(() => [
+    <ReferenceSection key="location" theme={theme} />,
+    <ObservationSection key="basic" theme={theme} />,
+    <EngineerServiceSection key="details" theme={theme} />
+  ], [theme])
 
   return (
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit}>
-          <div className="flex justify-center">
-            <Card
-              className={cn(
-                'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
-                'backdrop-filter backdrop-blur-lg',
-                theme === 'dark'
-                  ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-                  : 'bg-white hover:shadow-purple-500/60'
-              )}
-            >
-              {/* -------------------- Header form -------------------- */}
-              <HeaderForm
-                theme={theme}
-                title={id ? "Edición mantenimiento de equipo" : "Registro mantenimiento de equipo"}
-                description={id ? "Actualiza los datos de mantenimiento de equipo" : "Diligencia la información para registrar un mantenimiento de equipo"}
-                breadcrumbs={[
-                  { description: "Codigo: FHV-01" },
-                  { description: "Vigente desde: 01/08/2019" },
-                  { description: "Version: 02" }
-                ]}
-              />
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title={id ? "Edición mantenimiento de equipo" : "Registro mantenimiento de equipo"}
+            description={id ? "Actualiza los datos del mantenimiento de equipo" : "Diligencia la información para registrar una mantenimiento de equipo"}
+            breadcrumbs={[
+              { description: "Codigo: FHV-01" },
+              { description: "Vigente desde: 01/08/2019" },
+              { description: "Version: 02" }
+            ]}
+          />
 
-              {/* -------------------- Content form -------------------- */}
-              <CardContent className="pt-6 space-y-8">
-                <RenderFormat format={[
-                  <ReferenceSection theme={theme} />,
-                  <ObservationSection theme={theme} />,
-                  <EngineerServiceSection theme={theme} />
-                ]} />
-              </CardContent>
-              <SubmitFooter
-                theme={theme}
-                to="/form/maintenance"
-                disabled={!methods.formState.isDirty}
-                onCancel={() => { methods.reset(); onChange('table') }}
-              />
-            </Card>
-          </div>
+          {/* -------------------- Content form -------------------- */}
+          <CardContent className="pt-6 space-y-8">
+            <RenderFormat format={formSections} />
+          </CardContent>
+
+          {/* -------------------- Footer -------------------- */}
+          {!Footer ? (
+            <SubmitFooter
+              theme={theme}
+              to="/form/maintenance"
+              disabled={!methods.formState.isDirty}
+              onCancel={() => { methods.reset(); onChange?.() }}
+            />
+          ) : (
+            <Footer
+              onReset={methods.reset}
+              onSubmit={handleSubmit}
+              isDirty={methods.formState.isDirty}
+              isSubmitting={methods.formState.isSubmitting}
+            />
+          )}
         </form>
       </FormProvider>
 
@@ -80,4 +83,4 @@ const FormMaintenanceSection = ({ id, theme, onChange }: FormMaintenanceSectionP
   )
 }
 
-export default FormMaintenanceSection
+export default React.memo(FormMaintenanceSection)

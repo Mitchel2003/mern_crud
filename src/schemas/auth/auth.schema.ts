@@ -3,57 +3,67 @@ import { z } from "zod"
 /*--------------------------------------------------authSchema--------------------------------------------------*/
 export const forgotPasswordSchema = z.object({
   email: z
-    .string()
-    .email("Correo electrónico inválido")
+    .string({ required_error: "El correo electrónico es requerido" })
+    .email({ message: "Correo electrónico inválido" })
 })
 
 export const loginSchema = z.object({
   email: z
-    .string()
-    .email("Correo electrónico inválido"),
+    .string({ required_error: "El correo electrónico es requerido" })
+    .email({ message: "Correo electrónico inválido" }),
   password: z
-    .string()
+    .string({ required_error: "La contraseña es requerida" })
     .min(6, "La contraseña debe tener al menos 6 caracteres")
 })
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------userSchema--------------------------------------------------*/
 export const userSchema = z.object({
-  email: z
-    .string()
-    .email("Correo electrónico inválido"),
   username: z
-    .string()
-    .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
-    .max(15, "El nombre de usuario es demasiado largo"),
+    .string({ required_error: "El nombre de usuario es requerido" })
+    .min(5, "El nombre de usuario debe tener al menos 3 caracteres")
+    .max(50, "El nombre de usuario es demasiado largo"),
+  email: z
+    .string({ required_error: "El correo electrónico es requerido" })
+    .email({ message: "Correo electrónico inválido" }),
+  phone: z
+    .string({ required_error: "El teléfono es requerido" })
+    .min(6, "El teléfono debe tener al menos 6 caracteres")
+    .refine(value => /^[0-9]+$/.test(value), { message: "El teléfono debe contener solo números" }),
   password: z
-    .string()
+    .string({ required_error: "La contraseña es requerida" })
     .min(6, "La contraseña debe tener al menos 6 caracteres"),
   role: z
-    .string()
+    .string({ required_error: "El rol es requerido" })
     .min(1, "Debes seleccionar un rol"),
-  headquarters: z
-    .array(z.string())
-}).refine(data => data.role === 'admin' ? true : data.headquarters.length > 0, {
-  message: "Debes seleccionar al menos una sede", path: ["headquarters"]
+  company: z
+    .string().optional()
+}).superRefine((data, ctx) => {
+  if (data.role !== "admin" && !data.company) {
+    ctx.addIssue({
+      path: ["company"],
+      code: z.ZodIssueCode.custom,
+      message: "La empresa es requerida para usuarios no administradores"
+    })
+  }
 })
 
 export const clientSchema = z.object({
   preview: z.string().optional(),
   name: z
-    .string()
-    .min(5, "El nombre es requerido")
+    .string({ required_error: "El nombre es requerido" })
+    .min(5, "El nombre es demasiado corto")
     .max(50, "El nombre es demasiado largo"),
   email: z
-    .string()
+    .string({ required_error: "El correo electrónico es requerido" })
     .email("Correo electrónico inválido"),
   phone: z
-    .string()
+    .string({ required_error: "El teléfono es requerido" })
     .min(6, "El teléfono es requerido")
     .max(15, "El teléfono es demasiado largo"),
   nit: z
-    .string()
-    .min(10, "El NIT es requerido")
+    .string({ required_error: "El NIT es requerido" })
+    .min(10, "El NIT es muy corto")
     .max(20, "El NIT es demasiado largo"),
   photoUrl: z.array(
     z.object({

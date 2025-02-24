@@ -68,12 +68,12 @@ const getBase = (type: string): string | undefined => {
     case 'register':
     case 'forgot-password': return '/auth'
     /*-------------------------format-------------------------*/
-    case 'cv': return '/form'
-    case 'maintenance': return '/form/maintenance'
-    case 'equipment': return '/form/equipment'
+    case 'cv':
     case 'reminder':
+    case 'equipment':
     case 'calibration':
-    case 'calibrationEquipment': return '/form/equipment'
+    case 'maintenance':
+    case 'calibrationEquipment': return '/form'
     case 'inspection':
     case 'accessory': return '/form/cv/sub'
     case 'supplier':

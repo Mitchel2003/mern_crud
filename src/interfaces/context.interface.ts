@@ -47,7 +47,7 @@ interface Overwrite { create: boolean; read: boolean; update: boolean; delete: b
 interface Permissions { overwrite: Overwrite; headquarters: string[] }
 export type UserType = 'user' | 'client' | 'company'
 
-export type User = BaseMDB & { uid: string; role: string; email: string; username: string; permissions: Permissions } | null
+export type User = BaseMDB & { uid: string; role: string; phone: string; email: string; username: string; company?: Company, permissions: Permissions } | null
 export type Company = BaseMDB & { name: string, nit: string, invima: string, profesionalLicense: string }
 export type Client = BaseMDB & { name: string, email: string, phone: string, nit: string }
 

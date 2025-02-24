@@ -1,6 +1,6 @@
-import { City, Client, Company, Headquarter, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
+import { City, Client, Company, User } from "@/interfaces/context.interface"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -69,7 +69,7 @@ export const useForgotPasswordForm = () => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useUserForm = (id?: string, onSuccess?: () => void) => {
-  const { data: headquarters, isLoading } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
+  const { data: coms, isLoading } = useQueryUser().fetchAllUsers<Company>('company')
   const { data: user } = useQueryUser().fetchUserById<User>('user', id as string)
   const { signup: createUser } = useAuthContext()
   const { updateUser } = useUserMutation('user')
@@ -77,14 +77,16 @@ export const useUserForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
     defaultValues: userDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
-    user && methods.reset({
+    id && user && methods.reset({
       role: user.role,
+      phone: user.phone,
+      email: user.email,
       username: user.username,
-      headquarters: user.permissions.headquarters || []
+      company: user.company?._id,
     })
   }, [user])
 
@@ -97,7 +99,7 @@ export const useUserForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
-    options: headquarters?.map((e) => ({ value: e._id, label: `${e.client?.name || ''} - ${e.address} - ${e.city?.name || ''}`, icon: MapPinHouseIcon })) || []
+    options: coms?.map((e) => ({ value: e._id, label: `${e.name || 'Sin nombre'} - ${e.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
   }
 }
 

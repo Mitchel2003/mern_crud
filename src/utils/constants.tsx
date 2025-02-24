@@ -1,4 +1,4 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle, UserCog2Icon } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2, UserSquare2 } from 'lucide-react'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -23,11 +23,6 @@ export const links = () => {
       href: '/auth/login',
       label: 'Iniciar sesión',
       icon: LogIn
-    },
-    {/** register **/
-      href: '/auth/register',
-      label: 'Registrarse',
-      icon: UserPlus
     },
     {/** about **/
       href: '/about',
@@ -73,23 +68,18 @@ export const links = () => {
     },
     {// users
       label: 'Usuarios',
-      icon: UserCircle,
+      icon: UserCircle2,
       subItems: [
         {// proveedor of service
-          icon: UserCog2Icon,
+          icon: UserSquare2,
           label: 'Proveedores de servicios',
           href: '/companies',
         },
-        /**{// engineers
-          icon: UserPenIcon,
-          label: 'Ingenieros',
-          href: '/users/engineers',
+        {// staff
+          icon: Users,
+          label: 'Personal interno',
+          href: '/staff',
         },
-        {// admins
-          icon: UserCog2,
-          href: '/users/admins',
-          label: 'Administradores',
-        }*/
       ]
     },
     {/** forms **/
@@ -282,7 +272,7 @@ export const forgotPasswordDefaultValues = { email: '' }
 export const loginDefaultValues = { email: '', password: '' }
 export const clientDefaultValues = { name: '', email: '', phone: '', nit: '', preview: '', photoUrl: [] }
 export const companyDefaultValues = { name: '', nit: '', invima: '', profesionalLicense: '', previewSignature: '', previewLogo: '' }
-export const userDefaultValues = { username: '', email: '', role: '', password: '', headquarters: [] }
+export const userDefaultValues = { username: '', phone: '', role: '', email: '', password: '', company: '' }
 export const clientFlowDefaultValues = {
   client: { name: '', email: '', phone: '', nit: '', photoUrl: [] },
   headquarter: [{ name: '', address: '', city: '' }],
@@ -550,7 +540,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   providerLogo: {
-    width: '90pt',
+    width: '120pt',
     height: '90pt',
     marginLeft: '10pt',
   },

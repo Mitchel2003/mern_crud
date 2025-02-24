@@ -6,13 +6,13 @@ import { useState } from 'react'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import TableMaintenanceSection from './TableMaintenanceSection'
-import FormMaintenanceSection from './FormMaintenanceSection'
-const route = '/form/maintenance'
+import TableStaffSection from './TableStaffSection'
+import FormStaffSection from './FormStaffSection'
+const route = '/staff'
 
-interface MaintenanceSectionProps extends ThemeContextProps { id: string | undefined }
+interface StaffSectionProps extends ThemeContextProps { id: string | undefined }
 
-const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
+const StaffSection = ({ theme, id }: StaffSectionProps) => {
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useTabs({ id, setTab, to: route })
 
@@ -20,7 +20,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Mantenimiento
+          Personal interno
         </h1>
       </div>
 
@@ -54,7 +54,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableMaintenanceSection theme={theme} onChange={handle} />
+          <TableStaffSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
           <CardForm id={id} theme={theme} onChange={() => handle('table')} />
@@ -64,12 +64,12 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
   )
 }
 
-export default MaintenanceSection
+export default StaffSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-interface CardFormMaintenanceSectionProps extends ThemeContextProps { id: string | undefined, onChange: () => void }
-const CardForm = ({ id, theme, onChange }: CardFormMaintenanceSectionProps) => (
+interface CardFormStaffSectionProps extends ThemeContextProps { id: string | undefined, onChange: () => void }
+const CardForm = ({ id, theme, onChange }: CardFormStaffSectionProps) => (
   <div className="flex justify-center">
     <Card
       className={cn(
@@ -80,7 +80,7 @@ const CardForm = ({ id, theme, onChange }: CardFormMaintenanceSectionProps) => (
           : 'bg-white hover:shadow-purple-500/60'
       )}
     >
-      <FormMaintenanceSection id={id} theme={theme} onChange={onChange} />
+      <FormStaffSection id={id} theme={theme} onChange={onChange} />
     </Card>
   </div>
 )

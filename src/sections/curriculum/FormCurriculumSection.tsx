@@ -1,5 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
+import { FooterFormProps } from "@/interfaces/props.interface"
 import { RenderFormat } from "@/utils/RenderFormat"
 import { FormProvider } from "react-hook-form"
 import React, { useMemo } from "react"
@@ -19,15 +20,8 @@ import MaintenanceSection from "./MaintenanceSection"
 import BasicDataSection from "./BasicDataSection"
 import LocationSection from "./LocationSection"
 
-export interface FooterProps {
-  isSubmitting: boolean
-  onSubmit: () => void
-  onReset: () => void
-  isDirty: boolean
-}
-
 interface FormCurriculumSectionProps extends ThemeContextProps {
-  footer?: React.ComponentType<FooterProps>
+  footer?: React.ComponentType<FooterFormProps>
   id: string | undefined
   onChange: () => void
 }

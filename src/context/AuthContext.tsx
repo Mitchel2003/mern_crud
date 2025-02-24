@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     return handler('Registrando usuario...', async () => {
       try {
         await useApi('register').create(data)
-        notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
+        notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta, tienes 15 minutos para confirmarlo" })
       } catch (e: unknown) {
         setAuthStatus()
         isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message })

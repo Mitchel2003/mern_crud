@@ -1,9 +1,9 @@
-import HeaderCustom from "#/common/elements/HeaderCustom"
-import SelectField from "#/common/fields/Select"
-
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
 import { useMaintenanceForm } from "@/hooks/auth/useFormatForm"
 import { useFormContext } from "react-hook-form"
+
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import SelectField from "#/common/fields/Select"
 
 interface ReferenceProps extends ThemeContextProps { }
 
@@ -13,7 +13,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
   const clientId = watch('client')
 
   const client = options.clients?.find((client) => client._id === clientId)
-  const curriculum = options.curriculums?.filter((curriculum) => curriculum.office.headquarter?.client?._id === clientId)
+  const curriculum = options.curriculums?.filter((curriculum: Curriculum) => curriculum.office.headquarter?.client?._id === clientId)
 
   return (
     <div className="space-y-4">
@@ -55,7 +55,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
           theme={theme}
           name="curriculum"
           label="Curriculum"
-          options={curriculum?.map((c) => ({ label: c.name, value: c._id })) || []}
+          options={curriculum?.map((c: Curriculum) => ({ label: c.name, value: c._id })) || []}
           placeholder="Seleccionar curriculum"
         />
       </div>

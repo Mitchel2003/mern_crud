@@ -198,3 +198,28 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
     referenceData: referenceData.options,
   }
 }
+
+/** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
+export const useMaintenanceTable = () => {
+  const [onDelete, setOnDelete] = useState<Maintenance | undefined>(undefined)
+  const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
+  const { deleteFile } = useFormatMutation("file")
+  const queryFormat = useQueryFormat()
+
+  const { data: img = [] } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete?.curriculum._id}/mt/${onDelete?._id}`, enabled: !!onDelete })
+
+  const deleteMaintenance = useCallback(async (id: string) => {
+    await deleteMT({ id }).then(async (e: Maintenance) => {
+      console.log('maintenance deleted', e)
+      img?.length > 0 && await deleteFile({ path: `files/${e.curriculum._id}/mt/${e._id}` })
+    }).finally(() => setOnDelete(undefined))
+  }, [img, deleteMT, deleteFile])
+
+  useEffect(() => {
+    onDelete && deleteMaintenance(onDelete._id)
+  }, [onDelete, deleteMaintenance])
+
+  return {
+    handleDelete: (mt: Maintenance) => setOnDelete(mt)
+  }
+}

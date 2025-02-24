@@ -18,6 +18,14 @@ export interface QueryOptions {
   [key: string]: any
   enabled?: boolean
 }
+
+// Footer form
+export interface FooterFormProps {
+  isSubmitting: boolean
+  onSubmit: () => void
+  onReset: () => void
+  isDirty: boolean
+}
 /*---------------------- Reusables ----------------------*/
 // HeaderCustom
 export interface HeaderSpanProps {
