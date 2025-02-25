@@ -1,12 +1,14 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import { HeaderSpanProps } from '@/interfaces/props.interface'
 import { FormItem, FormMessage } from '#/ui/form'
 
 import { useFormContext, Controller } from 'react-hook-form'
+import HeaderCustom from '#/common/elements/HeaderCustom'
 import { Building2 } from 'lucide-react'
-import React from 'react'
 import { cn } from '@/lib/utils'
+import React from 'react'
 
-interface ImagePreviewProps extends ThemeContextProps {
+interface ImagePreviewProps extends HeaderSpanProps, ThemeContextProps {
   sizeImage?: string
   className?: string
   label?: string
@@ -16,24 +18,27 @@ interface ImagePreviewProps extends ThemeContextProps {
 
 const ImagePreview = React.forwardRef<HTMLDivElement, ImagePreviewProps>(({
   sizeImage = 'w-full h-full',
+  iconSpan = 'none',
   className,
   theme,
   label,
   name,
+  span,
   alt
 }, ref) => {
   const { control } = useFormContext()
 
   return (
     <FormItem className='w-full h-full'>
-      {/* Label */}
-      {label && (
-        <div className="flex w-full">
-          <p className={cn('text-xs', theme === 'dark' ? 'text-zinc-300' : 'text-gray-500')}>
-            {label}
-          </p>
-        </div>
-      )}
+      {/* Header label */}
+      <HeaderCustom
+        to="component"
+        span={span}
+        theme={theme}
+        title={label}
+        iconSpan={iconSpan}
+        className='ml-auto'
+      />
 
       {/* Image preview with Controller */}
       <Controller
