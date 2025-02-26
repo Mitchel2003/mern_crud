@@ -129,7 +129,7 @@ export const clientFlowSchema = z.object({
       .max(15, "El teléfono es demasiado largo"),
     nit: z
       .string()
-      .min(10, "El NIT es requerido")
+      .min(8, "El NIT es requerido")
       .max(20, "El NIT es demasiado largo"),
     photoUrl: z.array(
       z.object({

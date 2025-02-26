@@ -60,9 +60,13 @@ export const curriculumSchema = z.object({
   acquisition: z
     .string({ required_error: "Tipo adquisición del equipo es requerida" })
     .min(3, "Debes seleccionar un tipo de adquisición"),
-  warranty: z
-    .string({ required_error: "Garantía del equipo es requerida" })
-    .min(3, "Debes seleccionar una garantía"),
+  warranty: z.union([
+    z.string().min(3, "Debes seleccionar una garantía"),
+    z.object({
+      type: z.literal("otro"),
+      value: z.string().min(3, "El valor de garantía debe tener al menos 3 caracteres")
+    })
+  ]),
   price: z.string()
     .transform(val => val.trim())
     .refine(val => val === '' || /^[0-9]+$/.test(val), { message: "El precio debe contener solo números" }),
@@ -113,8 +117,8 @@ export const curriculumSchema = z.object({
     .array(z.string({ required_error: "Tipos de mantenimiento son requeridos" }))
     .min(1, "Debes seleccionar al menos un tipo de mantenimiento"),
   manualsMaintenance: z
-    .string({ required_error: "Manuales de mantenimiento son requeridos" })
-    .min(3, "Debes seleccionar un manual de mantenimiento"),
+    .array(z.string({ required_error: "Manuales de mantenimiento son requeridos" }))
+    .min(1, "Debes seleccionar al menos un manual de mantenimiento"),
 
   //relationship
   inspection: z

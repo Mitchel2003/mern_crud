@@ -44,8 +44,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         )}>
           <DataTable
             filterColumn="name"
+            data={curriculums || []}
             columns={useColumns(onChange, handleDelete)}
-            data={(curriculums as any)?.data as Curriculum[] || []}
           />
         </Card>
       </div>

@@ -432,14 +432,14 @@ const ServiceProviderSection = ({ company, companyLogo }: { company: Company, co
         <View style={styles.infoGroup}>
           <Text style={styles.providerLabel}>Nombre del proveedor:</Text>
           <Text style={styles.providerValue}>
-            {company.name || 'N/A'}
+            {company?.name || 'N/A'}
           </Text>
         </View>
 
         <View style={styles.infoGroup}>
           <Text style={styles.providerLabel}>Registro Invima:</Text>
           <Text style={styles.providerValue}>
-            {company.invima || 'N/A'}
+            {company?.invima || 'N/A'}
           </Text>
         </View>
       </View>

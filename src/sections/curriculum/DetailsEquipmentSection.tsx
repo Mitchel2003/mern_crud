@@ -1,15 +1,16 @@
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import CardIterable from '#/common/fields/CardIterable'
 import AlertDialog from '#/common/elements/AlertDialog'
+import CalendarField from '#/common/fields/Calendar'
 import SelectField from '#/common/fields/Select'
 import InputField from '#/common/fields/Input'
-import DateField from '#/common/fields/Date'
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
 import DetailsCV from '@/hooks/format/curriculum/useDetailsCV'
 import { useFormUtils } from '@/hooks/core/useFormUtils'
+import { defaultWarranty } from '@/utils/constants'
 
 interface DetailsEquipmentProps extends ThemeContextProps { }
 
@@ -36,20 +37,26 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
 
         {/* ---------------------- details about the acquisition ---------------------- */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <DateField
+          <CalendarField
             theme={theme}
+            toYear={2030}
+            fromYear={1950}
             name="datePurchase"
             label="Fecha compra"
-            placeholder="Seleccionar fecha"
+            placeholder="Seleccione la fecha"
           />
-          <DateField
+          <CalendarField
             theme={theme}
+            toYear={2030}
+            fromYear={1950}
             name="dateInstallation"
             label="Fecha instalación"
             placeholder="Seleccionar fecha"
           />
-          <DateField
+          <CalendarField
             theme={theme}
+            toYear={2030}
+            fromYear={1950}
             name="dateOperation"
             label="Fecha inicio operación"
             placeholder="Seleccionar fecha"
@@ -69,16 +76,12 @@ const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
             ]}
           />
           <SelectField
+            isAnother
             theme={theme}
             name="warranty"
             label="Garantía"
+            options={defaultWarranty}
             placeholder="Seleccionar garantía"
-            options={[
-              { label: "Ninguna", value: "n/a" },
-              { label: "6 meses", value: "6 meses" },
-              { label: "1 año", value: "12 meses" },
-              { label: "otro", value: "otro" }
-            ]}
           />
           <InputField
             theme={theme}

@@ -79,8 +79,8 @@ const EquipmentClassificationSection = ({ id, theme }: EquipmentClassProps) => {
       {/* technology and power supply */}
       <div className="flex flex-col md:flex-row">
         <CheckboxField
+          isMultiple
           theme={theme}
-          isMultiple={true}
           name="powerSupply"
           options={powerSupply}
           label="Fuentes de alimentacion"
@@ -103,8 +103,8 @@ const EquipmentClassificationSection = ({ id, theme }: EquipmentClassProps) => {
         </div>
 
         <CheckboxField
+          isMultiple
           theme={theme}
-          isMultiple={true}
           name="technologyPredominant"
           label="Tecnología predominante"
           options={technologyPredominant}

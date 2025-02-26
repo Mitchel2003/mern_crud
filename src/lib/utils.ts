@@ -6,7 +6,9 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------handler file--------------------------------------------------*/
 /**
  * This function is used to process a file, specifically a base64 string.
  * also works to convert a blob to base64
@@ -26,6 +28,28 @@ export const processFile = (data: File): Promise<string> => {
  * @param text Text to copy.
  */
 export const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text) }
+
+/**
+ * This function is used to save a PDF file.
+ * @param blob The PDF file to save.
+ * @param suggestedName The name to give to the file.
+ */
+export const savePDFAs = async (blob: Blob, suggestedName: string) => {
+  try {
+    // @ts-ignore - FileSystemFileHandle API es experimental
+    const handle = await window.showSaveFilePicker({
+      suggestedName,
+      types: [{
+        description: 'PDF Document',
+        accept: { 'application/pdf': ['.pdf'] },
+      }]
+    })
+
+    const writable = await handle.createWritable()
+    await writable.write(blob)
+    await writable.close()
+  } catch (err: any) { err.name !== 'AbortError' && console.error('Error al guardar el PDF:', err) }
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------data-table-advanced--------------------------------------------------*/

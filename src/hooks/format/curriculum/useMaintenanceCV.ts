@@ -7,7 +7,7 @@ const useMaintenanceCV = () => {
     employmentMaintenance: data.employmentMaintenance,
     frequencyMaintenance: data.frequencyMaintenance,
     typeMaintenance: data.typeMaintenance,
-    manualsMaintenance: data.manualsMaintenance,
+    manualsMaintenance: typeof data.manualsMaintenance === 'string' ? [data.manualsMaintenance] : data.manualsMaintenance,
   })
 
   const submitData = (data: CurriculumFormProps) => ({

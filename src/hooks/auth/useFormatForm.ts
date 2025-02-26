@@ -158,7 +158,7 @@ export const useCurriculumTable = () => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
-  const { referenceData, observationData, engineerServiceData } = formatHooks.maintenance()
+  const { referenceData, observationData } = formatHooks.maintenance()
   const { data: mt } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
   const { createFormat, updateFormat } = useFormatMutation("maintenance")
 
@@ -174,7 +174,6 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
     mt && methods.reset({
       ...referenceData.mapValues(mt),
       ...observationData.mapValues(mt),
-      ...engineerServiceData.mapValues(mt),
     })
   }
 
@@ -183,7 +182,6 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
       const data = {
         ...referenceData.submitData(e),
         ...observationData.submitData(e),
-        ...engineerServiceData.submitData(e),
       }
       id ? updateFormat({ id, data }) : createFormat(data)
       methods.reset()

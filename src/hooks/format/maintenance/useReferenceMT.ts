@@ -9,9 +9,11 @@ const useReferenceMT = () => {
   const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
 
   const mapValues = (data: Maintenance) => ({
-    client: data.curriculum.office.headquarter?.client?._id,
-    nameClient: data.curriculum.office.headquarter?.client?.name,
-    nitClient: data.curriculum.office.headquarter?.client?.nit,
+    client: {
+      nit: data.curriculum.office.headquarter?.client?.nit,
+      name: data.curriculum.office.headquarter?.client?.name,
+      email: data.curriculum.office.headquarter?.client?.email,
+    },
     curriculum: data.curriculum._id,
   })
 
@@ -24,7 +26,7 @@ const useReferenceMT = () => {
     submitData,
     options: {
       clients,
-      curriculums: (curriculums as any).data || [],
+      curriculums
     }
   }
 }

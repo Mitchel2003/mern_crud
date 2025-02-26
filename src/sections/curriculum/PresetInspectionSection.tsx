@@ -93,8 +93,8 @@ const inspectionFields = ({ theme }: ThemeContextProps): DialogField[] => {
     name: "newInspection.typeInspection",
     component:
       <CheckboxField
+        isMultiple
         theme={theme}
-        isMultiple={true}
         name="typeInspection"
         label='Lista de inspecciones'
         options={inspectionOptions}

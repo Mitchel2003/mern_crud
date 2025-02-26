@@ -10,7 +10,6 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import { CardContent } from "#/ui/card"
 
-import EngineerServiceSection from "./EngineerServiceSection"
 import ObservationSection from "./ObservationSection"
 import ReferenceSection from "./ReferenceSection"
 
@@ -24,9 +23,8 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
   const { open, methods, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
 
   const formSections = useMemo(() => [
-    <ReferenceSection key="location" theme={theme} />,
-    <ObservationSection key="basic" theme={theme} />,
-    <EngineerServiceSection key="details" theme={theme} />
+    <ReferenceSection key="reference" theme={theme} />,
+    <ObservationSection key="observation" theme={theme} id={id} />
   ], [theme])
 
   return (

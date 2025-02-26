@@ -1,22 +1,11 @@
-import useEngineerService from './useEngineerServiceMT'
-import useObservation from './useObservationMT'
-import useReference from './useReferenceMT'
+import useObservationMT from './useObservationMT'
+import useReferenceMT from './useReferenceMT'
 
 // Creamos un hook compuesto que inicializa todos los sub-hooks
 export const useMaintenanceSections = () => {
-  const engineerServiceData = useEngineerService()
-  const observationData = useObservation()
-  const referenceData = useReference()
+  const observationData = useObservationMT()
+  const referenceData = useReferenceMT()
 
-  return {
-    engineerServiceData,
-    observationData,
-    referenceData
-  }
+  return { referenceData, observationData }
 }
-
-export {
-  useEngineerService,
-  useObservation,
-  useReference
-}
+export { useReferenceMT, useObservationMT }

@@ -1,6 +1,7 @@
 import { Curriculum, RepresentativeHeadquarter, Headquarter, Representative, User, SupplierHeadquarter, Supplier, Manufacturer, ManufacturerHeadquarter } from "@/interfaces/context.interface"
 import { useQueryFormat, useFormatMutation } from "@/hooks/query/useFormatQuery"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
+import { defaultWarranty as warranties } from "@/utils/constants"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { SelectOptionProps } from "@/interfaces/props.interface"
 import { useAuthContext } from "@/context/AuthContext"
@@ -22,7 +23,7 @@ class DetailsCV {
       dateInstallation: data.dateInstallation ? new Date(data.dateInstallation) : null,
       dateOperation: data.dateOperation ? new Date(data.dateOperation) : null,
       acquisition: data.acquisition,
-      warranty: data.warranty,
+      warranty: warranties.some(w => w.value === data.warranty) ? data.warranty : { type: "otro" as const, value: data.warranty },
       supplier: data.supplier?._id,
       manufacturer: data.manufacturer?._id,
       representative: data.representative?._id,
@@ -34,7 +35,7 @@ class DetailsCV {
       dateInstallation: data.dateInstallation,
       dateOperation: data.dateOperation,
       acquisition: data.acquisition,
-      warranty: data.warranty,
+      warranty: typeof data.warranty === 'object' ? data.warranty.value : data.warranty,
       price: data.price === '' ? 'n/r' : data.price,
       representative: data.representative,
       manufacturer: data.manufacturer,

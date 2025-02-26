@@ -25,7 +25,7 @@ const useBasicDataCV = () => {
     photoUrl: data.photoUrl?.[0]?.file
   })
 
-  const processedCvs = ((cvs as any)?.data || []).reduce((unique: any[], cv: any) => {
+  const processedCvs = cvs?.reduce((unique: any[], cv: any) => {
     const exists = unique.some(item => item.name === cv.name)
     if (!exists && cv._id) unique.push(cv)
     return unique

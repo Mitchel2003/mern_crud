@@ -213,7 +213,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   employmentMaintenance: '', //maintenance
   frequencyMaintenance: '', //maintenance
   typeMaintenance: [], //maintenance
-  manualsMaintenance: '', //maintenance
+  manualsMaintenance: [], //maintenance
 
   //relationship
   inspection: '', //inspection
@@ -238,24 +238,34 @@ export const curriculumDefaultValues: CurriculumFormProps = {
  */
 export const maintenanceDefaultValues: MaintenanceFormProps = {
   //helpers fields not has been sent to database
-  client: '', //helper clientData
-  nameClient: '', //helper clientData
-  nitClient: '', //helper clientData
+  client: { name: '', email: '', nit: '' }, //helper reference
+  curriculum: '', //helper reference
+
+  //cv (autocomplete)
+  cv: {
+    name: '',
+    brand: '',
+    serie: '',
+    preview: '',
+    modelEquip: '',
+    healthRecord: '',
+  },
 
   //timestandard
   dateNextMaintenance: null,
   dateMaintenance: null,
+  dateTest: null,
 
   //maintenance
   statusEquipment: '',
   observations: '',
+  photoUrl: [],
 
   //received
   receivedBy: '',
   nameEngineer: '',
   invimaEngineer: '',
 
-  curriculum: '',
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -302,7 +312,12 @@ export const navigationTabs = [{
 }]
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------groups and services--------------------------------------------------*/
+/*--------------------------------------------------Statics--------------------------------------------------*/
+export const defaultWarranty = [
+  { label: "Ninguna", value: "n/a" },
+  { label: "6 meses", value: "6 meses" },
+  { label: "1 año", value: "12 meses" }
+]
 export interface ServiceGroup { name: string, services: string[] }
 export const groupCollection: ServiceGroup[] = [{
   name: 'Consulta externa',
