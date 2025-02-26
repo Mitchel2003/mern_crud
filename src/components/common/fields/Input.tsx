@@ -14,8 +14,10 @@ export type InputType = 'text' | 'number' | 'email' | 'password'
 interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
   autoComplete?: boolean
   placeholder?: string
+  readOnly?: boolean
   icon?: LucideIcon
   type?: InputType
+  value?: string
   label: string
   name: string
 }
@@ -26,6 +28,8 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   type = "text",
   placeholder,
   icon: Icon,
+  readOnly,
+  value,
   theme,
   label,
   name,
@@ -52,33 +56,49 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div className='relative'>
+            {readOnly ? (
               <Input
-                {...field}
-                ref={ref}
+                readOnly
+                ref={ref as any}
                 id={`${name}-input`}
                 placeholder={placeholder}
-                type={showPassword ? 'text' : type}
-                autoComplete={autoComplete ? 'on' : 'off'}
-                className={cn((type === 'email' || type === 'password') && 'pl-10',
+                value={value || field.value || ''}
+                className={cn(
+                  'w-full',
                   theme === 'dark'
-                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
-                    : 'bg-white border-gray-300 text-gray-900'
+                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                    : 'bg-gray-100 border-gray-300 text-gray-900'
                 )}
               />
-
-              {/* Main icon */}
-              {Icon && <LeadingIcon Icon={Icon} />}
-
-              {/* Button toggle visibility password */}
-              {type === 'password' && (
-                <PasswordToggle
-                  theme={theme}
-                  showPassword={showPassword}
-                  onToggle={() => setShowPassword(!showPassword)}
+            ) : (
+              <div className='relative'>
+                <Input
+                  {...field}
+                  ref={ref}
+                  id={`${name}-input`}
+                  placeholder={placeholder}
+                  type={showPassword ? 'text' : type}
+                  autoComplete={autoComplete ? 'on' : 'off'}
+                  className={cn((type === 'email' || type === 'password') && 'pl-10',
+                    theme === 'dark'
+                      ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  )}
                 />
-              )}
-            </div>
+
+                {/* Main icon */}
+                {Icon && <LeadingIcon Icon={Icon} />}
+
+                {/* Button toggle visibility password */}
+                {type === 'password' && (
+                  <PasswordToggle
+                    theme={theme}
+                    showPassword={showPassword}
+                    onToggle={() => setShowPassword(!showPassword)}
+                  />
+                )}
+              </div>
+            )}
 
             {error && (
               <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>

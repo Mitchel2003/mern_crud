@@ -35,14 +35,11 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
   const getAll = async (type: UserType): Promise<any[]> => {
-    return handler('Obteniendo lista...', async () => {
-      try {
-        return (await useApi(type).getAll()).data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-        return []
-      }
-    })
+    try { return (await useApi(type).getAll()).data }
+    catch (e: unknown) {
+      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+      return []
+    }
   }
 
   /**

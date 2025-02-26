@@ -35,14 +35,11 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
    */
   const getAll = async (type: LocationType): Promise<any[]> => {
-    return handler('Obteniendo lista...', async () => {
-      try {
-        return (await useApi(type).getAll()).data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-        return []
-      }
-    })
+    try { return (await useApi(type).getAll()).data }
+    catch (e: unknown) {
+      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
+      return []
+    }
   }
 
   /**
