@@ -4,9 +4,6 @@
 
 ### --------------------------------------Typescript documentation-------------------------------------- ###
 ````ts
-//index.css (custom calendar)
-.rdp-vhidden { @apply hidden }
-
 // client/tsconfig.app.json
 "include": [
     "src/**/*.ts",
