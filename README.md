@@ -3,8 +3,6 @@
 ### Vite + TypeScript
 
 ### --------------------------------------Typescript documentation-------------------------------------- ###
-//working about backend (user)
-
 ```ts
 // client/tsconfig.app.json
 "include": [
