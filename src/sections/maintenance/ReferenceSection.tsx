@@ -23,7 +23,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
   const curriculum = options.curriculums?.filter((cv: Curriculum) => cv.office.headquarter?.client?._id === clientId)
   const client = options.clients?.find((client) => client._id === clientId)
 
-  const selectedCv: Curriculum = options.curriculums?.find((cv: Curriculum) => cv._id === cvId) || {}
+  const selectedCv = options.curriculums?.find((cv: Curriculum) => cv._id === cvId)
   return (
     <div className="space-y-4">
       {/* -------------------- Selects -------------------- */}
@@ -92,7 +92,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
               name="cv.name"
               label="Nombre"
               placeholder="Nombre del equipo"
-              value={selectedCv.name}
+              value={selectedCv?.name}
             />
           </div>
           <InputField
@@ -101,7 +101,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
             name="cv.brand"
             label="Marca"
             placeholder="Marca del equipo"
-            value={selectedCv.brand}
+            value={selectedCv?.brand}
           />
           <InputField
             readOnly
@@ -109,7 +109,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
             label="Modelo"
             name="cv.modelEquip"
             placeholder="Modelo del equipo"
-            value={selectedCv.modelEquip}
+            value={selectedCv?.modelEquip}
           />
           <InputField
             readOnly
@@ -117,7 +117,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
             label="Serie"
             name="cv.serie"
             placeholder="Número de serie"
-            value={selectedCv.serie}
+            value={selectedCv?.serie}
           />
           <InputField
             readOnly
@@ -125,7 +125,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
             name="cv.healthRecord"
             label="Registro Sanitario"
             placeholder="Número de registro (invima)"
-            value={selectedCv.healthRecord}
+            value={selectedCv?.healthRecord}
           />
         </div>
 
