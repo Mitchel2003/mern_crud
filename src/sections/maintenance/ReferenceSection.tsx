@@ -1,5 +1,6 @@
-import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useMaintenanceForm } from "@/hooks/auth/useFormatForm"
+import { groupCollection as groups } from "@/utils/constants"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Metadata } from "@/interfaces/db.interface"
 import { useFormContext } from "react-hook-form"
@@ -11,19 +12,28 @@ import InputField from "#/common/fields/Input"
 import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 
-interface ReferenceProps extends ThemeContextProps { }
+interface ReferenceProps extends ThemeContextProps { id: boolean }
 
-const ReferenceSection = ({ theme }: ReferenceProps) => {
+const ReferenceSection = ({ id, theme }: ReferenceProps) => {
   const { referenceData: options } = useMaintenanceForm()
   const { watch } = useFormContext()
-  const clientId = watch('client.name')
+  const headquarterId = watch('headquarter')
+  const serviceId = watch('service')
+  const clientId = watch('client')
+  const officeId = watch('office')
   const cvId = watch('curriculum')
 
   const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${cvId}/preview`, enabled: !!cvId })
-  const curriculum = options.curriculums?.filter((cv: Curriculum) => cv.office.headquarter?.client?._id === clientId)
-  const client = options.clients?.find((client) => client._id === clientId)
 
-  const selectedCv = options.curriculums?.find((cv: Curriculum) => cv._id === cvId)
+  const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.client?._id === clientId)
+  const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === headquarterId)
+  const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.service === serviceId)
+  const services = groups.flatMap(group => group.services).filter(service => {
+    const office = offices?.find(office => office._id === officeId)
+    return !id ? office?.services.includes(service) : true
+  })
+
+  const selectedCv = options.curriculums?.find(cv => cv._id === cvId)
   return (
     <div className="space-y-4">
       {/* -------------------- Selects -------------------- */}
@@ -35,39 +45,46 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
         className="text-2xl font-light"
         span="Propocione la referencia de ubicacion"
       />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <SelectField
           theme={theme}
+          name="client"
           label="Cliente"
-          name="client.name"
           placeholder="Seleccionar cliente"
           options={options.clients?.map((c) => ({ label: c.name, value: c._id })) || []}
         />
         <SelectField
-          readOnly
-          options={[]}
           theme={theme}
-          label="Email"
-          name="client.email"
-          value={client?.email}
-          placeholder="Seleccionar email"
-        />
-        <SelectField
-          readOnly
-          label="NIT"
-          options={[]}
-          theme={theme}
-          name="client.nit"
-          value={client?.nit}
-          placeholder="Seleccionar NIT"
+          name="headquarter"
+          label="Sede"
+          placeholder="Seleccionar sede"
+          options={headquarters?.map((h) => ({ label: h.name, value: h._id })) || []}
         />
         <SelectField
           theme={theme}
-          name="curriculum"
-          label="Seleccion de equipo"
-          placeholder="Seleccionar equipo"
-          options={curriculum?.map((c: Curriculum) => ({ label: c.name, value: c._id })) || []}
+          name="office"
+          label="Oficina"
+          placeholder="Seleccionar oficina"
+          options={offices?.map((o) => ({ label: o.name, value: o._id })) || []}
         />
+        <div className="col-span-3">
+          <div className="grid lg:grid-cols-2 gap-6">
+            <SelectField
+              theme={theme}
+              name="service"
+              label="Servicio"
+              placeholder="Seleccionar servicio"
+              options={services?.map((s) => ({ label: s, value: s })) || []}
+            />
+            <SelectField
+              theme={theme}
+              name="curriculum"
+              label="Seleccion de equipo"
+              placeholder="Seleccionar equipo"
+              options={curriculums?.map(c => ({ label: `${c.name} => ${c.modelEquip}`, value: c._id })) || []}
+            />
+          </div>
+        </div>
       </div>
 
       <Separator />
@@ -148,7 +165,7 @@ const ReferenceSection = ({ theme }: ReferenceProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

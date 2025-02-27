@@ -17,8 +17,8 @@ import { cn } from "@/lib/utils"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: (value: string) => void }
 interface ActionsProps {
-  onDelete: (mt: Maintenance) => void
   onChange: (value: string) => void
+  onDelete: (id: string) => void
   maintenance: Maintenance
 }
 
@@ -73,11 +73,11 @@ export default TableMaintenanceSection
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de columnas para la tabla de oficinas
  */
-const useColumns = (onChange: (value: string) => void, onDelete: (mt: Maintenance) => void): ColumnDef<Maintenance>[] => [
+const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<Maintenance>[] => [
   {
     accessorKey: "name",
-    header: "Nombre del ingeniero",
-    cell: ({ row }) => row.original?.nameEngineer || 'Sin ingeniero'
+    header: "Nombre equipo",
+    cell: ({ row }) => row.original?.curriculum?.name || 'Sin equipo'
   },
   {
     header: "Estado del equipo",
@@ -119,7 +119,7 @@ const Actions = ({ maintenance, onChange, onDelete }: ActionsProps) => {
     onClick: () => {
       confirmAction({
         title: 'Editar Mantenimiento',
-        description: `¿Deseas editar el mantenimiento de "${maintenance.nameEngineer}"?`,
+        description: `¿Deseas editar el mantenimiento de "${maintenance.curriculum?.name}"?`,
         action: () => { onChange('form'); navigate(`/form/maintenance/${maintenance._id}`) }
       })
     }
@@ -131,8 +131,8 @@ const Actions = ({ maintenance, onChange, onDelete }: ActionsProps) => {
       confirmAction({
         isDestructive: true,
         title: 'Eliminar Mantenimiento',
-        description: `¿Estás seguro que deseas eliminar el mantenimiento de "${maintenance.nameEngineer}"?`,
-        action: () => onDelete(maintenance)
+        description: `¿Estás seguro que deseas eliminar el mantenimiento de "${maintenance.curriculum?.name}"?`,
+        action: () => onDelete(maintenance._id)
       })
     }
   }]

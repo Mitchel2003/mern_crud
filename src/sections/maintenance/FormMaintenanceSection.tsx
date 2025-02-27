@@ -23,8 +23,8 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
   const { open, methods, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
 
   const formSections = useMemo(() => [
-    <ReferenceSection key="reference" theme={theme} />,
-    <ObservationSection key="observation" theme={theme} id={id} />
+    <ReferenceSection key="reference" theme={theme} id={!!id} />,
+    <ObservationSection key="observation" theme={theme} />
   ], [theme])
 
   return (

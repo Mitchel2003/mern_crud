@@ -1,22 +1,16 @@
 import HeaderCustom from "#/common/elements/HeaderCustom"
-import CardIterable from "#/common/fields/CardIterable"
 import StatusCheck from "#/common/fields/StatusCheck"
-import ImageField from "#/common/fields/Image"
-import DateField from "#/common/fields/Date"
+import SelectField from "#/common/fields/Select"
 import AreaField from "#/common/fields/Area"
+import DateField from "#/common/fields/Date"
 
+import { typeMaintenanceCollection as typesMaintenance } from "@/utils/constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/props.interface"
 import { Check, X, Clock } from "lucide-react"
 
-const statusOptions: CheckProps[] = [
-  { name: 'bueno', label: 'Buen estado', color: 'green', icon: Check },
-  { name: 'pendiente', label: 'En espera de repuestos', color: 'yellow', icon: Clock },
-  { name: 'inactivo', label: 'Fuera de servicio', color: 'red', icon: X },
-]
-
-interface ObservationSectionProps extends ThemeContextProps { id: string | undefined }
-const ObservationSection = ({ theme, id }: ObservationSectionProps) => {
+interface ObservationSectionProps extends ThemeContextProps { }
+const ObservationSection = ({ theme }: ObservationSectionProps) => {
   return (
     <div className="space-y-4">
       {/* -------------------- Header -------------------- */}
@@ -48,16 +42,15 @@ const ObservationSection = ({ theme, id }: ObservationSectionProps) => {
           span="Indique la disponibilidad del equipo"
           iconSpan="warn"
         />
-        <CardIterable
-          limit={1}
-          theme={theme}
-          name="photoUrl"
-          titleButton={!id ? 'Agregar imagen' : 'Cambiar imagen'}
-          fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
-        />
-        
         {/* -------------------- Current date and next maintenance -------------------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <SelectField
+            theme={theme}
+            name="typeMaintenance"
+            label="Tipo de mantenimiento"
+            placeholder="Seleccionar tipo de mantenimiento"
+            options={typesMaintenance.filter(mt => mt !== 'predictivo').map(mt => ({ label: mt, value: mt }))}
+          />
           <DateField
             theme={theme}
             name="dateMaintenance"
@@ -80,4 +73,8 @@ export default ObservationSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const fields = [{ name: "photoUrl.file", label: "Imagen del equipo", sizeImage: "w-60 h-60" }]
+const statusOptions: CheckProps[] = [
+  { name: 'bueno', label: 'Buen estado', color: 'green', icon: Check },
+  { name: 'pendiente', label: 'En espera de repuestos', color: 'yellow', icon: Clock },
+  { name: 'inactivo', label: 'Fuera de servicio', color: 'red', icon: X },
+]

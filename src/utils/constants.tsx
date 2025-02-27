@@ -237,12 +237,14 @@ export const curriculumDefaultValues: CurriculumFormProps = {
  * @type {MaintenanceFormProps}
  */
 export const maintenanceDefaultValues: MaintenanceFormProps = {
-  //helpers fields not has been sent to database
-  client: { name: '', email: '', nit: '' }, //helper reference
-  curriculum: '', //helper reference
+  //helpers reference
+  client: '',
+  headquarter: '',
+  office: '',
+  service: '',
+  curriculum: '',
 
-  //cv (autocomplete)
-  cv: {
+  cv: {//autocompleted
     name: '',
     brand: '',
     serie: '',
@@ -254,18 +256,11 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
   //timestandard
   dateNextMaintenance: null,
   dateMaintenance: null,
-  dateTest: null,
 
   //maintenance
+  typeMaintenance: '',
   statusEquipment: '',
-  observations: '',
-  photoUrl: [],
-
-  //received
-  receivedBy: '',
-  nameEngineer: '',
-  invimaEngineer: '',
-
+  observations: ''
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -342,7 +337,7 @@ export const groupCollection: ServiceGroup[] = [{
     'Urgencias de mediana y alta complejidad'
   ]
 }]
-
+//biomedics
 export const riskCollection: Curriculum['riskClassification'][] = [
   'I', 'IIA', 'IIB', 'III'
 ]
@@ -360,6 +355,13 @@ export const technologyCollection: Curriculum['technologyPredominant'] = [
 ]
 export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
   'diagnóstico', 'prevención', 'rehabilitación', 'análisis de laboratorio', 'tratamiento y mantenimiento de vida'
+]
+//maintenance
+export const typeMaintenanceCollection: Curriculum['typeMaintenance'] = [
+  'preventivo', 'correctivo', 'predictivo'
+]
+export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
+  'servicio', 'componentes', 'usuario', 'despiece'
 ]
 /*---------------------------------------------------------------------------------------------------------*/
 

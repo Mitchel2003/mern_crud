@@ -1,23 +1,25 @@
 import { MaintenanceFormProps } from "@/schemas/format/maintenance.schema"
 import { Maintenance } from "@/interfaces/context.interface"
-import { Metadata } from "@/interfaces/db.interface"
 
 /** This hook is used to get the data of the observation section of the maintenance form */
 const useObservationMT = () => {
-  const mapValues = (data: Maintenance, img?: Metadata[]) => ({
+  const mapValues = (data: Maintenance) => ({
     dateNextMaintenance: data.dateNextMaintenance ? new Date(data.dateNextMaintenance) : null,
     dateMaintenance: data.dateMaintenance ? new Date(data.dateMaintenance) : null,
+    typeMaintenance: data.typeMaintenance,
     statusEquipment: data.statusEquipment,
     observations: data.observations,
-    preview: img?.[0]?.url
+    curriculum: data.curriculum._id
   })
 
   const submitData = (data: MaintenanceFormProps) => ({
     dateNextMaintenance: data.dateNextMaintenance,
-    statusEquipment: data.statusEquipment,
     dateMaintenance: data.dateMaintenance,
+
+    typeMaintenance: data.typeMaintenance,
+    statusEquipment: data.statusEquipment,
     observations: data.observations,
-    photoUrl: data.photoUrl?.[0]?.file
+    curriculum: data.curriculum
   })
 
   return { mapValues, submitData }

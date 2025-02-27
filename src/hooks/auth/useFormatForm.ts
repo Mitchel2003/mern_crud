@@ -12,7 +12,7 @@ import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curricul
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
 import { useEffect, useState, useCallback } from 'react'
 
-/*--------------------------------------------------Curriculum--------------------------------------------------*/
+/*--------------------------------------------------Curriculum form--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks de curriculum para el formulario
  * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
@@ -142,7 +142,61 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     inspectionData: inspectionData.options,
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------Maintenance form--------------------------------------------------*/
+/**
+ * Hook principal que orquesta los sub-hooks de maintenance
+ * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
+  const { createFormat, updateFormat } = useFormatMutation("maintenance")
+  const { referenceData, observationData } = formatHooks.maintenance()
+
+  const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
+
+  const methods = useForm<MaintenanceFormProps>({
+    resolver: zodResolver(maintenanceSchema),
+    defaultValues: maintenanceDefaultValues,
+    mode: "onChange",
+  })
+
+  //to load the form on update mode "id"
+  useEffect(() => { id && loadData() }, [id, isLoading])
+
+  /** Carga los datos del currículo en el formulario */
+  const loadData = async () => {// implement callback (suggested)
+    mt && methods.reset({
+      ...referenceData.mapValues(mt),
+      ...observationData.mapValues(mt),
+    })
+  }
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: any) => {
+      const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
+      id ? updateFormat({ id, data }) : createFormat(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    id,
+    methods,
+    ...handleSubmit,
+    referenceData: referenceData.options,
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------Curriculum table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
 export const useCurriculumTable = () => {
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
@@ -171,73 +225,21 @@ export const useCurriculumTable = () => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------Maintenance--------------------------------------------------*/
-/**
- * Hook principal que orquesta los sub-hooks de maintenance
- * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
-  const { referenceData, observationData } = formatHooks.maintenance()
-  const { data: mt } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
-  const { createFormat, updateFormat } = useFormatMutation("maintenance")
-
-  const methods = useForm<MaintenanceFormProps>({
-    resolver: zodResolver(maintenanceSchema),
-    defaultValues: maintenanceDefaultValues,
-    mode: "onChange",
-  })
-
-  useEffect(() => { loadData() }, [id])
-
-  const loadData = async () => {
-    mt && methods.reset({
-      ...referenceData.mapValues(mt),
-      ...observationData.mapValues(mt),
-    })
-  }
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (e: any) => {
-      const data = {
-        ...referenceData.submitData(e),
-        ...observationData.submitData(e),
-      }
-      id ? updateFormat({ id, data }) : createFormat(data)
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    id,
-    methods,
-    ...handleSubmit,
-    referenceData: referenceData.options,
-  }
-}
-
+/*--------------------------------------------------Maintenance table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
 export const useMaintenanceTable = () => {
-  const [onDelete, setOnDelete] = useState<Maintenance | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
-  const { deleteFile } = useFormatMutation("file")
-  const queryFormat = useQueryFormat()
-
-  const { data: img = [] } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete?.curriculum._id}/mt/${onDelete?._id}`, enabled: !!onDelete })
 
   const deleteMaintenance = useCallback(async (id: string) => {
-    await deleteMT({ id }).then(async (e: Maintenance) => {
-      console.log('maintenance deleted', e)
-      img?.length > 0 && await deleteFile({ path: `files/${e.curriculum._id}/mt/${e._id}` })
-    }).finally(() => setOnDelete(undefined))
-  }, [img, deleteMT, deleteFile])
+    await deleteMT({ id }).finally(() => setOnDelete(undefined))
+  }, [deleteMT])
 
   useEffect(() => {
-    onDelete && deleteMaintenance(onDelete._id)
+    onDelete && deleteMaintenance(onDelete)
   }, [onDelete, deleteMaintenance])
 
   return {
-    handleDelete: (mt: Maintenance) => setOnDelete(mt)
+    handleDelete: (id: string) => setOnDelete(id)
   }
 }

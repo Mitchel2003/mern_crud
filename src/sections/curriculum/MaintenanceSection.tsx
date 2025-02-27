@@ -1,8 +1,8 @@
+import { typeMaintenanceCollection as typesMaintenance, manualsMaintenanceCollection as manualsMaintenance } from "@/utils/constants"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import CheckboxField from "#/common/fields/Checkbox"
 import SelectField from "#/common/fields/Select"
-
-import { ThemeContextProps } from "@/interfaces/context.interface"
 
 interface MaintenanceProps extends ThemeContextProps { }
 
@@ -34,7 +34,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => (
         theme={theme}
         name="typeMaintenance"
         label="Tipo mantenimiento"
-        options={['preventivo', 'correctivo', 'predictivo']}
+        options={typesMaintenance}
       />
     </div>
 
@@ -54,7 +54,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => (
         theme={theme}
         label="Manuales"
         name="manualsMaintenance"
-        options={['servicio', 'componentes', 'usuario', 'despiece']}
+        options={manualsMaintenance}
       />
     </div>
 

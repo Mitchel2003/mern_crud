@@ -119,11 +119,6 @@ export type Maintenance = BaseMDB & {
   typeMaintenance: string
   statusEquipment: string
   observations: string
-
-  //references
-  receivedBy: string
-  nameEngineer: string
-  invimaEngineer: string
   curriculum: Curriculum
 }
 export type Curriculum = BaseMDB & {
@@ -150,7 +145,7 @@ export type Curriculum = BaseMDB & {
   //equipment
   useClassification: 'médico' | 'básico' | 'apóyo'
   typeClassification: 'fijo' | 'móvil'
-  biomedicalClassification: 'diagnóstico' | 'tratamiento y mantenimiento de vida' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio'
+  biomedicalClassification: 'diagnóstico' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio' | 'tratamiento y mantenimiento de vida'
   riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
   technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]
   powerSupply: ('agua' | 'aire' | 'gas' | 'vapor' | 'electricidad' | 'ninguno')[]
@@ -172,8 +167,8 @@ export type Curriculum = BaseMDB & {
   //maintenance
   employmentMaintenance: string
   frequencyMaintenance: string
-  typeMaintenance: string[]
-  manualsMaintenance: string[]
+  typeMaintenance: ('preventivo' | 'correctivo' | 'predictivo')[]
+  manualsMaintenance: ('servicio' | 'componentes' | 'usuario' | 'despiece')[]
 
   //relationship
   office: Office
