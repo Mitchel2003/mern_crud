@@ -67,12 +67,12 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
     </View>
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>SERVICIO:</Text>
-        <Text>{cv.service || 'N/A'}</Text>
+        <Text style={styles.label}>NOMBRE:</Text>
+        <Text>{cv.office?.headquarter?.client?.name || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>OFICINA:</Text>
-        <Text>{cv.office?.name || 'N/A'}</Text>
+        <Text style={styles.label}>SERVICIO:</Text>
+        <Text>{cv.service || 'N/A'}</Text>
       </View>
     </View>
 
@@ -88,11 +88,15 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: "40%" }]}>
+        <Text style={styles.label}>OFICINA:</Text>
+        <Text>{cv.office?.name || 'N/A'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col3, { width: "30%" }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.office?.headquarter?.client?.phone || 'N/A'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: "30%" }]}>
         <Text style={styles.label}>NIT:</Text>
         <Text>{cv.office?.headquarter?.client?.nit || 'N/A'}</Text>
       </View>
