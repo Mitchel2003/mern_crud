@@ -36,6 +36,26 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
+  useEffect(() => {//to autocomplete based on curriculum name
+    const subscription = methods.watch((value, { name }) => {
+      if (name !== 'name' || !value.name) return // only execute when name changes and value.name is defined
+      const selectedCV = basicData.cvs?.find((cv: any) => cv.name === value.name)
+      if (!selectedCV || id) return
+
+      const auto: Partial<CurriculumFormProps> = {// Update for batch to improve performance
+        ...detailsData.mapAutocomplete(selectedCV),
+        ...equipmentData.mapAutocomplete(selectedCV),
+        ...technicalData.mapAutocomplete(selectedCV),
+        ...maintenanceData.mapAutocomplete(selectedCV),
+        ...characteristicsData.mapAutocomplete(selectedCV)
+      }
+      Object.entries(auto).forEach(([field, value]) => value && methods.setValue(field as keyof CurriculumFormProps, value))
+    })
+
+    return () => subscription.unsubscribe()
+  }, [methods.watch, methods.setValue, basicData.cvs, id])
+
+  //to load the form on update mode "id"
   useEffect(() => { id && loadData() }, [id, isLoading])
 
   /** Carga los datos del currículo en el formulario */

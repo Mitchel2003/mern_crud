@@ -42,8 +42,15 @@ class DetailsCV {
       supplier: data.supplier,
     })
 
+    const mapAutocomplete = (data: Curriculum) => ({
+      representative: data.representative?._id,
+      manufacturer: data.manufacturer?._id,
+      supplier: data.supplier?._id,
+    })
+
     return {
       mapValues,
+      mapAutocomplete,
       submitData,
       options: {
         suppliers: supplierFields(user),

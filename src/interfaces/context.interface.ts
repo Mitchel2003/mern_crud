@@ -150,7 +150,7 @@ export type Curriculum = BaseMDB & {
   //equipment
   useClassification: 'médico' | 'básico' | 'apóyo'
   typeClassification: 'fijo' | 'móvil'
-  biomedicalClassification: 'diagnóstico' | 'tratamiento' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio'
+  biomedicalClassification: 'diagnóstico' | 'tratamiento y mantenimiento de vida' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio'
   riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
   technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]
   powerSupply: ('agua' | 'aire' | 'gas' | 'vapor' | 'electricidad' | 'ninguno')[]
@@ -173,7 +173,7 @@ export type Curriculum = BaseMDB & {
   employmentMaintenance: string
   frequencyMaintenance: string
   typeMaintenance: string[]
-  manualsMaintenance: string
+  manualsMaintenance: string[]
 
   //relationship
   office: Office

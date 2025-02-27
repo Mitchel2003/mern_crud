@@ -13,7 +13,12 @@ const useCharacteristicsCV = () => {
     recommendationsManufacturer: data?.recommendationsManufacturer ?? 'n/r'
   })
 
-  return { mapValues, submitData }
+  const mapAutocomplete = (data: Curriculum) => ({
+    characteristics: data.characteristics,
+    recommendationsManufacturer: data.recommendationsManufacturer
+  })
+
+  return { mapValues, mapAutocomplete, submitData }
 }
 
 export default useCharacteristicsCV

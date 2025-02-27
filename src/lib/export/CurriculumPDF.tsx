@@ -194,15 +194,15 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
     {/* equipment dates */}
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col3]}>
-        <Text style={styles.label}>FECHA COMPRA:</Text>
+        <Text style={styles.label}>COMPRA:</Text>
         <Text>{cv?.datePurchase ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.datePurchase)) : 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3]}>
-        <Text style={styles.label}>FECHA INSTALACIÓN:</Text>
+        <Text style={styles.label}>INSTALACIÓN:</Text>
         <Text>{cv?.dateInstallation ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.dateInstallation)) : 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3]}>
-        <Text style={styles.label}>FECHA DE OPERACIÓN:</Text>
+        <Text style={styles.label}>OPERACIÓN:</Text>
         <Text>{cv?.dateOperation ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.dateOperation)) : 'N/A'}</Text>
       </View>
     </View>
@@ -265,22 +265,22 @@ const BioClassificationSection = ({ cv }: { cv: Curriculum }) => (
     {/* Estado, Riesgo, Uso y Tipo */}
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>ESTADO:</Text>
-        <Text>Activo</Text>
-      </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>RIESGO:</Text>
-        <Text>{cv.riskClassification || 'N/R'}</Text>
-      </View>
-    </View>
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>CLASIFICACIÓN USO:</Text>
         <Text>{cv.useClassification || 'N/R'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>TIPO:</Text>
         <Text>{cv.typeClassification || 'N/R'}</Text>
+      </View>
+    </View>
+    <View style={styles.infoRow}>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
+        <Text>{cv.biomedicalClassification || 'N/R'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>RIESGO:</Text>
+        <Text>{cv.riskClassification || 'N/R'}</Text>
       </View>
     </View>
 
@@ -332,8 +332,18 @@ const MaintenanceSection = ({ cv }: { cv: Curriculum }) => (
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>MANUALES:</Text>
-        <Text>{cv.manualsMaintenance || 'N/R'}</Text>
+        {typeof cv.manualsMaintenance === 'string'
+          ? (<Text>{cv.manualsMaintenance || 'N/R'}</Text>)
+          : cv.manualsMaintenance?.map((manual, index) => (
+            <View key={index} style={styles.tagContainer}>
+              <View style={styles.tag}>
+                <Text>{manual}</Text>
+              </View>
+            </View>
+          ))
+        }
       </View>
+
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>TIPO:</Text>
         {cv.typeMaintenance?.map((manual, index) => (

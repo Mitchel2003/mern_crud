@@ -33,7 +33,7 @@ const FormCurriculumSection = ({ id, theme, onChange, footer: Footer }: FormCurr
     <LocationSection key="location" theme={theme} id={!!id} />,
     <BasicDataSection key="basic" theme={theme} id={!!id} />,
     <DetailsEquipmentSection key="details" theme={theme} />,
-    <EquipmentClassificationSection key="equipment" theme={theme} id={!!id} />,
+    <EquipmentClassificationSection key="equipment" theme={theme} />,
     <TechnicalCharacteristicsSection key="technical" theme={theme} />,
     <MaintenanceSection key="maintenance" theme={theme} />,
     <InspectionSection key="inspection" theme={theme} />,

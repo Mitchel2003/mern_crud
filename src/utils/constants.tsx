@@ -359,7 +359,7 @@ export const technologyCollection: Curriculum['technologyPredominant'] = [
   'mecánico', 'eléctrico', 'electrónico', 'hidráulico', 'neumático'
 ]
 export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
-  'diagnóstico', 'tratamiento', 'prevención', 'rehabilitación', 'análisis de laboratorio'
+  'diagnóstico', 'prevención', 'rehabilitación', 'análisis de laboratorio', 'tratamiento y mantenimiento de vida'
 ]
 /*---------------------------------------------------------------------------------------------------------*/
 

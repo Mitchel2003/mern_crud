@@ -73,10 +73,10 @@ const EquipmentPreviewCV = ({ cv, accs, imgCv, theme }: EquipmentPreviewCVProps)
               {/* Clasificación biomédica */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 {[
-                  { label: "Estado", value: "Activo" },
+                  { label: "Clasificación uso", value: cv?.useClassification },
+                  { label: "Tipo", value: cv?.typeClassification },
+                  { label: "Clasificación biomédica", value: cv?.biomedicalClassification },
                   { label: "Riesgo", value: cv?.riskClassification },
-                  { label: "Clasificación", value: cv?.useClassification },
-                  { label: "Tipo", value: cv?.typeClassification }
                 ].map((item, index) => (
                   <Badge key={index} variant="outline" className="justify-start gap-2 py-1.5 px-3">
                     <span className="text-muted-foreground">{item.label}:</span>

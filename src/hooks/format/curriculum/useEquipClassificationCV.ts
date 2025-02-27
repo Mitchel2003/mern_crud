@@ -21,7 +21,16 @@ const useEquipClassificationCV = () => {
     powerSupply: data.powerSupply,
   })
 
-  return { mapValues, submitData }
+  const mapAutocomplete = (data: Curriculum) => ({
+    typeClassification: data.typeClassification,
+    useClassification: data.useClassification,
+    riskClassification: data.riskClassification,
+    biomedicalClassification: data.biomedicalClassification,
+    technologyPredominant: data.technologyPredominant,
+    powerSupply: data.powerSupply,
+  })
+
+  return { mapValues, mapAutocomplete, submitData }
 }
 
 export default useEquipClassificationCV

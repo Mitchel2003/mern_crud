@@ -104,7 +104,12 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                   <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
                     <FileText className="w-8 h-8 text-purple-600" />
                     <div>
-                      <p className="font-medium">{cv?.manualsMaintenance || 'No especificado'}</p>
+                      <p className="font-medium">
+                        {typeof cv?.manualsMaintenance === 'string'
+                          ? cv?.manualsMaintenance
+                          : cv?.manualsMaintenance?.map((manual, i) => (i === cv.manualsMaintenance.length - 1 ? manual : `${manual}, `)).join('') || 'N/R'
+                        }
+                      </p>
                       <p className="text-sm text-muted-foreground">Tipo de manual no disponible</p>
                     </div>
                   </div>

@@ -33,7 +33,11 @@ const useTechCharacteristicsCV = () => {
     }
   })
 
-  return { mapValues, submitData }
+  const mapAutocomplete = (data: Curriculum) => ({
+    technicalCharacteristics: data.technicalCharacteristics,
+  })
+
+  return { mapValues, mapAutocomplete, submitData }
 }
 
 export default useTechCharacteristicsCV
