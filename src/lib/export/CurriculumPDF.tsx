@@ -1,6 +1,6 @@
 import { Curriculum, Accessory, Company } from "@/interfaces/context.interface"
+import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { styles } from "@/utils/constants"
 
 interface CurriculumPDFProps {
   accessories?: Accessory[]
@@ -11,32 +11,30 @@ interface CurriculumPDFProps {
   cv: Curriculum
 }
 
-const CurriculumPDF = ({ cv, accessories, cliLogo, comLogo, cvLogo, company }: CurriculumPDFProps) => {
-  return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        {/* Title Section */}
-        <HeaderSection cliLogo={cliLogo} />
+const CurriculumPDF = ({ cv, accessories, cliLogo, comLogo, cvLogo, company }: CurriculumPDFProps) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      {/* Title Section */}
+      <HeaderSection cliLogo={cliLogo} />
 
-        {/* Format Info Section */}
-        <View style={styles.formatInfo}>
-          <Text style={styles.formatText}>CÓDIGO: FHV-01</Text>
-          <Text style={styles.formatText}>VIGENTE DESDE: 01-09-2019</Text>
-          <Text style={styles.formatText}>VERSIÓN: 02</Text>
-        </View>
+      {/* Format Info Section */}
+      <View style={styles.formatInfo}>
+        <Text style={styles.formatText}>CÓDIGO: FHV-01</Text>
+        <Text style={styles.formatText}>VIGENTE DESDE: 01-09-2019</Text>
+        <Text style={styles.formatText}>VERSIÓN: 02</Text>
+      </View>
 
-        <ClientSection cv={cv} />{/* Client Section */}
-        <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accessories} />{/* Equipment Section */}
-        <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
-        <MaintenanceSection cv={cv} />{/* Mantenimiento */}
-        <TechnicalSection cv={cv} />{/* Technical Characteristics */}
-        <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
-        <CharacteristicsSection cv={cv} />{/* Características */}
-        <ServiceProviderSection company={company} companyLogo={comLogo} />{/* ProviderService */}
-      </Page>
-    </Document>
-  )
-}
+      <ClientSection cv={cv} />{/* Client Section */}
+      <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accessories} />{/* Equipment Section */}
+      <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
+      <MaintenanceSection cv={cv} />{/* Mantenimiento */}
+      <TechnicalSection cv={cv} />{/* Technical Characteristics */}
+      <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
+      <CharacteristicsSection cv={cv} />{/* Características */}
+      <ServiceProviderSection company={company} companyLogo={comLogo} />{/* ProviderService */}
+    </Page>
+  </Document>
+)
 
 export default CurriculumPDF
 /*---------------------------------------------------------------------------------------------------------*/
@@ -372,7 +370,7 @@ const TechnicalSection = ({ cv }: { cv: Curriculum }) => (
       {Object.entries(cv.technicalCharacteristics || {}).map(([key, value], index) => (
         <View key={index} style={styles.techItem}>
           <View style={styles.infoCol}>
-            <Text style={styles.label}>{toLabel(key)}:</Text>
+            <Text style={styles.label}>{toLabel_technicalSpecification(key)}:</Text>
             <Text>{value || 'N/A'}</Text>
           </View>
         </View>
@@ -433,6 +431,7 @@ const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
     </View>
   </>
 )
+
 /** Proveedor del Servicio */
 const ServiceProviderSection = ({ company, companyLogo }: { company: Company, companyLogo?: string }) => (
   <>
@@ -468,30 +467,3 @@ const ServiceProviderSection = ({ company, companyLogo }: { company: Company, co
     </View>
   </>
 )
-
-const toLabel = (key: string) => {
-  switch (key) {
-    case 'voltage':
-      return 'VOLTAJE'
-    case 'amperage':
-      return 'CORRIENTE'
-    case 'power':
-      return 'POTENCIA'
-    case 'frequency':
-      return 'FRECUENCIA'
-    case 'capacity':
-      return 'CAPACIDAD'
-    case 'pressure':
-      return 'PRESION'
-    case 'speed':
-      return 'VELOCIDAD'
-    case 'humidity':
-      return 'HUMEDAD'
-    case 'temperature':
-      return 'TEMPERATURA'
-    case 'weight':
-      return 'PESO'
-    default:
-      return key.toUpperCase()
-  }
-}

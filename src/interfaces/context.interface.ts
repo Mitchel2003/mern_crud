@@ -4,8 +4,8 @@ import { BaseMDB, FileReferenceDB, Paginate } from "@/interfaces/db.interface"
 export type Theme = 'light' | 'dark'
 
 export type ThemeContext = {
-  theme: Theme
   toggleTheme: () => void
+  theme: Theme
 } | undefined
 
 export type ThemeContextProps = { theme: Theme }
@@ -13,10 +13,10 @@ export type ThemeContextProps = { theme: Theme }
 
 /*--------------------------------------------------ActionConfirmContext--------------------------------------------------*/
 export type DialogConfig = {
-  title: string
-  description: string
+  action: () => void | Promise<void>
   isDestructive?: boolean
-  action: () => Promise<void> | void
+  description: string
+  title: string
 } | null
 
 export type DialogConfirmContext = {

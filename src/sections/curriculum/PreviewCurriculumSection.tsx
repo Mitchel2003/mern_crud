@@ -15,7 +15,7 @@ import { Button } from "#/ui/button"
 
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { PDFDownloadLink } from "@react-pdf/renderer"
-import { cn, savePDFAs } from "@/lib/utils"
+import { cn, usePDFDownload } from "@/lib/utils"
 import { FileText } from "lucide-react"
 
 interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
@@ -56,7 +56,7 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
         >
           {({ loading, blob }) => (
             <Button variant="default" disabled={loading} className="flex items-center gap-2"
-              onClick={async (e) => { e.preventDefault(); if (blob) return await savePDFAs(blob, `cv-${cv._id}.pdf`) }}
+              onClick={async (e) => { e.preventDefault(); if (blob) return await usePDFDownload().downloadPDFAs(blob, `cv-${cv._id}.pdf`) }}
             >
               <FileText className="h-4 w-4" />
               {loading ? 'Generando PDF...' : 'Descargar PDF'}

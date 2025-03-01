@@ -308,6 +308,32 @@ export const navigationTabs = [{
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Statics--------------------------------------------------*/
+export const toLabel_technicalSpecification = (key: string) => {
+  switch (key) {
+    case 'voltage':
+      return 'VOLTAJE'
+    case 'amperage':
+      return 'CORRIENTE'
+    case 'power':
+      return 'POTENCIA'
+    case 'frequency':
+      return 'FRECUENCIA'
+    case 'capacity':
+      return 'CAPACIDAD'
+    case 'pressure':
+      return 'PRESION'
+    case 'speed':
+      return 'VELOCIDAD'
+    case 'humidity':
+      return 'HUMEDAD'
+    case 'temperature':
+      return 'TEMPERATURA'
+    case 'weight':
+      return 'PESO'
+    default:
+      return key.toUpperCase()
+  }
+}
 export const defaultWarranty = [
   { label: "Ninguna", value: "n/a" },
   { label: "6 meses", value: "6 meses" },
@@ -582,6 +608,147 @@ export const styles = StyleSheet.create({
   providerLogo: {
     width: '140pt',
     height: '90pt',
+    objectFit: 'contain',
+  },
+
+  /* Maintenance - PDF */
+  // Observations section
+  sectionHeader: {
+    gap: '5pt',
+    padding: '5pt',
+    marginBottom: '8pt',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#000000',
+  },
+  headerText: {
+    color: '#FFFFFF',
+    fontSize: '10pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  contentContainer: {
+    backgroundColor: '#f8f8f8',
+    borderRadius: '4pt',
+    padding: '15pt',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '15pt',
+    backgroundColor: '#ffffff',
+    padding: '10pt',
+    borderRadius: '4pt',
+    border: '1pt solid #e0e0e0',
+  },
+  statusLabel: {
+    fontSize: '9pt',
+    marginRight: '8pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  statusBadge: {
+    padding: '4pt 12pt',
+    borderRadius: '12pt',
+    backgroundColor: '#FEF9C3', // Amarillo suave para "pendiente"
+    borderColor: '#FDE047', // Borde amarillo más oscuro
+    borderWidth: '1pt',
+  },
+  statusText: {
+    color: '#854D0E', // Texto amarillo oscuro
+    fontSize: '9pt',
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+  },
+  observationsContainer: {
+    backgroundColor: '#ffffff',
+    padding: '12pt',
+    borderRadius: '4pt',
+    border: '1pt solid #e0e0e0',
+  },
+  observationsTitle: {
+    fontSize: '9pt',
+    fontFamily: 'Helvetica-Bold',
+    marginBottom: '8pt',
+    color: '#374151',
+  },
+  observationsText: {
+    fontSize: '9pt',
+    lineHeight: 1.5,
+    color: '#4B5563',
+  },
+  // Estilos para diferentes estados
+  statusSuccess: {
+    backgroundColor: '#DCFCE7',
+    borderColor: '#86EFAC',
+  },
+  statusSuccessText: {
+    color: '#166534',
+  },
+  statusWarning: {
+    backgroundColor: '#FEF9C3',
+    borderColor: '#FDE047',
+  },
+  statusWarningText: {
+    color: '#854D0E',
+  },
+  statusError: {
+    backgroundColor: '#FEE2E2',
+    borderColor: '#FECACA',
+  },
+  statusErrorText: {
+    color: '#991B1B',
+  },
+  // ProviderService section
+  mainContainer: {
+    padding: '5pt',
+    marginTop: '5pt',
+    borderRadius: '4pt',
+    flexDirection: 'row',
+    backgroundColor: '#f8f8f8',
+    alignItems: 'flex-start',
+    gap: '5pt',
+  },
+  engineerInfoContainer: {
+    width: '25%',
+  },
+  engineerTitle: {
+    fontSize: '10pt',
+    fontFamily: 'Helvetica-Bold',
+    marginBottom: '10pt',
+  },
+  engineerDetails: {
+    fontSize: '9pt',
+    marginBottom: '4pt',
+  },
+  signatureBox: {
+    width: '25%',
+  },
+  signatureLabel: {
+    fontSize: '8pt',
+    marginBottom: '5pt',
+    textAlign: 'center',
+  },
+  signatureLine: {
+    width: '100%',
+    height: '70pt',
+    border: '1pt solid black',
+    backgroundColor: '#ffffff',
+  },
+  engineerSignature: {
+    width: '100%',
+    height: '70pt',
+    objectFit: 'contain',
+  },
+  providerLogoContainer: {
+    flex: 1,
+    width: '25%',
+    marginTop: '13pt',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  providerCompanyLogo: {
+    width: '100%',
+    height: '70pt',
     objectFit: 'contain',
   }
 })

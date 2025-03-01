@@ -9,14 +9,15 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
 
+import { Download, Pencil, Trash } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/constants"
-import { Pencil, Trash } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: (value: string) => void }
 interface ActionsProps {
+  onDownload: (mt: Maintenance) => void
   onChange: (value: string) => void
   onDelete: (id: string) => void
   maintenance: Maintenance
@@ -31,7 +32,7 @@ interface ActionsProps {
 const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: maintenances } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
-  const { handleDelete } = useMaintenanceTable()
+  const { handleDelete, handleDownload } = useMaintenanceTable()
 
   return (
     <>
@@ -43,7 +44,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
           <DataTable
             filterColumn="name"
             data={maintenances || []}
-            columns={useColumns(onChange, handleDelete)}
+            columns={useColumns(onChange, handleDelete, handleDownload)}
           />
         </Card>
       </div>
@@ -73,7 +74,8 @@ export default TableMaintenanceSection
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de columnas para la tabla de oficinas
  */
-const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<Maintenance>[] => [
+type UseColumnsProps = (onChange: (value: string) => void, onDelete: (id: string) => void, onDownload: (mt: Maintenance) => void) => ColumnDef<Maintenance>[]
+const useColumns: UseColumnsProps = (onChange, onDelete, onDownload) => [
   {
     accessorKey: "name",
     header: "Nombre equipo",
@@ -98,7 +100,7 @@ const useColumns = (onChange: (value: string) => void, onDelete: (id: string) =>
   },
   {
     id: "actions",
-    cell: ({ row }) => <Actions maintenance={row.original} onChange={onChange} onDelete={onDelete} />
+    cell: ({ row }) => <Actions maintenance={row.original} onChange={onChange} onDelete={onDelete} onDownload={onDownload} />
   }
 ]
 
@@ -109,7 +111,7 @@ const useColumns = (onChange: (value: string) => void, onDelete: (id: string) =>
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de acciones disponibles para el mantenimiento
  */
-const Actions = ({ maintenance, onChange, onDelete }: ActionsProps) => {
+const Actions = ({ maintenance, onChange, onDelete, onDownload }: ActionsProps) => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
@@ -133,6 +135,16 @@ const Actions = ({ maintenance, onChange, onDelete }: ActionsProps) => {
         title: 'Eliminar Mantenimiento',
         description: `¿Estás seguro que deseas eliminar el mantenimiento de "${maintenance.curriculum?.name}"?`,
         action: () => onDelete(maintenance._id)
+      })
+    }
+  }, {
+    icon: Download,
+    label: "Descargar PDF",
+    onClick: () => {
+      confirmAction({
+        title: 'Descargar Mantenimiento',
+        description: `¿Deseas descargar el mantenimiento ${maintenance?.dateMaintenance ? `(${new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(maintenance.dateMaintenance))})` : ''} del equipo "${maintenance.curriculum?.name}"?`,
+        action: () => onDownload(maintenance)
       })
     }
   }]

@@ -1,16 +1,20 @@
-import { Accessory, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { Accessory, Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
+import { useQueryUser } from '@/hooks/query/useUserQuery'
 import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Metadata } from '@/interfaces/db.interface'
-import { processFile } from '@/lib/utils'
-import { useForm } from 'react-hook-form'
 
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
+
+import MaintenancePDF from '@/lib/export/MaintenancePDF'
+import { usePDFDownload } from '@/lib/utils'
+import { processFile } from '@/lib/utils'
+import { useForm } from 'react-hook-form'
 
 /*--------------------------------------------------Curriculum form--------------------------------------------------*/
 /**
@@ -228,8 +232,22 @@ export const useCurriculumTable = () => {
 /*--------------------------------------------------Maintenance table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
 export const useMaintenanceTable = () => {
+  const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')/** get all companies */
+  const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
+  const { downloadPDF } = usePDFDownload()
+  const isDownloading = useRef(false)
+  const com = companies?.[0]
+
+  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com?._id })
+
+  const downloadFile = useCallback(async (mt: Maintenance) => {
+    if (isDownloading.current) return; isDownloading.current = true
+    const fileName = `mantenimiento-${mt.curriculum?.name}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+    await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com, imgs } })
+      .finally(() => { setOnDownload(undefined); isDownloading.current = false })
+  }, [downloadPDF, companies, imgs])
 
   const deleteMaintenance = useCallback(async (id: string) => {
     await deleteMT({ id }).finally(() => setOnDelete(undefined))
@@ -237,9 +255,12 @@ export const useMaintenanceTable = () => {
 
   useEffect(() => {
     onDelete && deleteMaintenance(onDelete)
-  }, [onDelete, deleteMaintenance])
+    onDownload && downloadFile(onDownload)
+  }, [onDelete, onDownload, downloadFile, deleteMaintenance])
 
   return {
-    handleDelete: (id: string) => setOnDelete(id)
+    handleDelete: (id: string) => setOnDelete(id),
+    handleDownload: (mt: Maintenance) => setOnDownload(mt)
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
