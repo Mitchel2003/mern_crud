@@ -289,7 +289,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
               name: office.name,
               services: office.services,
               headquarter: headquarter._id,
-              group: serviceGroup?.name ?? 'n/r'
+              group: serviceGroup?.name ?? 'N/R'
             })
           }))
         })

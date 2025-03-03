@@ -35,7 +35,6 @@ const useReferenceMT = () => {
     client: data.curriculum?.office?.headquarter?.client?._id,
     headquarter: data.curriculum?.office?.headquarter?._id,
     office: data.curriculum?.office?._id,
-    service: data.curriculum?.service,
     curriculum: data.curriculum?._id
   })
 

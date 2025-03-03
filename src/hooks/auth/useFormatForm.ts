@@ -250,7 +250,8 @@ export const useMaintenanceTable = () => {
   }, [downloadPDF, companies, imgs])
 
   const deleteMaintenance = useCallback(async (id: string) => {
-    await deleteMT({ id }).finally(() => setOnDelete(undefined))
+    if (isDownloading.current) return; isDownloading.current = true
+    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isDownloading.current = false })
   }, [deleteMT])
 
   useEffect(() => {

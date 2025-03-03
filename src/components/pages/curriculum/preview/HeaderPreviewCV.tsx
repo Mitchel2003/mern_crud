@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 interface HeaderPreviewCVProps extends ThemeContextProps {
   client: string
 }
+
 const HeaderPreviewCV = ({ theme, client }: HeaderPreviewCVProps) => {
   return (
     <CardHeader className={cn(

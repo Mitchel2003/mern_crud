@@ -11,24 +11,14 @@ import { cn } from '@/lib/utils'
 
 import { Curriculum, Inspection, ThemeContextProps } from '@/interfaces/context.interface'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
+import { getInspectionTags } from '@/utils/format'
 
 interface MaintenancePreviewCVProps extends ThemeContextProps {
   ins?: Inspection
   cv: Curriculum
 }
-const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => {
-  {/* Función auxiliar para generar tags basados en el tipo de inspección */ }
-  const getInspectionTags = (inspection: string) => {
-    const tags = []
-    if (inspection.toLowerCase().includes('físic')) tags.push('Física')
-    if (inspection.toLowerCase().includes('mecánic')) tags.push('Mecánica')
-    if (inspection.toLowerCase().includes('eléctric')) tags.push('Eléctrica')
-    if (inspection.toLowerCase().includes('seguridad')) tags.push('Seguridad')
-    if (inspection.toLowerCase().includes('prueba')) tags.push('Prueba')
-    if (tags.length === 0) tags.push('General')
-    return tags
-  }
 
+const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">
       <div className={cn(

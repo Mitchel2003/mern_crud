@@ -15,6 +15,7 @@ interface FooterPreviewCVProps extends ThemeContextProps {
   cv: Curriculum
   com?: Company
 }
+
 const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
   return (
     <>

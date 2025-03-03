@@ -10,6 +10,7 @@ import { Badge } from "#/ui/badge"
 interface DetailsPreviewCVProps extends ThemeContextProps {
   cv: Curriculum
 }
+
 const DetailsPreviewCV = ({ cv, theme }: DetailsPreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">

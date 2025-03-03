@@ -241,7 +241,6 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
   client: '',
   headquarter: '',
   office: '',
-  service: '',
   curriculum: '',
 
   cv: {//autocompleted
@@ -335,7 +334,7 @@ export const toLabel_technicalSpecification = (key: string) => {
   }
 }
 export const defaultWarranty = [
-  { label: "Ninguna", value: "n/a" },
+  { label: "Ninguna", value: "N/A" },
   { label: "6 meses", value: "6 meses" },
   { label: "1 año", value: "12 meses" }
 ]
@@ -455,10 +454,10 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
   infoRow: {
-    flexDirection: 'row',
-    borderBottom: '0.5pt solid black',
     minHeight: '12pt',
     alignItems: 'center',
+    flexDirection: 'row',
+    borderBottom: '0.5pt solid black',
   },
   infoCol: {
     flexDirection: 'row',
@@ -629,17 +628,16 @@ export const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: '#f8f8f8',
     borderRadius: '4pt',
-    padding: '15pt',
+    padding: '10pt',
   },
   statusContainer: {
+    padding: '5pt',
+    borderRadius: '2pt',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '15pt',
     backgroundColor: '#ffffff',
-    padding: '10pt',
-    borderRadius: '4pt',
     border: '1pt solid #e0e0e0',
+    justifyContent: 'flex-start',
   },
   statusLabel: {
     fontSize: '9pt',
@@ -647,53 +645,54 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
   statusBadge: {
+    borderWidth: '1pt',
     padding: '4pt 12pt',
     borderRadius: '12pt',
-    backgroundColor: '#FEF9C3', // Amarillo suave para "pendiente"
     borderColor: '#FDE047', // Borde amarillo más oscuro
-    borderWidth: '1pt',
+    backgroundColor: '#FEF9C3', // Amarillo suave para "pendiente"
   },
   statusText: {
-    color: '#854D0E', // Texto amarillo oscuro
     fontSize: '9pt',
-    fontFamily: 'Helvetica-Bold',
+    color: '#854D0E', // Texto amarillo oscuro
     textTransform: 'uppercase',
+    fontFamily: 'Helvetica-Bold',
   },
   observationsContainer: {
+    padding: '5pt',
+    borderRadius: '2pt',
     backgroundColor: '#ffffff',
-    padding: '12pt',
-    borderRadius: '4pt',
     border: '1pt solid #e0e0e0',
+    justifyContent: 'flex-start',
   },
   observationsTitle: {
     fontSize: '9pt',
-    fontFamily: 'Helvetica-Bold',
-    marginBottom: '8pt',
     color: '#374151',
+    marginBottom: '8pt',
+    fontFamily: 'Helvetica-Bold',
   },
   observationsText: {
-    fontSize: '9pt',
+    fontSize: '10pt',
     lineHeight: 1.5,
     color: '#4B5563',
   },
   // Estilos para diferentes estados
   statusSuccess: {
-    backgroundColor: '#DCFCE7',
     borderColor: '#86EFAC',
+    backgroundColor: '#DCFCE7',
   },
   statusSuccessText: {
     color: '#166534',
   },
   statusWarning: {
-    backgroundColor: '#FEF9C3',
     borderColor: '#FDE047',
+    backgroundColor: '#FEF9C3',
   },
   statusWarningText: {
     color: '#854D0E',
   },
   statusError: {
-    backgroundColor: '#FEE2E2',
     borderColor: '#FECACA',
+    backgroundColor: '#FEE2E2',
   },
   statusErrorText: {
     color: '#991B1B',
@@ -713,8 +712,8 @@ export const styles = StyleSheet.create({
   },
   engineerTitle: {
     fontSize: '10pt',
-    fontFamily: 'Helvetica-Bold',
     marginBottom: '10pt',
+    fontFamily: 'Helvetica-Bold',
   },
   engineerDetails: {
     fontSize: '9pt',
@@ -725,8 +724,8 @@ export const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: '8pt',
-    marginBottom: '5pt',
     textAlign: 'center',
+    marginBottom: '5pt',
   },
   signatureLine: {
     width: '100%',

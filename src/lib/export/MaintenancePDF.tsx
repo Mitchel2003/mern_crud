@@ -1,6 +1,6 @@
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { Company, Maintenance } from '@/interfaces/context.interface'
+import { Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { Metadata } from "@/interfaces/db.interface"
 
 interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[] }
@@ -20,8 +20,9 @@ const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
 
       <ClientSection mt={mt} />{/* Client Section */}
       <EquipmentSection mt={mt} />{/* Equipment Section */}
+      <BiomedicalSection cv={mt.curriculum} />{/* Biomedical Classification */}
       <TechnicalSection mt={mt} />{/* Technical Characteristics */}
-      <InspectionsSection inspections={mt.curriculum.inspection.typeInspection} />{/* Inspecciones */}
+      <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
       <ObservationsSection mt={mt} />{/* Observaciones */}
       <ServiceProviderSection mt={mt} com={com} imgs={imgs} />{/* ProviderService */}
     </Page>
@@ -85,16 +86,6 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
         <Text>{mt.curriculum.name}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>SERVICIO:</Text>
-        <Text>{mt.curriculum.service}</Text>
-      </View>
-    </View>
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>MARCA:</Text>
-        <Text>{mt.curriculum.brand}</Text>
-      </View>
-      <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>MODELO:</Text>
         <Text>{mt.curriculum.modelEquip}</Text>
       </View>
@@ -105,8 +96,74 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
         <Text>{mt.curriculum.serie}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>ESTADO DEL EQUIPO:</Text>
-        <Text>{mt.statusEquipment}</Text>
+        <Text style={styles.label}>MARCA:</Text>
+        <Text>{mt.curriculum.brand}</Text>
+      </View>
+    </View>
+    <View style={styles.infoRow}>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>SEDE:</Text>
+        <Text>{mt.curriculum.office.headquarter.name}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>OFICINA:</Text>
+        <Text>{mt.curriculum.office.name}</Text>
+      </View>
+    </View>
+  </>
+)
+
+/** Clasificación biomédica del equipo */
+const BiomedicalSection = ({ cv }: { cv?: Curriculum }) => (
+  <>
+    <View style={styles.sectionTitle}>
+      <Text style={styles.sectionTitleText}>CLASIFICACIÓN BIOMÉDICA</Text>
+    </View>
+
+    {/* Estado, Riesgo, Uso y Tipo */}
+    <View style={styles.infoRow}>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>CLASIFICACIÓN USO:</Text>
+        <Text>{cv?.useClassification || 'N/R'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>TIPO:</Text>
+        <Text>{cv?.typeClassification || 'N/R'}</Text>
+      </View>
+    </View>
+    <View style={styles.infoRow}>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
+        <Text>{cv?.biomedicalClassification || 'N/R'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>RIESGO:</Text>
+        <Text>{cv?.riskClassification || 'N/R'}</Text>
+      </View>
+    </View>
+
+    {/* Fuentes de Alimentación y Tecnologías predominantes */}
+    <View style={styles.classificationRow}>
+      <View style={styles.classificationSection}>
+        <Text style={styles.label}>TECNOLOGÍA PREDOMINANTE:</Text>
+        <View style={styles.tagContainer}>
+          {cv?.technologyPredominant?.map((tech, index) => (
+            <View key={index} style={styles.tag}>
+              <Text>{tech}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={[styles.classificationSection, { borderRight: 'none' }]}>
+        <Text style={styles.label}>FUENTES DE ALIMENTACIÓN:</Text>
+        {cv?.powerSupply?.map((supply, index) => (
+          <View key={index} style={styles.tagContainer}>
+            <View style={styles.tag}>
+              <Text>{supply}</Text>
+            </View>
+          </View>
+        ))}
       </View>
     </View>
   </>
@@ -132,14 +189,14 @@ const TechnicalSection = ({ mt }: { mt: Maintenance }) => (
 )
 
 /** Inspecciones del equipo */
-const InspectionsSection = ({ inspections }: { inspections: string[] }) => (
+const InspectionsSection = ({ cv }: { cv?: Curriculum }) => (
   <>
     <View style={styles.sectionTitle}>
       <Text style={styles.sectionTitleText}>INSPECCIONES</Text>
     </View>
 
     <View style={[styles.techGrid, { padding: '4pt' }]}>
-      {inspections?.map((inspection, index) => (
+      {cv?.inspection?.typeInspection?.map((inspection, index) => (
         <View key={index} style={styles.inspectionTag}>
           <Text>{inspection}</Text>
         </View>
@@ -150,45 +207,30 @@ const InspectionsSection = ({ inspections }: { inspections: string[] }) => (
 
 /** Observaciones */
 const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
-  const getStatusStyles = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'bueno':
-        return { badge: styles.statusSuccess, text: styles.statusSuccessText }
-      case 'pendiente':
-        return { badge: styles.statusWarning, text: styles.statusWarningText }
-      case 'inactivo':
-        return { badge: styles.statusError, text: styles.statusErrorText }
-      default:
-        return { badge: styles.statusWarning, text: styles.statusWarningText }
-    }
-  }
   const statusStyles = getStatusStyles(mt.statusEquipment)
-
   return (
     <>
       <View style={styles.sectionTitle}>
         <Text style={styles.sectionTitleText}>OBSERVACIONES</Text>
       </View>
 
-      {/* Content Container */}
-      <View style={styles.contentContainer}>
-        {/* Status Section */}
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusLabel}>Estado del equipo:</Text>
-          <View style={[styles.statusBadge, statusStyles.badge]}>
-            <Text style={[styles.statusText, statusStyles.text]}>
-              {mt.statusEquipment}
-            </Text>
-          </View>
-        </View>
+      {/* Observations Section */}
+      <View style={styles.observationsContainer}>
+        <Text style={styles.observationsText}>
+          {mt.observations}
+        </Text>
+      </View>
 
-        {/* Observations Section */}
-        <View style={styles.observationsContainer}>
-          <Text style={styles.observationsTitle}>
-            Detalles de la inspección
-          </Text>
-          <Text style={styles.observationsText}>
-            {mt.observations}
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}></Text>
+      </View>
+
+      {/* Status Section */}
+      <View style={styles.statusContainer}>
+        <Text style={styles.statusLabel}>Estado del equipo:</Text>
+        <View style={[styles.statusBadge, statusStyles.badge]}>
+          <Text style={[styles.statusText, statusStyles.text]}>
+            {formatStatus(mt.statusEquipment)}
           </Text>
         </View>
       </View>
@@ -209,8 +251,8 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
         <Text style={styles.label}>FECHA DE CREACIÓN:</Text>
         <Text>{mt?.createdAt ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.createdAt)) : 'N/A'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>PRÓXIMO MANTENIMIENTO:</Text>
+      <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
+        <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
         <Text>{mt?.dateNextMaintenance ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.dateNextMaintenance)) : 'N/A'}</Text>
       </View>
     </View>
@@ -255,3 +297,31 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
     </View>
   </>
 )
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const formatStatus = (status: string) => {
+  switch (status) {
+    case 'bueno':
+      return 'Funcionando'
+    case 'pendiente':
+      return 'En espera de repuestos'
+    case 'inactivo':
+      return 'Fuera de servicio'
+    default:
+      return 'N/A'
+  }
+}
+
+const getStatusStyles = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'bueno':
+      return { badge: styles.statusSuccess, text: styles.statusSuccessText }
+    case 'pendiente':
+      return { badge: styles.statusWarning, text: styles.statusWarningText }
+    case 'inactivo':
+      return { badge: styles.statusError, text: styles.statusErrorText }
+    default:
+      return { badge: styles.statusWarning, text: styles.statusWarningText }
+  }
+}

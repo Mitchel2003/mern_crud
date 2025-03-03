@@ -11,9 +11,6 @@ export const maintenanceSchema = z.object({
   office: z
     .string({ required_error: "La oficina es requerida" })
     .min(1, "Debes seleccionar una oficina"),
-  service: z
-    .string({ required_error: "El servicio es requerido" })
-    .min(1, "Debes seleccionar un servicio"),
   curriculum: z
     .string({ required_error: "El currículo es requerido" })
     .min(1, "Debes seleccionar un currículo"),

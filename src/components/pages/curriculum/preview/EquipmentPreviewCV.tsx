@@ -14,6 +14,7 @@ interface EquipmentPreviewCVProps extends ThemeContextProps {
   cv: Curriculum
   imgCv: string
 }
+
 const EquipmentPreviewCV = ({ cv, accs, imgCv, theme }: EquipmentPreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">

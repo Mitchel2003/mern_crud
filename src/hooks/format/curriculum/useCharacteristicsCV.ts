@@ -9,8 +9,8 @@ const useCharacteristicsCV = () => {
   })
 
   const submitData = (data: CurriculumFormProps) => ({
-    characteristics: data?.characteristics ?? 'n/r',
-    recommendationsManufacturer: data?.recommendationsManufacturer ?? 'n/r'
+    characteristics: data?.characteristics ?? 'N/R',
+    recommendationsManufacturer: data?.recommendationsManufacturer ?? 'N/R'
   })
 
   const mapAutocomplete = (data: Curriculum) => ({

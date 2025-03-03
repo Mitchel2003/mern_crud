@@ -60,7 +60,7 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
           <DateField
             theme={theme}
             name="dateNextMaintenance"
-            label="Fecha próximo mantenimiento"
+            label="Próximo mantenimiento preventivo"
             placeholder="Seleccione la fecha"
           />
         </div>

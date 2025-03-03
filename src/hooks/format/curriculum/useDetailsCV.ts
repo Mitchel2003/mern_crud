@@ -27,7 +27,7 @@ class DetailsCV {
       supplier: data.supplier?._id,
       manufacturer: data.manufacturer?._id,
       representative: data.representative?._id,
-      price: data.price === 'n/r' ? '' : data.price
+      price: data.price === 'N/R' ? '' : data.price
     })
 
     const submitData = (data: CurriculumFormProps) => ({
@@ -36,7 +36,7 @@ class DetailsCV {
       dateOperation: data.dateOperation,
       acquisition: data.acquisition,
       warranty: typeof data.warranty === 'object' ? data.warranty.value : data.warranty,
-      price: data.price === '' ? 'n/r' : data.price,
+      price: data.price === '' ? 'N/R' : data.price,
       representative: data.representative,
       manufacturer: data.manufacturer,
       supplier: data.supplier,
@@ -67,7 +67,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createRepresentative({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
+      const data = await createRepresentative({ ...stakeholder, phone: stakeholder.phone || 'N/R', city: stakeholder.city || 'N/R' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de representante')
 
@@ -84,7 +84,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createSupplier({ ...stakeholder, phone: stakeholder.phone || 'n/r', city: stakeholder.city || 'n/r' })
+      const data = await createSupplier({ ...stakeholder, phone: stakeholder.phone || 'N/R', city: stakeholder.city || 'N/R' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de proveedor')
 
@@ -101,7 +101,7 @@ class DetailsCV {
     const { user } = useAuthContext()
 
     const onSubmit = async (stakeholder: any) => {
-      const data = await createManufacturer({ ...stakeholder, phone: stakeholder.phone || 'n/r', country: stakeholder.country || 'n/r' })
+      const data = await createManufacturer({ ...stakeholder, phone: stakeholder.phone || 'N/R', country: stakeholder.country || 'N/R' })
       const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de fabricante')
 
