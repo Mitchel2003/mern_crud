@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Publish qiita article"
-        uses: mitchel2003/github@v1.0.0
+        uses: mitchel2003/mern_crud@v1.0.0
         with:
           # dir: "articles"
           qiita_access_token: ${{ secrets.QIITA_ACCESS_TOKEN }}
