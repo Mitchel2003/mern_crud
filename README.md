@@ -23,6 +23,22 @@
 
 //default config for github actions (qiita-cli)
 ```yaml
+name: Publish articles
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish_articles:
     runs-on: ubuntu-latest

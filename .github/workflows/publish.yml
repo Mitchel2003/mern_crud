@@ -1,5 +1,5 @@
-# Please set 'QIITA_TOKEN' secret to your repository
-name: Publish articles
+# .github/workflows/qiita.yml
+name: "GitHub to Qiita"
 
 on:
   push:
@@ -16,27 +16,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment: Production
+  qiita:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - name: "Publish qiita article"
+        uses: mitchel2003/github@v1.0.0
         with:
-          fetch-depth: 0
-      - uses: increments/qiita-cli/actions/publish@v1
-        with:
-          qiita-token: ${{ secrets.QIITA_TOKEN }}
-          root: "."
-          
-  publish_articles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: increments/qiita-cli/actions/publish@v1
-        with:
-          qiita-token: ${{ secrets.QIITA_TOKEN }}
-          root: "."
+          # dir: "articles"
+          qiita_access_token: ${{ secrets.QIITA_ACCESS_TOKEN }}
+          mapping_filepath: "mapping.txt"
+          strict: false
