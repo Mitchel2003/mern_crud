@@ -31,4 +31,7 @@ jobs:
         echo '{"qiita_access_token": "${{ secrets.QIITA_ACCESS_TOKEN }}"}' > ~/.config/qiita-cli/credentials.json
 
     - name: Publicar en Qiita
-      run: qiita publish --all --root .
+      uses: increments/qiita-cli/actions/publish@v1
+      with:
+        qiita-token: ${{ secrets.QIITA_ACCESS_TOKEN }}
+        root: "."
