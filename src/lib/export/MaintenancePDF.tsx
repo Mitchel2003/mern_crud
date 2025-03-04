@@ -67,8 +67,8 @@ const ClientSection = ({ mt }: { mt: Maintenance }) => (
         <Text>{mt.curriculum.office.headquarter.address}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>FECHA DE MANTENIMIENTO:</Text>
-        <Text>{mt?.dateMaintenance ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.dateMaintenance)) : 'N/A'}</Text>
+        <Text style={styles.label}>EMAIL:</Text>
+        <Text>{mt.curriculum.office.headquarter.client.email}</Text>
       </View>
     </View>
   </>
@@ -248,8 +248,8 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
     {/* Fechas de mantenimiento */}
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>FECHA DE CREACIÓN:</Text>
-        <Text>{mt?.createdAt ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.createdAt)) : 'N/A'}</Text>
+        <Text style={styles.label}>FECHA MANTENIMIENTO:</Text>
+        <Text>{mt?.dateMaintenance ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.dateMaintenance)) : 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
         <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>

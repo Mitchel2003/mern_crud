@@ -1,8 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
-import { FC, createElement } from 'react'
-import { pdf } from '@react-pdf/renderer'
+import { FC, createElement } from "react"
+import { pdf } from "@react-pdf/renderer"
 import { twMerge } from "tailwind-merge"
-import { saveAs } from 'file-saver'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -29,23 +28,32 @@ export const processFile = (data: File): Promise<string> => {
     reader.readAsDataURL(data)
   })
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------handler download PDF--------------------------------------------------*/
 type PDFProps<T> = { component: FC<T>, fileName: string, props: T }
 /** This represent a hook with tools to download a PDF. */
 export const usePDFDownload = () => {
   /**
    * This function is used to download a PDF.
-   * Is used to download directly from the component
+   * Is used to download directly from the component with the option to choose save location
    * @param component The React component to convert to PDF.
    * @param props The props to pass to the component.
    * @param fileName The name to give to the file.
    */
-  const downloadPDF = async <T extends object>({ component, props, fileName }: PDFProps<T>): Promise<void> => {
+  const downloadPDF = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
     try {
       const element = createElement(component, props)
       const blob = await pdf(element).toBlob()
-      saveAs(blob, fileName)
-    } catch (error) { console.error('Error al generar el PDF:', error); throw error }
+      // @ts-ignore - FileSystemFileHandle API es experimental
+      const handle = await window.showSaveFilePicker({
+        types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }],
+        suggestedName: fileName,
+      })
+      const writable = await handle.createWritable()
+      await writable.write(blob)
+      await writable.close()
+    } catch (e) { console.error('Error al generar el PDF:', e); throw e }
   }
 
   /**
@@ -61,11 +69,10 @@ export const usePDFDownload = () => {
         types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }],
         suggestedName,
       })
-
       const writable = await handle.createWritable()
       await writable.write(blob)
       await writable.close()
-    } catch (err: any) { err.name !== 'AbortError' && console.error('Error al guardar el PDF:', err) }
+    } catch (e) { console.error('Error al guardar el PDF:', e); throw e }
   }
 
   return { downloadPDF, downloadPDFAs }

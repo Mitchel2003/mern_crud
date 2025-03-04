@@ -242,6 +242,10 @@ export const useMaintenanceTable = () => {
 
   const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com?._id })
 
+  /**
+   * Función que se ejecuta cuando se descarga un mantenimiento
+   * @param mt - Mantenimiento a descargar
+   */
   const downloadFile = useCallback(async (mt: Maintenance) => {
     if (isDownloading.current) return; isDownloading.current = true
     const fileName = `mantenimiento-${mt.curriculum?.name}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
@@ -249,11 +253,16 @@ export const useMaintenanceTable = () => {
       .finally(() => { setOnDownload(undefined); isDownloading.current = false })
   }, [downloadPDF, companies, imgs])
 
+  /**
+   * Función que se ejecuta cuando se elimina un mantenimiento
+   * @param id - ID del mantenimiento a eliminar
+   */
   const deleteMaintenance = useCallback(async (id: string) => {
     if (isDownloading.current) return; isDownloading.current = true
     await deleteMT({ id }).finally(() => { setOnDelete(undefined); isDownloading.current = false })
   }, [deleteMT])
 
+  /** just one useEffect */
   useEffect(() => {
     onDelete && deleteMaintenance(onDelete)
     onDownload && downloadFile(onDownload)
