@@ -15,16 +15,6 @@ export const maintenanceSchema = z.object({
     .string({ required_error: "El currículo es requerido" })
     .min(1, "Debes seleccionar un currículo"),
 
-  //cv (autocomplete)
-  cv: z.object({
-    name: z.string(),
-    serie: z.string(),
-    brand: z.string(),
-    preview: z.string(),
-    modelEquip: z.string(),
-    healthRecord: z.string(),
-  }).optional(),
-
   //timestandard
   dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }).nullable(),
   dateMaintenance: z.date().optional().nullable(),

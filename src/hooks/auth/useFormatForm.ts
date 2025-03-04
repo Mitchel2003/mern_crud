@@ -155,8 +155,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
-  const { createFormat, updateFormat } = useFormatMutation("maintenance")
   const { referenceData, observationData } = formatHooks.maintenance()
+  const { createFormat, updateFormat } = useFormatMutation("maintenance")
 
   const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
 
@@ -184,7 +184,10 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
    */
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: any) => {
-      const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
+      const data = {
+        ...referenceData.submitData(e),
+        ...observationData.submitData(e)
+      }
       id ? updateFormat({ id, data }) : createFormat(data)
       methods.reset()
     },

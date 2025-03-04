@@ -239,15 +239,6 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
   office: '',
   curriculum: '',
 
-  cv: {//autocompleted (suggested)
-    name: '',
-    brand: '',
-    serie: '',
-    preview: '',
-    modelEquip: '',
-    healthRecord: '',
-  },
-
   //timestandard
   dateNextMaintenance: null,
   dateMaintenance: null,

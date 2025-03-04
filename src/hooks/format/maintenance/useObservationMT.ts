@@ -9,7 +9,6 @@ const useObservationMT = () => {
     typeMaintenance: data.typeMaintenance,
     statusEquipment: data.statusEquipment,
     observations: data.observations,
-    curriculum: data.curriculum._id
   })
 
   const submitData = (data: MaintenanceFormProps) => ({
@@ -19,7 +18,6 @@ const useObservationMT = () => {
     typeMaintenance: data.typeMaintenance,
     statusEquipment: data.statusEquipment,
     observations: data.observations,
-    curriculum: data.curriculum
   })
 
   return { mapValues, submitData }
