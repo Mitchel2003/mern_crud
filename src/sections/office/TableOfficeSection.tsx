@@ -10,8 +10,8 @@ import { Card } from "#/ui/card"
 
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/constants"
 import { Pencil, Trash } from "lucide-react"
+import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
 interface TableOfficeSectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -87,7 +87,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
   {
     accessorKey: "updatedAt",
     header: "Última actualización",
-    cell: ({ row }) => new Date(row.getValue("updatedAt")).toLocaleString('es-ES', formatDate)
+    cell: ({ row }) => formatDate(row.original?.updatedAt)
   },
   {
     id: "actions",

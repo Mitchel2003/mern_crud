@@ -1,6 +1,7 @@
+import { Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { formatStatus, formatDate } from "@/utils/format"
 import { Metadata } from "@/interfaces/db.interface"
 
 interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[] }
@@ -207,6 +208,7 @@ const InspectionsSection = ({ cv }: { cv?: Curriculum }) => (
 
 /** Observaciones */
 const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
+  const typeMaintenanceStyles = getStatusStyles(mt.typeMaintenance)
   const statusStyles = getStatusStyles(mt.statusEquipment)
   return (
     <>
@@ -214,23 +216,42 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
         <Text style={styles.sectionTitleText}>OBSERVACIONES</Text>
       </View>
 
-      {/* Observations Section */}
-      <View style={styles.observationsContainer}>
-        <Text style={styles.observationsText}>
-          {mt.observations}
-        </Text>
-      </View>
+      {/* Content Container */}
+      <View style={styles.contentContainer}>
+        {/* Status Section - Implementación mejorada con sistema de columnas */}
+        <View style={styles.statusContainer}>
+          {/* Primera columna - Estado del equipo */}
+          <View style={[styles.statusColumn, styles.col2]}>
+            <View style={styles.statusContent}>
+              <Text style={styles.statusLabel}>Estado del equipo:</Text>
+              <View style={[styles.statusBadge, statusStyles.badge]}>
+                <Text style={[styles.statusText, statusStyles.text]}>
+                  {formatStatus(mt.statusEquipment)}
+                </Text>
+              </View>
+            </View>
+          </View>
 
-      <View style={styles.sectionTitle}>
-        <Text style={styles.sectionTitleText}></Text>
-      </View>
+          {/* Segunda columna - Tipo mantenimiento */}
+          <View style={[styles.statusColumn, styles.col2]}>
+            <View style={styles.statusContent}>
+              <Text style={styles.statusLabel}>Tipo mantenimiento:</Text>
+              <View style={[styles.statusBadge, typeMaintenanceStyles.badge]}>
+                <Text style={[styles.statusText, typeMaintenanceStyles.text]}>
+                  {mt.typeMaintenance}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
 
-      {/* Status Section */}
-      <View style={styles.statusContainer}>
-        <Text style={styles.statusLabel}>Estado del equipo:</Text>
-        <View style={[styles.statusBadge, statusStyles.badge]}>
-          <Text style={[styles.statusText, statusStyles.text]}>
-            {formatStatus(mt.statusEquipment)}
+        {/* Observations Section */}
+        <View style={styles.observationsContainer}>
+          <Text style={styles.observationsTitle}>
+            Detalles de la inspección:
+          </Text>
+          <Text style={styles.observationsText}>
+            {mt.observations}
           </Text>
         </View>
       </View>
@@ -249,11 +270,11 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>FECHA MANTENIMIENTO:</Text>
-        <Text>{mt?.dateMaintenance ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.dateMaintenance)) : 'N/A'}</Text>
+        <Text>{formatDate(mt?.dateMaintenance)}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
         <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
-        <Text>{mt?.dateNextMaintenance ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(mt.dateNextMaintenance)) : 'N/A'}</Text>
+        <Text>{formatDate(mt?.dateNextMaintenance)}</Text>
       </View>
     </View>
 
@@ -300,19 +321,7 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const formatStatus = (status: string) => {
-  switch (status) {
-    case 'bueno':
-      return 'Funcionando'
-    case 'pendiente':
-      return 'En espera de repuestos'
-    case 'inactivo':
-      return 'Fuera de servicio'
-    default:
-      return 'N/A'
-  }
-}
-
+/** Estilos del estado del equipo (Maintenance pdf). */
 const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
     case 'bueno':
@@ -322,6 +331,6 @@ const getStatusStyles = (status: string) => {
     case 'inactivo':
       return { badge: styles.statusError, text: styles.statusErrorText }
     default:
-      return { badge: styles.statusWarning, text: styles.statusWarningText }
+      return { badge: styles.statusDefault, text: styles.statusDefaultText }
   }
 }

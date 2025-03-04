@@ -12,7 +12,7 @@ import { Card } from "#/ui/card"
 import { Download, Pencil, Trash } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/constants"
+import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -82,21 +82,21 @@ const useColumns: UseColumnsProps = (onChange, onDelete, onDownload) => [
     cell: ({ row }) => row.original?.curriculum?.name || 'Sin equipo'
   },
   {
+    header: "Modelo",
+    accessorKey: "curriculum.modelEquip",
+    cell: ({ row }) => row.original?.curriculum?.modelEquip || 'Sin modelo'
+  },
+  {
     header: "Estado del equipo",
     accessorKey: "statusEquipment",
-    cell: ({ row }) => row.original?.statusEquipment === 'bueno' ? 'bueno ✅' : (
-      row.original?.statusEquipment === 'pendiente' ? 'pendiente⚠️' : 'inactivo❌'
+    cell: ({ row }) => row.original?.statusEquipment === 'bueno' ? '✅ Funcionando' : (
+      row.original?.statusEquipment === 'pendiente' ? '⚠️ En espera de repuestos' : '❌ Fuera de servicio'
     )
   },
   {
     accessorKey: "dateNextMaintenance",
-    header: "Fecha del próximo mantenimiento",
-    cell: ({ row }) => row.original?.dateNextMaintenance ? new Date(row.original?.dateNextMaintenance).toLocaleString('es-ES', formatDate) : 'Sin fecha'
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Última actualización",
-    cell: ({ row }) => new Date(row.getValue("updatedAt")).toLocaleString('es-ES', formatDate)
+    header: "Proximo mantenimiento preventivo",
+    cell: ({ row }) => row.original?.dateNextMaintenance && formatDate(row.original?.dateNextMaintenance)
   },
   {
     id: "actions",

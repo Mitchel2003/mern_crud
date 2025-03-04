@@ -1,6 +1,7 @@
 import { Curriculum, Accessory, Company } from "@/interfaces/context.interface"
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
+import { formatDate } from "@/utils/format"
 
 interface CurriculumPDFProps {
   accessories?: Accessory[]
@@ -197,15 +198,15 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col3]}>
         <Text style={styles.label}>COMPRA:</Text>
-        <Text>{cv?.datePurchase ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.datePurchase)) : 'N/A'}</Text>
+        <Text>{formatDate(cv?.datePurchase)}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3]}>
         <Text style={styles.label}>INSTALACIÓN:</Text>
-        <Text>{cv?.dateInstallation ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.dateInstallation)) : 'N/A'}</Text>
+        <Text>{formatDate(cv?.dateInstallation)}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3]}>
         <Text style={styles.label}>OPERACIÓN:</Text>
-        <Text>{cv?.dateOperation ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(cv.dateOperation)) : 'N/A'}</Text>
+        <Text>{formatDate(cv?.dateOperation)}</Text>
       </View>
     </View>
 

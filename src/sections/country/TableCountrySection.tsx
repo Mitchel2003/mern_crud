@@ -6,7 +6,7 @@ import AlertDialog from "#/common/elements/AlertDialog"
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { Country, ThemeContextProps } from "@/interfaces/context.interface"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { formatDate } from "@/utils/constants"
+import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCountrySectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -30,7 +30,7 @@ const TableCountrySection = ({ theme }: TableCountrySectionProps) => {
     size: 250,
     id: 'updatedAt',
     header: 'Última actualización',
-    accessorFn: (row) => new Date(row.updatedAt).toLocaleString('es-ES', formatDate)
+    accessorFn: (row) => formatDate(row.updatedAt)
   }], [])
 
   const table = useMaterialReactTable({

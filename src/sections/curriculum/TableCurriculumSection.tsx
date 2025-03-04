@@ -13,7 +13,7 @@ import { Card } from "#/ui/card"
 import { Pencil, Trash, Eye } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/constants"
+import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: (value: string) => void }
@@ -103,7 +103,7 @@ const useColumns = (onChange: (value: string) => void, onDelete: (id: string) =>
   {
     accessorKey: "updatedAt",
     header: "Última actualización",
-    cell: ({ row }) => new Date(row.getValue("updatedAt")).toLocaleString('es-ES', formatDate)
+    cell: ({ row }) => formatDate(row.original?.updatedAt)
   },
   {
     id: "actions",

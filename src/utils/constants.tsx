@@ -6,10 +6,6 @@ import { Curriculum } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
 import { StyleSheet } from '@react-pdf/renderer'
 
-export const formatDate: Intl.DateTimeFormatOptions = {
-  day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
-}
-
 export const links = () => {
   const { isAuth, logout, user } = useAuthContext()
   /*--------------------------------------------------guest--------------------------------------------------*/
@@ -613,9 +609,8 @@ export const styles = StyleSheet.create({
   /* Maintenance - PDF */
   // Observations section
   sectionHeader: {
-    gap: '5pt',
+    gap: '6pt',
     padding: '5pt',
-    marginBottom: '8pt',
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#000000',
@@ -626,43 +621,82 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
   contentContainer: {
-    backgroundColor: '#f8f8f8',
     borderRadius: '4pt',
-    padding: '10pt',
+    backgroundColor: '#f8f8f8',
   },
+
+  // Status section
   statusContainer: {
     padding: '5pt',
     borderRadius: '2pt',
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
     border: '1pt solid #e0e0e0',
-    justifyContent: 'flex-start',
+    backgroundColor: '#ffffff',
+  },
+  statusColumn: {
+    padding: '5pt',
+  },
+  statusContent: {
+    gap: '5pt',
+    flexDirection: 'column',
   },
   statusLabel: {
     fontSize: '9pt',
-    marginRight: '8pt',
+    color: '#374151',
     fontFamily: 'Helvetica-Bold',
   },
   statusBadge: {
-    borderWidth: '1pt',
     padding: '4pt 12pt',
-    borderRadius: '12pt',
-    borderColor: '#FDE047', // Borde amarillo más oscuro
-    backgroundColor: '#FEF9C3', // Amarillo suave para "pendiente"
+    borderWidth: '1pt',
+    alignItems: 'center',
+    borderRadius: '6pt',
+    borderColor: '#FDE047',
+    justifyContent: 'center',
+    backgroundColor: '#FEF9C3',
   },
   statusText: {
+    color: '#854D0E',
     fontSize: '9pt',
-    color: '#854D0E', // Texto amarillo oscuro
+    textAlign: 'center',
     textTransform: 'uppercase',
     fontFamily: 'Helvetica-Bold',
   },
+  // Estilos para diferentes estados
+  statusSuccess: {
+    backgroundColor: '#DCFCE7',
+    borderColor: '#86EFAC',
+  },
+  statusSuccessText: {
+    color: '#166534',
+  },
+  statusWarning: {
+    backgroundColor: '#FEF9C3',
+    borderColor: '#FDE047',
+  },
+  statusWarningText: {
+    color: '#854D0E',
+  },
+  statusError: {
+    backgroundColor: '#FEE2E2',
+    borderColor: '#FECACA',
+  },
+  statusErrorText: {
+    color: '#991B1B',
+  },
+  statusDefault: {
+    borderColor: '#D1D5DB',
+    backgroundColor: '#F9FAFB',
+  },
+  statusDefaultText: {
+    color: '#6B7280',
+  },
+
+  // Estilos para las observaciones
   observationsContainer: {
-    padding: '5pt',
-    borderRadius: '2pt',
+    padding: '12pt',
+    borderRadius: '4pt',
     backgroundColor: '#ffffff',
     border: '1pt solid #e0e0e0',
-    justifyContent: 'flex-start',
   },
   observationsTitle: {
     fontSize: '9pt',
@@ -671,32 +705,11 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
   observationsText: {
-    fontSize: '10pt',
+    fontSize: '9pt',
     lineHeight: 1.5,
     color: '#4B5563',
   },
-  // Estilos para diferentes estados
-  statusSuccess: {
-    borderColor: '#86EFAC',
-    backgroundColor: '#DCFCE7',
-  },
-  statusSuccessText: {
-    color: '#166534',
-  },
-  statusWarning: {
-    borderColor: '#FDE047',
-    backgroundColor: '#FEF9C3',
-  },
-  statusWarningText: {
-    color: '#854D0E',
-  },
-  statusError: {
-    borderColor: '#FECACA',
-    backgroundColor: '#FEE2E2',
-  },
-  statusErrorText: {
-    color: '#991B1B',
-  },
+
   // ProviderService section
   mainContainer: {
     padding: '5pt',
