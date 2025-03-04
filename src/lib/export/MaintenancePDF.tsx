@@ -220,25 +220,25 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
       <View style={styles.contentContainer}>
         {/* Status Section - Implementación mejorada con sistema de columnas */}
         <View style={styles.statusContainer}>
-          {/* Primera columna - Estado del equipo */}
-          <View style={[styles.statusColumn, styles.col2]}>
-            <View style={styles.statusContent}>
-              <Text style={styles.statusLabel}>Estado del equipo:</Text>
-              <View style={[styles.statusBadge, statusStyles.badge]}>
-                <Text style={[styles.statusText, statusStyles.text]}>
-                  {formatStatus(mt.statusEquipment)}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Segunda columna - Tipo mantenimiento */}
+          {/* Primera columna - Tipo mantenimiento */}
           <View style={[styles.statusColumn, styles.col2]}>
             <View style={styles.statusContent}>
               <Text style={styles.statusLabel}>Tipo mantenimiento:</Text>
               <View style={[styles.statusBadge, typeMaintenanceStyles.badge]}>
                 <Text style={[styles.statusText, typeMaintenanceStyles.text]}>
                   {mt.typeMaintenance}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Segunda columna - Estado del equipo */}
+          <View style={[styles.statusColumn, styles.col2]}>
+            <View style={styles.statusContent}>
+              <Text style={styles.statusLabel}>Estado del equipo:</Text>
+              <View style={[styles.statusBadge, statusStyles.badge]}>
+                <Text style={[styles.statusText, statusStyles.text]}>
+                  {formatStatus(mt.statusEquipment)}
                 </Text>
               </View>
             </View>
