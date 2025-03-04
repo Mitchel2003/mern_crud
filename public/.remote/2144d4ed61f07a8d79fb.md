@@ -7,7 +7,7 @@ tags:
   - Firebase
   - google-cloud
 private: false
-updated_at: '2025-02-23T12:14:54+09:00'
+updated_at: '2025-03-04T11:48:46+09:00'
 id: 2144d4ed61f07a8d79fb
 organization_url_name: null
 slide: false
@@ -149,11 +149,6 @@ You can see something photos of the application
 ![Create CV](https://i.ibb.co/BVnyw6RG/cv2.png "create-cv")
 ![Table CV](https://i.ibb.co/mCc23Tmz/cv3.png "table-cv")
 ![Dashboard](https://i.ibb.co/QFyj92cZ/cv4.png "dashboard")
-
-# I need take a sleeppppp 😅
-## so, i can continue tomorrrow
-Any questions, I'm here
-
 
 @mitchel2003
 thanks.
