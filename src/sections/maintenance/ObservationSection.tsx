@@ -2,12 +2,12 @@ import HeaderCustom from "#/common/elements/HeaderCustom"
 import StatusCheck from "#/common/fields/StatusCheck"
 import SelectField from "#/common/fields/Select"
 import AreaField from "#/common/fields/Area"
-import DateField from "#/common/fields/Date"
 
 import { typeMaintenanceCollection as typesMaintenance } from "@/utils/constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/props.interface"
 import { Check, X, Clock } from "lucide-react"
+import CalendarField from "@/components/common/fields/Calendar"
 
 interface ObservationSectionProps extends ThemeContextProps { }
 const ObservationSection = ({ theme }: ObservationSectionProps) => {
@@ -51,17 +51,21 @@ const ObservationSection = ({ theme }: ObservationSectionProps) => {
             placeholder="Seleccionar tipo de mantenimiento"
             options={typesMaintenance.filter(mt => mt !== 'predictivo').map(mt => ({ label: mt, value: mt }))}
           />
-          <DateField
+          <CalendarField
             theme={theme}
+            toYear={2030}
+            fromYear={1950}
             name="dateMaintenance"
-            label="Fecha de mantenimiento"
+            label="Fecha mantenimiento"
             placeholder="Seleccione la fecha"
           />
-          <DateField
+          <CalendarField
             theme={theme}
+            toYear={2030}
+            fromYear={1950}
             name="dateNextMaintenance"
-            label="Próximo mantenimiento preventivo"
-            placeholder="Seleccione la fecha"
+            label="Fecha próximo mantenimiento"
+            placeholder="Seleccionar fecha"
           />
         </div>
       </div>
