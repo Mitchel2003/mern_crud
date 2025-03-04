@@ -110,39 +110,6 @@ const getHealth = (req: Request, res: Response) => {
 router.get('/health', getHealth)
 ```
 
-#### Building our frontend...
-react-query to optimize the application (avoid unnecessary re-renders)
-```typescript
-//hooks
-export const useQueryUser = (): QueryReact_User => {
-  const user = useUserContext()
-
-  // Obtener usuario por ID
-  const fetchUserById = <T>(path: UserType, id: string) => useQuery({
-    queryKey: QUERY_KEYS.user(path, id),
-    queryFn: () => user.getById<T>(path, id),
-    select: (data) => data || undefined,
-    enabled: Boolean(id)
-  })
-  return { fetchUserById }
-}
-
-/** Hook personalizado para gestionar mutaciones de usuarios */
-export const useUserMutation = (path: UserType): CustomMutation_User => {
-  const { create, update, delete: deleteUser } = useUserContext()
-  const queryClient = useQueryClient()
-
-  const createMutation = useMutation({
-    mutationFn: async (data: object) => await create(path, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.users(path) })
-  })
-  return {
-    createUser: createMutation.mutateAsync,
-    isLoading: createMutation.isPending
-  }
-}
-```
-
 ## Mean while...
 You can see something photos of the application
 ![Model-Entity-Relationships](https://i.ibb.co/jvgrDS6h/cv.png "MER")
