@@ -239,7 +239,7 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
   office: '',
   curriculum: '',
 
-  cv: {//autocompleted
+  cv: {//autocompleted (suggested)
     name: '',
     brand: '',
     serie: '',
@@ -688,7 +688,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
   },
   statusDefaultText: {
-    color: '#6B7280',
+    color: '#000000',
   },
 
   // Estilos para las observaciones

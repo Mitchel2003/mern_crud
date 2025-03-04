@@ -1,8 +1,25 @@
+import { Fragment, ReactElement, cloneElement } from "react"
+import { useThemeContext } from "@/context/ThemeContext"
+import { Separator } from "#/ui/separator"
+
 /*--------------------------------------------------format date--------------------------------------------------*/
 export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date)) : 'N/A'
 
 export const formatDateTime: Intl.DateTimeFormatOptions = {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------format render--------------------------------------------------*/
+export const RenderFormat = ({ format }: { format: ReactElement[] }) => {
+  const { theme } = useThemeContext()
+
+  return format.map((e, i) => (
+    <Fragment key={i}>
+      {cloneElement(e)}
+      <Separator className={`my-8 ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`} />
+    </Fragment>
+  ))
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
