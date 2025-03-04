@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  qiita:
+  publish_articles:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
