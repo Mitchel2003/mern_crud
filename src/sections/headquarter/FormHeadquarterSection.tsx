@@ -3,10 +3,10 @@ import { useHeadquarterForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import AlertDialog from "#/common/elements/AlertDialog"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
@@ -26,7 +26,7 @@ const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionP
   const states = id ? options?.states : options?.states?.filter((head) => head.country?._id === countryId)
   const cities = id ? options?.cities : options?.cities?.filter((head) => head.state?._id === stateId)
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

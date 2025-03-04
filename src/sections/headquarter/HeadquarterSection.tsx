@@ -1,9 +1,9 @@
 import { defaultStyles, activeStyles, navigationTabs } from '@/utils/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
-import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
+import Skeleton from '#/common/skeletons/SkeletonLarge'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -86,8 +86,8 @@ const HeadquarterSection = ({ theme, id }: HeadquarterSectionProps) => {
             id={id}
           />
         </TabsContent>
-        <TabsContent value="clients"> <DashboardSkeleton theme={theme} /> </TabsContent>
-        <TabsContent value="offices"> <DashboardSkeleton theme={theme} /> </TabsContent>
+        <TabsContent value="clients"> <Skeleton theme={theme} /> </TabsContent>
+        <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>
       </Tabs >
     </div >
   )

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '#/ui/card'
 import { Skeleton } from '#/ui/skeleton'
 import { cn } from '@/lib/utils'
 
-const DashboardSkeleton = ({ theme }: ThemeContextProps) => {
+const SkeletonLarge = ({ theme }: ThemeContextProps) => {
   return (
     <div className="container p-8 space-y-8 mx-auto animate-pulse">
       <InfoSkeleton theme={theme} />
@@ -13,8 +13,7 @@ const DashboardSkeleton = ({ theme }: ThemeContextProps) => {
   )
 }
 
-export default DashboardSkeleton
-
+export default SkeletonLarge
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
@@ -118,4 +117,4 @@ const EquipmentCardSkeleton = ({ theme }: ThemeContextProps) => (
       <Skeleton className="h-9 w-[100px] rounded-md" />
     </div>
   </Card>
-) 
+)

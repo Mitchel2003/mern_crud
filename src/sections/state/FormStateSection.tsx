@@ -3,8 +3,8 @@ import { useStateForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
@@ -19,7 +19,7 @@ interface FormStateSectionProps extends ThemeContextProps {
 const FormStateSection = ({ id, theme, onChange }: FormStateSectionProps) => {
   const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useStateForm(id, () => { onChange('table') })
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

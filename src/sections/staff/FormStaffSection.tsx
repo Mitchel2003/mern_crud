@@ -1,6 +1,6 @@
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
@@ -22,7 +22,7 @@ interface FormStaffSectionProps extends ThemeContextProps {
 const FormStaffSection = ({ id, theme, onChange, footer: Footer }: FormStaffSectionProps) => {
   const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useUserForm(id, onChange)
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

@@ -1,8 +1,8 @@
 import { City, ThemeContextProps } from "@/interfaces/context.interface"
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import InputSearchableField from "#/common/fields/InputSearchable"
 import FormWrapper from "#/ui/step-form/step-form-wrapper"
 import IterableCard from "#/common/fields/CardIterable"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import InputField from "#/common/fields/Input"
 import { useMemo } from "react"
 
@@ -19,7 +19,7 @@ const HeadquarterForm = ({ theme, options }: HeadquarterFormProps) => {
     [options.cities]
   )
 
-  if (options.isLoading) return <DashboardSkeleton theme={theme} />
+  if (options.isLoading) return <Skeleton theme={theme} />
   return (
     <FormWrapper
       title="Sede"

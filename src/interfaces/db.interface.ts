@@ -21,6 +21,10 @@ export interface Paginate<T> {
   data: T[]
 }
 
+export interface SearchParams {
+  [key: string]: any
+}
+
 export type BaseMDB = {
   _id: string
   createdAt: Date

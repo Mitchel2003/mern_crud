@@ -4,8 +4,8 @@ import { useOfficeForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectMulti from "#/common/fields/SelectMulti"
@@ -24,7 +24,7 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
   const groupName = methods.watch('group')
 
   const groupSelected = groups.find((group) => group.name === groupName)
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

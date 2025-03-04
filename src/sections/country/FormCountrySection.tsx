@@ -3,8 +3,8 @@ import { useCountryForm } from '@/hooks/auth/useLocationForm'
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import Skeleton from '#/common/skeletons/SkeletonLarge'
 import AlertDialog from '#/common/elements/AlertDialog'
 import HeaderForm from "#/common/elements/HeaderForm"
 import InputField from "#/common/fields/Input"
@@ -18,7 +18,7 @@ interface FormCountrySectionProps extends ThemeContextProps {
 const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) => {
   const { methods, isLoading, open, setOpen, onConfirm, handleSubmit } = useCountryForm(id, () => { onChange('table') })
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

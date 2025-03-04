@@ -1,5 +1,5 @@
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import ImagePreview from "#/common/fields/ImagePreview"
 import CardIterable from "#/common/fields/CardIterable"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -22,7 +22,7 @@ interface FormCompanySectionProps extends ThemeContextProps {
 const FormCompanySection = ({ id, theme, onChange }: FormCompanySectionProps) => {
   const { open, methods, isLoading, setOpen, onConfirm, handleSubmit } = useCompanyForm(id, () => { onChange('table') })
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

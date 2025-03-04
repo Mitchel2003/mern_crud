@@ -1,8 +1,7 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
 import { convertToMongoQuery, buildSortOptions, buildPaginationOptions } from "@/lib/mongodb-filters"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { FileReferenceDB } from "@/interfaces/db.interface"
-import { SearchParams } from "@/types/table-advanced.types"
+import { FileReferenceDB, SearchParams } from "@/interfaces/db.interface"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
 

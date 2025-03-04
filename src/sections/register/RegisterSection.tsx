@@ -3,7 +3,7 @@ import { useUserForm } from "@/hooks/auth/useAuthForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import RegisterSkeleton from "#/common/skeletons/RegisterSkeleton"
+import Skeleton from "#/common/skeletons/SkeletonShort"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import { Card } from "#/ui/card"
@@ -16,7 +16,7 @@ interface RegisterSectionProps extends ThemeContextProps { id: string | undefine
 const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
   const { open, isLoading, methods, options, setOpen, onConfirm, handleSubmit } = useUserForm(id)
 
-  if (isLoading) return <RegisterSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>

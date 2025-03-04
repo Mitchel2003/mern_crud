@@ -4,8 +4,8 @@ import { useCurriculumTable } from "@/hooks/auth/useFormatForm"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { ActionProps } from "@/interfaces/props.interface"
 
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import ItemDropdown from "#/ui/data-table/item-dropdown"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
@@ -34,7 +34,7 @@ const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
   const { data: staff, isLoading } = useQueryUser().fetchAllUsers<User>('user')
   const { handleDelete } = useCurriculumTable()
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <div className="container p-0">

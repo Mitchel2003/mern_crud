@@ -1,7 +1,7 @@
 import ClientFlowSection from "@/sections/flow/client/ClientFlowSection"
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import ClientSection from "@/sections/client/ClientSection"
 import { useThemeContext } from "@/context/ThemeContext"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
@@ -10,7 +10,7 @@ const Client = () => {
   const { id } = useParams()
 
   return (
-    <Suspense fallback={<DashboardSkeleton theme={theme} />}>
+    <Suspense fallback={<Skeleton theme={theme} />}>
       <ClientSection theme={theme} id={id} />
     </Suspense>
   )
@@ -24,7 +24,7 @@ export const ClientFlow = () => {
   const { theme } = useThemeContext()
 
   return (
-    <Suspense fallback={<DashboardSkeleton theme={theme} />}>
+    <Suspense fallback={<Skeleton theme={theme} />}>
       <ClientFlowSection theme={theme} />
     </Suspense>
   )

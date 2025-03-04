@@ -1,6 +1,6 @@
 import MaintenanceSection from '@/sections/maintenance/MaintenanceSection'
-import DashboardSkeleton from '#/common/skeletons/DashboardSkeleton'
 import { useThemeContext } from '@/context/ThemeContext'
+import Skeleton from '#/common/skeletons/SkeletonLarge'
 import { Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -9,7 +9,7 @@ const Maintenance = () => {
   const { id } = useParams()
 
   return (
-    <Suspense fallback={<DashboardSkeleton theme={theme} />}>
+    <Suspense fallback={<Skeleton theme={theme} />}>
       <MaintenanceSection theme={theme} id={id} />
     </Suspense>
   )

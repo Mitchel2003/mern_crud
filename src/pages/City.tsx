@@ -1,4 +1,4 @@
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useThemeContext } from "@/context/ThemeContext"
 import CitySection from "@/sections/city/CitySection"
 import { useParams } from "react-router-dom"
@@ -9,7 +9,7 @@ const City = () => {
   const { id } = useParams()
 
   return (
-    <Suspense fallback={<DashboardSkeleton theme={theme} />}>
+    <Suspense fallback={<Skeleton theme={theme} />}>
       <CitySection theme={theme} id={id} />
     </Suspense>
   )

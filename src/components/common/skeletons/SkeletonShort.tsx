@@ -3,7 +3,7 @@ import { Card, CardContent } from '#/ui/card'
 import { Skeleton } from '#/ui/skeleton'
 import { cn } from '@/lib/utils'
 
-const RegisterSkeleton = ({ theme }: ThemeContextProps) => {
+const SkeletonShort = ({ theme }: ThemeContextProps) => {
   return (
     <Card
       className={cn(
@@ -21,10 +21,10 @@ const RegisterSkeleton = ({ theme }: ThemeContextProps) => {
   )
 }
 
-export default RegisterSkeleton
-
+export default SkeletonShort
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------tools--------------------------------------------------*/
 const HeaderSkeleton = () => (
   <div className="space-y-2 p-6 pb-4">
     <Skeleton className="h-8 w-[200px]" /> {/* Title */}

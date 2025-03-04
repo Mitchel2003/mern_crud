@@ -9,7 +9,7 @@ import DetailsPreviewCV from "#/pages/curriculum/preview/DetailsPreviewCV"
 import ClientPreviewCV from "#/pages/curriculum/preview/ClientPreviewCV"
 import FooterPreviewCV from "#/pages/curriculum/preview/FooterPreviewCV"
 import HeaderPreviewCV from "#/pages/curriculum/preview/HeaderPreviewCV"
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { Card, CardContent } from "#/ui/card"
 import { Button } from "#/ui/button"
 
@@ -36,7 +36,7 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
   const isLoadingData = isLoadingCv || isLoadingIns || isLoadingAcc || isLoadingCom
   const isLoadingFile = isLoadingImgCv || isLoadingImgCl || isLoadingImgCom
 
-  if (isLoadingData || isLoadingFile) return <DashboardSkeleton theme={theme} />
+  if (isLoadingData || isLoadingFile) return <Skeleton theme={theme} />
   return (
     <div className="container mx-auto p-6 space-y-8">
       {/** PDF download link ***/}

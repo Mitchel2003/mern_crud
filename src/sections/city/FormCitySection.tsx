@@ -3,9 +3,9 @@ import { useCityForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import DashboardSkeleton from "#/common/skeletons/DashboardSkeleton"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
@@ -19,7 +19,7 @@ interface FormCitySectionProps extends ThemeContextProps {
 const FormCitySection = ({ id, theme, onChange }: FormCitySectionProps) => {
   const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useCityForm(id, () => { onChange('table') })
 
-  if (isLoading) return <DashboardSkeleton theme={theme} />
+  if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
       <FormProvider {...methods}>
