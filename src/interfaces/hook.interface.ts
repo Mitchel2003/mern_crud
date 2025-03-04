@@ -1,7 +1,6 @@
+import { FileReferenceDB, Paginate, SearchParams } from "@/interfaces/db.interface"
 import { FormatType, LocationType, UserType } from "@/interfaces/context.interface"
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
-import { FileReferenceDB, Paginate } from "@/interfaces/db.interface"
-import { SearchParams } from "@/types/table-advanced.types"
 
 export interface FileMutationProps extends FileReferenceDB { }
 export interface UpdateMutationProps { id: string; data: Partial<any> }

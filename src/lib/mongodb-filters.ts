@@ -1,4 +1,4 @@
-import { type SearchParams } from "@/types/table-advanced.types"
+import { type SearchParams } from "@/interfaces/db.interface"
 import { type SortingState } from "@tanstack/react-table"
 
 export type MongoOperator =
