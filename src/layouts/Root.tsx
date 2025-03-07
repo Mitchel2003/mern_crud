@@ -1,4 +1,7 @@
 import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 import { AnimatedBackground } from '#/layout/AnimatedBackground'
 import { SidebarInset, SidebarProvider } from '#/ui/sidebar'
 import { LoadingScreen } from "#/ui/loading-screen"
@@ -12,22 +15,24 @@ import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => (
   <>
-    <ConfirmProvider>
-      <AnimatedBackground>
-        <SidebarProvider>
-          {/* Sidebar */}
-          <Sidebar />
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ConfirmProvider>
+        <AnimatedBackground>
+          <SidebarProvider>
+            {/* Sidebar */}
+            <Sidebar />
 
-          {/* Main content */}
-          <SidebarInset>
-            <Navbar />
-            <Outlet />
-            <Footer />
-          </SidebarInset>
+            {/* Main content */}
+            <SidebarInset>
+              <Navbar className="flex-none" />
+              <Outlet />
+              <Footer className="flex-none" />
+            </SidebarInset>
 
-        </SidebarProvider>
-      </AnimatedBackground>
-    </ConfirmProvider>
+          </SidebarProvider>
+        </AnimatedBackground>
+      </ConfirmProvider>
+    </LocalizationProvider>
 
     {/* Componentes UI globales */}
     <Toaster />

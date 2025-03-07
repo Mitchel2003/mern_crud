@@ -3,21 +3,24 @@ import { Button } from '#/ui/button'
 import { Badge } from '#/ui/badge'
 import { cn } from '@/lib/utils'
 
-const FooterSection = () => {
+interface FooterProps { className?: string }
+
+const FooterSection = ({ className }: FooterProps) => {
   const { theme } = useThemeContext()
 
   return (
-    <div
+    <footer
       className={cn(
         'p-6 border-t mt-auto',
         'flex flex-col sm:flex-row',
-        'justify-between items-center',
+        'justify-between items-center gap-4',
         theme === 'dark'
           ? 'bg-zinc-900 border-zinc-800'
           : 'bg-gray-50 border-gray-200',
+        className
       )}
     >
-      <div className="mb-4 md:mb-0">
+      <div className="flex flex-col">
         <h3 className={cn(
           'text-lg font-semibold',
           theme === 'dark' ? 'text-zinc-100' : 'text-gray-900'
@@ -28,17 +31,15 @@ const FooterSection = () => {
           'text-sm',
           theme === 'dark' ? 'text-zinc-400' : 'text-gray-600'
         )}>
-          © 2024. Todos los derechos reservados.
+          2024. Todos los derechos reservados.
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <Button variant="link" size="sm">Términos de Servicio</Button>
-        <Button variant="link" size="sm">Política de Privacidad</Button>
-        <div className="flex items-center text-center">
-          <Badge variant="outline" className="hidden md:block w-full">Versión 1.0.0</Badge>
-        </div>
+      <div className="flex flex-wrap justify-center gap-4">
+        <Button variant="link" size="sm" className="h-auto py-0">Términos de Servicio</Button>
+        <Button variant="link" size="sm" className="h-auto py-0">Política de Privacidad</Button>
+        <Badge variant="outline" className="hidden md:inline-flex">Versión 1.0.0</Badge>
       </div>
-    </div>
+    </footer>
   )
 }
 

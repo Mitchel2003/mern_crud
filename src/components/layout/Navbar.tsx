@@ -7,7 +7,9 @@ import gsIcon from '/assets/gs_icon.ico'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-const Navbar = () => {
+interface NavbarProps { className?: string }
+
+const Navbar = ({ className }: NavbarProps) => {
   const { theme } = useThemeContext()
   const { isAuth } = useAuthContext()
 
@@ -18,7 +20,8 @@ const Navbar = () => {
         'shadow-md backdrop-blur-md transition-colors duration-500',
         theme === 'dark'
           ? 'bg-zinc-800/90 text-zinc-100'
-          : 'bg-white/90 text-gray-900'
+          : 'bg-white/90 text-gray-900',
+        className
       )}
     >
       <HeaderNavbar isAuth={isAuth} />

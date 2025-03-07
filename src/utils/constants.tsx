@@ -380,6 +380,35 @@ export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
 /*--------------------------------------------------default style values--------------------------------------------------*/
 export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
 export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
+export const tableTranslations = {// to spanish
+  and: 'y',
+  edit: 'Editar',
+  save: 'Guardar',
+  search: 'Buscar',
+  expand: 'Expandir',
+  cancel: 'Cancelar',
+  actions: 'Acciones',
+  hideAll: 'Ocultar todo',
+  showAll: 'Mostrar todo',
+  groupedBy: 'Agrupado por ',
+  expandAll: 'Expandir todo',
+  clearFilter: 'Limpiar filtro',
+  rowActions: 'Acciones de fila',
+  clearSearch: 'Limpiar búsqueda',
+  clearSort: 'Limpiar ordenamiento',
+  toggleDensity: 'Alternar densidad',
+  columnActions: 'Acciones de columna',
+  groupByColumn: 'Agrupar por {column}',
+  filterByColumn: 'Filtrar por {column}',
+  hideColumn: 'Ocultar columna {column}',
+  ungroupByColumn: 'Desagrupar por {column}',
+  showHideFilters: 'Mostrar/Ocultar filtros',
+  showHideColumns: 'Mostrar/Ocultar columnas',
+  toggleSelectRow: 'Alternar selección de fila',
+  toggleSelectAll: 'Alternar selección de todo',
+  toggleFullScreen: 'Alternar pantalla completa',
+  selectedCountOfRowCountRowsSelected: '{selectedCount} de {rowCount} fila(s) seleccionada(s)',
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------styles PDF--------------------------------------------------*/

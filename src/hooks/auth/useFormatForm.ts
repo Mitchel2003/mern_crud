@@ -9,7 +9,7 @@ import { Metadata } from '@/interfaces/db.interface'
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import { usePDFDownload } from '@/lib/utils'
@@ -233,47 +233,140 @@ export const useCurriculumTable = () => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Maintenance table--------------------------------------------------*/
+/** Interface para el mantenimiento con filas hijas */
+interface MaintenanceWithChildren extends Maintenance {
+  childRows: (Maintenance & { isPreventive: boolean })[]
+}
+
 /** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
 export const useMaintenanceTable = () => {
+  const { data: mts } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
   const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')/** get all companies */
+  const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
   const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
-  const { downloadPDF } = usePDFDownload()
+  const { downloadPDF, downloadZIP } = usePDFDownload()
   const isDownloading = useRef(false)
   const com = companies?.[0]
 
   const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com?._id })
 
   /**
+   * Function that formats the retrieved maintenance, returns the prepared data for the table
+   * @param mts - Array of maintenance records to format
+   * @returns Array of formatted maintenance records
+   */
+  const formatMaintenance = useCallback((mts?: Maintenance[]): MaintenanceWithChildren[] => {
+    if (!mts?.length) return []
+    // 1. normalize data (dates)
+    const normalizedMts = mts.map(mt => ({
+      ...mt,
+      dateMaintenance: new Date(mt.dateMaintenance),
+      typeMaintenance: mt.typeMaintenance.toLowerCase(),
+      dateNextMaintenance: new Date(mt.dateNextMaintenance)
+    }))
+
+    // 2. Group by equipment ID and find last preventive maintenance
+    const groupedMaintenance = normalizedMts.reduce((acc, mt) => {
+      const equipmentId = mt.curriculum?._id
+      if (!equipmentId) return acc
+      if (!acc[equipmentId]) {// Initialize group if it doesn't exist
+        acc[equipmentId] = { allMaintenance: [], latestPreventive: null, equipmentName: mt.curriculum.name }
+      }
+
+      acc[equipmentId].allMaintenance.push(mt)// Add to maintenance array
+
+      if (mt.typeMaintenance === 'preventivo') {// Update last preventive maintenance if applicable
+        const currentDate = mt.dateMaintenance.getTime()
+        const existingDate = acc[equipmentId].latestPreventive ? acc[equipmentId].latestPreventive.dateMaintenance.getTime() : 0
+        if (!acc[equipmentId].latestPreventive || currentDate > existingDate) { acc[equipmentId].latestPreventive = mt }
+      }
+      return acc
+    }, {} as Record<string, { latestPreventive: Maintenance | null, allMaintenance: Maintenance[], equipmentName: string }>)
+
+    // 3. Transform and sort the data
+    const formattedData = Object.entries(groupedMaintenance).filter(([_, group]) => !!group.latestPreventive).map(([_, group]) => {
+      const sortedMaintenance = group.allMaintenance.sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())// Sort maintenance by date (most recent first)
+      return {
+        ...group.latestPreventive!, // last maintenance preventive
+        childRows: sortedMaintenance.filter(mt => mt._id !== group.latestPreventive!._id) // exclude mt preventive principal
+          .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' }))
+      } as MaintenanceWithChildren
+    })
+    // 4. Sort results by maintenance date
+    return formattedData.sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())
+  }, [])
+
+  /**
+   * Función que se ejecuta cuando se descarga mantenimientos multiple
+   * @param mts - Mantenimientos a descargar
+   */
+  const downloadFileZip = useCallback(async (mts: Maintenance[]) => {
+    if (isDownloading.current) return
+    isDownloading.current = true
+    try {
+      // Agrupar mantenimientos por equipo
+      const groupedByEquipment = mts.reduce((acc, mt) => {
+        const equipmentId = mt.curriculum?._id
+        if (!equipmentId) return acc
+        // Obtener todos los mantenimientos del equipo
+        const allMaintenances = mts?.filter(m => m.curriculum?._id === equipmentId) || []
+        // Obtener mantenimientos únicos (principales y secundarios)
+        const uniqueMaintenances = [...new Set([...allMaintenances])]
+        acc.set(equipmentId, uniqueMaintenances)
+        return acc
+      }, new Map<string, Maintenance[]>())
+
+      // Preparar componentes para el ZIP
+      const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
+        equipmentMts.map(mt => ({
+          component: MaintenancePDF,
+          props: { mt, com, imgs },
+          fileName: `${mt.curriculum?.name}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+        }))
+      )
+      // Generar nombre del ZIP basado en la fecha y cantidad de equipos
+      const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
+
+      await downloadZIP({ zipName, components: pdfComponents })// Descargar ZIP con todos los PDFs
+    } catch (error) { console.error('Error al generar el ZIP:', error) }
+    finally { setOnDownloadZip(undefined); isDownloading.current = false }
+  }, [downloadZIP, com, imgs, mts])
+
+  /**
    * Función que se ejecuta cuando se descarga un mantenimiento
    * @param mt - Mantenimiento a descargar
    */
   const downloadFile = useCallback(async (mt: Maintenance) => {
-    if (isDownloading.current) return; isDownloading.current = true
+    if (isDownloading.current) return
+    isDownloading.current = true
     const fileName = `mantenimiento-${mt.curriculum?.name}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
     await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com, imgs } })
       .finally(() => { setOnDownload(undefined); isDownloading.current = false })
-  }, [downloadPDF, companies, imgs])
+  }, [downloadPDF, com, imgs])
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
    * @param id - ID del mantenimiento a eliminar
    */
   const deleteMaintenance = useCallback(async (id: string) => {
-    if (isDownloading.current) return; isDownloading.current = true
+    if (isDownloading.current) return
+    isDownloading.current = true
     await deleteMT({ id }).finally(() => { setOnDelete(undefined); isDownloading.current = false })
   }, [deleteMT])
 
-  /** just one useEffect */
-  useEffect(() => {
+  useEffect(() => {/** just one useEffect */
     onDelete && deleteMaintenance(onDelete)
     onDownload && downloadFile(onDownload)
-  }, [onDelete, onDownload, downloadFile, deleteMaintenance])
+    onDownloadZip && downloadFileZip(onDownloadZip)
+  }, [onDelete, onDownload, onDownloadZip, downloadFile, deleteMaintenance, downloadFileZip])
 
   return {
+    core: mts,
     handleDelete: (id: string) => setOnDelete(id),
-    handleDownload: (mt: Maintenance) => setOnDownload(mt)
+    handleDownload: (mt: Maintenance) => setOnDownload(mt),
+    handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
+    maintenances: useMemo(() => formatMaintenance(mts), [mts, formatMaintenance]),
   }
 }
-/*---------------------------------------------------------------------------------------------------------*/

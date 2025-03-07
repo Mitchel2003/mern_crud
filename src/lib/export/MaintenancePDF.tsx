@@ -272,10 +272,12 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
         <Text style={styles.label}>FECHA MANTENIMIENTO:</Text>
         <Text>{formatDate(mt?.dateMaintenance)}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
-        <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
-        <Text>{formatDate(mt?.dateNextMaintenance)}</Text>
-      </View>
+      {mt.typeMaintenance === 'preventivo' && (
+        <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
+          <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
+          <Text>{formatDate(mt?.dateNextMaintenance)}</Text>
+        </View>
+      )}
     </View>
 
     <View style={styles.mainContainer}>

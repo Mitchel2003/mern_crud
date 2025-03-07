@@ -1,11 +1,15 @@
-import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
-import { Box, Button, lighten, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { AccountCircle, Send } from "@mui/icons-material"
+import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, MRT_ToggleFullScreenButton, useMaterialReactTable } from "material-react-table"
+import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import AlertDialog from "#/common/elements/AlertDialog"
+import { Update, Delete } from "@mui/icons-material"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
+import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { Country, ThemeContextProps } from "@/interfaces/context.interface"
-import { useQueryLocation } from "@/hooks/query/useLocationQuery"
+import { useCountryTable } from "@/hooks/auth/useLocationForm"
+
+import { tableTranslations } from "@/utils/constants"
+import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
@@ -17,9 +21,12 @@ interface TableCountrySectionProps extends ThemeContextProps { onChange: (value:
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los países, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCountrySection = ({ theme }: TableCountrySectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
+const TableCountrySection = ({ theme, onChange }: TableCountrySectionProps) => {
+  const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { data: countries } = useQueryLocation().fetchAllLocations<Country>('country')
+  const { deleteLocation: deleteCountry } = useLocationMutation("country")
+  const { handleDelete } = useCountryTable()
+  const navigate = useNavigate()
 
   const columns = useMemo<MRT_ColumnDef<Country>[]>(() => [{
     size: 250,
@@ -35,7 +42,8 @@ const TableCountrySection = ({ theme }: TableCountrySectionProps) => {
 
   const table = useMaterialReactTable({
     columns,
-    data: countries || [],//data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: countries || [],
+    localization: tableTranslations,
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableColumnPinning: true,
@@ -44,23 +52,18 @@ const TableCountrySection = ({ theme }: TableCountrySectionProps) => {
     enableRowActions: true,
     enableGrouping: true,
     initialState: {
-      showColumnFilters: true,
       showGlobalFilter: true,
-      columnPinning: { left: ['mrt-row-expand', 'mrt-row-select'], right: ['mrt-row-actions'] },
+      columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
     },
+    positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',
-    positionToolbarAlertBanner: 'bottom',
-    muiSearchTextFieldProps: {
-      variant: 'outlined',
-      size: 'small',
-    },
     muiPaginationProps: {
       shape: 'rounded',
       color: 'secondary',
       variant: 'outlined',
       rowsPerPageOptions: [10, 20, 30],
     },
-    renderDetailPanel: ({ row }) => (
+    renderDetailPanel: ({ row }) => (// to show row details (Dropdown)
       <Box
         sx={{
           left: '30px',
@@ -72,92 +75,105 @@ const TableCountrySection = ({ theme }: TableCountrySectionProps) => {
           justifyContent: 'space-around',
         }}
       >
-        <Typography variant="h4">Detalle del país</Typography>
-        <Typography variant="h1">{row.original.name}</Typography>
+        <Typography variant="h6">Detalle del país</Typography>
+        <Typography variant="body1">{row.original.name}</Typography>
       </Box>
     ),
-    renderRowActionMenuItems: ({ closeMenu }) => [
-      <MenuItem
-        key={0}
-        sx={{ m: 0 }}
-        onClick={() => {/* View profile logic...*/ closeMenu() }}
+    renderTopToolbar: ({ table }) => (// to define top toolbar (customizable)
+      <Box
+        sx={{
+          p: '8px',
+          gap: '0.5rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
       >
-        <ListItemIcon>
-          <AccountCircle />
-        </ListItemIcon>
-        View Profile
-      </MenuItem>,
-      <MenuItem
-        key={1}
-        sx={{ m: 0 }}
-        onClick={() => {/* Send email logic... */ closeMenu() }}
-      >
-        <ListItemIcon>
-          <Send />
-        </ListItemIcon>
-        Send Email
-      </MenuItem>,
-    ],
-    renderTopToolbar: ({ table }) => {
-      const handleDeactivate = () => {
-        table.getSelectedRowModel().flatRows.map((row) => alert('deactivating ' + row.getValue('name')))
-      }
-
-      const handleActivate = () => {
-        table.getSelectedRowModel().flatRows.map((row) => alert('activating ' + row.getValue('name')))
-      }
-
-      const handleContact = () => {
-        table.getSelectedRowModel().flatRows.map((row) => alert('contact ' + row.getValue('name')))
-      }
-
-      return (
-        <Box
-          sx={(theme) => ({
-            p: '8px',
-            gap: '0.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            backgroundColor: lighten(theme.palette.background.default, 0.05),
-          })}
-        >
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            {/* import MRT sub-components */}
-            <MRT_GlobalFilterTextField table={table} />
-            <MRT_ToggleFiltersButton table={table} />
-          </Box>
-          <Box>
-            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-              <Button
-                color="error"
-                disabled={!table.getIsSomeRowsSelected()}
-                onClick={handleDeactivate}
-                variant="contained"
-              >
-                Deactivate
-              </Button>
-              <Button
-                color="success"
-                disabled={!table.getIsSomeRowsSelected()}
-                onClick={handleActivate}
-                variant="contained"
-              >
-                Activate
-              </Button>
-              <Button
-                color="info"
-                disabled={!table.getIsSomeRowsSelected()}
-                onClick={handleContact}
-                variant="contained"
-              >
-                Contact
-              </Button>
-            </Box>
-          </Box>
+        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+            <Button
+              size="small"
+              variant="text"
+              color="inherit"
+              onClick={() => table.resetRowSelection()}
+            >
+              Limpiar selección
+            </Button>
+          )}
+          <MRT_GlobalFilterTextField table={table} />
+          <MRT_ToggleFiltersButton table={table} />
         </Box>
-      )
-    }
+        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+          <MRT_ToggleDensePaddingButton table={table} />
+          <MRT_ToggleFullScreenButton table={table} />
+        </Box>
+      </Box>
+    ),
+    renderRowActionMenuItems: ({ row, closeMenu }) => ([// to row actions (options for each row)
+      <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
+        closeMenu()
+        confirmAction({
+          title: 'Editar Pais',
+          description: `¿Deseas editar el pais "${row.original.name}"?`,
+          action: () => { onChange('form'); navigate(`/location/country/${row.original._id}`) }
+        })
+      }}>
+        <ListItemIcon>
+          <Update />
+        </ListItemIcon>
+        Actualizar
+      </MenuItem>,
+      <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+        closeMenu()
+        confirmAction({
+          isDestructive: true,
+          title: 'Eliminar Pais',
+          description: `¿Deseas eliminar el pais "${row.original.name}"?`,
+          action: () => { handleDelete(row.original._id) }
+        })
+      }}>
+        <ListItemIcon>
+          <Delete />
+        </ListItemIcon>
+        Eliminar
+      </MenuItem>,
+    ]),
+    renderToolbarAlertBannerContent: ({ table }) => (// to alert banner of rows selected (multi select)
+      <Box
+        sx={{
+          p: '8px',
+          gap: '0.5rem',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Typography>
+            {table.getSelectedRowModel().rows.length} país(es) seleccionado(s)
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+          <Button
+            size="small"
+            color="error"
+            variant="contained"
+            onClick={() => {
+              confirmAction({
+                isDestructive: true,
+                title: 'Eliminación multiple',
+                description: `¿Deseas eliminar estos paises: ${table.getSelectedRowModel().flatRows.map((row) => row.original.name).join(', ')}?`,
+                action: () => { table.getSelectedRowModel().flatRows.map(async (row) => await deleteCountry({ id: row.original._id })) }
+              })
+            }}
+          >
+            Eliminar
+          </Button>
+        </Box>
+      </Box >
+    )
   })
+
   return (
     <>
       <MaterialReactTable table={table} />

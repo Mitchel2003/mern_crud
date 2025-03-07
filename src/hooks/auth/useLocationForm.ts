@@ -1,11 +1,11 @@
 import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/utils/constants"
 import { City, Client, Country, State, Headquarter, Office } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useEffect } from "react"
 
 import {
   citySchema, CityFormProps,
@@ -223,5 +223,28 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit
+  }
+}
+
+export const useCountryTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteLocation } = useLocationMutation("country")
+  const isOperating = useRef(false)
+
+  const deleteCountry = useCallback(async (id: string) => {
+    if (isOperating.current) return
+    isOperating.current = true
+    await deleteLocation({ id }).finally(() => {
+      setOnDelete(undefined)
+      isOperating.current = false
+    })
+  }, [deleteLocation])
+
+  useEffect(() => {
+    onDelete && deleteCountry(onDelete)
+  }, [onDelete, deleteCountry])
+
+  return {
+    handleDelete: (id: string) => setOnDelete(id)
   }
 }
