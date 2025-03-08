@@ -34,7 +34,7 @@ const MaintenanceSection = ({ theme }: MaintenanceProps) => (
         theme={theme}
         name="typeMaintenance"
         label="Tipo mantenimiento"
-        options={typesMaintenance}
+        options={typesMaintenance.filter(mt => mt !== 'reacondicionamiento y ajuste')}
       />
     </div>
 

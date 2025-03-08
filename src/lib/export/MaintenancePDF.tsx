@@ -1,8 +1,9 @@
 import { Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { formatStatus, formatDate } from "@/utils/format"
 import { Metadata } from "@/interfaces/db.interface"
+import { formatDate } from "@/utils/format"
+import { Check } from 'lucide-react'
 
 interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[] }
 
@@ -155,16 +156,15 @@ const BiomedicalSection = ({ cv }: { cv?: Curriculum }) => (
           ))}
         </View>
       </View>
-
       <View style={[styles.classificationSection, { borderRight: 'none' }]}>
         <Text style={styles.label}>FUENTES DE ALIMENTACIÓN:</Text>
-        {cv?.powerSupply?.map((supply, index) => (
-          <View key={index} style={styles.tagContainer}>
-            <View style={styles.tag}>
+        <View style={styles.tagContainer}>
+          {cv?.powerSupply?.map((supply, index) => (
+            <View key={index} style={styles.tag}>
               <Text>{supply}</Text>
             </View>
-          </View>
-        ))}
+          ))}
+        </View>
       </View>
     </View>
   </>
@@ -196,10 +196,15 @@ const InspectionsSection = ({ cv }: { cv?: Curriculum }) => (
       <Text style={styles.sectionTitleText}>INSPECCIONES</Text>
     </View>
 
-    <View style={[styles.techGrid, { padding: '4pt' }]}>
+    <View style={styles.techGrid}>
       {cv?.inspection?.typeInspection?.map((inspection, index) => (
         <View key={index} style={styles.inspectionTag}>
-          <Text>{inspection}</Text>
+          <View style={styles.inspectionContent}>
+            <View style={styles.checkCircle} />
+            <Text style={styles.inspectionText}>
+              {inspection}
+            </Text>
+          </View>
         </View>
       ))}
     </View>
@@ -238,7 +243,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
               <Text style={styles.statusLabel}>Estado del equipo:</Text>
               <View style={[styles.statusBadge, statusStyles.badge]}>
                 <Text style={[styles.statusText, statusStyles.text]}>
-                  {formatStatus(mt.statusEquipment)}
+                  {mt.statusEquipment.charAt(0).toUpperCase() + mt.statusEquipment.slice(1)}
                 </Text>
               </View>
             </View>
@@ -326,11 +331,11 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
 /** Estilos del estado del equipo (Maintenance pdf). */
 const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
-    case 'bueno':
+    case 'funcionando':
       return { badge: styles.statusSuccess, text: styles.statusSuccessText }
-    case 'pendiente':
+    case 'en espera de repuestos':
       return { badge: styles.statusWarning, text: styles.statusWarningText }
-    case 'inactivo':
+    case 'fuera de servicio':
       return { badge: styles.statusError, text: styles.statusErrorText }
     default:
       return { badge: styles.statusDefault, text: styles.statusDefaultText }

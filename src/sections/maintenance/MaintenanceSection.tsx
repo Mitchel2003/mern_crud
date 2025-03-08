@@ -1,7 +1,5 @@
-import { BarChart2, CalendarClock, Clock, AlertTriangle, Wrench } from 'lucide-react'
-import { Maintenance, ThemeContextProps } from '@/interfaces/context.interface'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
-import { PageHeader, Stat } from '#/common/elements/HeaderPage'
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '@mui/material'
@@ -15,51 +13,11 @@ const route = '/form/maintenance'
 interface MaintenanceSectionProps extends ThemeContextProps { id: string | undefined }
 
 const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
-  const [data, setData] = useState<Maintenance[] | undefined>()
   const [tab, setTab] = useState(id ? 'form' : 'table')
   const { handle } = useTabs({ id, setTab, to: route })
 
-  // Calcular estadísticas
-  const today = new Date().toISOString().split('T')[0];
-  const stats: Stat[] = [{
-    color: 'info',
-    icon: BarChart2,
-    value: data?.length || 0,
-    href: '/mantenimiento/todos',
-    title: 'Total Mantenimientos',
-  }, {
-    color: 'success',
-    icon: CalendarClock,
-    title: 'Creados Hoy',
-    href: '/mantenimiento/hoy',
-    value: data?.filter(m => new Date(m.createdAt).toISOString().split('T')[0] === today).length || 0,
-  }, {
-    icon: Clock,
-    color: 'warning',
-    title: 'En Espera',
-    href: '/mantenimiento/espera',
-    value: data?.filter(m => m.statusEquipment === 'pendiente').length || 0,
-  }, {
-    color: 'danger',
-    icon: AlertTriangle,
-    title: 'Fuera de Servicio',
-    href: '/mantenimiento/fuera-servicio',
-    value: data?.filter(m => m.statusEquipment === 'inactivo').length || 0,
-  }]
-
   return (
-    <main className="container p-6 space-y-4">
-      {/* header page */}
-      <PageHeader
-        size="lg"
-        icon={Wrench}
-        stats={stats}
-        variant="gradient"
-        title="Mantenimiento"
-        badge={{ text: "Sistema Activo", variant: "success", dot: true }}
-      />
-
-      {/* handle tabs */}
+    <main className="container p-6">
       <Tabs value={tab} onValueChange={handle}>
         {/* Local action tabs */}
         <TabsList className={cn(
@@ -88,7 +46,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} setOnFetch={setData} />
+          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]', 'backdrop-filter backdrop-blur-lg',

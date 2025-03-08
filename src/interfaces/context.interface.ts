@@ -167,7 +167,7 @@ export type Curriculum = BaseMDB & {
   //maintenance
   employmentMaintenance: string
   frequencyMaintenance: string
-  typeMaintenance: ('preventivo' | 'correctivo' | 'predictivo')[]
+  typeMaintenance: ('preventivo' | 'correctivo' | 'predictivo' | 'reacondicionamiento y ajuste')[]
   manualsMaintenance: ('servicio' | 'componentes' | 'usuario' | 'despiece')[]
 
   //relationship

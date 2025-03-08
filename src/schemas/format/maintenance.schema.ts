@@ -16,8 +16,11 @@ export const maintenanceSchema = z.object({
     .min(1, "Debes seleccionar un currículo"),
 
   //timestandard
-  dateNextMaintenance: z.date({ required_error: "La fecha del próximo mantenimiento es requerida" }).nullable(),
-  dateMaintenance: z.date().optional().nullable(),
+  dateNextMaintenance: z.date().optional().nullable(),
+  dateMaintenance: z.date({
+    required_error: "La fecha del mantenimiento es requerida",
+    invalid_type_error: "La fecha del mantenimiento debe ser un valor válido"
+  }).optional().nullable(),
 
   //maintenance
   typeMaintenance: z
@@ -29,8 +32,9 @@ export const maintenanceSchema = z.object({
   observations: z
     .string({ required_error: "Las observaciones son requeridas" })
     .min(1, "Debes seleccionar una observación"),
-}).refine(data => { return data.dateNextMaintenance }, {
-  message: "La fecha del próximo mantenimiento es requerida", path: ["dateNextMaintenance"]
-})
+}).refine((data) => {
+  if (data.typeMaintenance === 'preventivo') return data.dateNextMaintenance !== null
+  return true
+}, { message: "La fecha del próximo mantenimiento es requerida cuando el tipo es preventivo", path: ["dateNextMaintenance"] })
 
 export type MaintenanceFormProps = z.infer<typeof maintenanceSchema>

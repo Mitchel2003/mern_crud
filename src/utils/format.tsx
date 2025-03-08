@@ -3,11 +3,8 @@ import { useThemeContext } from "@/context/ThemeContext"
 import { Separator } from "#/ui/separator"
 
 /*--------------------------------------------------format date--------------------------------------------------*/
+export const formatDateTime = (date: Date | string): string => date ? new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\./g, '/') : 'N/A'
 export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date)) : 'N/A'
-
-export const formatDateTime: Intl.DateTimeFormatOptions = {
-  day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
-}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------format render--------------------------------------------------*/
@@ -24,24 +21,6 @@ export const RenderFormat = ({ format }: { format: ReactElement[] }) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------format pdf--------------------------------------------------*/
-/**
- * Formatea el estado de un equipo (Maintenance pdf).
- * @param status El estado a formatear.
- * @returns El estado formateado.
- */
-export const formatStatus = (status: string) => {
-  switch (status) {
-    case 'bueno':
-      return 'Funcionando'
-    case 'pendiente':
-      return 'En espera de repuestos'
-    case 'inactivo':
-      return 'Fuera de servicio'
-    default:
-      return 'N/A'
-  }
-}
-
 /* Función auxiliar para generar tags basados en el tipo de inspección */
 export const getInspectionTags = (inspection: string) => {
   const tags = []

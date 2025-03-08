@@ -370,7 +370,7 @@ export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
 ]
 //maintenance
 export const typeMaintenanceCollection: Curriculum['typeMaintenance'] = [
-  'preventivo', 'correctivo', 'predictivo'
+  'preventivo', 'correctivo', 'predictivo', 'reacondicionamiento y ajuste'
 ]
 export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
   'servicio', 'componentes', 'usuario', 'despiece'
@@ -547,6 +547,17 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   // Inspections section
+  inspectionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '6pt',
+  },
+  inspectionText: {
+    fontSize: '9pt',
+    color: '#374151',
+    fontFamily: 'Helvetica',
+    flex: 1,
+  },
   inspectionTag: {
     width: '25%',
     fontSize: '8pt',
@@ -555,6 +566,12 @@ export const styles = StyleSheet.create({
     borderRadius: '2pt',
     backgroundColor: '#F3F4F6',
     textAlign: 'left' as const,
+  },
+  checkCircle: {
+    width: '8pt',
+    height: '8pt',
+    borderRadius: '4pt',
+    backgroundColor: '#059669',
   },
   // Characteristics section
   characteristicsContainer: {
@@ -607,8 +624,8 @@ export const styles = StyleSheet.create({
   },
   infoGroup: {
     width: '100%',
+    marginBottom: '5pt',
     alignItems: 'center',
-    marginBottom: '10pt',
     flexDirection: 'row',
   },
   providerLabel: {
@@ -622,7 +639,7 @@ export const styles = StyleSheet.create({
   },
   providerLogo: {
     width: '140pt',
-    height: '90pt',
+    height: '75pt',
     objectFit: 'contain',
   },
 

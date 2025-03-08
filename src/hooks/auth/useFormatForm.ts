@@ -274,9 +274,7 @@ export const useMaintenanceTable = () => {
       if (!acc[equipmentId]) {// Initialize group if it doesn't exist
         acc[equipmentId] = { allMaintenance: [], latestPreventive: null, equipmentName: mt.curriculum.name }
       }
-
       acc[equipmentId].allMaintenance.push(mt)// Add to maintenance array
-
       if (mt.typeMaintenance === 'preventivo') {// Update last preventive maintenance if applicable
         const currentDate = mt.dateMaintenance.getTime()
         const existingDate = acc[equipmentId].latestPreventive ? acc[equipmentId].latestPreventive.dateMaintenance.getTime() : 0
@@ -294,6 +292,7 @@ export const useMaintenanceTable = () => {
           .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' }))
       } as MaintenanceWithChildren
     })
+
     // 4. Sort results by maintenance date
     return formattedData.sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())
   }, [])
@@ -305,33 +304,30 @@ export const useMaintenanceTable = () => {
   const downloadFileZip = useCallback(async (mts: Maintenance[]) => {
     if (isDownloading.current) return
     isDownloading.current = true
-    try {
-      // Agrupar mantenimientos por equipo
-      const groupedByEquipment = mts.reduce((acc, mt) => {
-        const equipmentId = mt.curriculum?._id
-        if (!equipmentId) return acc
-        // Obtener todos los mantenimientos del equipo
-        const allMaintenances = mts?.filter(m => m.curriculum?._id === equipmentId) || []
-        // Obtener mantenimientos únicos (principales y secundarios)
-        const uniqueMaintenances = [...new Set([...allMaintenances])]
-        acc.set(equipmentId, uniqueMaintenances)
-        return acc
-      }, new Map<string, Maintenance[]>())
+    // Group by equipment
+    const groupedByEquipment = mts.reduce((acc, mt) => {
+      const equipmentId = mt.curriculum?._id
+      if (!equipmentId) return acc
+      // Get all maintenances for the equipment
+      const allMaintenances = mts?.filter(m => m.curriculum?._id === equipmentId) || []
+      // Get unique maintenances (main and secondary)
+      const uniqueMaintenances = [...new Set([...allMaintenances])]
+      acc.set(equipmentId, uniqueMaintenances)
+      return acc
+    }, new Map<string, Maintenance[]>())
 
-      // Preparar componentes para el ZIP
-      const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
-        equipmentMts.map(mt => ({
-          component: MaintenancePDF,
-          props: { mt, com, imgs },
-          fileName: `${mt.curriculum?.name}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
-        }))
-      )
-      // Generar nombre del ZIP basado en la fecha y cantidad de equipos
-      const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
+    // Prepare components for the ZIP
+    const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
+      equipmentMts.map(mt => ({
+        component: MaintenancePDF,
+        props: { mt, com, imgs },
+        fileName: `${mt.curriculum?.name}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+      }))
+    )
 
-      await downloadZIP({ zipName, components: pdfComponents })// Descargar ZIP con todos los PDFs
-    } catch (error) { console.error('Error al generar el ZIP:', error) }
-    finally { setOnDownloadZip(undefined); isDownloading.current = false }
+    // Generate zip name based on date and number of equipments
+    const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
+    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isDownloading.current = false })// Download ZIP with all PDFs
   }, [downloadZIP, com, imgs, mts])
 
   /**

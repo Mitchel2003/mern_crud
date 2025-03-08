@@ -1,7 +1,7 @@
 import { Curriculum, Accessory, Company } from "@/interfaces/context.interface"
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { formatDate } from "@/utils/format"
+import { formatDateTime } from "@/utils/format"
 
 interface CurriculumPDFProps {
   accessories?: Accessory[]
@@ -123,13 +123,17 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
           </View>
         </View>
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col2]}>
+          <View style={[styles.infoCol, styles.col3]}>
             <Text style={styles.label}>MODELO:</Text>
             <Text>{cv.modelEquip}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col2]}>
+          <View style={[styles.infoCol, styles.col3]}>
             <Text style={styles.label}>SERIE:</Text>
             <Text>{cv.serie}</Text>
+          </View>
+          <View style={[styles.infoCol, styles.col3]}>
+            <Text style={styles.label}>INVIMA:</Text>
+            <Text>{cv.healthRecord}</Text>
           </View>
         </View>
         <View style={styles.infoRow}>
@@ -196,61 +200,61 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
 
     {/* equipment dates */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
         <Text style={styles.label}>COMPRA:</Text>
-        <Text>{formatDate(cv?.datePurchase)}</Text>
+        <Text>{formatDateTime(cv?.datePurchase)}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>INSTALACIÓN:</Text>
-        <Text>{formatDate(cv?.dateInstallation)}</Text>
+        <Text>{formatDateTime(cv?.dateInstallation)}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>OPERACIÓN:</Text>
-        <Text>{formatDate(cv?.dateOperation)}</Text>
+        <Text>{formatDateTime(cv?.dateOperation)}</Text>
       </View>
     </View>
 
     {/** stakeholders */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
         <Text style={styles.label}>FABRICANTE:</Text>
         <Text>{cv.manufacturer.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.manufacturer.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>PAÍS:</Text>
         <Text>{cv.manufacturer.country}</Text>
       </View>
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
         <Text style={styles.label}>PROVEEDOR:</Text>
         <Text>{cv.supplier.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.supplier.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>CIUDAD:</Text>
         <Text>{cv.supplier.city}</Text>
       </View>
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
         <Text style={styles.label}>REPRESENTANTE:</Text>
         <Text>{cv.representative.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.representative.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>CIUDAD:</Text>
         <Text>{cv.representative.city}</Text>
       </View>
@@ -302,13 +306,13 @@ const BioClassificationSection = ({ cv }: { cv: Curriculum }) => (
 
       <View style={[styles.classificationSection, { borderRight: 'none' }]}>
         <Text style={styles.label}>FUENTES DE ALIMENTACIÓN:</Text>
-        {cv.powerSupply.map((supply, index) => (
-          <View key={index} style={styles.tagContainer}>
-            <View style={styles.tag}>
+        <View style={styles.tagContainer}>
+          {cv.powerSupply.map((supply, index) => (
+            <View key={index} style={styles.tag}>
               <Text>{supply}</Text>
             </View>
-          </View>
-        ))}
+          ))}
+        </View>
       </View>
     </View>
   </>
