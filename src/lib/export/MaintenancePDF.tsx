@@ -3,7 +3,6 @@ import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { Metadata } from "@/interfaces/db.interface"
 import { formatDate } from "@/utils/format"
-import { Check } from 'lucide-react'
 
 interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[] }
 
