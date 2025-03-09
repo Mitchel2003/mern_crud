@@ -2,8 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
-import { Card } from '@mui/material'
 import { useState } from 'react'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableMaintenanceSection from './TableMaintenanceSection'
@@ -49,9 +49,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
           <TableMaintenanceSection theme={theme} onChange={() => handle('form')} />
         </TabsContent>
         <TabsContent value="form">
-          <Card className={cn('relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]', 'backdrop-filter backdrop-blur-lg',
-            theme === 'dark' ? 'bg-zinc-800/90 hover:shadow-purple-900/60' : 'bg-white hover:shadow-purple-500/60'
-          )}>
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
             <FormMaintenanceSection id={id} theme={theme} onChange={() => handle('table')} />
           </Card>
         </TabsContent>

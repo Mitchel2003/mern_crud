@@ -11,7 +11,7 @@ const FooterSection = ({ className }: FooterProps) => {
   return (
     <footer
       className={cn(
-        'p-6 border-t mt-auto',
+        'p-6 border-t mt-auto z-10',
         'flex flex-col sm:flex-row',
         'justify-between items-center gap-4',
         theme === 'dark'

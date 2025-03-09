@@ -34,7 +34,7 @@ const AnimatedParticles = ({ theme }: ThemeContextProps) => {
           custom={i}
           className={cn(
             'absolute w-2 h-2 rounded-full',
-            theme === 'dark' ? 'bg-purple-400' : 'bg-purple-600'
+            theme === 'dark' ? 'bg-purple-400' : 'bg-purple-300'
           )}
           style={{
             left: `${Math.random() * 100}%`,

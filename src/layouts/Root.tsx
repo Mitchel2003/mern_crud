@@ -2,7 +2,7 @@ import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfir
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
-import { AnimatedBackground } from '#/layout/AnimatedBackground'
+import { AnimatedBackground as AnimatedBG } from '#/layout/AnimatedBackground'
 import { SidebarInset, SidebarProvider } from '#/ui/sidebar'
 import { LoadingScreen } from "#/ui/loading-screen"
 import { Sidebar } from '#/layout/Sidebar'
@@ -17,20 +17,20 @@ const RootLayout = () => (
   <>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ConfirmProvider>
-        <AnimatedBackground>
-          <SidebarProvider>
-            {/* Sidebar */}
-            <Sidebar />
+        <SidebarProvider>
+          {/* Sidebar */}
+          <Sidebar />
 
-            {/* Main content */}
-            <SidebarInset>
-              <Navbar className="flex-none" />
+          {/* Main content */}
+          <SidebarInset>
+            <AnimatedBG>
+              <Navbar />
               <Outlet />
-              <Footer className="flex-none" />
-            </SidebarInset>
+              <Footer />
+            </AnimatedBG>
+          </SidebarInset>
 
-          </SidebarProvider>
-        </AnimatedBackground>
+        </SidebarProvider>
       </ConfirmProvider>
     </LocalizationProvider>
 

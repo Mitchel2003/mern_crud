@@ -10,8 +10,8 @@ export const useAnimatedBackground = ({ theme }: ThemeContextProps) => {
   });
 
   const gradientColors = theme === 'dark'
-    ? ['from-zinc-900', 'via-purple-900', 'to-indigo-900']
-    : ['from-white', 'via-purple-100', 'to-indigo-100'];
+    ? ['from-zinc-950/50', 'via-purple-950/50', 'to-indigo-950/50']
+    : ['from-white/50', 'via-purple-100/50', 'to-pink-100/50'];
 
   return { springProps, gradientColors };
 }
