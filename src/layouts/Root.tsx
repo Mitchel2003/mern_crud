@@ -25,7 +25,9 @@ const RootLayout = () => (
           <SidebarInset>
             <AnimatedBG>
               <Navbar />
-              <Outlet />
+              <main className="z-10">
+                <Outlet />
+              </main>
               <Footer />
             </AnimatedBG>
           </SidebarInset>

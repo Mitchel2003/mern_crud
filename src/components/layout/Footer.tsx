@@ -3,21 +3,15 @@ import { Button } from '#/ui/button'
 import { Badge } from '#/ui/badge'
 import { cn } from '@/lib/utils'
 
-interface FooterProps { className?: string }
-
-const FooterSection = ({ className }: FooterProps) => {
+const FooterSection = () => {
   const { theme } = useThemeContext()
-
   return (
     <footer
       className={cn(
         'p-6 border-t mt-auto z-10',
         'flex flex-col sm:flex-row',
         'justify-between items-center gap-4',
-        theme === 'dark'
-          ? 'bg-zinc-900 border-zinc-800'
-          : 'bg-gray-50 border-gray-200',
-        className
+        theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-gray-50 border-gray-200'
       )}
     >
       <div className="flex flex-col">

@@ -7,21 +7,15 @@ import gsIcon from '/assets/gs_icon.ico'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
-interface NavbarProps { className?: string }
-
-const Navbar = ({ className }: NavbarProps) => {
+const Navbar = () => {
   const { theme } = useThemeContext()
   const { isAuth } = useAuthContext()
-
   return (
     <nav
       className={cn(
-        'flex justify-between items-center py-2 px-6',
+        'flex py-2 px-6 justify-between items-center',
         'shadow-md backdrop-blur-md transition-colors duration-500',
-        theme === 'dark'
-          ? 'bg-zinc-800/90 text-zinc-100'
-          : 'bg-white/90 text-gray-900',
-        className
+        theme === 'dark' ? 'bg-zinc-800/90 text-zinc-100' : 'bg-white/90 text-gray-900'
       )}
     >
       <HeaderNavbar isAuth={isAuth} />
@@ -42,7 +36,7 @@ interface HeaderNavbarProps { isAuth: boolean }
 const HeaderNavbar = ({ isAuth }: HeaderNavbarProps) => {
   return (
     <Link to="/" className="flex items-center gap-x-4">
-      <span className="flex items-center justify-center w-14 h-14 mr-2">
+      <span className="flex w-14 h-14 mr-2 items-center justify-center">
         <img src={gsIcon} alt="GS Icon" />
       </span>
       <h1 className="text-2xl">
