@@ -6,7 +6,7 @@ import { Separator } from "#/ui/separator"
 /** returns date in format dd/mm/yyyy */
 export const formatDateTime = (date: Date | string): string => date ? new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '/') : 'N/A'
 /** returns date in format "dd de month yyyy" */
-export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: '2-digit' }).format(new Date(date)) : 'N/A'
+export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date)) : 'N/A'
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------format render--------------------------------------------------*/
