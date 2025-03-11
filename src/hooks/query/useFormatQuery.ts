@@ -15,10 +15,14 @@ const QUERY_KEYS = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------useQuery--------------------------------------------------*/
+/** Hook personalizado para gestionar consultas de formatos */
 export const useQueryFormat = (): QueryReact_Format => {
   const format = useFormatContext()
 
-  // Obtener todas los formatos
+  /**
+   * Obtener todos los formatos
+   * @param {FormatType} path - Nos ayuda a construir la route
+   */
   const fetchAllFormats = <T>(path: FormatType) => useQuery({
     queryKey: QUERY_KEYS.formats(path),
     queryFn: () => format.getAll<T>(path),
@@ -26,7 +30,11 @@ export const useQueryFormat = (): QueryReact_Format => {
     initialData: []
   })
 
-  // Obtener formato por ID
+  /**
+   * Obtener formato por ID
+   * @param {FormatType} path - Nos ayuda a construir la route
+   * @param {string} id - Corresponde al id del formato
+   */
   const fetchFormatById = <T>(path: FormatType, id: string) => useQuery({
     queryKey: QUERY_KEYS.format(path, id),
     queryFn: () => format.getById<T>(path, id),
@@ -34,7 +42,11 @@ export const useQueryFormat = (): QueryReact_Format => {
     enabled: Boolean(id)
   })
 
-  // Buscar formato por término
+  /**
+   * Buscar formato por término
+   * @param {FormatType} path - Nos ayuda a construir la route
+   * @param {object} query - Elementos de busqueda
+   */
   const fetchFormatByQuery = <T>(path: FormatType, query: object) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
     queryFn: () => format.getByQuery<T>(path, query),
@@ -42,7 +54,12 @@ export const useQueryFormat = (): QueryReact_Format => {
     enabled: Boolean(query)
   })
 
-  // Buscar formato por término, aplicando paginación y filtros
+  /**
+   * Buscar formato por término (Beta)
+   * @param {FormatType} path - Nos ayuda a construir la route
+   * @param {SearchParams} search - Terminos de busqueda
+   * @param {any[]} filters - Valores de filtro
+   */
   const fetchFormatByPaginate = <T>(path: FormatType, search: SearchParams, filters: any[]) => useQuery({
     queryKey: [
       ...QUERY_KEYS.formats(path),
@@ -62,7 +79,11 @@ export const useQueryFormat = (): QueryReact_Format => {
     initialData: { data: [], totalCount: 0, pageCount: 0 }
   })
 
-  // Obtener todos los archivos de un formato
+  /**
+   * Obtener todos los archivos de un formato
+   * @param {FormatType} path - Nos ayuda a construir la route
+   * @param {FileReferenceDB} data - Representa la referencia al path etc.
+   */
   const fetchAllFiles = <T>(path: FormatType, data: FileReferenceDB) => useQuery({
     queryKey: QUERY_KEYS.files(data),
     queryFn: () => format.getAllFiles<T>(path, data),
@@ -82,7 +103,7 @@ export const useQueryFormat = (): QueryReact_Format => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------useMutation--------------------------------------------------*/
-/** Hook personalizado para gestionar mutaciones de productos */
+/** Hook personalizado para gestionar mutaciones de formatos */
 export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
   const { create, update, delete: deleteFormat, uploadFiles, deleteFile } = useFormatContext()
   const queryClient = useQueryClient()

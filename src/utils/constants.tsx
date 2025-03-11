@@ -297,25 +297,25 @@ export const navigationTabs = [{
 export const toLabel_technicalSpecification = (key: string) => {
   switch (key) {
     case 'voltage':
-      return 'VOLTAJE'
+      return 'VOLTAJE (V)'
     case 'amperage':
-      return 'CORRIENTE'
+      return 'CORRIENTE (A)'
     case 'power':
       return 'POTENCIA'
     case 'frequency':
-      return 'FRECUENCIA'
+      return 'FRECUENCIA (Hz)'
     case 'capacity':
       return 'CAPACIDAD'
     case 'pressure':
-      return 'PRESION'
+      return 'PRESION (PSI)'
     case 'speed':
-      return 'VELOCIDAD'
+      return 'VELOCIDAD (RPM)'
     case 'humidity':
-      return 'HUMEDAD'
+      return 'HUMEDAD (%)'
     case 'temperature':
-      return 'TEMPERATURA'
+      return 'TEMPERATURA (°C)'
     case 'weight':
-      return 'PESO'
+      return 'PESO (Kg)'
     default:
       return key.toUpperCase()
   }
@@ -476,16 +476,16 @@ export const styles = StyleSheet.create({
     borderBottom: '0.5pt solid black',
   },
   infoCol: {
-    flexDirection: 'row',
+    padding: '2pt',
     alignItems: 'center',
-    padding: '2pt 4pt',
+    flexDirection: 'row',
   },
   col2: { width: '50%' },
   col3: { width: '33.33%' },
   col4: { width: '25%' },
   label: {
-    fontFamily: 'Helvetica-Bold',
     marginRight: '2pt',
+    fontFamily: 'Helvetica-Bold',
   },
   // Equipment section
   equipmentContainer: {
@@ -518,12 +518,12 @@ export const styles = StyleSheet.create({
   },
   // Technical characteristics
   techGrid: {
-    flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: '1pt 0pt',
+    flexDirection: 'row',
   },
   techItem: {
-    width: '20%',
-    padding: '2pt',
+    width: '25%',
   },
   // Bio classification section
   tagContainer: {
@@ -567,44 +567,23 @@ export const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     textAlign: 'left' as const,
   },
-  checkCircle: {
-    width: '8pt',
-    height: '8pt',
-    borderRadius: '4pt',
-    backgroundColor: '#059669',
+  checkmark: {
+    width: '6pt',
+    height: '12pt',
+    marginRight: '2pt',
+    transform: 'rotate(45deg)',
+    borderRight: '2pt solid #059669',
+    borderBottom: '2pt solid #059669',
+    position: 'relative' as const,
   },
   // Characteristics section
-  characteristicsContainer: {
+  row: {
+    gap: '4pt',
     flexDirection: 'row',
-    marginTop: '4pt',
-    borderBottom: '0.5pt solid black',
   },
-  characteristicsCol: {
-    width: '50%',
-    padding: '4pt 8pt',
-  },
-  descriptionText: {
-    fontSize: '9pt',
-    textAlign: 'justify',
-    lineHeight: 1.4,
-  },
-  recommendationsList: {
-    marginTop: '4pt',
-  },
-  recommendationItem: {
+  listItem: {
+    gap: '2pt',
     flexDirection: 'row',
-    marginBottom: '4pt',
-    alignItems: 'flex-start',
-  },
-  recommendationNumber: {
-    width: '12pt',
-    fontSize: '8pt',
-    fontFamily: 'Helvetica-Bold',
-  },
-  recommendationText: {
-    flex: 1,
-    fontSize: '9pt',
-    lineHeight: 1.4,
   },
   // ServiceProvider section
   providerContainer: {
@@ -642,7 +621,6 @@ export const styles = StyleSheet.create({
     height: '75pt',
     objectFit: 'contain',
   },
-
   /* Maintenance - PDF */
   // Observations section
   sectionHeader: {
@@ -661,10 +639,8 @@ export const styles = StyleSheet.create({
     borderRadius: '4pt',
     backgroundColor: '#f8f8f8',
   },
-
   // Status section
   statusContainer: {
-    padding: '5pt',
     borderRadius: '2pt',
     flexDirection: 'row',
     border: '1pt solid #e0e0e0',
@@ -727,10 +703,9 @@ export const styles = StyleSheet.create({
   statusDefaultText: {
     color: '#000000',
   },
-
   // Estilos para las observaciones
   observationsContainer: {
-    padding: '12pt',
+    padding: '5pt',
     borderRadius: '4pt',
     backgroundColor: '#ffffff',
     border: '1pt solid #e0e0e0',
@@ -746,7 +721,6 @@ export const styles = StyleSheet.create({
     lineHeight: 1.5,
     color: '#4B5563',
   },
-
   // ProviderService section
   mainContainer: {
     padding: '5pt',

@@ -4,15 +4,15 @@ import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { formatDateTime } from "@/utils/format"
 
 interface CurriculumPDFProps {
-  accessories?: Accessory[]
+  accs?: Accessory[]
   comLogo?: string
   cliLogo?: string
-  company: Company
   cvLogo?: string
   cv: Curriculum
+  com: Company
 }
 
-const CurriculumPDF = ({ cv, accessories, cliLogo, comLogo, cvLogo, company }: CurriculumPDFProps) => (
+const CurriculumPDF = ({ cv, accs, cliLogo, comLogo, cvLogo, com }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       {/* Title Section */}
@@ -20,19 +20,19 @@ const CurriculumPDF = ({ cv, accessories, cliLogo, comLogo, cvLogo, company }: C
 
       {/* Format Info Section */}
       <View style={styles.formatInfo}>
-        <Text style={styles.formatText}>CÓDIGO: FHV-01</Text>
-        <Text style={styles.formatText}>VIGENTE DESDE: 01-09-2019</Text>
-        <Text style={styles.formatText}>VERSIÓN: 02</Text>
+        <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
+        <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2025</Text>
+        <Text style={styles.formatText}>VERSIÓN: 03</Text>
       </View>
 
       <ClientSection cv={cv} />{/* Client Section */}
-      <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accessories} />{/* Equipment Section */}
+      <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accs} />{/* Equipment Section */}
       <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
       <MaintenanceSection cv={cv} />{/* Mantenimiento */}
       <TechnicalSection cv={cv} />{/* Technical Characteristics */}
       <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
       <CharacteristicsSection cv={cv} />{/* Características */}
-      <ServiceProviderSection company={company} companyLogo={comLogo} />{/* ProviderService */}
+      <ServiceProviderSection company={com} companyLogo={comLogo} />{/* ProviderService */}
     </Page>
   </Document>
 )
@@ -88,8 +88,8 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
 
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col3, { width: "40%" }]}>
-        <Text style={styles.label}>OFICINA:</Text>
-        <Text>{cv.office?.name || 'N/A'}</Text>
+        <Text style={styles.label}>DIRECCIÓN:</Text>
+        <Text>{cv.office?.headquarter?.address || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3, { width: "30%" }]}>
         <Text style={styles.label}>TELEFONO:</Text>
@@ -113,41 +113,45 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
     <View style={styles.equipmentContainer}>
       <View style={styles.equipmentInfo}>
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col2]}>
+          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
             <Text style={styles.label}>NOMBRE:</Text>
             <Text>{cv.name}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col2]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+            <Text style={styles.label}>MODELO:</Text>
+            <Text>{cv.modelEquip}</Text>
+          </View>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>MARCA:</Text>
             <Text>{cv.brand}</Text>
           </View>
         </View>
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3]}>
-            <Text style={styles.label}>MODELO:</Text>
-            <Text>{cv.modelEquip}</Text>
+          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
+            <Text style={styles.label}>TIPO DE ADQUISICIÓN:</Text>
+            <Text>{cv.acquisition || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>SERIE:</Text>
             <Text>{cv.serie}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>INVIMA:</Text>
             <Text>{cv.healthRecord}</Text>
           </View>
         </View>
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3]}>
-            <Text style={styles.label}>VALOR:</Text>
-            <Text>{cv.price || 'N/A'}</Text>
+          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
+            <Text style={styles.label}>UBICACIÓN:</Text>
+            <Text>{cv.office.name}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>GARANTÍA:</Text>
             <Text>{cv.warranty || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3]}>
-            <Text style={styles.label}>TIPO DE ADQUISICIÓN:</Text>
-            <Text>{cv.acquisition || 'N/A'}</Text>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+            <Text style={styles.label}>VALOR:</Text>
+            <Text>{cv.price || 'N/A'}</Text>
           </View>
         </View>
 
@@ -403,38 +407,31 @@ const InspectionsSection = ({ inspections }: { inspections: string[] }) => (
 
 /** Características del equipo y recomendaciones del fabricante */
 const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
-  <>
-    <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}>CARACTERÍSTICAS</Text>
-    </View>
-
-    <View style={styles.characteristicsContainer}>
-      {/* Características del equipo */}
-      <View style={styles.characteristicsCol}>
-        <Text style={styles.label}>Características del equipo</Text>
-        <Text style={[styles.descriptionText, { marginTop: '4pt' }]}>
-          {cv.characteristics}
-        </Text>
+  <View style={styles.row}>
+    {/* Características */}
+    <View style={[{ flex: 1 }]}>
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>CARACTERÍSTICAS DEL EQUIPO</Text>
       </View>
-
-      {/* Recomendaciones del fabricante */}
-      <View style={styles.characteristicsCol}>
-        <Text style={styles.label}>Recomendaciones del fabricante</Text>
-        <View style={styles.recommendationsList}>
-          {cv.recommendationsManufacturer?.split?.('\n')?.map((recommendation, index) => (
-            <View key={index} style={styles.recommendationItem}>
-              <Text style={styles.recommendationNumber}>
-                {`${index + 1}.`}
-              </Text>
-              <Text style={styles.recommendationText}>
-                {recommendation}
-              </Text>
-            </View>
-          ))}
-        </View>
+      <View style={[{ padding: '2pt 4pt' }]}>
+        <Text style={[{ fontSize: '9pt' }]}>{cv.characteristics}</Text>
       </View>
     </View>
-  </>
+
+    {/* Recomendaciones */}
+    <View style={[{ flex: 1 }]}>
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>RECOMENDACIONES DEL FABRICANTE</Text>
+      </View>
+      <View style={[{ padding: '2pt 4pt' }]}>
+        {cv.recommendationsManufacturer?.split('\n').map((recommendation, index) => (
+          <View key={index} style={styles.listItem}>
+            <Text style={[{ fontSize: '9pt' }]}>{recommendation}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  </View>
 )
 
 /** Proveedor del Servicio */

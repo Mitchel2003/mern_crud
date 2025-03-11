@@ -10,12 +10,11 @@ import { Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
 import { useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
 import { tableTranslations } from "@/utils/constants"
+import { formatDateTime } from "@/utils/format"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: () => void }
-interface MaintenanceWithChildren extends Maintenance { childRows: (Maintenance & { isPreventive: boolean })[] }
 
 /**
  * Permite construir un componente de tabla para mostrar los mantenimientos
@@ -25,7 +24,7 @@ interface MaintenanceWithChildren extends Maintenance { childRows: (Maintenance 
  */
 const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { core, maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
+  const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
   const navigate = useNavigate()
 
   /** Header stats */
@@ -33,7 +32,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    value: core?.length || 0,
+    value: maintenances?.length || 0,
     href: '/mantenimiento/todos',
     title: 'Total Mantenimientos',
   }, {
@@ -41,29 +40,29 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/mantenimiento/hoy',
-    value: core?.filter(m => new Date(m.createdAt).toISOString().split('T')[0] === today).length || 0,
+    value: maintenances?.filter(m => new Date(m.createdAt).toISOString().split('T')[0] === today).length || 0,
   }, {
     icon: Clock,
     color: 'warning',
     title: 'En Espera de Repuestos',
     href: '/mantenimiento/espera',
-    value: core?.filter(m => m.statusEquipment === 'en espera de repuestos').length || 0,
+    value: maintenances?.filter(m => m.statusEquipment === 'en espera de repuestos').length || 0,
   }, {
     color: 'danger',
     icon: AlertTriangle,
     title: 'Fuera de Servicio',
     href: '/mantenimiento/fuera-servicio',
-    value: core?.filter(m => m.statusEquipment === 'fuera de servicio').length || 0,
+    value: maintenances?.filter(m => m.statusEquipment === 'fuera de servicio').length || 0,
   }]
 
   /** Config table columns */
-  const columns = useMemo<MRT_ColumnDef<MaintenanceWithChildren>[]>(() => [{
+  const columns = useMemo<MRT_ColumnDef<Maintenance>[]>(() => [{
     size: 150,
     header: 'Equipo',
     id: 'curriculum.name',
     accessorFn: (row) => row.curriculum.name,
   }, {
-    size: 100,
+    size: 125,
     header: "Modelo",
     id: "curriculum.modelEquip",
     accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
@@ -73,15 +72,20 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
     id: "curriculum.office.headquarter.client.name",
     accessorFn: (row) => row?.curriculum?.office?.headquarter?.client?.name || 'Sin cliente'
   }, {
-    size: 150,
-    id: "dateNextMaintenance",
-    header: "Prox. mantenimiento",
-    accessorFn: (row) => formatDate(row.dateNextMaintenance)
+    size: 100,
+    id: "typeMaintenance",
+    header: "Tipo mantenimiento",
+    accessorFn: (row) => row.typeMaintenance
   }, {
     size: 100,
     header: "Estado",
     id: "statusEquipment",
     accessorFn: (row) => row.statusEquipment
+  }, {
+    size: 100,
+    id: "dateNextMaintenance",
+    header: "Prox. mantenimiento",
+    accessorFn: (row) => formatDateTime(row.dateNextMaintenance)
   }], [])
 
   /** Table config (MRT) */
@@ -118,14 +122,8 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
       sx: { width: '100%', tableLayout: 'fixed' }
     },
     renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
-      <Box
-        sx={{
-          p: '8px',
-          gap: '0.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+      <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+        {/** to reset rows selected */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
             <Button
@@ -140,6 +138,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
           <MRT_GlobalFilterTextField table={table} />
           <MRT_ToggleFiltersButton table={table} />
         </Box>
+        {/** to toggle dense and full screen */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ToggleFullScreenButton table={table} />
@@ -147,6 +146,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
       </Box>
     ),
     renderRowActionMenuItems: ({ row, closeMenu }) => ([// to options row (actions row)
+      // download pdf
       <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
         closeMenu()
         confirmAction({
@@ -161,6 +161,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
         Descargar pdf
       </MenuItem>,
 
+      // edit maintenance
       <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
         closeMenu()
         confirmAction({
@@ -175,6 +176,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
         Actualizar
       </MenuItem>,
 
+      // delete maintenance
       <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
         closeMenu()
         confirmAction({
@@ -201,11 +203,13 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
           justifyContent: 'space-between',
         }}
       >
+        {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Typography>
             {table.getSelectedRowModel().rows.length} mantenimiento(s) seleccionado(s)
           </Typography>
         </Box>
+        {/** actions selected rows (2 buttons) */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
           <Button
             size="small"
@@ -247,146 +251,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
             Eliminar
           </Button>
         </Box>
-      </Box >
-    ),
-    renderDetailPanel: ({ row }) => (// row details (Dropdown collapsible)
-      <Box
-        sx={{
-          gap: 2,
-          boxShadow: 1,
-          width: '100%',
-          display: 'flex',
-          borderRadius: 1,
-          flexDirection: 'column',
-          bgcolor: theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
-          <Typography variant="h6">Historial de Mantenimientos</Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Equipo: {row.original.curriculum.name}
-          </Typography>
-        </Box>
-
-        {row.original.childRows?.length > 0 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {row.original.childRows.map((maintenance) => (
-              <Box
-                key={maintenance._id}
-                sx={{
-                  p: 1.5,
-                  borderLeft: 4,
-                  borderRadius: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  borderLeftColor: maintenance.isPreventive ? 'primary.main' : maintenance.typeMaintenance.includes('reacondicionamiento') ? 'burlywood' : 'grey.400',
-                  bgcolor: !maintenance.isPreventive
-                    ? maintenance.typeMaintenance.includes('reacondicionamiento') ? 'rgba(222, 184, 135, 0.1)' : 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(33, 150, 243, 0.1)',
-                  '&:hover': {
-                    bgcolor: !maintenance.isPreventive
-                      ? maintenance.typeMaintenance.includes('reacondicionamiento') ? 'rgba(222, 184, 135, 0.15)' : 'rgba(255, 255, 255, 0.1)'
-                      : 'rgba(33, 150, 243, 0.15)'
-                  }
-                }}
-              >
-                {/** left content */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        px: 1,
-                        py: 0.25,
-                        color: 'white',
-                        borderRadius: 1,
-                        bgcolor: maintenance.isPreventive ? 'primary.main' : maintenance.typeMaintenance === 'correctivo' ? 'grey.500' : 'burlywood',
-                      }}
-                    >
-                      {maintenance.typeMaintenance}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        px: 1,
-                        py: 0.25,
-                        color: 'white',
-                        borderRadius: 1,
-                        bgcolor: maintenance.statusEquipment !== 'funcionando'
-                          ? (maintenance.statusEquipment === 'en espera de repuestos' ? 'warning.main' : 'error.main')
-                          : 'success.main'
-                      }}
-                    >
-                      {maintenance.statusEquipment}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.primary">
-                    Fecha: {formatDate(maintenance.dateMaintenance)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    Observaciones: {maintenance.observations}
-                  </Typography>
-                </Box>
-
-                {/** right content */}
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    size="small"
-                    color="success"
-                    variant="outlined"
-                    startIcon={<Download />}
-                    onClick={() => {
-                      confirmAction({
-                        title: 'Descargar mantenimiento',
-                        description: `¿Deseas descargar el mantenimiento "${maintenance.curriculum.name}"?`,
-                        action: () => handleDownload(maintenance)
-                      })
-                    }}
-                  >
-                    PDF
-                  </Button>
-                  <Button
-                    size="small"
-                    color="warning"
-                    variant="outlined"
-                    startIcon={<Update />}
-                    onClick={() => {
-                      confirmAction({
-                        title: 'Editar mantenimiento',
-                        description: `¿Deseas editar el mantenimiento "${maintenance.curriculum.name}"?`,
-                        action: () => { onChange(); navigate(`/form/maintenance/${maintenance._id}`) }
-                      })
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    variant="outlined"
-                    startIcon={<Delete />}
-                    onClick={() => {
-                      confirmAction({
-                        isDestructive: true,
-                        title: 'Eliminar mantenimiento',
-                        description: `¿Deseas eliminar el mantenimiento "${maintenance.curriculum.name}"?`,
-                        action: () => { handleDelete(maintenance._id) }
-                      })
-                    }}
-                  >
-                    Eliminar
-                  </Button>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-            No hay mantenimientos adicionales para mostrar
-          </Typography>
-        )}
-      </Box >
+      </Box>
     )
   })
 

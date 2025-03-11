@@ -30,8 +30,8 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
   const { handler } = useLoading()
 
   /**
-   * Obtiene todas los usuarios de un tipo específico
-   * @param {string} type - El tipo de usuario.
+   * Obtiene todos los usuarios de un tipo específico
+   * @param {UserType} type - El tipo de usuario.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
   const getAll = async (type: UserType): Promise<any[]> => {
@@ -44,7 +44,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene un usuario específico por su ID
-   * @param {string} type - El tipo de usuario.
+   * @param {UserType} type - El tipo de usuario.
    * @param {string} id - El ID del usuario.
    * @returns {Promise<any>} Los datos del usuario.
    */
@@ -61,7 +61,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
-   * @param {string} type - El tipo de usuario, se utiliza para construir el endpoint.
+   * @param {UserType} type - El tipo de usuario, se utiliza para construir el endpoint.
    * @param {QueryOptions} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
    */
@@ -79,7 +79,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Crea un nuevo usuario de un tipo específico
-   * @param {string} type - El tipo de usuario.
+   * @param {UserType} type - El tipo de usuario.
    * @param {object} data - Los datos del usuario.
    * @returns {Promise<any>} Los datos del usuario creado.
    */
@@ -98,7 +98,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Actualiza un usuario existente
-   * @param {string} type - El tipo de usuario.
+   * @param {UserType} type - El tipo de usuario.
    * @param {string} id - El ID del usuario.
    * @param {object} data - Los datos del usuario.
    * @returns {Promise<any>} Los datos del usuario actualizado.
@@ -118,7 +118,7 @@ export const UserProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Elimina un usuario existente
-   * @param {string} type - El tipo de usuario.
+   * @param {UserType} type - El tipo de usuario.
    * @param {string} id - El ID del usuario.
    * @returns {Promise<any>} Los datos del usuario eliminado.
    */

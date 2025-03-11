@@ -9,16 +9,17 @@ const QUERY_KEYS = {
   user: (path: UserType, id: string) => ['user', path, id],
   search: (path: UserType, query: object) => ['users', 'search', path, query]
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
-/**
- * Hook personalizado para gestionar consultas de usuarios
- * @returns {QueryReact_User} - Objeto con las consultas de usuarios
- */
 /*--------------------------------------------------useQuery--------------------------------------------------*/
+/** Hook personalizado para gestionar consultas de usuarios */
 export const useQueryUser = (): QueryReact_User => {
   const user = useUserContext()
 
-  // Obtener todas los usuarios
+  /**
+   * Obtener todos los usuarios
+   * @param {UserType} path - Nos ayuda a construir la route
+   */
   const fetchAllUsers = <T>(path: UserType) => useQuery({
     queryKey: QUERY_KEYS.users(path),
     queryFn: () => user.getAll<T>(path),
@@ -26,7 +27,11 @@ export const useQueryUser = (): QueryReact_User => {
     initialData: []
   })
 
-  // Obtener usuario por ID
+  /**
+   * Obtener usuario por ID
+   * @param {UserType} path - Nos ayuda a construir la route
+   * @param {string} id - Corresponde al id del usuario
+   */
   const fetchUserById = <T>(path: UserType, id: string) => useQuery({
     queryKey: QUERY_KEYS.user(path, id),
     queryFn: () => user.getById<T>(path, id),
@@ -34,7 +39,11 @@ export const useQueryUser = (): QueryReact_User => {
     enabled: Boolean(id)
   })
 
-  // Buscar usuario por término
+  /**
+   * Buscar usuario por término
+   * @param {UserType} path - Nos ayuda a construir la route
+   * @param {object} query - Elementos de busqueda
+   */
   const fetchUserByQuery = <T>(path: UserType, query: object) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
     queryFn: () => user.getByQuery<T>(path, query),

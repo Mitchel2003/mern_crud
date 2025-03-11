@@ -29,7 +29,7 @@ const ReferenceSection = ({ id, theme }: ReferenceProps) => {
   const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === headquarterId)
   const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)
 
-  const selectedCv = options.curriculums?.find(cv => cv._id === cvId)
+  const selectedCv = curriculums?.find(cv => cv._id === cvId)
   return (
     <div className="space-y-8">
       {/* -------------------- Selects -------------------- */}

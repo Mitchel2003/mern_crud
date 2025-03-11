@@ -12,9 +12,11 @@ import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/const
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
+import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { usePDFDownload } from '@/lib/utils'
 import { processFile } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
+import { formatDateTime } from '@/utils/format'
 
 /*--------------------------------------------------Curriculum form--------------------------------------------------*/
 /**
@@ -204,60 +206,44 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Curriculum table--------------------------------------------------*/
+interface MaintenanceChildren extends Maintenance { childRows: (Maintenance & { isPreventive: boolean })[] }
+interface GroupedMaintenance extends Record<string, {
+  latestPreventive: Maintenance | null,
+  allMaintenance: Maintenance[],
+  equipmentName: string
+}> { }
+
 /** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
 export const useCurriculumTable = () => {
+  const [onDownloadZip, setOnDownloadZip] = useState<Curriculum[] | undefined>(undefined)
+  const [onDownload, setOnDownload] = useState<Curriculum | undefined>(undefined)
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFormat: deleteMt } = useFormatMutation("maintenance")
   const { deleteFormat: deleteAcc } = useFormatMutation("accessory")
   const { deleteFormat: deleteCv } = useFormatMutation("cv")
-  const { deleteFile } = useFormatMutation("file")
-  const queryFormat = useQueryFormat()
-
-  const { data: accs = [] } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete, enabled: !!onDelete })
-  const { data: img = [] } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete}/preview`, enabled: !!onDelete })
-
-  const deleteCurriculum = useCallback(async (id: string) => {
-    await deleteCv({ id }).then(async () => {
-      accs?.length > 0 && await Promise.all(accs.map(acc => deleteAcc({ id: acc._id })))
-      img?.[0]?.url && await deleteFile({ path: `files/${id}/preview/img` })
-    }).finally(() => setOnDelete(undefined))
-  }, [accs, img, deleteCv, deleteAcc, deleteFile])
-
-  useEffect(() => {
-    onDelete && deleteCurriculum(onDelete)
-  }, [onDelete, deleteCurriculum])
-
-  return {
-    handleDelete: (id: string) => setOnDelete(id)
-  }
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------Maintenance table--------------------------------------------------*/
-/** Interface para el mantenimiento con filas hijas */
-interface MaintenanceWithChildren extends Maintenance {
-  childRows: (Maintenance & { isPreventive: boolean })[]
-}
-
-/** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
-export const useMaintenanceTable = () => {
-  const { data: mts } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
-  const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')/** get all companies */
-  const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
-  const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
-  const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
   const { downloadPDF, downloadZIP } = usePDFDownload()
-  const isDownloading = useRef(false)
-  const com = companies?.[0]
+  const { deleteFile } = useFormatMutation("file")
+  const isProcessing = useRef(false)
+  const queryFormat = useQueryFormat()
+  const queryUser = useQueryUser()
 
-  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com?._id })
+  const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')/** get all maintenances */
+  const { data: coms } = queryUser.fetchAllUsers<Company>('company')/** get all companies */
+  const com = coms?.[0]
+
+  const { data: imgCom = [], isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com })
+  const { data: imgCli = [], isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${onDownload?.office?.headquarter?.client?._id}/preview`, enabled: !!onDownload })
+  const { data: imgCv = [], isLoading: isLoadingCv } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete || onDownload?._id}/preview`, enabled: !!onDelete || !!onDownload })
+  const { data: accs = [] } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete || onDownload?._id, enabled: !!onDelete || !!onDownload })
+  const isLoading = isLoadingCli || isLoadingCv || isLoadingCom
 
   /**
-   * Function that formats the retrieved maintenance, returns the prepared data for the table
+   * Function that formats the retrieved maintenances, returns the prepared data for the table
+   * This allow to group the maintenances by equipment and sort them by date
    * @param mts - Array of maintenance records to format
    * @returns Array of formatted maintenance records
    */
-  const formatMaintenance = useCallback((mts?: Maintenance[]): MaintenanceWithChildren[] => {
+  const formatMaintenances = useCallback((mts?: Maintenance[]): MaintenanceChildren[] => {
     if (!mts?.length) return []
     // 1. normalize data (dates)
     const normalizedMts = mts.map(mt => ({
@@ -281,7 +267,7 @@ export const useMaintenanceTable = () => {
         if (!acc[equipmentId].latestPreventive || currentDate > existingDate) { acc[equipmentId].latestPreventive = mt }
       }
       return acc
-    }, {} as Record<string, { latestPreventive: Maintenance | null, allMaintenance: Maintenance[], equipmentName: string }>)
+    }, {} as GroupedMaintenance)
 
     // 3. Transform and sort the data
     const formattedData = Object.entries(groupedMaintenance).filter(([_, group]) => !!group.latestPreventive).map(([_, group]) => {
@@ -290,7 +276,7 @@ export const useMaintenanceTable = () => {
         ...group.latestPreventive!, // last maintenance preventive
         childRows: sortedMaintenance.filter(mt => mt._id !== group.latestPreventive!._id) // exclude mt preventive principal
           .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' }))
-      } as MaintenanceWithChildren
+      } as MaintenanceChildren
     })
 
     // 4. Sort results by maintenance date
@@ -298,71 +284,159 @@ export const useMaintenanceTable = () => {
   }, [])
 
   /**
+   * Función que se ejecuta cuando se descarga currículos multiple
+   * @param {Curriculum[]} cvs - Currículos a descargar
+   */
+  const downloadFileZip = useCallback(async (cvs: Curriculum[]) => { //working here...
+    if (!imgCv?.[0]?.url || !imgCli?.[0]?.url || !imgCom?.[0]?.url) return
+    if (isProcessing.current) return
+    isProcessing.current = true
+    // Prepare components for the ZIP
+    const pdfComponents = cvs.map(cv => ({
+      fileName: `${cv?.name}-${new Date().toISOString().split('T')[0]}.pdf`,
+      component: CurriculumPDF, props: {
+        cv, accs, com: coms?.[0] as Company,
+        cliLogo: imgCli?.[0]?.url,
+        comLog: imgCom?.[0]?.url,
+        cvLogo: imgCv?.[0]?.url
+      }
+    }))
+    // Generate zip name based on date and number of equipments
+    const zipName = `hojas-de-vida-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
+    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })// Download ZIP with all PDFs
+  }, [downloadZIP])
+
+  /**
+   * Función que se ejecuta cuando se descarga un currículo
+   * @param {Curriculum} cv - Currículo a descargar
+   */
+  const downloadFile = useCallback(async (cv: Curriculum) => {
+    if (!imgCv?.[0]?.url || !imgCli?.[0]?.url || !imgCom?.[0]?.url) return
+    if (isProcessing.current) return
+    isProcessing.current = true
+    const fileName = `equipo-${cv.name}-${cv.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
+    await downloadPDF({
+      fileName, component: CurriculumPDF, props: {
+        cv, accs, com: coms?.[0] as Company,
+        comLogo: imgCom[0].url,
+        cliLogo: imgCli[0].url,
+        cvLogo: imgCv[0].url
+      }
+    }).finally(() => { setOnDownload(undefined); isProcessing.current = false })
+  }, [downloadPDF])
+
+  /**
+   * Función que se ejecuta cuando se elimina un currículo
+   * @param {string} id - ID del currículo a eliminar
+  */
+  const deleteCurriculum = useCallback(async (id: string) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    await deleteCv({ id }).then(async () => {
+      accs?.length > 0 && await Promise.all(accs.map(acc => deleteAcc({ id: acc._id })))
+      mts?.length > 0 && await Promise.all(mts.map(mt => deleteMt({ id: mt._id })))
+      imgCv?.[0]?.url && await deleteFile({ path: `files/${id}/preview/img` })
+    }).finally(() => { isProcessing.current = false; setOnDelete(undefined) })
+  }, [deleteCv, deleteMt, deleteAcc, deleteFile])
+
+  /** just one useEffect */
+  useEffect(() => {
+    onDelete && deleteCurriculum(onDelete)
+    onDownload && downloadFile(onDownload)
+    onDownloadZip && downloadFileZip(onDownloadZip)
+  }, [
+    deleteCurriculum, downloadFile, downloadFileZip, onDelete, onDownload, onDownloadZip,
+    accs, coms, imgCli, imgCom, imgCv, isLoading
+  ])
+
+  return {
+    handleDelete: (id: string) => setOnDelete(id),
+    handleDownload: (cv: Curriculum) => setOnDownload(cv),
+    handleDownloadZip: (cvs: Curriculum[]) => setOnDownloadZip(cvs),
+    maintenances: useMemo(() => formatMaintenances(mts), [mts, formatMaintenances]),
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------Maintenance table--------------------------------------------------*/
+/** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
+export const useMaintenanceTable = () => {
+  const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
+  const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
+  const { downloadPDF, downloadZIP } = usePDFDownload()
+  const isProcessing = useRef(false)
+
+  const { data: mts } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
+  const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')
+  const com = companies?.[0]
+
+  const { data: imgs } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com })
+
+  /**
    * Función que se ejecuta cuando se descarga mantenimientos multiple
-   * @param mts - Mantenimientos a descargar
+   * @param {Maintenance[]} mts - Mantenimientos a descargar
    */
   const downloadFileZip = useCallback(async (mts: Maintenance[]) => {
-    if (isDownloading.current) return
-    isDownloading.current = true
-    // Group by equipment
+    if (isProcessing.current) return
+    isProcessing.current = true
+    // Grouping by equipment
     const groupedByEquipment = mts.reduce((acc, mt) => {
-      const equipmentId = mt.curriculum?._id
-      if (!equipmentId) return acc
-      // Get all maintenances for the equipment
-      const allMaintenances = mts?.filter(m => m.curriculum?._id === equipmentId) || []
-      // Get unique maintenances (main and secondary)
-      const uniqueMaintenances = [...new Set([...allMaintenances])]
-      acc.set(equipmentId, uniqueMaintenances)
+      const curriculumId = mt.curriculum?._id
+      if (!curriculumId) return acc
+      if (!acc.has(curriculumId)) acc.set(curriculumId, [])
+      acc.get(curriculumId)?.push(mt)
       return acc
     }, new Map<string, Maintenance[]>())
 
     // Prepare components for the ZIP
     const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
       equipmentMts.map(mt => ({
-        component: MaintenancePDF,
         props: { mt, com, imgs },
-        fileName: `${mt.curriculum?.name}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+        component: MaintenancePDF,
+        fileName: `${mt.curriculum?.name} - ${mt.curriculum?.modelEquip}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
       }))
     )
 
     // Generate zip name based on date and number of equipments
     const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
-    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isDownloading.current = false })// Download ZIP with all PDFs
-  }, [downloadZIP, com, imgs, mts])
+    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })
+  }, [downloadZIP, com, imgs])
 
   /**
    * Función que se ejecuta cuando se descarga un mantenimiento
-   * @param mt - Mantenimiento a descargar
+   * @param {Maintenance} mt - Mantenimiento a descargar
    */
   const downloadFile = useCallback(async (mt: Maintenance) => {
-    if (isDownloading.current) return
-    isDownloading.current = true
-    const fileName = `mantenimiento-${mt.curriculum?.name}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+    if (isProcessing.current) return
+    isProcessing.current = true
+    const fileName = `mantenimiento-${mt.curriculum?.name}-${mt.curriculum?.modelEquip} (${formatDateTime(mt.dateMaintenance)}).pdf`
     await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com, imgs } })
-      .finally(() => { setOnDownload(undefined); isDownloading.current = false })
+      .finally(() => { setOnDownload(undefined); isProcessing.current = false })
   }, [downloadPDF, com, imgs])
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
-   * @param id - ID del mantenimiento a eliminar
+   * @param {string} id - ID del mantenimiento a eliminar
    */
   const deleteMaintenance = useCallback(async (id: string) => {
-    if (isDownloading.current) return
-    isDownloading.current = true
-    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isDownloading.current = false })
+    if (isProcessing.current) return
+    isProcessing.current = true
+    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
   }, [deleteMT])
 
-  useEffect(() => {/** just one useEffect */
+  /** just one useEffect */
+  useEffect(() => {
     onDelete && deleteMaintenance(onDelete)
     onDownload && downloadFile(onDownload)
     onDownloadZip && downloadFileZip(onDownloadZip)
   }, [onDelete, onDownload, onDownloadZip, downloadFile, deleteMaintenance, downloadFileZip])
 
   return {
-    core: mts,
+    maintenances: useMemo(() => mts, [mts]),
     handleDelete: (id: string) => setOnDelete(id),
     handleDownload: (mt: Maintenance) => setOnDownload(mt),
     handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
-    maintenances: useMemo(() => formatMaintenance(mts), [mts, formatMaintenance]),
   }
 }

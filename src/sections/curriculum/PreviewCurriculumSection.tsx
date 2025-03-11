@@ -45,11 +45,11 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
           fileName={`cv-${cv._id}.pdf`}
           document={
             <CurriculumPDF
-              company={com?.[0] as Company}
               comLogo={imgCom?.[0]?.url}
               cliLogo={imgCli?.[0]?.url}
               cvLogo={imgCv?.[0]?.url}
-              accessories={acc}
+              com={com?.[0] as Company}
+              accs={acc}
               cv={cv}
             />
           }

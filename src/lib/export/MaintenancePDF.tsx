@@ -14,9 +14,9 @@ const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
 
       {/* Format Info Section */}
       <View style={styles.formatInfo}>
-        <Text style={styles.formatText}>CÓDIGO: FHV-01</Text>
-        <Text style={styles.formatText}>VIGENTE DESDE: 01-09-2019</Text>
-        <Text style={styles.formatText}>VERSIÓN: 02</Text>
+        <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
+        <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2025</Text>
+        <Text style={styles.formatText}>VERSIÓN: 03</Text>
       </View>
 
       <ClientSection mt={mt} />{/* Client Section */}
@@ -82,33 +82,31 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
       <Text style={styles.sectionTitleText}>DATOS DEL EQUIPO</Text>
     </View>
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
         <Text style={styles.label}>NOMBRE:</Text>
         <Text>{mt.curriculum.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>MODELO:</Text>
         <Text>{mt.curriculum.modelEquip}</Text>
       </View>
-    </View>
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>SERIE:</Text>
         <Text>{mt.curriculum.serie}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>MARCA:</Text>
-        <Text>{mt.curriculum.brand}</Text>
-      </View>
     </View>
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
+        <Text style={styles.label}>UBICACIÓN:</Text>
+        <Text>{mt.curriculum.office.name}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>SEDE:</Text>
         <Text>{mt.curriculum.office.headquarter.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>OFICINA:</Text>
-        <Text>{mt.curriculum.office.name}</Text>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+        <Text style={styles.label}>MARCA:</Text>
+        <Text>{mt.curriculum.brand}</Text>
       </View>
     </View>
   </>
@@ -199,7 +197,7 @@ const InspectionsSection = ({ cv }: { cv?: Curriculum }) => (
       {cv?.inspection?.typeInspection?.map((inspection, index) => (
         <View key={index} style={styles.inspectionTag}>
           <View style={styles.inspectionContent}>
-            <View style={styles.checkCircle} />
+            <View style={styles.checkmark} />
             <Text style={styles.inspectionText}>
               {inspection}
             </Text>
@@ -222,7 +220,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
 
       {/* Content Container */}
       <View style={styles.contentContainer}>
-        {/* Status Section - Implementación mejorada con sistema de columnas */}
+        {/* Status Section */}
         <View style={styles.statusContainer}>
           {/* Primera columna - Tipo mantenimiento */}
           <View style={[styles.statusColumn, styles.col2]}>
@@ -242,7 +240,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
               <Text style={styles.statusLabel}>Estado del equipo:</Text>
               <View style={[styles.statusBadge, statusStyles.badge]}>
                 <Text style={[styles.statusText, statusStyles.text]}>
-                  {mt.statusEquipment.charAt(0).toUpperCase() + mt.statusEquipment.slice(1)}
+                  {mt.statusEquipment}
                 </Text>
               </View>
             </View>

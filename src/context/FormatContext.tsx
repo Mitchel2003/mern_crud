@@ -31,7 +31,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los formatos de un tipo específico
-   * @param {string} type - El tipo de formato.
+   * @param {FormatType} type - El tipo de formato.
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
   const getAll = async (type: FormatType): Promise<any[]> => {
@@ -44,7 +44,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene un formato específico por su ID
-   * @param {string} type - El tipo de formato.
+   * @param {FormatType} type - El tipo de formato.
    * @param {string} id - El ID del formato.
    * @returns {Promise<any>} Los datos del formato.
    */
@@ -61,7 +61,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta
-   * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
+   * @param {FormatType} type - El tipo de formato, se utiliza para construir el endpoint.
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los formatos.
    */
@@ -79,7 +79,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta, aplicando paginación.
-   * @param {string} type - El tipo de formato, se utiliza para construir el endpoint.
+   * @param {FormatType} type - El tipo de formato, se utiliza para construir el endpoint.
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<Paginate<any>>} Un array con los datos de todos los formatos.
    */
@@ -97,7 +97,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Crea un nuevo formato
-   * @param {string} type - El tipo de formato.
+   * @param {FormatType} type - El tipo de formato.
    * @param {object} data - Los datos del formato.
    * @returns {Promise<any>} Los datos del formato creado.
    */
@@ -116,7 +116,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Actualiza un formato existente
-   * @param {string} type - El tipo de formato.
+   * @param {FormatType} type - El tipo de formato.
    * @param {string} id - El ID del formato.
    * @param {object} data - Los datos del formato.
    * @returns {Promise<any>} Los datos del formato actualizado.
@@ -136,7 +136,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
 
   /**
    * Elimina un formato existente
-   * @param {string} type - El tipo de formato.
+   * @param {FormatType} type - El tipo de formato.
    * @param {string} id - El ID del formato.
    * @returns {Promise<any>} Los datos del formato eliminado.
    */
