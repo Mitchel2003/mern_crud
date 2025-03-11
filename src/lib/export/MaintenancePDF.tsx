@@ -87,12 +87,12 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
         <Text>{mt.curriculum.name}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
-        <Text style={styles.label}>MODELO:</Text>
-        <Text>{mt.curriculum.modelEquip}</Text>
+        <Text style={styles.label}>MARCA:</Text>
+        <Text>{mt.curriculum.brand}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
-        <Text style={styles.label}>SERIE:</Text>
-        <Text>{mt.curriculum.serie}</Text>
+        <Text style={styles.label}>MODELO:</Text>
+        <Text>{mt.curriculum.modelEquip}</Text>
       </View>
     </View>
     <View style={styles.infoRow}>
@@ -105,8 +105,8 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
         <Text>{mt.curriculum.office.headquarter.name}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
-        <Text style={styles.label}>MARCA:</Text>
-        <Text>{mt.curriculum.brand}</Text>
+        <Text style={styles.label}>SERIE:</Text>
+        <Text>{mt.curriculum.serie}</Text>
       </View>
     </View>
   </>

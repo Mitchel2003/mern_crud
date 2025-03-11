@@ -118,12 +118,12 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
             <Text>{cv.name}</Text>
           </View>
           <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
-            <Text style={styles.label}>MODELO:</Text>
-            <Text>{cv.modelEquip}</Text>
-          </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>MARCA:</Text>
             <Text>{cv.brand}</Text>
+          </View>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+            <Text style={styles.label}>MODELO:</Text>
+            <Text>{cv.modelEquip}</Text>
           </View>
         </View>
         <View style={styles.infoRow}>
