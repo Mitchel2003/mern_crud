@@ -314,7 +314,7 @@ export const useCurriculumTable = () => {
     if (!imgCv?.[0]?.url || !imgCli?.[0]?.url || !imgCom?.[0]?.url) return
     if (isProcessing.current) return
     isProcessing.current = true
-    const fileName = `equipo-${cv.name}-${cv.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
+    const fileName = `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`
     await downloadPDF({
       fileName, component: CurriculumPDF, props: {
         cv, accs, com: coms?.[0] as Company,
