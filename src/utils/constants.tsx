@@ -357,7 +357,7 @@ export const typeClassCollection: Curriculum['typeClassification'][] = [
   'fijo', 'móvil'
 ]
 export const useClassCollection: Curriculum['useClassification'][] = [
-  'médico', 'básico', 'apóyo'
+  'médico', 'básico', 'apoyo'
 ]
 export const powerSupplyCollection: Curriculum['powerSupply'] = [
   'agua', 'aire', 'gas', 'vapor', 'electricidad', 'ninguno'
@@ -366,7 +366,7 @@ export const technologyCollection: Curriculum['technologyPredominant'] = [
   'mecánico', 'eléctrico', 'electrónico', 'hidráulico', 'neumático'
 ]
 export const biomedicalCollection: Curriculum['biomedicalClassification'][] = [
-  'diagnóstico', 'prevención', 'rehabilitación', 'análisis de laboratorio', 'tratamiento y mantenimiento de vida'
+  'diagnóstico', 'prevención', 'rehabilitación', 'red de frio', 'análisis de laboratorio', 'tratamiento y mantenimiento de vida'
 ]
 //maintenance
 export const typeMaintenanceCollection: Curriculum['typeMaintenance'] = [

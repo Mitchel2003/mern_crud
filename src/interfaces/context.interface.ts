@@ -143,9 +143,9 @@ export type Curriculum = BaseMDB & {
   price: string
 
   //equipment
-  useClassification: 'médico' | 'básico' | 'apóyo'
+  useClassification: 'médico' | 'básico' | 'apoyo'
   typeClassification: 'fijo' | 'móvil'
-  biomedicalClassification: 'diagnóstico' | 'prevención' | 'rehabilitación' | 'análisis de laboratorio' | 'tratamiento y mantenimiento de vida'
+  biomedicalClassification: 'diagnóstico' | 'prevención' | 'rehabilitación' | 'red de frio' | 'análisis de laboratorio' | 'tratamiento y mantenimiento de vida'
   riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
   technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]
   powerSupply: ('agua' | 'aire' | 'gas' | 'vapor' | 'electricidad' | 'ninguno')[]
