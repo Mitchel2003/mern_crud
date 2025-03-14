@@ -252,7 +252,7 @@ export const useCurriculumTable = () => {
     }))
 
     // 2. Group maintenances by curriculum ID
-    const maintenanceGroups = normalizedMts.reduce((acc, mt) => {
+    const maintenanceGroups = normalizedMts.reduce((acc: GroupedMaintenance, mt: Maintenance) => {
       const equipmentId = mt.curriculum?._id
       if (!equipmentId) return acc
       if (!acc[equipmentId]) acc[equipmentId] = { allMaintenances: [], curriculum: mt.curriculum }

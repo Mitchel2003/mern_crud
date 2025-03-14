@@ -112,7 +112,7 @@ export type Equipment = BaseMDB & {
 }
 export type Maintenance = BaseMDB & {
   //timestandard
-  dateNextMaintenance: Date
+  dateNextMaintenance?: Date
   dateMaintenance: Date
 
   //maintenance
@@ -127,6 +127,7 @@ export type Curriculum = BaseMDB & {
   brand: string
   serie: string
   service: string
+  codeEquip: string
   modelEquip: string
   healthRecord: string
 
@@ -145,6 +146,7 @@ export type Curriculum = BaseMDB & {
   //equipment
   useClassification: 'médico' | 'básico' | 'apoyo'
   typeClassification: 'fijo' | 'móvil'
+  // typeClassification: 'biomédico' | 'red de frio' | 'equipo computo'
   biomedicalClassification: 'diagnóstico' | 'prevención' | 'rehabilitación' | 'red de frio' | 'análisis de laboratorio' | 'tratamiento y mantenimiento de vida'
   riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
   technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]
