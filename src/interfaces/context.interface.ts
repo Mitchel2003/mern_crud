@@ -114,6 +114,7 @@ export type Maintenance = BaseMDB & {
   //timestandard
   dateNextMaintenance?: Date
   dateMaintenance: Date
+  [key: string]: any
 
   //maintenance
   typeMaintenance: string
