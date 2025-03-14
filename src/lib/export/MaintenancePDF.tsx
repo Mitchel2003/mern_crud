@@ -9,23 +9,16 @@ interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[
 const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      {/* Title Section */}
-      <HeaderSection />
-
-      {/* Format Info Section */}
-      <View style={styles.formatInfo}>
-        <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
-        <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2025</Text>
-        <Text style={styles.formatText}>VERSIÓN: 03</Text>
+      <View style={styles.container}>
+        <HeaderSection />{/* Title Section */}
+        <ClientSection mt={mt} />{/* Client Section */}
+        <EquipmentSection mt={mt} />{/* Equipment Section */}
+        <BiomedicalSection cv={mt.curriculum} />{/* Biomedical Classification */}
+        <TechnicalSection mt={mt} />{/* Technical Characteristics */}
+        <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
+        <ObservationsSection mt={mt} />{/* Observaciones */}
+        <ServiceProviderSection mt={mt} com={com} imgs={imgs} />{/* ProviderService */}
       </View>
-
-      <ClientSection mt={mt} />{/* Client Section */}
-      <EquipmentSection mt={mt} />{/* Equipment Section */}
-      <BiomedicalSection cv={mt.curriculum} />{/* Biomedical Classification */}
-      <TechnicalSection mt={mt} />{/* Technical Characteristics */}
-      <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
-      <ObservationsSection mt={mt} />{/* Observaciones */}
-      <ServiceProviderSection mt={mt} com={com} imgs={imgs} />{/* ProviderService */}
     </Page>
   </Document>
 )
@@ -42,8 +35,13 @@ const HeaderSection = () => (
         <Text style={styles.titleText}>PROCESO DE CALIDAD</Text>
         <Text style={styles.titleText}>FORMATO DE MANTENIMIENTO DE EQUIPOS</Text>
       </View>
+      <View style={[styles.formatInfo, { marginBottom: '2pt' }]}>
+        <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
+        <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2019</Text>
+        <Text style={styles.formatText}>VERSIÓN: 03</Text>
+      </View>
     </View>
-  </View>
+  </View >
 )
 
 /** Información del cliente */
@@ -97,16 +95,26 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
     </View>
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
-        <Text style={styles.label}>UBICACIÓN:</Text>
-        <Text>{mt.curriculum.office.name}</Text>
-      </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>SEDE:</Text>
         <Text>{mt.curriculum.office.headquarter.name}</Text>
       </View>
       <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>SERIE:</Text>
         <Text>{mt.curriculum.serie}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+        <Text style={styles.label}>INVENTARIO:</Text>
+        <Text>{mt.curriculum.codeEquip || 'N/R'}</Text>
+      </View>
+    </View>
+    <View style={styles.infoRow}>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>UBICACIÓN:</Text>
+        <Text>{mt.curriculum.office.name}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2]}>
+        <Text style={styles.label}>SERVICIO:</Text>
+        <Text>{mt.curriculum.service}</Text>
       </View>
     </View>
   </>
@@ -116,7 +124,7 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
 const BiomedicalSection = ({ cv }: { cv?: Curriculum }) => (
   <>
     <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}>CLASIFICACIÓN BIOMÉDICA</Text>
+      <Text style={styles.sectionTitleText}>CLASIFICACIÓN</Text>
     </View>
 
     {/* Estado, Riesgo, Uso y Tipo */}
@@ -190,7 +198,7 @@ const TechnicalSection = ({ mt }: { mt: Maintenance }) => (
 const InspectionsSection = ({ cv }: { cv?: Curriculum }) => (
   <>
     <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}>INSPECCIONES</Text>
+      <Text style={styles.sectionTitleText}>ACTIVIDADES</Text>
     </View>
 
     <View style={styles.techGrid}>

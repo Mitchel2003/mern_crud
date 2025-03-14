@@ -186,6 +186,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   //equipment
   useClassification: '', //equipmentClassification
   typeClassification: '', //equipmentClassification
+  // equipClassification: '', //equipmentClassification
   biomedicalClassification: '', //equipmentClassification
   riskClassification: '', //equipmentClassification
   technologyPredominant: [], //equipmentClassification
@@ -356,6 +357,9 @@ export const riskCollection: Curriculum['riskClassification'][] = [
 export const typeClassCollection: Curriculum['typeClassification'][] = [
   'fijo', 'móvil'
 ]
+// export const typeClassCollection: Curriculum['typeClassification'][] = [
+//   'biomédico', 'red de frio', 'equipo computo'
+// ]
 export const useClassCollection: Curriculum['useClassification'][] = [
   'médico', 'básico', 'apoyo'
 ]
@@ -418,51 +422,51 @@ export const styles = StyleSheet.create({
     fontSize: '9pt',
     fontFamily: 'Helvetica',
   },
+  container: {
+    border: '1pt solid black',
+  },
   // Header section
   headerContainer: {
     flexDirection: 'row',
-    marginBottom: '5pt',
     alignItems: 'center',
   },
   logoContainer: {
-    width: '100pt',
-    marginRight: '10pt',
+    width: '120pt',
   },
   logo: {
-    width: '100pt',
+    width: '120pt',
     height: '50pt',
   },
   titleContainer: {
-    flex: 1,
+    flex: 1
   },
   mainTitle: {
-    backgroundColor: '#000000',
     padding: '4pt',
     marginBottom: '2pt',
+    backgroundColor: '#000000',
   },
   titleText: {
+    fontSize: '9pt',
     color: '#FFFFFF',
     textAlign: 'center',
-    fontSize: '9pt',
     fontFamily: 'Helvetica-Bold',
   },
   // Format info section
   formatInfo: {
+    padding: '2pt',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     borderTop: '1pt solid black',
     borderBottom: '1pt solid black',
-    padding: '2pt',
-    marginBottom: '5pt',
+    justifyContent: 'space-between',
   },
   formatText: {
     fontSize: '7pt',
   },
   // Client section
   sectionTitle: {
-    backgroundColor: '#000000',
     padding: '2pt 4pt',
     marginBottom: '2pt',
+    backgroundColor: '#000000',
   },
   sectionTitleText: {
     color: '#FFFFFF',
@@ -473,7 +477,7 @@ export const styles = StyleSheet.create({
     minHeight: '12pt',
     alignItems: 'center',
     flexDirection: 'row',
-    borderBottom: '0.5pt solid black',
+    borderBottom: '1pt solid black',
   },
   infoCol: {
     padding: '2pt',
@@ -489,8 +493,7 @@ export const styles = StyleSheet.create({
   },
   // Equipment section
   equipmentContainer: {
-    flexDirection: 'row',
-    marginTop: '5pt',
+    flexDirection: 'row'
   },
   equipmentInfo: {
     flex: 1,
@@ -527,21 +530,21 @@ export const styles = StyleSheet.create({
   },
   // Bio classification section
   tagContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: '4pt',
+    flexWrap: 'wrap',
     padding: '2pt 4pt',
+    flexDirection: 'row',
   },
   tag: {
-    backgroundColor: '#F3F4F6',
+    fontSize: '9pt',
     padding: '2pt 4pt',
     borderRadius: '2pt',
-    fontSize: '9pt',
+    backgroundColor: '#e5e5e5',
   },
   classificationSection: {
     width: '50%',
     padding: '2pt 4pt',
-    borderRight: '0.5pt solid black',
+    borderRight: '1pt solid black',
   },
   classificationRow: {
     flexDirection: 'row',
@@ -553,10 +556,10 @@ export const styles = StyleSheet.create({
     gap: '6pt',
   },
   inspectionText: {
+    flex: 1,
     fontSize: '9pt',
     color: '#374151',
     fontFamily: 'Helvetica',
-    flex: 1,
   },
   inspectionTag: {
     width: '25%',
@@ -564,7 +567,7 @@ export const styles = StyleSheet.create({
     padding: '4pt 8pt',
     marginBottom: '4pt',
     borderRadius: '2pt',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#e5e5e5',
     textAlign: 'left' as const,
   },
   checkmark: {
@@ -617,8 +620,8 @@ export const styles = StyleSheet.create({
     fontSize: '10pt',
   },
   providerLogo: {
-    width: '140pt',
-    height: '75pt',
+    width: '150pt',
+    height: '80pt',
     objectFit: 'contain',
   },
   /* Maintenance - PDF */
@@ -723,13 +726,13 @@ export const styles = StyleSheet.create({
   },
   // ProviderService section
   mainContainer: {
+    gap: '5pt',
     padding: '5pt',
     marginTop: '5pt',
     borderRadius: '4pt',
     flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
     alignItems: 'flex-start',
-    gap: '5pt',
+    backgroundColor: '#f8f8f8',
   },
   engineerInfoContainer: {
     width: '25%',
@@ -754,6 +757,7 @@ export const styles = StyleSheet.create({
   signatureLine: {
     width: '100%',
     height: '70pt',
+    borderRadius: '4pt',
     border: '1pt solid black',
     backgroundColor: '#ffffff',
   },

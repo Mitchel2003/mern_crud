@@ -10,6 +10,7 @@ import { Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
 import { useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
 import { tableTranslations } from "@/utils/constants"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { formatDateTime } from "@/utils/format"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
@@ -26,6 +27,7 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   /** Header stats */
   const today = new Date().toISOString().split('T')[0];
@@ -112,14 +114,14 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
       variant: 'outlined',
       rowsPerPageOptions: [10, 20, 30],
     },
+    muiTableProps: {//table inside (titles row)
+      sx: { width: '100%', tableLayout: 'fixed' }
+    },
     muiTableContainerProps: {//table container (inside)
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { maxWidth: '100%', overflow: 'hidden' }
-    },
-    muiTableProps: {//table inside (titles row)
-      sx: { width: '100%', tableLayout: 'fixed' }
+      sx: { m: 'auto', width: 'auto', maxWidth: isMobile ? '140vw' : 'calc(100vw - 320px)' }
     },
     renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
       <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>

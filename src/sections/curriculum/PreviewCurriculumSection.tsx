@@ -11,12 +11,7 @@ import FooterPreviewCV from "#/pages/curriculum/preview/FooterPreviewCV"
 import HeaderPreviewCV from "#/pages/curriculum/preview/HeaderPreviewCV"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { Card, CardContent } from "#/ui/card"
-import { Button } from "#/ui/button"
-
-import CurriculumPDF from '@/lib/export/CurriculumPDF'
-import { PDFDownloadLink } from "@react-pdf/renderer"
-import { cn, usePDFDownload } from "@/lib/utils"
-import { FileText } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 
@@ -39,33 +34,6 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
   if (isLoadingData || isLoadingFile) return <Skeleton theme={theme} />
   return (
     <div className="container mx-auto p-6 space-y-8">
-      {/** PDF download link ***/}
-      {cv && (
-        <PDFDownloadLink
-          fileName={`cv-${cv._id}.pdf`}
-          document={
-            <CurriculumPDF
-              comLogo={imgCom?.[0]?.url}
-              cliLogo={imgCli?.[0]?.url}
-              cvLogo={imgCv?.[0]?.url}
-              com={com?.[0] as Company}
-              accs={acc}
-              cv={cv}
-            />
-          }
-        >
-          {({ loading, blob }) => (
-            <Button variant="default" disabled={loading} className="flex items-center gap-2"
-              onClick={async (e) => { e.preventDefault(); if (blob) return await usePDFDownload().downloadPDFAs(blob, `cv-${cv._id}.pdf`) }}
-            >
-              <FileText className="h-4 w-4" />
-              {loading ? 'Generando PDF...' : 'Descargar PDF'}
-            </Button>
-          )}
-        </PDFDownloadLink>
-      )}
-
-      {/** Curriculum preview ***/}
       {cv && (
         <Card className={cn(
           'max-w-5xl mx-auto bg-gradient-to-br',

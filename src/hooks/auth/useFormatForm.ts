@@ -13,10 +13,10 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
+import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { processFile } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
-import { formatDateTime } from '@/utils/format'
 
 /*--------------------------------------------------Curriculum form--------------------------------------------------*/
 /**
@@ -206,12 +206,8 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------Curriculum table--------------------------------------------------*/
-interface MaintenanceChildren extends Maintenance { childRows: (Maintenance & { isPreventive: boolean })[] }
-interface GroupedMaintenance extends Record<string, {
-  latestPreventive: Maintenance | null,
-  allMaintenance: Maintenance[],
-  equipmentName: string
-}> { }
+interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
+interface GroupedMaintenance extends Record<string, { allMaintenances: Maintenance[], curriculum: Curriculum }> { }
 
 /** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
 export const useCurriculumTable = () => {
@@ -227,8 +223,9 @@ export const useCurriculumTable = () => {
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
 
-  const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')/** get all maintenances */
-  const { data: coms } = queryUser.fetchAllUsers<Company>('company')/** get all companies */
+  const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
+  const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
+  const { data: coms } = queryUser.fetchAllUsers<Company>('company')
   const com = coms?.[0]
 
   const { data: imgCom = [], isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com })
@@ -238,49 +235,50 @@ export const useCurriculumTable = () => {
   const isLoading = isLoadingCli || isLoadingCv || isLoadingCom
 
   /**
-   * Function that formats the retrieved maintenances, returns the prepared data for the table
-   * This allow to group the maintenances by equipment and sort them by date
-   * @param mts - Array of maintenance records to format
-   * @returns Array of formatted maintenance records
+   * Function that formats and combines curriculum and maintenance data for the table; this allow us:
+   * 1. Show all curriculums even if they don't have maintenances
+   * 2. Group maintenances by equipment and sort them by date
+   * @param curriculums - Array of curriculum records
+   * @param maintenances - Array of maintenance records
+   * @returns Array of formatted curriculum records with their associated maintenances
    */
-  const formatMaintenances = useCallback((mts?: Maintenance[]): MaintenanceChildren[] => {
-    if (!mts?.length) return []
-    // 1. normalize data (dates)
-    const normalizedMts = mts.map(mt => ({
+  const formatTableData = useCallback((curriculums: Curriculum[], maintenances: Maintenance[]): CurriculumChildren[] => {
+    // 1. Normalize maintenance data
+    const normalizedMts = maintenances.map(mt => ({
       ...mt,
       dateMaintenance: new Date(mt.dateMaintenance),
-      typeMaintenance: mt.typeMaintenance.toLowerCase(),
-      dateNextMaintenance: new Date(mt.dateNextMaintenance)
+      isPreventive: mt.typeMaintenance === 'preventivo',
+      dateNextMaintenance: mt.dateNextMaintenance ? new Date(mt.dateNextMaintenance) : undefined
     }))
 
-    // 2. Group by equipment ID and find last preventive maintenance
-    const groupedMaintenance = normalizedMts.reduce((acc, mt) => {
+    // 2. Group maintenances by curriculum ID
+    const maintenanceGroups = normalizedMts.reduce((acc, mt) => {
       const equipmentId = mt.curriculum?._id
       if (!equipmentId) return acc
-      if (!acc[equipmentId]) {// Initialize group if it doesn't exist
-        acc[equipmentId] = { allMaintenance: [], latestPreventive: null, equipmentName: mt.curriculum.name }
-      }
-      acc[equipmentId].allMaintenance.push(mt)// Add to maintenance array
-      if (mt.typeMaintenance === 'preventivo') {// Update last preventive maintenance if applicable
-        const currentDate = mt.dateMaintenance.getTime()
-        const existingDate = acc[equipmentId].latestPreventive ? acc[equipmentId].latestPreventive.dateMaintenance.getTime() : 0
-        if (!acc[equipmentId].latestPreventive || currentDate > existingDate) { acc[equipmentId].latestPreventive = mt }
-      }
+      if (!acc[equipmentId]) acc[equipmentId] = { allMaintenances: [], curriculum: mt.curriculum }
+      acc[equipmentId].allMaintenances.push(mt)
       return acc
     }, {} as GroupedMaintenance)
 
-    // 3. Transform and sort the data
-    const formattedData = Object.entries(groupedMaintenance).filter(([_, group]) => !!group.latestPreventive).map(([_, group]) => {
-      const sortedMaintenance = group.allMaintenance.sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())// Sort maintenance by date (most recent first)
-      return {
-        ...group.latestPreventive!, // last maintenance preventive
-        childRows: sortedMaintenance.filter(mt => mt._id !== group.latestPreventive!._id) // exclude mt preventive principal
-          .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' }))
-      } as MaintenanceChildren
+    // 3. Transform all curriculums, including those without maintenances
+    const formattedData = curriculums.map(cv => {
+      const maintenanceGroup = maintenanceGroups[cv._id]
+      const sortedMaintenances = maintenanceGroup?.allMaintenances
+        .sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())
+        .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' })) || []
+      return { ...cv, hasMaintenances: sortedMaintenances.length > 0, childRows: sortedMaintenances }
     })
 
-    // 4. Sort results by maintenance date
-    return formattedData.sort((a, b) => b.dateMaintenance.getTime() - a.dateMaintenance.getTime())
+    // 4. Sort curriculums: first those with maintenances (by latest date), then those without
+    return formattedData.sort((a, b) => {
+      if (a.hasMaintenances && !b.hasMaintenances) return -1
+      if (!a.hasMaintenances && b.hasMaintenances) return 1
+      if (!a.hasMaintenances && !b.hasMaintenances) return 0
+
+      const latestA = a.childRows[0]?.dateMaintenance.getTime() || 0
+      const latestB = b.childRows[0]?.dateMaintenance.getTime() || 0
+      return latestB - latestA
+    })
   }, [])
 
   /**
@@ -353,7 +351,7 @@ export const useCurriculumTable = () => {
     handleDelete: (id: string) => setOnDelete(id),
     handleDownload: (cv: Curriculum) => setOnDownload(cv),
     handleDownloadZip: (cvs: Curriculum[]) => setOnDownloadZip(cvs),
-    maintenances: useMemo(() => formatMaintenances(mts), [mts, formatMaintenances]),
+    curriculums: useMemo(() => formatTableData(cvs, mts), [cvs, mts, formatTableData])
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

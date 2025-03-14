@@ -46,25 +46,16 @@ export const usePDFDownload = () => {
    */
   const downloadZIP = async <T extends object>({ components, zipName = 'mantenimientos.zip' }: DownloadZipProps<T>) => {
     try {
-      // Create a new ZIP file
       const zip = new JSZip()
-
       // Generate all PDFs in parallel
       const pdfPromises = components.map(async ({ component, props, fileName }) => {
         const pdf = await pdfToBase64(component, props)
         return { pdf, fileName }
       })
-
-      // Wait for all PDFs to be generated
-      const pdfs = await Promise.all(pdfPromises)
-
-      // Add each PDF to the ZIP file
-      pdfs.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })
-
-      // Generate and download the ZIP file
-      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })
+      const pdfs = await Promise.all(pdfPromises)// Wait for all PDFs to be generated
+      pdfs.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })// Add each PDF to the ZIP file
+      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })// Generate and download the ZIP file
       saveAs(content, zipName)
-
     } catch (e) { console.error('Error generating ZIP file:', e); throw e }
   }
 

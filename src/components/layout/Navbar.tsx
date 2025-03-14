@@ -3,6 +3,7 @@ import { useAuthContext } from '@/context/AuthContext'
 import { SidebarTrigger } from '#/ui/sidebar'
 import ThemeToggle from '#/layout/Theme'
 
+import { useIsMobile } from '@/hooks/ui/use-mobile'
 import gsIcon from '/assets/gs_icon.ico'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -10,6 +11,7 @@ import { cn } from '@/lib/utils'
 const Navbar = () => {
   const { theme } = useThemeContext()
   const { isAuth } = useAuthContext()
+  const isMobile = useIsMobile()
   return (
     <nav
       className={cn(
@@ -22,7 +24,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-x-2 md:gap-x-4">
         <ThemeToggle />
-        <SidebarTrigger />
+        {isMobile ? <SidebarTrigger /> : null}
       </div>
     </nav>
   )

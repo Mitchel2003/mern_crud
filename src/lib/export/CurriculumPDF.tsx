@@ -15,24 +15,17 @@ interface CurriculumPDFProps {
 const CurriculumPDF = ({ cv, accs, cliLogo, comLogo, cvLogo, com }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      {/* Title Section */}
-      <HeaderSection cliLogo={cliLogo} />
-
-      {/* Format Info Section */}
-      <View style={styles.formatInfo}>
-        <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
-        <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2025</Text>
-        <Text style={styles.formatText}>VERSIÓN: 03</Text>
+      <View style={styles.container}>
+        <HeaderSection cliLogo={cliLogo} />{/* Title Section */}
+        <ClientSection cv={cv} />{/* Client Section */}
+        <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accs} />{/* Equipment Section */}
+        <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
+        <MaintenanceSection cv={cv} />{/* Mantenimiento */}
+        <TechnicalSection cv={cv} />{/* Technical Characteristics */}
+        <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
+        <CharacteristicsSection cv={cv} />{/* Características */}
+        <ServiceProviderSection company={com} companyLogo={comLogo} />{/* ProviderService */}
       </View>
-
-      <ClientSection cv={cv} />{/* Client Section */}
-      <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accs} />{/* Equipment Section */}
-      <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
-      <MaintenanceSection cv={cv} />{/* Mantenimiento */}
-      <TechnicalSection cv={cv} />{/* Technical Characteristics */}
-      <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
-      <CharacteristicsSection cv={cv} />{/* Características */}
-      <ServiceProviderSection company={com} companyLogo={comLogo} />{/* ProviderService */}
     </Page>
   </Document>
 )
@@ -48,10 +41,15 @@ const HeaderSection = ({ cliLogo }: { cliLogo?: string }) => (
       <View style={styles.logoContainer}>
         <Image src={cliLogo || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} style={styles.logo} />
       </View>
-      <View style={styles.titleContainer}>
+      <View style={[styles.titleContainer, { borderLeft: '1pt solid black' }]}>
         <View style={styles.mainTitle}>
           <Text style={styles.titleText}>PROCESO DE CALIDAD</Text>
           <Text style={styles.titleText}>FORMATO HOJA DE VIDA EQUIPOS</Text>
+        </View>
+        <View style={styles.formatInfo}>
+          <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
+          <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2019</Text>
+          <Text style={styles.formatText}>VERSIÓN: 03</Text>
         </View>
       </View>
     </View>
@@ -156,45 +154,43 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
         </View>
 
         {/* Accessories Table */}
-        <View style={styles.table}>
-          <View style={[styles.tableHeader, { backgroundColor: '#D3D3D3', textAlign: 'center' }]}>
+        <View style={[styles.tableHeader, { backgroundColor: '#D3D3D3', textAlign: 'center' }]}>
+          <View style={styles.tableCell}>
+            <Text style={styles.label}>{accessories && accessories.length > 0 ? 'ACCESORIOS' : 'NO TIENE ACCESORIOS'}</Text>
+          </View>
+        </View>
+        {accessories && accessories.length > 0 && (
+          <View style={styles.tableHeader}>
             <View style={styles.tableCell}>
-              <Text style={styles.label}>{accessories && accessories.length > 0 ? 'ACCESORIOS' : 'NO TIENE ACCESORIOS'}</Text>
+              <Text style={styles.label}>NOMBRE</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text style={styles.label}>TIPO</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text style={styles.label}>MODELO</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text style={styles.label}>SERIE</Text>
             </View>
           </View>
-          {accessories && accessories.length > 0 && (
-            <View style={styles.tableHeader}>
-              <View style={styles.tableCell}>
-                <Text style={styles.label}>NOMBRE</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text style={styles.label}>TIPO</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text style={styles.label}>MODELO</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text style={styles.label}>SERIE</Text>
-              </View>
+        )}
+        {accessories?.map((acc, index) => (
+          <View key={index} style={styles.infoRow}>
+            <View style={styles.tableCell}>
+              <Text>{acc.name || 'N/A'}</Text>
             </View>
-          )}
-          {accessories?.map((acc, index) => (
-            <View key={index} style={styles.infoRow}>
-              <View style={styles.tableCell}>
-                <Text>{acc.name || 'N/A'}</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text>{acc.type || 'N/A'}</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text>{acc.modelEquip || 'N/A'}</Text>
-              </View>
-              <View style={styles.tableCell}>
-                <Text>{acc.serie || 'N/A'}</Text>
-              </View>
+            <View style={styles.tableCell}>
+              <Text>{acc.type || 'N/A'}</Text>
             </View>
-          ))}
-        </View>
+            <View style={styles.tableCell}>
+              <Text>{acc.modelEquip || 'N/A'}</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>{acc.serie || 'N/A'}</Text>
+            </View>
+          </View>
+        ))}
       </View>
 
       {cvLogo && (
@@ -266,11 +262,11 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
   </>
 )
 
-/** Clasificación biomédica del equipo */
+/** Clasificación del equipo */
 const BioClassificationSection = ({ cv }: { cv: Curriculum }) => (
   <>
     <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}>CLASIFICACIÓN BIOMÉDICA</Text>
+      <Text style={styles.sectionTitleText}>CLASIFICACIÓN</Text>
     </View>
 
     {/* Estado, Riesgo, Uso y Tipo */}
@@ -392,7 +388,7 @@ const TechnicalSection = ({ cv }: { cv: Curriculum }) => (
 const InspectionsSection = ({ inspections }: { inspections: string[] }) => (
   <>
     <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}>INSPECCIONES</Text>
+      <Text style={styles.sectionTitleText}>ACTIVIDADES</Text>
     </View>
 
     <View style={[styles.techGrid, { padding: '4pt' }]}>

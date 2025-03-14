@@ -6,16 +6,17 @@ import { Delete, Download, Update } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
-import { useCurriculumTable } from "@/hooks/auth/useFormatForm"
+import { Curriculum, Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
+import { useCurriculumTable, useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
 import { tableTranslations } from "@/utils/constants"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: () => void }
-interface MaintenanceChildren extends Maintenance { childRows: (Maintenance & { isPreventive: boolean })[] }
+interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[] }
 
 /**
  * Permite construir un componente de tabla para mostrar los curriculums
@@ -25,15 +26,17 @@ interface MaintenanceChildren extends Maintenance { childRows: (Maintenance & { 
  */
 const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { maintenances: mts, handleDelete, handleDownload, handleDownloadZip } = useCurriculumTable()
+  const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
+  const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip } = useCurriculumTable()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   /** Header stats */
   const today = new Date().toISOString().split('T')[0];
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    value: mts?.length || 0,
+    value: cvs?.length || 0,
     href: '/curriculum/todos',
     title: 'Total Equipos',
   }, {
@@ -41,41 +44,41 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/curriculum/hoy',
-    value: mts?.filter(m => new Date(m.createdAt).toISOString().split('T')[0] === today).length || 0,
+    value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
   /** Config table columns */
-  const columns = useMemo<MRT_ColumnDef<MaintenanceChildren>[]>(() => [{
+  const columns = useMemo<MRT_ColumnDef<CurriculumChildren>[]>(() => [{
     size: 150,
     id: 'name',
     header: 'Equipo',
-    accessorFn: (row) => row.curriculum.name,
+    accessorFn: (row) => row.name,
   }, {
     size: 100,
     header: "Modelo",
     id: "modelEquip",
-    accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
+    accessorFn: (row) => row.modelEquip || 'Sin modelo'
   }, {
     size: 150,
     header: "Cliente",
     id: "office.headquarter.client.name",
-    accessorFn: (row) => row?.curriculum?.office?.headquarter?.client?.name || 'Sin cliente'
+    accessorFn: (row) => row.office?.headquarter?.client?.name || 'Sin cliente'
   }, {
     size: 150,
     header: "Sede",
     id: "office.headquarter.address",
-    accessorFn: (row) => row?.curriculum?.office?.headquarter?.address || 'Sin sede'
+    accessorFn: (row) => row.office?.headquarter?.address || 'Sin sede'
   }, {
     size: 90,
     header: "Riesgo",
     id: "riskClassification",
-    accessorFn: (row) => row?.curriculum?.riskClassification
+    accessorFn: (row) => row.riskClassification
   }], [])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
     columns,
-    data: mts || [],
+    data: cvs || [],
     localization: tableTranslations,
     enableColumnFilterModes: true,
     enableColumnPinning: true,
@@ -96,14 +99,14 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
       variant: 'outlined',
       rowsPerPageOptions: [10, 20, 30],
     },
+    muiTableProps: {//table inside (titles row)
+      sx: { width: '100%', tableLayout: 'fixed' }
+    },
     muiTableContainerProps: {//table container (inside)
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { maxWidth: '100%', overflow: 'hidden' }
-    },
-    muiTableProps: {//table inside (titles row)
-      sx: { width: '100%', tableLayout: 'fixed' }
+      sx: { m: 'auto', width: 'auto', maxWidth: isMobile ? '140vw' : 'calc(100vw - 320px)' }
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
@@ -139,8 +142,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         closeMenu()
         confirmAction({
           title: 'Ver Curriculum',
-          description: `¿Deseas ver el curriculum "${row.original.curriculum.name}"?`,
-          action: () => { navigate(`/form/curriculum/preview/${row.original.curriculum._id}`) }
+          description: `¿Deseas ver el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+          action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
         })
       }}>
         <ListItemIcon>
@@ -154,8 +157,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         closeMenu()
         confirmAction({
           title: 'Descargar curriculum',
-          description: `¿Deseas descargar el curriculum "${row.original.curriculum.name}"?`,
-          action: () => { handleDownload(row.original.curriculum) }
+          description: `¿Deseas descargar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+          action: () => { handleDownload(row.original) }
         })
       }}>
         <ListItemIcon>
@@ -169,8 +172,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         closeMenu()
         confirmAction({
           title: 'Editar curriculum',
-          description: `¿Deseas editar el curriculum "${row.original.curriculum.name}"?`,
-          action: () => { onChange(); navigate(`/form/curriculum/${row.original.curriculum._id}`) }
+          description: `¿Deseas editar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+          action: () => { onChange(); navigate(`/form/curriculum/${row.original._id}`) }
         })
       }}>
         <ListItemIcon>
@@ -185,8 +188,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         confirmAction({
           isDestructive: true,
           title: 'Eliminar curriculum',
-          description: `¿Deseas eliminar el curriculum "${row.original.curriculum.name}"?`,
-          action: () => { handleDelete(row.original.curriculum._id) }
+          description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+          action: () => { handleDelete(row.original._id) }
         })
       }}>
         <ListItemIcon>
@@ -212,13 +215,13 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
             startIcon={<Download />}
             onClick={() => {
               const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.curriculum.name
+              const firstEquipment = selectedRows[0].original.name
               const otherCount = selectedRows.length - 1
               confirmAction({
                 title: 'Descargar mantenimientos',
                 description: `¿Deseas descargar los mantenimientos mas recientes de:
                 ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
-                action: () => handleDownloadZip(selectedRows.map(row => row.original.curriculum))
+                action: () => handleDownloadZip(selectedRows.map(row => row.original))
               })
             }}
           >
@@ -231,7 +234,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
             startIcon={<Delete />}
             onClick={() => {
               const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.curriculum.name
+              const firstEquipment = selectedRows[0].original.name
               const otherCount = selectedRows.length - 1
               confirmAction({
                 isDestructive: true,
@@ -252,7 +255,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
           <Typography variant="h6">Historial de Mantenimientos</Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            Equipo: {row.original.curriculum.name}
+            Equipo: {row.original.name}
           </Typography>
         </Box>
         {row.original.childRows?.length > 0 ? (
@@ -306,8 +309,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
                     onClick={() => {
                       confirmAction({
                         title: 'Descargar mantenimiento',
-                        description: `¿Deseas descargar el mantenimiento "${maintenance.curriculum.name}"?`,
-                        action: () => handleDownload(maintenance.curriculum)
+                        description: `¿Deseas descargar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
+                        action: () => handleDownloadMaintenance(maintenance)
                       })
                     }}
                   >
@@ -321,7 +324,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
                     onClick={() => {
                       confirmAction({
                         title: 'Editar mantenimiento',
-                        description: `¿Deseas editar el mantenimiento "${maintenance.curriculum.name}"?`,
+                        description: `¿Deseas editar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
                         action: () => { onChange(); navigate(`/form/maintenance/${maintenance._id}`) }
                       })
                     }}
@@ -337,8 +340,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
                       confirmAction({
                         isDestructive: true,
                         title: 'Eliminar mantenimiento',
-                        description: `¿Deseas eliminar el mantenimiento "${maintenance.curriculum.name}"?`,
-                        action: () => { handleDelete(maintenance._id) }
+                        description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
+                        action: () => { handleDeleteMaintenance(maintenance._id) }
                       })
                     }}
                   >
@@ -365,7 +368,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
           stats={stats}
           variant="gradient"
           icon={BookMarkedIcon}
-          title="Hoja de vida - equipos biomédicos"
+          title="Equipos biomédicos"
           badge={{ text: "Sistema Activo", variant: "success", dot: true }}
         />
         <MaterialReactTable table={table} />
