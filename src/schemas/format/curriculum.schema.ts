@@ -54,18 +54,18 @@ export const curriculumSchema = z.object({
     .optional(),
 
   //details
-  datePurchase: z.date().optional().nullable(),
-  dateInstallation: z.date().optional().nullable(),
-  dateOperation: z.date().optional().nullable(),
+  datePurchase: z
+    .date().optional().nullable(),
+  dateInstallation: z
+    .date().optional().nullable(),
+  dateOperation: z
+    .date().optional().nullable(),
   acquisition: z
     .string({ required_error: "Tipo adquisición del equipo es requerida" })
     .min(3, "Debes seleccionar un tipo de adquisición"),
   warranty: z.union([
     z.string().min(3, "Debes seleccionar una garantía"),
-    z.object({
-      type: z.literal("otro"),
-      value: z.string().min(3, "El valor de garantía debe tener al menos 3 caracteres")
-    })
+    z.object({ type: z.literal("otro"), value: z.string().min(3, "El valor de garantía debe tener al menos 3 caracteres") })
   ]),
   price: z.string()
     .transform(val => val.trim())
@@ -75,15 +75,20 @@ export const curriculumSchema = z.object({
   useClassification: z
     .string({ required_error: "Clasificación de uso del equipo es requerida" })
     .min(3, "Debes seleccionar una clasificación de uso"),
+  equipClassification: z
+    .string({ required_error: "Clasificación del equipo es requerida" })
+    .min(3, "Debes seleccionar una clasificación del equipo"),
   typeClassification: z
     .string({ required_error: "Clasificación de tipo del equipo es requerida" })
     .min(3, "Debes seleccionar una clasificación de tipo"),
   biomedicalClassification: z
     .string({ required_error: "Clasificación biomédica del equipo es requerida" })
-    .min(3, "Debes seleccionar una clasificación biomédica"),
+    .min(3, "Debes seleccionar una clasificación biomédica")
+    .optional(),
   riskClassification: z
     .string({ required_error: "Clasificación de riesgo del equipo es requerida" })
-    .min(1, "Debes seleccionar una clasificación de riesgo"),
+    .min(1, "Debes seleccionar una clasificación de riesgo")
+    .optional(),
   technologyPredominant: z
     .array(z.string({ required_error: "Tecnologías predominantes del equipo son requeridas" }))
     .min(1, "Debes seleccionar al menos una tecnología predominante"),
@@ -203,7 +208,10 @@ export const curriculumSchema = z.object({
         .min(1, "Debes seleccionar un modelo"),
     })
   ).optional().default([])
-})
+}).refine((data) => {
+  if (data.equipClassification === 'biomédico') return data.biomedicalClassification || data.riskClassification !== null
+  return true
+}, { message: "La clasificación biomédica o de riesgo es requerida cuando el tipo es biomédico", path: ["riskClassification", "biomedicalClassification"] })
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/

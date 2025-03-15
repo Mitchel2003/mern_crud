@@ -126,8 +126,8 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
         </View>
         <View style={styles.infoRow}>
           <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
-            <Text style={styles.label}>TIPO DE ADQUISICIÓN:</Text>
-            <Text>{cv.acquisition || 'N/A'}</Text>
+            <Text style={styles.label}>INVENTARIO:</Text>
+            <Text>{cv.codeEquip || 'N/A'}</Text>
           </View>
           <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>SERIE:</Text>
@@ -271,25 +271,32 @@ const BioClassificationSection = ({ cv }: { cv: Curriculum }) => (
 
     {/* Estado, Riesgo, Uso y Tipo */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>CLASIFICACIÓN USO:</Text>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
+        <Text style={styles.label}>CLASIFICACIÓN USO:</Text>
         <Text>{cv.useClassification || 'N/R'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
+        <Text style={styles.label}>EQUIPO:</Text>
+        <Text>{cv.equipClassification || 'N/R'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>TIPO:</Text>
         <Text>{cv.typeClassification || 'N/R'}</Text>
       </View>
     </View>
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
-        <Text>{cv.biomedicalClassification || 'N/R'}</Text>
+
+    {cv.typeClassification === 'biomédico' && (
+      <View style={styles.infoRow}>
+        <View style={[styles.infoCol, styles.col2]}>
+          <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
+          <Text>{cv.biomedicalClassification || 'N/R'}</Text>
+        </View>
+        <View style={[styles.infoCol, styles.col2]}>
+          <Text style={styles.label}>RIESGO:</Text>
+          <Text>{cv.riskClassification || 'N/R'}</Text>
+        </View>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>RIESGO:</Text>
-        <Text>{cv.riskClassification || 'N/R'}</Text>
-      </View>
-    </View>
+    )}
 
     {/* Fuentes de Alimentación y Tecnologías predominantes */}
     <View style={styles.classificationRow}>

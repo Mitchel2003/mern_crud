@@ -55,12 +55,20 @@ const InputSearchableField = React.forwardRef<HTMLInputElement, InputSearchableF
               disabled={disabled}
               placeholder={placeholder}
               onChange={(e) => { field.onChange(e.target.value) }}
-              className={cn(disabled && "opacity-50 cursor-not-allowed",
+              className={cn(
+                theme === 'dark'
+                  ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
+                  : 'bg-gray-100 border-gray-300 text-gray-900',
+                disabled && "opacity-50 cursor-not-allowed",
                 error && "border-red-500",
                 className
               )}
             />
-            {error && <FormMessage>{error.message}</FormMessage>}
+            {error && (
+              <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
+                {error.message}
+              </FormMessage>
+            )}
           </>
         )}
       />

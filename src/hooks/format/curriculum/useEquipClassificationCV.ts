@@ -6,6 +6,7 @@ const useEquipClassificationCV = () => {
   const mapValues = (data: Curriculum) => ({
     useClassification: data.useClassification,
     typeClassification: data.typeClassification,
+    equipClassification: data.equipClassification,
     biomedicalClassification: data.biomedicalClassification,
     riskClassification: data.riskClassification,
     technologyPredominant: data.technologyPredominant,
@@ -15,6 +16,7 @@ const useEquipClassificationCV = () => {
   const submitData = (data: CurriculumFormProps) => ({
     useClassification: data.useClassification,
     typeClassification: data.typeClassification,
+    equipClassification: data.equipClassification,
     biomedicalClassification: data.biomedicalClassification,
     riskClassification: data.riskClassification,
     technologyPredominant: data.technologyPredominant,
@@ -22,6 +24,7 @@ const useEquipClassificationCV = () => {
   })
 
   const mapAutocomplete = (data: Curriculum) => ({
+    equipClassification: data.equipClassification,
     typeClassification: data.typeClassification,
     useClassification: data.useClassification,
     riskClassification: data.riskClassification,

@@ -35,7 +35,7 @@ const HeaderSection = () => (
         <Text style={styles.titleText}>PROCESO DE CALIDAD</Text>
         <Text style={styles.titleText}>FORMATO DE MANTENIMIENTO DE EQUIPOS</Text>
       </View>
-      <View style={[styles.formatInfo, { marginBottom: '2pt' }]}>
+      <View style={styles.formatInfo}>
         <Text style={styles.formatText}>CÓDIGO: FHV-03</Text>
         <Text style={styles.formatText}>VIGENTE DESDE: 10-03-2019</Text>
         <Text style={styles.formatText}>VERSIÓN: 03</Text>
@@ -108,13 +108,13 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
       </View>
     </View>
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>UBICACIÓN:</Text>
-        <Text>{mt.curriculum.office.name}</Text>
-      </View>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col2, { width: '40%' }]}>
         <Text style={styles.label}>SERVICIO:</Text>
         <Text>{mt.curriculum.service}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
+        <Text style={styles.label}>UBICACIÓN:</Text>
+        <Text>{mt.curriculum.office.name}</Text>
       </View>
     </View>
   </>
@@ -129,25 +129,32 @@ const BiomedicalSection = ({ cv }: { cv?: Curriculum }) => (
 
     {/* Estado, Riesgo, Uso y Tipo */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
         <Text style={styles.label}>CLASIFICACIÓN USO:</Text>
         <Text>{cv?.useClassification || 'N/R'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
+        <Text style={styles.label}>EQUIPO:</Text>
+        <Text>{cv?.equipClassification || 'N/R'}</Text>
+      </View>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>TIPO:</Text>
         <Text>{cv?.typeClassification || 'N/R'}</Text>
       </View>
     </View>
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
-        <Text>{cv?.biomedicalClassification || 'N/R'}</Text>
+
+    {cv?.typeClassification === 'biomédico' && (
+      <View style={styles.infoRow}>
+        <View style={[styles.infoCol, styles.col2]}>
+          <Text style={styles.label}>CLASIFICACIÓN BIOMÉDICA:</Text>
+          <Text>{cv?.biomedicalClassification || 'N/R'}</Text>
+        </View>
+        <View style={[styles.infoCol, styles.col2]}>
+          <Text style={styles.label}>RIESGO:</Text>
+          <Text>{cv?.riskClassification || 'N/R'}</Text>
+        </View>
       </View>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>RIESGO:</Text>
-        <Text>{cv?.riskClassification || 'N/R'}</Text>
-      </View>
-    </View>
+    )}
 
     {/* Fuentes de Alimentación y Tecnologías predominantes */}
     <View style={styles.classificationRow}>

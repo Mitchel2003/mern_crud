@@ -145,8 +145,8 @@ export type Curriculum = BaseMDB & {
 
   //equipment
   useClassification: 'médico' | 'básico' | 'apoyo'
-  typeClassification: 'fijo' | 'móvil'
-  // typeClassification: 'biomédico' | 'red de frio' | 'equipo computo'
+  equipClassification: 'fijo' | 'móvil'
+  typeClassification: 'biomédico' | 'red de frio' | 'equipo computo'
   biomedicalClassification: 'diagnóstico' | 'prevención' | 'rehabilitación' | 'red de frio' | 'análisis de laboratorio' | 'tratamiento y mantenimiento de vida'
   riskClassification: 'I' | 'IIA' | 'IIB' | 'III'
   technologyPredominant: ('mecánico' | 'eléctrico' | 'electrónico' | 'hidráulico' | 'neumático')[]

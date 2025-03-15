@@ -186,7 +186,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   //equipment
   useClassification: '', //equipmentClassification
   typeClassification: '', //equipmentClassification
-  // equipClassification: '', //equipmentClassification
+  equipClassification: '', //equipmentClassification
   biomedicalClassification: '', //equipmentClassification
   riskClassification: '', //equipmentClassification
   technologyPredominant: [], //equipmentClassification
@@ -354,12 +354,12 @@ export const groupCollection: ServiceGroup[] = [{
 export const riskCollection: Curriculum['riskClassification'][] = [
   'I', 'IIA', 'IIB', 'III'
 ]
-export const typeClassCollection: Curriculum['typeClassification'][] = [
+export const equipClassCollection: Curriculum['equipClassification'][] = [
   'fijo', 'móvil'
 ]
-// export const typeClassCollection: Curriculum['typeClassification'][] = [
-//   'biomédico', 'red de frio', 'equipo computo'
-// ]
+export const typeClassCollection: Curriculum['typeClassification'][] = [
+  'biomédico', 'red de frio', 'equipo computo'
+]
 export const useClassCollection: Curriculum['useClassification'][] = [
   'médico', 'básico', 'apoyo'
 ]
@@ -423,12 +423,12 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   container: {
-    border: '1pt solid black',
+    border: '2pt solid black',
   },
   // Header section
   headerContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   logoContainer: {
     width: '120pt',
@@ -441,8 +441,7 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   mainTitle: {
-    padding: '4pt',
-    marginBottom: '2pt',
+    padding: '8pt',
     backgroundColor: '#000000',
   },
   titleText: {
@@ -496,8 +495,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   equipmentInfo: {
-    flex: 1,
-    marginRight: '10pt',
+    flex: 1
   },
   equipmentImage: {
     width: '100pt',
@@ -592,7 +590,6 @@ export const styles = StyleSheet.create({
   providerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    borderBottom: '2pt solid black',
     justifyContent: 'space-between',
   },
   providerInfo: {
