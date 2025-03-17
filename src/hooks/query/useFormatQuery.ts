@@ -1,6 +1,6 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
 import { convertToMongoQuery, buildSortOptions, buildPaginationOptions } from "@/lib/mongodb-filters"
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query"
 import { FileReferenceDB, SearchParams } from "@/interfaces/db.interface"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
@@ -92,12 +92,43 @@ export const useQueryFormat = (): QueryReact_Format => {
     initialData: []
   })
 
+  /**
+   * Obtener recursos para múltiples curriculums (imágenes y accesorios)
+   * @param {any[]} data - Array de curriculums para los que obtener recursos
+   * @returns Array de resultados de consultas para imágenes de curriculums, imágenes de clientes y accesorios
+   */
+  const fetchAllQueries = <T>(data: any[]) => useQueries({
+    queries: (data || []).flatMap((q: any) => [{
+      enabled: Boolean(q._id), retry: 1,
+      queryKey: ['files', q._id],
+      queryFn: async () => {
+        const result = await format.getAllFiles<T>('file', { path: `files/${q._id}/preview` })
+        return { type: 'curriculum', id: q._id, data: result, error: null }
+      }
+    }, {
+      enabled: Boolean(q._id), retry: 1,
+      queryKey: ['client', q._id],
+      queryFn: async () => {
+        const result = await format.getAllFiles<T>('file', { path: `client/${q.office?.headquarter?.client?._id}/preview` })
+        return { type: 'client', id: q.office?.headquarter?.client?._id, data: result, error: null }
+      }
+    }, {
+      enabled: Boolean(q._id), retry: 1,
+      queryKey: ['accessory', q._id],
+      queryFn: async () => {
+        const result = await format.getByQuery<T>('accessory', { curriculum: q._id })
+        return { type: 'accessory', id: q._id, data: result, error: null }
+      }
+    }])
+  })
+
   return {
     fetchAllFormats,
     fetchFormatById,
     fetchFormatByQuery,
     fetchFormatByPaginate,
-    fetchAllFiles
+    fetchAllQueries,
+    fetchAllFiles,
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

@@ -208,6 +208,11 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
 /*--------------------------------------------------Curriculum table--------------------------------------------------*/
 interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
 interface GroupedMaintenance extends Record<string, { allMaintenances: Maintenance[], curriculum: Curriculum }> { }
+interface ResourceMap {
+  curriculumImages: Metadata[]
+  curriculumAccs: Accessory[]
+  clientImages: Metadata[]
+}
 
 /** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
 export const useCurriculumTable = () => {
@@ -226,13 +231,40 @@ export const useCurriculumTable = () => {
   const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
   const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
   const { data: coms } = queryUser.fetchAllUsers<Company>('company')
-  const com = coms?.[0]
+  const client = onDownload?.office?.headquarter?.client
+  const company = coms?.[0]
 
-  const { data: imgCom = [], isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com })
-  const { data: imgCli = [], isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${onDownload?.office?.headquarter?.client?._id}/preview`, enabled: !!onDownload })
-  const { data: imgCv = [], isLoading: isLoadingCv } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete || onDownload?._id}/preview`, enabled: !!onDelete || !!onDownload })
-  const { data: accs = [] } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete || onDownload?._id, enabled: !!onDelete || !!onDownload })
-  const isLoading = isLoadingCli || isLoadingCv || isLoadingCom
+  const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${client?._id}/preview`, enabled: !!client })
+  const { data: imgCom, isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${company?._id}/preview`, enabled: !!company })
+  const { data: imgCv, isLoading: isLoadingCv } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete || onDownload?._id}/preview`, enabled: !!onDelete || !!onDownload })
+  const { data: accs } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete || onDownload?._id, enabled: !!onDelete || !!onDownload })
+  const zipFiles = queryFormat.fetchAllQueries(onDownloadZip || [])
+
+  const isLoading = zipFiles.some(q => q.isLoading || q.isFetching) || isLoadingCom || isLoadingCli || isLoadingCv
+  const imgCurriculum = imgCv?.[0]?.url
+  const imgCompany = imgCom?.[0]?.url
+  const imgClient = imgCli?.[0]?.url
+
+  /** Verify all queries state on zipFiles (either successfully or with an error) */
+  const zipFinished = useMemo(() => {
+    if (!onDownloadZip?.length || !zipFiles.length) return false
+    return !zipFiles.some(q => q.isLoading || q.isFetching)
+  }, [onDownloadZip, zipFiles])
+
+  /** Helps us group the results by curriculum */
+  const zipMap = useMemo(() => {
+    if (!onDownloadZip?.length) return new Map<string, ResourceMap>()
+    const isLoading = zipFiles.some(q => q.isLoading || q.isFetching)
+    const resourceMap = new Map<string, ResourceMap>()
+    if (isLoading) return resourceMap
+    onDownloadZip.forEach(cv => {// Mapping all curriculums with their resources
+      const clientImages = zipFiles.find(q => q.data?.type === 'client' && q.data?.id === cv.office?.headquarter?.client?._id)?.data?.data as Metadata[] || []
+      const curriculumImages = zipFiles.find(q => q.data?.type === 'curriculum' && q.data?.id === cv._id)?.data?.data as Metadata[] || []
+      const curriculumAccs = zipFiles.find(q => q.data?.type === 'accessory' && q.data?.id === cv._id)?.data?.data as Accessory[] || []
+      resourceMap.set(cv._id, { curriculumImages, clientImages, curriculumAccs } as ResourceMap)
+    })
+    return resourceMap
+  }, [onDownloadZip, zipFiles])
 
   /**
    * Function that formats and combines curriculum and maintenance data for the table; this allow us:
@@ -244,22 +276,20 @@ export const useCurriculumTable = () => {
    */
   const formatTableData = useCallback((curriculums: Curriculum[], maintenances: Maintenance[]): CurriculumChildren[] => {
     // 1. Normalize maintenance data
-    const normalizedMts = maintenances.map(mt => ({
+    const normalizedMts: Maintenance[] = maintenances.map(mt => ({
       ...mt,
       dateMaintenance: new Date(mt.dateMaintenance),
       isPreventive: mt.typeMaintenance === 'preventivo',
       dateNextMaintenance: mt.dateNextMaintenance ? new Date(mt.dateNextMaintenance) : undefined
     }))
-
     // 2. Group maintenances by curriculum ID
-    const maintenanceGroups = normalizedMts.reduce((acc: GroupedMaintenance, mt: Maintenance) => {
+    const maintenanceGroups = normalizedMts.reduce((acc, mt) => {
       const equipmentId = mt.curriculum?._id
       if (!equipmentId) return acc
       if (!acc[equipmentId]) acc[equipmentId] = { allMaintenances: [], curriculum: mt.curriculum }
       acc[equipmentId].allMaintenances.push(mt)
       return acc
     }, {} as GroupedMaintenance)
-
     // 3. Transform all curriculums, including those without maintenances
     const formattedData = curriculums.map(cv => {
       const maintenanceGroup = maintenanceGroups[cv._id]
@@ -268,13 +298,11 @@ export const useCurriculumTable = () => {
         .map(mt => ({ ...mt, isPreventive: mt.typeMaintenance === 'preventivo' })) || []
       return { ...cv, hasMaintenances: sortedMaintenances.length > 0, childRows: sortedMaintenances }
     })
-
     // 4. Sort curriculums: first those with maintenances (by latest date), then those without
     return formattedData.sort((a, b) => {
       if (a.hasMaintenances && !b.hasMaintenances) return -1
       if (!a.hasMaintenances && b.hasMaintenances) return 1
       if (!a.hasMaintenances && !b.hasMaintenances) return 0
-
       const latestA = a.childRows[0]?.dateMaintenance.getTime() || 0
       const latestB = b.childRows[0]?.dateMaintenance.getTime() || 0
       return latestB - latestA
@@ -285,55 +313,65 @@ export const useCurriculumTable = () => {
    * Función que se ejecuta cuando se descarga currículos multiple
    * @param {Curriculum[]} cvs - Currículos a descargar
    */
-  const downloadFileZip = useCallback(async (cvs: Curriculum[]) => { //working here...
-    if (!imgCv?.[0]?.url || !imgCli?.[0]?.url || !imgCom?.[0]?.url) return
+  const downloadFileZip = useCallback(async (cvs: Curriculum[]) => {
+    if (!zipFinished) return
     if (isProcessing.current) return
     isProcessing.current = true
-    // Prepare components for the ZIP
-    const pdfComponents = cvs.map(cv => ({
-      fileName: `${cv?.name}-${new Date().toISOString().split('T')[0]}.pdf`,
-      component: CurriculumPDF, props: {
-        cv, accs, com: coms?.[0] as Company,
-        cliLogo: imgCli?.[0]?.url,
-        comLog: imgCom?.[0]?.url,
-        cvLogo: imgCv?.[0]?.url
+    const pdfComponents = cvs.map(cv => {// Prepare each cv with its resources from map
+      const resources = zipMap.get(cv._id) || { curriculumImages: [], clientImages: [], curriculumAccs: [] }
+      const curriculumImage = resources.curriculumImages?.[0]?.url
+      const curriculumAccs = resources.curriculumAccs || []
+      const clientImage = resources.clientImages?.[0]?.url
+      const companyImage = imgCom?.[0]?.url
+      return {
+        fileName: `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`,
+        component: CurriculumPDF, props: {
+          cv, accs: curriculumAccs,
+          com: company as Company,
+          cvLogo: curriculumImage,
+          comLogo: companyImage,
+          cliLogo: clientImage,
+        }
       }
-    }))
+    })
     // Generate zip name based on date and number of equipments
     const zipName = `hojas-de-vida-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
-    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })// Download ZIP with all PDFs
-  }, [downloadZIP])
+    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { isProcessing.current = false; setOnDownloadZip(undefined) })
+  }, [downloadZIP, zipMap, zipFiles, zipFinished])
 
   /**
    * Función que se ejecuta cuando se descarga un currículo
    * @param {Curriculum} cv - Currículo a descargar
    */
   const downloadFile = useCallback(async (cv: Curriculum) => {
-    if (!imgCv?.[0]?.url || !imgCli?.[0]?.url || !imgCom?.[0]?.url) return
+    if (!imgCurriculum || !imgClient || !imgCompany || !accs) return
     if (isProcessing.current) return
     isProcessing.current = true
     const fileName = `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`
     await downloadPDF({
       fileName, component: CurriculumPDF, props: {
-        cv, accs, com: coms?.[0] as Company,
-        comLogo: imgCom[0].url,
-        cliLogo: imgCli[0].url,
-        cvLogo: imgCv[0].url
+        cv, accs, com: company as Company,
+        cvLogo: imgCurriculum,
+        comLogo: imgCompany,
+        cliLogo: imgClient,
       }
     }).finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF])
+  }, [downloadPDF, company, accs])
 
   /**
    * Función que se ejecuta cuando se elimina un currículo
    * @param {string} id - ID del currículo a eliminar
-  */
+   */
   const deleteCurriculum = useCallback(async (id: string) => {
+    if (!imgCurriculum || !accs || !mts) return
     if (isProcessing.current) return
     isProcessing.current = true
+    const curriculumAccs = accs?.filter(acc => acc.curriculum?._id === id) || []
+    const curriculumMts = mts?.filter(mt => mt.curriculum?._id === id) || []
     await deleteCv({ id }).then(async () => {
-      accs?.length > 0 && await Promise.all(accs.map(acc => deleteAcc({ id: acc._id })))
-      mts?.length > 0 && await Promise.all(mts.map(mt => deleteMt({ id: mt._id })))
-      imgCv?.[0]?.url && await deleteFile({ path: `files/${id}/preview/img` })
+      curriculumAccs.length > 0 && await Promise.all(curriculumAccs.map(acc => deleteAcc({ id: acc._id })))
+      curriculumMts.length > 0 && await Promise.all(curriculumMts.map(mt => deleteMt({ id: mt._id })))
+      imgCurriculum && await deleteFile({ path: `files/${id}/preview/img` })
     }).finally(() => { isProcessing.current = false; setOnDelete(undefined) })
   }, [deleteCv, deleteMt, deleteAcc, deleteFile])
 

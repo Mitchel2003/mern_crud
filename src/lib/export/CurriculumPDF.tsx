@@ -68,15 +68,15 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
         <Text>{cv.office?.headquarter?.client?.name || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>SERVICIO:</Text>
-        <Text>{cv.service || 'N/A'}</Text>
+        <Text style={styles.label}>SEDE:</Text>
+        <Text>{cv.office?.headquarter?.name || 'N/A'}</Text>
       </View>
     </View>
 
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>SEDE:</Text>
-        <Text>{cv.office?.headquarter?.name || 'N/A'}</Text>
+        <Text style={styles.label}>SERVICIO:</Text>
+        <Text>{cv.service || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>EMAIL:</Text>
@@ -85,15 +85,15 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3, { width: "40%" }]}>
+      <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>DIRECCIÓN:</Text>
         <Text>{cv.office?.headquarter?.address || 'N/A'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: "30%" }]}>
+      <View style={[styles.infoCol, styles.col4]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.office?.headquarter?.client?.phone || 'N/A'}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: "30%" }]}>
+      <View style={[styles.infoCol, styles.col4]}>
         <Text style={styles.label}>NIT:</Text>
         <Text>{cv.office?.headquarter?.client?.nit || 'N/A'}</Text>
       </View>
@@ -110,12 +110,20 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
     {/* equipment info */}
     <View style={styles.equipmentContainer}>
       <View style={styles.equipmentInfo}>
+
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
+          <View style={[styles.infoCol, styles.col2]}>
             <Text style={styles.label}>NOMBRE:</Text>
             <Text>{cv.name}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+          <View style={[styles.infoCol, styles.col2]}>
+            <Text style={styles.label}>UBICACIÓN:</Text>
+            <Text>{cv.office.name}</Text>
+          </View>
+        </View>
+
+        <View style={styles.infoRow}>
+          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
             <Text style={styles.label}>MARCA:</Text>
             <Text>{cv.brand}</Text>
           </View>
@@ -123,31 +131,26 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
             <Text style={styles.label}>MODELO:</Text>
             <Text>{cv.modelEquip}</Text>
           </View>
-        </View>
-        <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
-            <Text style={styles.label}>INVENTARIO:</Text>
-            <Text>{cv.codeEquip || 'N/A'}</Text>
-          </View>
           <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>SERIE:</Text>
             <Text>{cv.serie}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+        </View>
+
+        <View style={styles.infoRow}>
+          <View style={[styles.infoCol, styles.col4]}>
             <Text style={styles.label}>INVIMA:</Text>
             <Text>{cv.healthRecord}</Text>
           </View>
-        </View>
-        <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
-            <Text style={styles.label}>UBICACIÓN:</Text>
-            <Text>{cv.office.name}</Text>
+          <View style={[styles.infoCol, styles.col4]}>
+            <Text style={styles.label}>INVENTARIO:</Text>
+            <Text>{cv.codeEquip || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+          <View style={[styles.infoCol, styles.col4]}>
             <Text style={styles.label}>GARANTÍA:</Text>
             <Text>{cv.warranty || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+          <View style={[styles.infoCol, styles.col4]}>
             <Text style={styles.label}>VALOR:</Text>
             <Text>{cv.price || 'N/A'}</Text>
           </View>

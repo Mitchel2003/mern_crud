@@ -44,6 +44,13 @@ export type QueryReact_Format = {
   fetchFormatByQuery: <T>(path: FormatType, query: object) => UseQueryResult<T[], Error>
   fetchFormatByPaginate: <T>(path: FormatType, search: SearchParams, filters: any[]) => UseQueryResult<Paginate<T>, Error>
   fetchAllFiles: <T>(path: FormatType, data: FileReferenceDB) => UseQueryResult<T[], Error>
+  fetchAllQueries: <T>(data: any[]) => {
+    data?: { type: string; id: string; data: T[]; error: any }
+    isFetching: boolean
+    isLoading: boolean
+    isError: boolean
+    error: any
+  }[]
 }
 export type CustomMutation_Format = {
   createFormat: UseMutateAsyncFunction<any, Error, object, unknown>

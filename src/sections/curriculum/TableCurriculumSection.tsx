@@ -203,7 +203,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Typography>
-            {table.getSelectedRowModel().rows.length} mantenimiento(s) seleccionado(s)
+            {table.getSelectedRowModel().rows.length} currículum(s) seleccionado(s)
           </Typography>
         </Box>
         {/** actions selected rows (2 buttons) */}
@@ -218,9 +218,9 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
               const firstEquipment = selectedRows[0].original.name
               const otherCount = selectedRows.length - 1
               confirmAction({
-                title: 'Descargar mantenimientos',
-                description: `¿Deseas descargar los mantenimientos mas recientes de:
-                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
+                title: 'Descargar currículums',
+                description: `¿Deseas descargar los currículums de:
+                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
                 action: () => handleDownloadZip(selectedRows.map(row => row.original))
               })
             }}
@@ -239,8 +239,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
               confirmAction({
                 isDestructive: true,
                 title: 'Eliminación múltiple',
-                description: `¿Deseas eliminar los mantenimientos de:
-                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
+                description: `¿Deseas eliminar los currículums:
+                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
                 action: () => selectedRows.forEach(row => handleDelete(row.original._id))
               })
             }}

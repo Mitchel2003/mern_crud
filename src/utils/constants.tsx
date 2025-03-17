@@ -423,6 +423,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   container: {
+    marginTop: '10pt',
     border: '2pt solid black',
   },
   // Header section
