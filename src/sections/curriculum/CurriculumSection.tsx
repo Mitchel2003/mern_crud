@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
-import { useState } from 'react'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -13,9 +12,7 @@ const route = '/form/curriculum'
 interface CurriculumSectionProps extends ThemeContextProps { id: string | undefined }
 
 const CurriculumSection = ({ theme, id }: CurriculumSectionProps) => {
-  const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useTabs({ id, setTab, to: route })
-
+  const { tab, handle } = useTabs({ id, to: route })
   return (
     <main className="container p-6">
       <Tabs value={tab} onValueChange={handle}>

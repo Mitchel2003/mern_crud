@@ -230,9 +230,9 @@ export const useCurriculumTable = () => {
 
   const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
   const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
-  const { data: coms } = queryUser.fetchAllUsers<Company>('company')
+  const { data: companies } = queryUser.fetchAllUsers<Company>('company')
   const client = onDownload?.office?.headquarter?.client
-  const company = coms?.[0]
+  const company = companies?.[0]
 
   const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${client?._id}/preview`, enabled: !!client })
   const { data: imgCom, isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${company?._id}/preview`, enabled: !!company })
@@ -369,6 +369,9 @@ export const useCurriculumTable = () => {
     const curriculumAccs = accs?.filter(acc => acc.curriculum?._id === id) || []
     const curriculumMts = mts?.filter(mt => mt.curriculum?._id === id) || []
     await deleteCv({ id }).then(async () => {
+      // console.log("id", id)
+      // console.log("accesories", curriculumAccs)
+      // console.log("maintenances", curriculumMts)
       curriculumAccs.length > 0 && await Promise.all(curriculumAccs.map(acc => deleteAcc({ id: acc._id })))
       curriculumMts.length > 0 && await Promise.all(curriculumMts.map(mt => deleteMt({ id: mt._id })))
       imgCurriculum && await deleteFile({ path: `files/${id}/preview/img` })
@@ -382,7 +385,7 @@ export const useCurriculumTable = () => {
     onDownloadZip && downloadFileZip(onDownloadZip)
   }, [
     deleteCurriculum, downloadFile, downloadFileZip, onDelete, onDownload, onDownloadZip,
-    accs, coms, imgCli, imgCom, imgCv, isLoading
+    imgCli, imgCom, imgCv, isLoading, companies, accs
   ])
 
   return {
@@ -404,7 +407,7 @@ export const useMaintenanceTable = () => {
   const { downloadPDF, downloadZIP } = usePDFDownload()
   const isProcessing = useRef(false)
 
-  const { data: mts } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
+  const { data: mts = [] } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
   const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')
   const com = companies?.[0]
 

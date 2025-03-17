@@ -1,6 +1,6 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, MRT_ToggleFullScreenButton, useMaterialReactTable } from "material-react-table"
+import { BarChart2, BookMarkedIcon, CalendarClock, Eye, FileCogIcon } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { BarChart2, BookMarkedIcon, CalendarClock, Eye } from 'lucide-react'
 import { PageHeader, Stat } from '#/common/elements/HeaderPage'
 import { Delete, Download, Update } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -254,6 +254,21 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
       <Box sx={{ gap: 2, boxShadow: 1, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
           <Typography variant="h6">Historial de Mantenimientos</Typography>
+          <Button
+            size="small"
+            color="info"
+            variant="outlined"
+            startIcon={<FileCogIcon />}
+            onClick={() => {
+              confirmAction({
+                title: 'Ver mantenimientos',
+                description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
+                action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
+              })
+            }}
+          >
+            Ver mantenimientos
+          </Button>
           <Typography variant="subtitle1" color="text.secondary">
             Equipo: {row.original.name}
           </Typography>
@@ -390,3 +405,10 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
 }
 
 export default TableCurriculumSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const getQueryParams = ({ data }: { [x: string]: any }) => {
+  const filterParams = { name: data.name, modelEquip: data.modelEquip }
+  return encodeURIComponent(JSON.stringify(filterParams))// Convert to codify url
+}

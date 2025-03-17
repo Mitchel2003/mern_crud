@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
-import { useState } from 'react'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -13,9 +12,7 @@ const route = '/form/maintenance'
 interface MaintenanceSectionProps extends ThemeContextProps { id: string | undefined }
 
 const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
-  const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useTabs({ id, setTab, to: route })
-
+  const { tab, isQuery, handle } = useTabs({ id, to: route })
   return (
     <main className="container p-6">
       <Tabs value={tab} onValueChange={handle}>
@@ -46,7 +43,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} />
+          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} params={id && isQuery ? JSON.parse(decodeURIComponent(id)) : null} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

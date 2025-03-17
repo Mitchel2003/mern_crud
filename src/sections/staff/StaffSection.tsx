@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
-import { useState } from 'react'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -13,9 +12,7 @@ const route = '/staff'
 interface StaffSectionProps extends ThemeContextProps { id: string | undefined }
 
 const StaffSection = ({ theme, id }: StaffSectionProps) => {
-  const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useTabs({ id, setTab, to: route })
-
+  const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">

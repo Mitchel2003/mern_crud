@@ -1,33 +1,33 @@
 import { useNavigate, useLocation } from "react-router-dom"
+import { useState } from "react"
 import { cn } from '@/lib/utils'
 
 /*--------------------------------------------------use tab local--------------------------------------------------*/
-interface UseTabsProps {
-  setTab: (value: string) => void
-  id?: string
-  to: string
-}
+interface UseTabsProps { id?: string; to: string }
 
 /**
  * Hook para manejar las secciones "tabs"
  * @param {string} useTabsProps.to - Ruta base, corresponde al contexto de la solicitud
- * @param {string} useTabsProps.id - ID para construir la ruta del elemento a actualizar
- * @param {(value: string) => void} useTabsProps.setTab - Función para cambiar el tab actual
+ * @param {string} useTabsProps.id - ID para construir la ruta del elemento a actualizar o parámetros de consulta codificados
  * @example
  * if(value === 'table') '/location/countries';
  * if(value === 'form' && !id) '/location/country';
  * if(value === 'form' && id) '/location/country/123';
+ * if(value === 'form' && id is query) '/location/country/%7B%22param%22%3A%22value%22%7D';
  */
-export const useTabs = ({ id, setTab, to }: UseTabsProps) => {
+export const useTabs = ({ id, to }: UseTabsProps) => {
   const toPlural = to.slice(-1) === 'y' ? to.slice(0, -1) + 'ies' : to + 's'
-
+  const isQuery = id ? id.startsWith('%7B') || id.startsWith('{') : false
+  const [tab, setTab] = useState(id && !isQuery ? 'form' : 'table')
   const navigate = useNavigate()
+
   const handle = (value: string) => {
+    const filter = isQuery ? `?filter=${id}` : ''
+    if (value === 'table') navigate(`${toPlural}${filter}`)
     if (value === 'form') navigate(`${to}${id ? `/${id}` : ''}`)
-    if (value === 'table') navigate(`${toPlural}`)
     setTab(value)
   }
-  return { handle }
+  return { tab, isQuery, handle }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 

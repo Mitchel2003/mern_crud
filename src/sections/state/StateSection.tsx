@@ -1,7 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs } from '@/hooks/core/useTabs'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 import TableStateSection from './TableStateSection'
@@ -11,9 +10,7 @@ const route = '/location/state'
 interface StateSectionProps extends ThemeContextProps { id: string | undefined }
 
 const StateSection = ({ theme, id }: StateSectionProps) => {
-  const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useTabs({ id, setTab, to: route })
-
+  const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">
       <Tabs value={tab} onValueChange={handle}>

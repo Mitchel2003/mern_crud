@@ -15,15 +15,19 @@ import { formatDateTime } from "@/utils/format"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
-interface TableMaintenanceSectionProps extends ThemeContextProps { onChange: () => void }
+interface TableMaintenanceSectionProps extends ThemeContextProps {
+  params?: { name?: string; modelEquip?: string } | null
+  onChange: () => void
+}
 
 /**
  * Permite construir un componente de tabla para mostrar los mantenimientos
  * @param theme - El tema contexto de la aplicación
+ * @param params - Parámetros para filtrar la tabla de mantenimientos
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los formatos, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionProps) => {
+const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
   const navigate = useNavigate()
@@ -103,7 +107,12 @@ const TableMaintenanceSection = ({ theme, onChange }: TableMaintenanceSectionPro
     initialState: {
       density: 'compact',
       showGlobalFilter: true,
+      showColumnFilters: !!params,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [
+        ...(params.name ? [{ id: 'curriculum.name', value: params.name }] : []),
+        ...(params.modelEquip ? [{ id: 'curriculum.modelEquip', value: params.modelEquip }] : [])
+      ] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',

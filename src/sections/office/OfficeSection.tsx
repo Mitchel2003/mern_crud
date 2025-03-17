@@ -4,7 +4,6 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 import TableOfficeSection from './TableOfficeSection'
@@ -15,9 +14,7 @@ interface OfficeSectionProps extends ThemeContextProps { id: string | undefined 
 
 const OfficeSection = ({ theme, id }: OfficeSectionProps) => {
   const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
-  const [tab, setTab] = useState(id ? 'form' : 'table')
-  const { handle } = useTabs({ id, setTab, to: route })
-
+  const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
