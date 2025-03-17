@@ -265,7 +265,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
         {/* Observations Section */}
         <View style={styles.observationsContainer}>
           <Text style={styles.observationsTitle}>
-            Detalles de la inspección:
+            Detalles de las actividades:
           </Text>
           <Text style={styles.observationsText}>
             {mt.observations}
