@@ -16,7 +16,7 @@ import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps { onChange: () => void }
-interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[] }
+interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
 
 /**
  * Permite construir un componente de tabla para mostrar los curriculums
@@ -27,7 +27,7 @@ interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { is
 const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
-  const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip } = useCurriculumTable()
+  const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip, handleDownloadZipMts } = useCurriculumTable()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
@@ -211,7 +211,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
           <Button
             size="small"
             color="primary"
-            variant="contained"
+            variant="outlined"
             startIcon={<Download />}
             onClick={() => {
               const selectedRows = table.getSelectedRowModel().flatRows
@@ -229,23 +229,22 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
           </Button>
           <Button
             size="small"
-            color="error"
-            variant="contained"
-            startIcon={<Delete />}
+            color="secondary"
+            variant="outlined"
+            startIcon={<Download />}
             onClick={() => {
               const selectedRows = table.getSelectedRowModel().flatRows
               const firstEquipment = selectedRows[0].original.name
               const otherCount = selectedRows.length - 1
               confirmAction({
-                isDestructive: true,
-                title: 'Eliminación múltiple',
-                description: `¿Deseas eliminar los currículums:
+                title: 'Descargar currículums + mantenimientos',
+                description: `¿Deseas descargar los currículums de:
                 ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                action: () => selectedRows.forEach(row => handleDelete(row.original._id))
+                action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
               })
             }}
           >
-            Eliminar
+            Descargar ZIP + mantenimientos
           </Button>
         </Box>
       </Box>

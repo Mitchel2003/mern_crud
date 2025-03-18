@@ -36,6 +36,7 @@ export const processFile = (data: File): Promise<string> => {
 /** Type for PDF generation props */
 type DownloadZipProps<T extends object> = { components: PDFProps<T>[]; zipName?: string }
 type PDFProps<T extends object> = { component: FC<T>; fileName: string; props: T }
+type PDFFileProps = { pdf: string; fileName: string }
 
 /** This represent a hook with tools to download a PDF. */
 export const usePDFDownload = () => {
@@ -55,6 +56,20 @@ export const usePDFDownload = () => {
       const pdfs = await Promise.all(pdfPromises)// Wait for all PDFs to be generated
       pdfs.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })// Add each PDF to the ZIP file
       const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })// Generate and download the ZIP file
+      saveAs(content, zipName)
+    } catch (e) { console.error('Error generating ZIP file:', e); throw e }
+  }
+
+  /**
+   * This function is used to download a ZIP file from pre-generated PDF files.
+   * @param pdfFiles Array of PDF files with their file names
+   * @param zipName Name for the ZIP file
+   */
+  const downloadFilesAsZIP = async ({ pdfFiles, zipName = 'archivos.zip' }: { pdfFiles: PDFFileProps[]; zipName: string }) => {
+    try {
+      const zip = new JSZip()
+      pdfFiles.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })
+      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })
       saveAs(content, zipName)
     } catch (e) { console.error('Error generating ZIP file:', e); throw e }
   }
@@ -100,13 +115,13 @@ export const usePDFDownload = () => {
     } catch (e: any) { if (e.name === 'AbortError') return; console.error('Error al guardar el PDF:', e) }
   }
 
-  return { downloadPDF, downloadPDFAs, downloadZIP }
+  return { downloadPDF, downloadPDFAs, downloadZIP, downloadFilesAsZIP }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /** Helper function to convert a React component to base64 PDF */
-const pdfToBase64 = async <T extends object>(Component: FC<T>, props: T): Promise<string> => {
+export const pdfToBase64 = async <T extends object>(Component: FC<T>, props: T): Promise<string> => {
   try {
     const element = createElement(Component, props)
     const blob = await pdf(element).toBlob()
