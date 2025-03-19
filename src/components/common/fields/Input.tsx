@@ -63,11 +63,9 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
                 id={`${name}-input`}
                 placeholder={placeholder}
                 value={value || field.value || ''}
-                className={cn(
-                  'w-full',
-                  theme === 'dark'
-                    ? 'bg-zinc-700 border-zinc-600 text-zinc-100'
-                    : 'bg-gray-100 border-gray-300 text-gray-900'
+                className={cn('w-full', theme === 'dark'
+                  ? 'bg-zinc-700/50 border-zinc-500 text-zinc-300'
+                  : 'bg-gray-200/50 border-gray-300 text-gray-500'
                 )}
               />
             ) : (

@@ -46,34 +46,36 @@ const FormClientSection = ({ id, theme, onChange }: FormClientSectionProps) => {
               <CardContent className="py-6 space-y-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   <InputField
-                    theme={theme}
                     name="name"
                     type="text"
+                    theme={theme}
                     label="Nombre"
                     placeholder="Nombre del cliente"
                   />
                   <InputField
-                    theme={theme}
                     icon={Mail}
                     type="email"
                     name="email"
                     label="Email"
+                    theme={theme}
+                    readOnly={!!id}
                     placeholder="Email del cliente"
                   />
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <InputField
-                    theme={theme}
                     type="text"
                     name="phone"
+                    theme={theme}
                     label="Teléfono"
                     placeholder="Teléfono del cliente"
                   />
                   <InputField
-                    theme={theme}
                     name="nit"
                     label="NIT"
                     type="text"
+                    theme={theme}
+                    readOnly={!!id}
                     placeholder="NIT del cliente"
                   />
                 </div>

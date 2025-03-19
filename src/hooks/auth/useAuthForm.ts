@@ -113,6 +113,7 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
   const { data: client } = useQueryUser().fetchUserById<Client>('client', id as string)
   const { createUser, updateUser, isLoading } = useUserMutation('client')
   const { createFile, deleteFile } = useFormatMutation('file')
+  const { signup } = useAuthContext()
 
   const methods = useForm<ClientFormProps>({
     resolver: zodResolver(clientSchema),
@@ -145,14 +146,18 @@ export const useClientForm = (id?: string, onSuccess?: () => void) => {
           await createFile({ files: [blob], path: `client/${id}/preview/img`, unique: true })
         })
       ) : (
-        createUser(data).then(async () => {
+        createUser(data).then(async (e) => {
           const file: File | undefined = data.photoUrl?.[0]?.file
           if (!file) return
           //building blob
           const { name, type, size } = file
           const base64 = await processFile(file)
           const blob = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [blob], path: `client/${id}/preview/img`, unique: true })
+          await createFile({ files: [blob], path: `client/${e._id}/preview/img`, unique: true })
+          await signup({//create user account
+            role: 'client', email: data.email, password: data.nit,
+            phone: data.phone, username: data.name, context: { clientId: `${e._id}` }
+          })
         })
       )
       methods.reset()
@@ -264,6 +269,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createLocation: createOffice } = useLocationMutation('office')
   const { createUser: createClient } = useUserMutation('client')
   const { createFile } = useFormatMutation("file")
+  const { signup } = useAuthContext()
 
   const { fetchAllLocations } = useQueryLocation()
   const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
@@ -276,8 +282,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data) => {
-      const client = await createClient(data.client)
-      await Promise.all(
+      const client: Client = await createClient(data.client)
+      await Promise.all(//create headquarter and offices in parallel
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, client: client._id })
           const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
@@ -294,12 +300,16 @@ export const useClientFlow = (onSuccess?: () => void) => {
           }))
         })
       )
-      if (data.client.photoUrl?.[0]?.file) {
+      if (data.client.photoUrl?.[0]?.file) {//upload the image client
         const { name, type, size } = data.client.photoUrl?.[0]?.file
         const base64 = await processFile(data.client.photoUrl?.[0]?.file)
         const file = { buffer: base64, originalname: name, mimetype: type, size }
         await createFile({ files: [file], path: `client/${client._id}/preview/img`, unique: true })
       }
+      await signup({//create user account (is the last because this close the sessions authFirebase)
+        role: 'client', email: data.client.email, password: data.client.nit, phone: data.client.phone,
+        username: data.client.name, context: { clientId: `${client._id}` }
+      })
       methods.reset()
     },
     onSuccess
