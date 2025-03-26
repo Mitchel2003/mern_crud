@@ -1,4 +1,4 @@
-import { Maintenance, Curriculum, Client, Headquarter, Office } from "@/interfaces/context.interface"
+import { Maintenance, Curriculum, Headquarter, Office, User } from "@/interfaces/context.interface"
 import { MaintenanceFormProps } from "@/schemas/format/maintenance.schema"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
@@ -8,7 +8,7 @@ import { useQueryUser } from "@/hooks/query/useAuthQuery"
 const useReferenceMT = () => {
   const { fetchAllLocations } = useQueryLocation()
   const { fetchAllFormats } = useQueryFormat()
-  const { fetchAllUsers } = useQueryUser()
+  const { fetchUserByQuery } = useQueryUser()
 
   //to much request, so i make a system of reduce in the future (from curriculum)
   //remember that i have relationships between them, so i can optimize the requests on one call
@@ -27,12 +27,12 @@ const useReferenceMT = () => {
    * }, { headquarters: [], offices: [] })
    */
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
+  const { data: clients } = fetchUserByQuery<User>({ role: 'client' })
   const { data: curriculums } = fetchAllFormats<Curriculum>('cv')
   const { data: offices } = fetchAllLocations<Office>('office')
-  const { data: clients } = fetchAllUsers<Client>('client')
 
   const mapValues = (data: Maintenance) => ({
-    client: data.curriculum?.office?.headquarter?.client?._id,
+    client: data.curriculum?.office?.headquarter?.user?._id,
     headquarter: data.curriculum?.office?.headquarter?._id,
     office: data.curriculum?.office?._id,
     curriculum: data.curriculum?._id

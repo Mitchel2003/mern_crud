@@ -46,7 +46,7 @@ const CurriculumSection = ({ id, theme }: CurriculumSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCurriculumSection theme={theme} onChange={() => handle('form')} credentials={user} />
+          <TableCurriculumSection theme={theme} onChange={() => handle('form')} credentials={user!} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

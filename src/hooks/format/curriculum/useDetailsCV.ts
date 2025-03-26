@@ -53,9 +53,9 @@ class DetailsCV {
       mapAutocomplete,
       submitData,
       options: {
-        suppliers: supplierFields(user),
-        manufacturers: manufacturerFields(user),
-        representatives: representativeFields(user)
+        suppliers: supplierFields(user as User),
+        manufacturers: manufacturerFields(user as User),
+        representatives: representativeFields(user as User)
       }
     }
   }
@@ -68,7 +68,7 @@ class DetailsCV {
 
     const onSubmit = async (stakeholder: any) => {
       const data = await createRepresentative({ ...stakeholder, phone: stakeholder.phone || 'N/R', city: stakeholder.city || 'N/R' })
-      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
+      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de representante')
 
       //create relation between representative and headquarters
@@ -85,7 +85,7 @@ class DetailsCV {
 
     const onSubmit = async (stakeholder: any) => {
       const data = await createSupplier({ ...stakeholder, phone: stakeholder.phone || 'N/R', city: stakeholder.city || 'N/R' })
-      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
+      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de proveedor')
 
       //create relation between supplier and headquarters
@@ -102,7 +102,7 @@ class DetailsCV {
 
     const onSubmit = async (stakeholder: any) => {
       const data = await createManufacturer({ ...stakeholder, phone: stakeholder.phone || 'N/R', country: stakeholder.country || 'N/R' })
-      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions.headquarters?.includes(e._id))
+      const userHeadquarters = user?.role === 'admin' ? hqs : hqs?.filter(e => user?.permissions?.includes(e._id))
       if (!data || !userHeadquarters?.length) throw new Error('No fue posible completar la solicitud de fabricante')
 
       //create relation between manufacturer and headquarters
@@ -126,7 +126,7 @@ const representativeFields = (user: User): SelectOptionProps[] => {
 
   return user?.role === 'admin'
     ? representatives?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || []
-    : representativeHeadquarters?.filter(rh => user?.permissions.headquarters?.includes(rh.headquarter))
+    : representativeHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
       ?.reduce((unique, rep) => {
         const exists = unique.some(item => item.value === rep.representative?._id)
         if (!exists && rep.representative?._id) { unique.push({ value: rep.representative._id, label: `${rep.representative.name ?? 'Sin nombre'} - ${rep.representative.phone ?? 'Sin telefono'} - ${rep.representative.city ?? 'Sin ciudad'}` }) }
@@ -145,7 +145,7 @@ const supplierFields = (user: User): SelectOptionProps[] => {
 
   return user?.role === 'admin'
     ? suppliers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || []
-    : supplierHeadquarters?.filter(rh => user?.permissions.headquarters?.includes(rh.headquarter))
+    : supplierHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
       ?.reduce((unique, rep) => {
         const exists = unique.some(item => item.value === rep.supplier?._id)
         if (!exists && rep.supplier?._id) { unique.push({ value: rep.supplier._id, label: `${rep.supplier.name ?? 'Sin nombre'} - ${rep.supplier?.phone ?? 'Sin telefono'} - ${rep.supplier.city ?? 'Sin ciudad'}` }) }
@@ -164,7 +164,7 @@ const manufacturerFields = (user: User): SelectOptionProps[] => {
 
   return user?.role === 'admin'
     ? manufacturers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.country ?? 'Sin pais'}` })) || []
-    : manufacturerHeadquarters?.filter(rh => user?.permissions.headquarters?.includes(rh.headquarter))
+    : manufacturerHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
       ?.reduce((unique, rep) => {
         const exists = unique.some(item => item.value === rep.manufacturer?._id)
         if (!exists && rep.manufacturer?._id) { unique.push({ value: rep.manufacturer._id, label: `${rep.manufacturer.name ?? 'Sin nombre'} - ${rep.manufacturer.phone ?? 'Sin telefono'} - ${rep.manufacturer.country ?? 'Sin pais'}` }) }

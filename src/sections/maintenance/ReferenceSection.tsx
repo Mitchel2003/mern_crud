@@ -25,7 +25,7 @@ const ReferenceSection = ({ id, theme }: ReferenceProps) => {
 
   const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${cvId}/preview`, enabled: !!cvId })
 
-  const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.client?._id === clientId)
+  const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.user?._id === clientId)
   const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === headquarterId)
   const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)
 
@@ -48,7 +48,7 @@ const ReferenceSection = ({ id, theme }: ReferenceProps) => {
             name="client"
             label="Cliente"
             placeholder="Seleccionar cliente"
-            options={options.clients?.map((c) => ({ label: c.name, value: c._id })) || []}
+            options={options.clients?.map((c) => ({ label: c.username, value: c._id })) || []}
           />
           <SelectField
             theme={theme}

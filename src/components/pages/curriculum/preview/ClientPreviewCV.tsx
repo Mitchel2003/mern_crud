@@ -38,13 +38,13 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
             <Avatar className="w-16 h-16 border-2 border-purple-100">
               <AvatarImage src={client} className="object-contain" />
               <AvatarFallback className="bg-purple-50 text-purple-700">
-                {cv?.office?.headquarter?.client?.name?.charAt(0)}
+                {cv?.office?.headquarter?.user?.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
             <div className="space-y-1">
               <h3 className="font-semibold text-lg">
-                {cv?.office?.headquarter?.client?.name}
+                {cv?.office?.headquarter?.user?.username}
               </h3>
               <Badge variant="outline" className="bg-purple-50">
                 Cliente registrado ®
@@ -59,15 +59,15 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
               {[{
                 icon: <Mail className="w-4 h-4 text-purple-600" />,
                 label: "Email",
-                value: cv?.office?.headquarter?.client?.email
+                value: cv?.office?.headquarter?.user?.email
               }, {
                 icon: <Phone className="w-4 h-4 text-purple-600" />,
                 label: "Teléfono",
-                value: cv?.office?.headquarter?.client?.phone
+                value: cv?.office?.headquarter?.user?.phone
               }, {
                 icon: <FileText className="w-4 h-4 text-purple-600" />,
                 label: "NIT",
-                value: cv?.office?.headquarter?.client?.nit
+                value: cv?.office?.headquarter?.user?.nit
               }].map((item, index) => (
                 <Tooltip key={index}>
                   <TooltipTrigger asChild>

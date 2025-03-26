@@ -15,7 +15,7 @@ const LocationSection = ({ id, theme }: LocationSectionProps) => {
   const clientId = watch('client')
   const officeId = watch('office')
 
-  const headquarters = id ? options.headquarters : options.headquarters?.filter((head) => head.client?._id === clientId)
+  const headquarters = id ? options.headquarters : options.headquarters?.filter((head) => head.user?._id === clientId)
   const offices = id ? options.offices : options.offices?.filter((office) => office.headquarter?._id === headquarterId)
   const services = groups.flatMap(group => group.services).filter(service => {
     const office = offices?.find(office => office._id === officeId)

@@ -11,7 +11,7 @@ const EngineerSection = ({ theme }: EngineerSectionProps) => {
   const { user } = useAuthContext()
   return (
     <div className="container space-y-10 p-10 mx-auto">
-      <InfoSection theme={theme} auth={user} />
+      <InfoSection theme={theme} auth={user!} />
       <StatisticsSection theme={theme} />
       <MaintenanceCalendar theme={theme} events={mockEvents} />
       <EquipmentSection theme={theme} equipments={mockEquipments} />

@@ -75,8 +75,8 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
   }, {
     size: 200,
     header: "Cliente",
-    id: "curriculum.office.headquarter.client.name",
-    accessorFn: (row) => row?.curriculum?.office?.headquarter?.client?.name || 'Sin cliente'
+    id: "curriculum.office.headquarter.user.username",
+    accessorFn: (row) => row?.curriculum?.office?.headquarter?.user?.username || 'Sin cliente'
   }, {
     size: 100,
     id: "typeMaintenance",

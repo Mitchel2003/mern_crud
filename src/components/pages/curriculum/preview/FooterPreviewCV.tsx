@@ -1,6 +1,6 @@
 import { Building, Building2, Copy, FileCheck, FileText, ListChecks, Mail, PenTool } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
-import { Company, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { User, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
 import { Card, CardContent } from "#/ui/card"
 import { copyToClipboard } from "@/lib/utils"
 import { ScrollArea } from "#/ui/scroll-area"
@@ -13,7 +13,7 @@ import { Label } from "#/ui/label"
 interface FooterPreviewCVProps extends ThemeContextProps {
   imgCom: string
   cv: Curriculum
-  com?: Company
+  com?: User
 }
 
 const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
@@ -124,7 +124,7 @@ const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
                   <div className="space-y-3">
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">Nombre del proveedor</Label>
-                      <p className="font-medium">{com?.name || 'No especificado'}</p>
+                      <p className="font-medium">{com?.username || 'No especificado'}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">NIT</Label>
