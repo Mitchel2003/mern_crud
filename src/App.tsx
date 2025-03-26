@@ -4,7 +4,6 @@ import { LocationProvider } from "@/context/LocationContext";
 import { FormatProvider } from "@/context/FormatContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
-import { UserProvider } from "@/context/UserContext";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import RootLayout from "@/layouts/Root";
 
@@ -28,76 +27,74 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <UserProvider>
-          <LocationProvider>
-            <FormatProvider>
+        <LocationProvider>
+          <FormatProvider>
 
-              <BrowserRouter>
-                <Routes>
-                  <Route element={<RootLayout />}>
-                    {/* home index */}
-                    <Route path="/" index element={<Home />} />
-                    <Route path="/auth/login" element={<Login />} />
+            <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+              <Routes>
+                <Route element={<RootLayout />}>
+                  {/* home index */}
+                  <Route path="/" index element={<Home />} />
+                  <Route path="/auth/login" element={<Login />} />
 
-                    {/* protected routes */}
-                    <Route element={<ProtectedRoute />}>
-                      <Route path="/dashboard" element={<Dashboard />} />
+                  {/* protected routes */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
 
-                      {/* forms routes */}
-                      <Route path="/form/curriculum" element={<Curriculum />} />
-                      <Route path="/form/curriculums" element={<Curriculum />} />
-                      <Route path="/form/curriculum/:id" element={<Curriculum />} />
-                      <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculum />} />
+                    {/* forms routes */}
+                    <Route path="/form/curriculum" element={<Curriculum />} />
+                    <Route path="/form/curriculums" element={<Curriculum />} />
+                    <Route path="/form/curriculum/:id" element={<Curriculum />} />
+                    <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculum />} />
 
-                      <Route path="/form/maintenance" element={<Maintenance />} />
-                      <Route path="/form/maintenances" element={<Maintenance />} />
-                      <Route path="/form/maintenance/:id" element={<Maintenance />} />
+                    <Route path="/form/maintenance" element={<Maintenance />} />
+                    <Route path="/form/maintenances" element={<Maintenance />} />
+                    <Route path="/form/maintenance/:id" element={<Maintenance />} />
 
-                      {/* user routes */}
-                      <Route path="/staff" element={<Staff />} /> {/*new user*/}
-                      <Route path="/staffs" element={<Staff />} /> {/*list users*/}
-                      <Route path="/staff/:id" element={<Staff />} /> {/*edit user*/}
+                    {/* user routes */}
+                    <Route path="/staff" element={<Staff />} /> {/*new user*/}
+                    <Route path="/staffs" element={<Staff />} /> {/*list users*/}
+                    <Route path="/staff/:id" element={<Staff />} /> {/*edit user*/}
 
-                      <Route path="/company" element={<Company />} /> {/*new company*/}
-                      <Route path="/companies" element={<Company />} /> {/*list companies*/}
-                      <Route path="/company/:id" element={<Company />} /> {/*edit company*/}
+                    <Route path="/company" element={<Company />} /> {/*new company*/}
+                    <Route path="/companies" element={<Company />} /> {/*list companies*/}
+                    <Route path="/company/:id" element={<Company />} /> {/*edit company*/}
 
-                      <Route path="/newClient" element={<ClientFlow />} /> {/*new client*/}
-                      <Route path="/client" element={<Client />} /> {/*new client*/}
-                      <Route path="/clients" element={<Client />} /> {/*list clients*/}
-                      <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
+                    <Route path="/newClient" element={<ClientFlow />} /> {/*new client*/}
+                    <Route path="/client" element={<Client />} /> {/*new client*/}
+                    <Route path="/clients" element={<Client />} /> {/*list clients*/}
+                    <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
 
-                      {/* location routes */}
-                      <Route path="/location/office" element={<Office />} /> {/*new office*/}
-                      <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
-                      <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}
+                    {/* location routes */}
+                    <Route path="/location/office" element={<Office />} /> {/*new office*/}
+                    <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
+                    <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}
 
-                      <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
-                      <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
-                      <Route path="/location/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
+                    <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
+                    <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
+                    <Route path="/location/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
 
-                      <Route path="/location/city" element={<City />} /> {/*new city*/}
-                      <Route path="/location/cities" element={<City />} /> {/*list cities*/}
-                      <Route path="/location/city/:id" element={<City />} /> {/*edit city*/}
+                    <Route path="/location/city" element={<City />} /> {/*new city*/}
+                    <Route path="/location/cities" element={<City />} /> {/*list cities*/}
+                    <Route path="/location/city/:id" element={<City />} /> {/*edit city*/}
 
-                      <Route path="/location/state" element={<State />} /> {/*new state*/}
-                      <Route path="/location/states" element={<State />} /> {/*list states*/}
-                      <Route path="/location/state/:id" element={<State />} /> {/*edit state*/}
+                    <Route path="/location/state" element={<State />} /> {/*new state*/}
+                    <Route path="/location/states" element={<State />} /> {/*list states*/}
+                    <Route path="/location/state/:id" element={<State />} /> {/*edit state*/}
 
-                      <Route path="/location/country" element={<Country />} /> {/*new country*/}
-                      <Route path="/location/countries" element={<Country />} /> {/*list countries*/}
-                      <Route path="/location/country/:id" element={<Country />} /> {/*edit country*/}
-                    </Route>
-
+                    <Route path="/location/country" element={<Country />} /> {/*new country*/}
+                    <Route path="/location/countries" element={<Country />} /> {/*list countries*/}
+                    <Route path="/location/country/:id" element={<Country />} /> {/*edit country*/}
                   </Route>
-                </Routes>
-              </BrowserRouter>
 
-            </FormatProvider>
-          </LocationProvider>
-        </UserProvider>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+
+          </FormatProvider>
+        </LocationProvider>
       </AuthProvider>
-    </ThemeProvider >
+    </ThemeProvider>
   )
 }
 

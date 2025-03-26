@@ -26,7 +26,6 @@ interface HeadquarterActionsProps { headquarter: Headquarter; onChange: (value: 
 const TableHeadquarterSection = ({ theme, onChange }: TableHeadquarterSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: headquarters } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
-
   return (
     <>
       <div className="container p-0">
@@ -76,7 +75,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Headquarter>[] =>
   {
     header: "Cliente",
     accessorKey: "client",
-    cell: ({ row }) => row.original.client?.name || 'Sin cliente'
+    cell: ({ row }) => row.original.user?.username || 'Sin cliente'
   },
   {
     header: "Ciudad",

@@ -1,4 +1,5 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogOut, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2, UserSquare2 } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2, UserSquare2 } from 'lucide-react'
+import { AssignmentInd, Description, Groups, Handyman, PermMedia, SwitchAccount, Dashboard } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -7,7 +8,7 @@ import { useAuthContext } from '@/context/AuthContext'
 import { StyleSheet } from '@react-pdf/renderer'
 
 export const links = () => {
-  const { isAuth, logout, user } = useAuthContext()
+  const { isAuth, user } = useAuthContext()
   /*--------------------------------------------------guest--------------------------------------------------*/
   const navGuestItems: NavItemProps[] = [
     {/** home **/
@@ -26,35 +27,79 @@ export const links = () => {
       icon: Info
     }
   ]
-
+  /*--------------------------------------------------client--------------------------------------------------*/
+  const navClientItems: NavItemProps[] = [
+    {/** dashboard **/
+      label: 'Panel',
+      href: '/dashboard',
+      icon: TerminalSquare
+    },
+    {// equipment
+      label: 'Equipos',
+      icon: FileTextIcon,
+      href: '/form/curriculums',
+    }
+  ]
+  /*--------------------------------------------------company--------------------------------------------------*/
+  const navCompanyItems: NavItemProps[] = [
+    {/** dashboard **/
+      icon: Dashboard,
+      href: '/dashboard',
+      label: 'Panel del usuario',
+    },
+    {// users
+      label: 'Usuarios',
+      icon: AssignmentInd,
+      subItems: [
+        {// staff
+          icon: Groups,
+          label: 'Personal interno',
+          href: '/staff',
+        },
+      ]
+    },
+    {/** forms **/
+      icon: PermMedia,
+      label: 'Documentación',
+      subItems: [
+        {// cvs
+          icon: Description,
+          href: '/form/curriculums',
+          label: 'Currículums',
+        },
+        {// maintenances
+          icon: Handyman,
+          href: '/form/maintenances',
+          label: 'Mantenimientos',
+        }
+      ]
+    },
+    {/** institution **/
+      label: 'Gestion de clientes',
+      icon: SwitchAccount,
+      href: '/clients',
+      subItems: [
+        {// new client
+          icon: UserPlus,
+          href: '/newClient',
+          label: 'Nuevo',
+        },
+        {// management clients
+          icon: Users,
+          href: '/clients',
+          label: 'Clientes',
+        }
+      ]
+    }
+  ]
   /*--------------------------------------------------engineer--------------------------------------------------*/
   const navEngineerItems: NavItemProps[] = [
     {/** dashboard **/
       href: '/dashboard',
       label: 'Panel del usuario',
       icon: TerminalSquare
-    },
-    {/** logout **/
-      action: logout,
-      label: 'Cerrar sesión',
-      icon: LogOut,
     }
   ]
-
-  /*--------------------------------------------------medical--------------------------------------------------*/
-  const navMedicalItems: NavItemProps[] = [
-    {/** dashboard **/
-      href: '/dashboard',
-      label: 'Panel del usuario',
-      icon: TerminalSquare
-    },
-    {/** logout **/
-      action: logout,
-      label: 'Cerrar sesión',
-      icon: LogOut,
-    }
-  ]
-
   /*--------------------------------------------------admin--------------------------------------------------*/
   const navAdminItems: NavItemProps[] = [
     {/** dashboard **/
@@ -137,18 +182,14 @@ export const links = () => {
           ]
         }
       ]
-    },
-    {
-      action: logout,
-      label: 'Cerrar sesión',
-      icon: LogOut,
     }
   ]
 
   return !isAuth ? navGuestItems : (
-    user?.role === 'admin'
-      ? navAdminItems
-      : (user?.role === 'medical' ? navMedicalItems : navEngineerItems)
+    user?.role === 'engineer' ? navEngineerItems
+      : (user?.role === 'client' ? navClientItems
+        : (user?.role === 'company' ? navCompanyItems
+          : navAdminItems))
   )
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -255,18 +296,32 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
 export const countryDefaultValues = { name: '' }
 export const stateDefaultValues = { name: '', country: '' }
 export const cityDefaultValues = { name: '', state: '' }
-export const headquarterDefaultValues = { name: '', address: '', client: '', city: '', state: '', country: '' }
+export const headquarterDefaultValues = { name: '', address: '', user: '', city: '', state: '', country: '' }
 export const officeDefaultValues = { name: '', group: '', headquarter: '', services: [] }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/
-export const forgotPasswordDefaultValues = { email: '' }
-export const loginDefaultValues = { email: '', password: '' }
-export const clientDefaultValues = { name: '', email: '', phone: '', nit: '', preview: '', photoUrl: [] }
-export const companyDefaultValues = { name: '', nit: '', invima: '', profesionalLicense: '', previewSignature: '', previewLogo: '' }
-export const userDefaultValues = { username: '', phone: '', role: '', email: '', password: '', company: '' }
+export const userDefaultValues = {
+  previewCompanySignature: '',
+  previewCompanyLogo: '',
+  previewClientImage: '',
+  photoSignature: [],
+  photoImage: [],
+  photoLogo: [],
+  //user credentials
+  password: '',
+  email: '',
+  phone: '',
+  username: '',
+  nit: '',
+  invima: '',
+  profesionalLicense: '',
+  //user access
+  role: '',
+  permissions: []
+}
 export const clientFlowDefaultValues = {
-  client: { name: '', email: '', phone: '', nit: '', photoUrl: [] },
+  client: { email: '', password: '', username: '', phone: '', nit: '', role: 'client', photoUrl: [] },
   headquarter: [{ name: '', address: '', city: '' }],
   office: [{ headquarter: '', services: [], name: '' }]
 }

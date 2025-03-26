@@ -26,7 +26,6 @@ interface OfficeActionsProps { office: Office; onChange: (value: string) => void
 const TableOfficeSection = ({ theme, onChange }: TableOfficeSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { data: offices } = useQueryLocation().fetchAllLocations<Office>('office')
-
   return (
     <>
       <div className="container p-0">
@@ -82,7 +81,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
   {
     header: "Cliente",
     accessorKey: "client",
-    cell: ({ row }) => row.original?.headquarter?.client?.name || 'Sin cliente'
+    cell: ({ row }) => row.original?.headquarter?.user?.username || 'Sin cliente'
   },
   {
     accessorKey: "updatedAt",

@@ -4,10 +4,11 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
+import FormClientSection from './../flow/user/FormUserSection'
 import TableClientSection from './TableClientSection'
-import FormClientSection from './FormClientSection'
 const route = '/client'
 
 interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
@@ -71,17 +72,12 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableClientSection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableClientSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormClientSection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormClientSection id={id} theme={theme} onChange={() => handle('table')} role="client" />
+          </Card>
         </TabsContent>
         <TabsContent value="headquarters"> <Skeleton theme={theme} /> </TabsContent>
         <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>

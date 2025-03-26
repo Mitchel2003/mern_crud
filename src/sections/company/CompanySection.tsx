@@ -2,10 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
+import FormCompanySection from './../flow/user/FormUserSection'
 import TableCompanySection from './TableCompanySection'
-import FormCompanySection from './FormCompanySection'
 const route = '/company'
 
 interface CompanySectionProps extends ThemeContextProps { id: string | undefined }
@@ -50,17 +51,12 @@ const CompanySection = ({ theme, id }: CompanySectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCompanySection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableCompanySection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormCompanySection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormCompanySection id={id} theme={theme} onChange={() => handle('table')} role="company" />
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

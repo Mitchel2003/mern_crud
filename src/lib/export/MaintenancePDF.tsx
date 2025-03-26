@@ -1,10 +1,10 @@
-import { Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { Curriculum, Maintenance, User } from '@/interfaces/context.interface'
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { Metadata } from "@/interfaces/db.interface"
 import { formatDate } from "@/utils/format"
 
-interface MaintenancePDFProps { mt: Maintenance, com?: Company, imgs?: Metadata[] }
+interface MaintenancePDFProps { mt: Maintenance, com?: User, imgs?: Metadata[] }
 
 const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
   <Document>
@@ -53,11 +53,11 @@ const ClientSection = ({ mt }: { mt: Maintenance }) => (
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>NOMBRE:</Text>
-        <Text>{mt.curriculum.office.headquarter.client.name}</Text>
+        <Text>{mt.curriculum.office.headquarter.user?.username || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>TELÉFONO:</Text>
-        <Text>{mt.curriculum.office.headquarter.client.phone}</Text>
+        <Text>{mt.curriculum.office.headquarter.user?.phone || 'N/A'}</Text>
       </View>
     </View>
     <View style={styles.infoRow}>
@@ -67,7 +67,7 @@ const ClientSection = ({ mt }: { mt: Maintenance }) => (
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>EMAIL:</Text>
-        <Text>{mt.curriculum.office.headquarter.client.email}</Text>
+        <Text>{mt.curriculum.office.headquarter.user?.email || 'N/A'}</Text>
       </View>
     </View>
   </>
@@ -277,7 +277,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
 }
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Company, imgs?: Metadata[] }) => (
+const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: User, imgs?: Metadata[] }) => (
   <>
     <View style={styles.sectionTitle}>
       <Text style={styles.sectionTitleText}></Text>
@@ -301,7 +301,7 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: Comp
       {/* Información del ingeniero */}
       <View style={styles.engineerInfoContainer}>
         <Text style={styles.engineerTitle}>INGENIERO DE SERVICIO</Text>
-        <Text style={styles.engineerDetails}>{com?.name}</Text>
+        <Text style={styles.engineerDetails}>{com?.username}</Text>
         <Text style={styles.engineerDetails}>REG. INVIMA: {com?.invima}</Text>
         <Text style={styles.engineerDetails}>MP: {com?.profesionalLicense}</Text>
       </View>

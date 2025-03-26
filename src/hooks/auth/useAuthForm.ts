@@ -1,59 +1,55 @@
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
-import { City, Client, Company, User } from "@/interfaces/context.interface"
-import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
+import { useQueryUser, useUserMutation } from "@/hooks/query/useAuthQuery"
+import { City, RoleProps, User } from "@/interfaces/context.interface"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Metadata } from "@/interfaces/db.interface"
 
+import { useCallback, useEffect, useRef, useState } from "react"
+import { MapPinHouseIcon, UserRoundCheck } from "lucide-react"
 import { useAuthContext } from "@/context/AuthContext"
-import { MapPinHouseIcon } from "lucide-react"
-import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { processFile } from "@/lib/utils"
 import {
   userDefaultValues,
-  loginDefaultValues,
-  clientDefaultValues,
-  companyDefaultValues,
   clientFlowDefaultValues,
   groupCollection as groups,
-  forgotPasswordDefaultValues,
 } from "@/utils/constants"
 import {
   userSchema, UserFormProps,
   loginSchema, LoginFormProps,
-  clientSchema, ClientFormProps,
-  companySchema, CompanyFormProps,
   clientFlowSchema, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
 
-/*--------------------------------------------------useAuthForm--------------------------------------------------*/
+/*==================================================useForm==================================================*/
+/*--------------------------------------------------login form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de inicio de sesión */
 export const useLoginForm = () => {
-  const { signin } = useAuthContext()
-
+  const { login } = useAuthContext()
   const methods = useForm<LoginFormProps>({
     resolver: zodResolver(loginSchema),
-    defaultValues: loginDefaultValues,
+    defaultValues: { email: '', password: '' },
     mode: 'onSubmit',
   })
-
-  const onSubmit = methods.handleSubmit(async (data: object) => await signin(data))
+  const onSubmit = methods.handleSubmit(async (data: LoginFormProps) => {
+    await login(data)
+    methods.reset()
+  })
   return { methods, onSubmit }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------forgotPassword form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de recuperación de contraseña */
 export const useForgotPasswordForm = () => {
   const { sendResetPassword } = useAuthContext()
-
   const methods = useForm<ForgotPasswordFormProps>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: forgotPasswordDefaultValues,
+    defaultValues: { email: '' },
     mode: 'onSubmit',
   })
-
   const onSubmit = methods.handleSubmit(async (data: ForgotPasswordFormProps) => {
     await sendResetPassword(data.email)
     methods.reset()
@@ -62,186 +58,91 @@ export const useForgotPasswordForm = () => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------useUserForm--------------------------------------------------*/
+/*--------------------------------------------------user form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de usuarios
  * @param id - ID del usuario a actualizar, si no se proporciona, la request corresponde a crear
+ * @param role - Rol del usuario, actualmente manejados: company, client, engineer, admin
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
-export const useUserForm = (id?: string, onSuccess?: () => void) => {
-  const { data: coms, isLoading } = useQueryUser().fetchAllUsers<Company>('company')
-  const { data: user } = useQueryUser().fetchUserById<User>('user', id as string)
-  const { signup: createUser } = useAuthContext()
-  const { updateUser } = useUserMutation('user')
+export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => void) => {
+  const { createFile, deleteFile } = useFormatMutation('file')
+  const { create: createUser } = useAuthContext()
+  const { updateUser } = useUserMutation()
+  const queryFormat = useQueryFormat()
+  const queryUser = useQueryUser()
+
+  const { data: user } = queryUser.fetchUserById<User>(id as string)
+  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: role === 'company' })
+  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: role === 'client' })
+  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>('file', { path: `${role}/${id}/preview`, enabled: !!id && !!role })
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
-    defaultValues: userDefaultValues,
+    defaultValues: { ...userDefaultValues, isUpdate: !!id },
     mode: "onChange",
   })
 
   useEffect(() => {
     id && user && methods.reset({
-      role: user.role,
-      phone: user.phone,
-      email: user.email,
+      isUpdate: !!id,
+      //user credentials
       username: user.username,
-      company: user.company?._id,
+      phone: user.phone,
+      nit: user.nit || '',
+      invima: user.invima || '',
+      profesionalLicense: user.profesionalLicense || '',
+      //user access
+      role: user.role,
+      permissions: user.permissions || [],
+      //add previews...
+      previewClientImage: imgs?.find(img => img.name.includes('img'))?.url,
+      previewCompanyLogo: imgs.find(img => img.name.includes('logo'))?.url,
+      previewCompanySignature: imgs.find(img => img.name.includes('signature'))?.url,
     })
-  }, [user])
+  }, [id, user, imgs])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => { id ? updateUser({ id, data }) : createUser(data); methods.reset() },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    isLoading,
-    ...handleSubmit,
-    options: coms?.map((e) => ({ value: e._id, label: `${e.name || 'Sin nombre'} - ${e.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
-  }
-}
-
-/**
- * Hook personalizado para manejar el formulario de creación o actualización de clientes
- * @param id - ID del cliente a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useClientForm = (id?: string, onSuccess?: () => void) => {
-  const { data: img = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `client/${id}/preview`, enabled: !!id })
-  const { data: client } = useQueryUser().fetchUserById<Client>('client', id as string)
-  const { createUser, updateUser, isLoading } = useUserMutation('client')
-  const { createFile, deleteFile } = useFormatMutation('file')
-  const { signup } = useAuthContext()
-
-  const methods = useForm<ClientFormProps>({
-    resolver: zodResolver(clientSchema),
-    defaultValues: clientDefaultValues,
-    mode: "onSubmit",
-  })
-
-  useEffect(() => {
-    id && client && methods.reset({
-      nit: client.nit,
-      name: client.name,
-      email: client.email,
-      preview: img?.[0]?.url,
-      phone: String(client.phone),
-    })
-  }, [client, img])
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
+    onSubmit: async (data: UserFormProps) => {
+      const companySignature: File | undefined = data.photoSignature?.[0]?.file
+      const companyLogo: File | undefined = data.photoLogo?.[0]?.file
+      const clientImg: File | undefined = data.photoImage?.[0]?.file
+      id && delete data.email // delete field email for update
       id ? (
         updateUser({ id, data }).then(async () => {
-          const file: File | undefined = data.photoUrl?.[0]?.file
-          const imageUrl: string | undefined = img?.[0]?.url
-          if (!file) return
-          //building blob
-          if (imageUrl) await deleteFile({ path: `client/${id}/preview/img` })
-          const { name, type, size } = file
-          const base64 = await processFile(file)
-          const blob = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [blob], path: `client/${id}/preview/img`, unique: true })
-        })
-      ) : (
-        createUser(data).then(async (e) => {
-          const file: File | undefined = data.photoUrl?.[0]?.file
-          if (!file) return
-          //building blob
-          const { name, type, size } = file
-          const base64 = await processFile(file)
-          const blob = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [blob], path: `client/${e._id}/preview/img`, unique: true })
-          await signup({//create user account
-            role: 'client', email: data.email, password: data.nit,
-            phone: data.phone, username: data.name, context: { clientId: `${e._id}` }
-          })
-        })
-      )
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    isLoading,
-    ...handleSubmit,
-  }
-}
-
-/**
- * Hook personalizado para manejar el formulario de creación o actualización de compañías
- * @param id - ID de la compañía a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useCompanyForm = (id?: string, onSuccess?: () => void) => {
-  const { data: imgs = [] } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${id}/preview`, enabled: !!id })
-  const { data: company } = useQueryUser().fetchUserById<Company>('company', id as string)
-  const { createUser, updateUser, isLoading } = useUserMutation('company')
-  const { createFile, deleteFile } = useFormatMutation('file')
-
-  //if found at least one, so disable create company
-  const { data: companies = [] } = useQueryUser().fetchAllUsers<Company>('company')
-
-  const methods = useForm<CompanyFormProps>({
-    resolver: zodResolver(companySchema),
-    defaultValues: companyDefaultValues,
-    mode: "onChange",
-  })
-
-  useEffect(() => {
-    if (!id && companies?.length > 0) return onSuccess?.()
-    id && company && methods.reset({
-      nit: company.nit,
-      name: company.name,
-      invima: company.invima,
-      profesionalLicense: company.profesionalLicense,
-      previewLogo: imgs.find(img => img.name.includes('logo'))?.url,
-      previewSignature: imgs.find(img => img.name.includes('signature'))?.url,
-    })
-  }, [company, imgs])
-
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
-      id ? (
-        await updateUser({ id, data }).then(async () => {
-          const signature: File | undefined = data.photoSignature?.[0]?.file
-          const logo: File | undefined = data.photoLogo?.[0]?.file
-          if (!signature && !logo) return
-
-          const hasSignature = imgs.find(img => img.name.includes('signature'))
-          const hasLogo = imgs.find(img => img.name.includes('logo'))
-
-          const files = [{ file: signature, ref: 'signature', exist: hasSignature }, { file: logo, ref: 'logo', exist: hasLogo }]
-            .filter(f => f.file instanceof File)
+          if (!clientImg && !companySignature && !companyLogo) return
+          const files = [// files to upload with those references and existance
+            { file: companySignature, ref: 'signature', exist: imgs.find(img => img.name.includes('signature')) },
+            { file: companyLogo, ref: 'logo', exist: imgs.find(img => img.name.includes('logo')) },
+            { file: clientImg, ref: 'img', exist: imgs.find(img => img.name.includes('img')) }
+          ].filter(f => f.file instanceof File)
 
           await Promise.all(files.map(async ({ file, exist, ref }) => {
             if (!file) return
-            exist && await deleteFile({ path: `company/${id}/preview/${ref}` })
+            const path = `${ref === 'img' ? 'client' : 'company'}/${id}/preview/${ref}`
+            exist && await deleteFile({ path })
             const { name, type, size } = file
             const base64 = await processFile(file)
             const blob = { buffer: base64, originalname: name, mimetype: type, size }
-            await createFile({ files: [blob], path: `company/${id}/preview/${ref}`, unique: true })
+            await createFile({ files: [blob], path, unique: true })
           }))
         })
       ) : (
         createUser(data).then(async (e) => {
-          const signature: File | undefined = data.photoSignature?.[0]?.file
-          const logo: File | undefined = data.photoLogo?.[0]?.file
-          if (!signature && !logo) return
-
-          const files = [{ file: signature, ref: 'signature' }, { file: logo, ref: 'logo' }]
-            .filter(f => f.file instanceof File)
+          if (!clientImg && !companySignature && !companyLogo) return
+          const files = [// files to upload with those references
+            { file: companySignature, ref: 'signature' },
+            { file: companyLogo, ref: 'logo' },
+            { file: clientImg, ref: 'img' }
+          ].filter(f => f.file instanceof File)
 
           await Promise.all(files.map(async ({ file, ref }) => {
             if (!file) return
             const { name, type, size } = file
             const base64 = await processFile(file)
             const blob = { buffer: base64, originalname: name, mimetype: type, size }
-            await createFile({ files: [blob], path: `company/${e._id}/preview/${ref}`, unique: true })
+            const path = `${ref !== 'img' ? 'company' : 'client'}/${e._id}/preview/${ref}`
+            await createFile({ files: [blob], path, unique: true })
           }))
         })
       )
@@ -254,11 +155,15 @@ export const useCompanyForm = (id?: string, onSuccess?: () => void) => {
     methods,
     isLoading,
     ...handleSubmit,
+    options: {
+      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
+      companies: companies?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
+    }
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------useUserForm (form-step)--------------------------------------------------*/
+/*--------------------------------------------------client flow--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación de nuevo cliente
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
@@ -267,9 +172,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const [currentStep, setCurrentStep] = useState<'client' | 'headquarter' | 'office'>('client')
   const { createLocation: createHeadquarter } = useLocationMutation('headquarter')
   const { createLocation: createOffice } = useLocationMutation('office')
-  const { createUser: createClient } = useUserMutation('client')
   const { createFile } = useFormatMutation("file")
-  const { signup } = useAuthContext()
+  const { create: createUser } = useAuthContext()
 
   const { fetchAllLocations } = useQueryLocation()
   const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
@@ -281,14 +185,15 @@ export const useClientFlow = (onSuccess?: () => void) => {
   })
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data) => {
-      const client: Client = await createClient(data.client)
+    onSubmit: async (data: ClientFlowProps) => {
+      const user: User = await createUser(data.client)
+      const userImg = data.client.photoUrl?.[0]?.file
       await Promise.all(//create headquarter and offices in parallel
         data.headquarter.map(async (hq: any) => {
-          const headquarter = await createHeadquarter({ ...hq, client: client._id })
+          const headquarter = await createHeadquarter({ ...hq, user: user._id })
           const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
           if (!offices.length) return
-
+          //create offices associated to headquarter
           await Promise.all(offices.map(async (office) => {
             const serviceGroup = groups?.find(group => group.services.includes(office.services[0]))
             await createOffice({
@@ -300,16 +205,12 @@ export const useClientFlow = (onSuccess?: () => void) => {
           }))
         })
       )
-      if (data.client.photoUrl?.[0]?.file) {//upload the image client
-        const { name, type, size } = data.client.photoUrl?.[0]?.file
-        const base64 = await processFile(data.client.photoUrl?.[0]?.file)
+      if (userImg) {//upload the image user
+        const { name, type, size } = userImg
+        const base64 = await processFile(userImg)
         const file = { buffer: base64, originalname: name, mimetype: type, size }
-        await createFile({ files: [file], path: `client/${client._id}/preview/img`, unique: true })
+        await createFile({ files: [file], path: `client/${user._id}/preview/img`, unique: true })
       }
-      await signup({//create user account (is the last because this close the sessions authFirebase)
-        role: 'client', email: data.client.email, password: data.client.nit, phone: data.client.phone,
-        username: data.client.name, context: { clientId: `${client._id}` }
-      })
       methods.reset()
     },
     onSuccess
@@ -323,3 +224,34 @@ export const useClientFlow = (onSuccess?: () => void) => {
     options: { headquarter: { cities: cities || [], isLoading: isLoadingCities } }
   }
 }
+/*=========================================================================================================*/
+
+/*==================================================useTable==================================================*/
+/*--------------------------------------------------user table--------------------------------------------------*/
+/** Hook principal que orquesta los sub-hooks de usuarios para la tabla */
+export const useUserTable = () => {
+  const [onDelete, setOnDelete] = useState<User | undefined>(undefined)
+  const { deleteFile } = useFormatMutation('file')
+  const { delete: _delete } = useAuthContext()
+  const isProcessing = useRef(false)
+
+  /**
+   * Función que se ejecuta cuando se elimina un usuario
+   * @param {string} id - ID del usuario a eliminar
+   */
+  const deleteUser = useCallback(async (user: User) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    const credential = `${user._id}-${user.uid}`
+    await _delete(credential).then(async () => {
+      const files = user.role === 'client' ? [{ path: 'client', ref: 'img' }] : [{ path: 'company', ref: 'logo' }, { path: 'company', ref: 'signature' }]
+      await Promise.all(files.map(async ({ path, ref }) => await deleteFile({ path: `${path}/${user._id}/preview/${ref}` })))
+    }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [_delete, deleteFile])
+
+  /** just one useEffect */
+  useEffect(() => { onDelete && deleteUser(onDelete) }, [onDelete, deleteUser])
+
+  return { handleDelete: (user: User) => setOnDelete(user) }
+}
+/*=========================================================================================================*/

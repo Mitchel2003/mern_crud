@@ -4,6 +4,7 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableHeadquarterSection from './TableHeadquarterSection'
@@ -71,17 +72,12 @@ const HeadquarterSection = ({ theme, id }: HeadquarterSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableHeadquarterSection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableHeadquarterSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormHeadquarterSection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormHeadquarterSection id={id} theme={theme} onChange={handle} />
+          </Card>
         </TabsContent>
         <TabsContent value="clients"> <Skeleton theme={theme} /> </TabsContent>
         <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>

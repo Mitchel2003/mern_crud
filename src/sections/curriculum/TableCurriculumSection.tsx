@@ -1,12 +1,12 @@
-import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, MRT_ToggleFullScreenButton, useMaterialReactTable } from "material-react-table"
+import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
 import { BarChart2, BookMarkedIcon, CalendarClock, Eye, FileCogIcon } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { PageHeader, Stat } from '#/common/elements/HeaderPage'
 import { Delete, Download, Update } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 
+import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Curriculum, Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
 import { useCurriculumTable, useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
 import { tableTranslations } from "@/utils/constants"
@@ -15,8 +15,14 @@ import { useNavigate } from "react-router-dom"
 import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
-interface TableCurriculumSectionProps extends ThemeContextProps { onChange: () => void }
-interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
+interface TableCurriculumSectionProps extends ThemeContextProps {
+  onChange: () => void
+  credentials: User
+}
+interface CurriculumChildren extends Curriculum {
+  childRows: (Maintenance & { isPreventive: boolean })[]
+  hasMaintenances: boolean
+}
 
 /**
  * Permite construir un componente de tabla para mostrar los curriculums
@@ -24,7 +30,7 @@ interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { is
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps) => {
+const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculumSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
   const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip, handleDownloadZipMts } = useCurriculumTable()
@@ -44,6 +50,7 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/curriculum/hoy',
+    enabled: credentials?.role === 'admin',
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -61,8 +68,8 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
   }, {
     size: 150,
     header: "Cliente",
-    id: "office.headquarter.client.name",
-    accessorFn: (row) => row.office?.headquarter?.client?.name || 'Sin cliente'
+    id: "office.headquarter.user.username",
+    accessorFn: (row) => row.office?.headquarter?.user?.username || 'Sin cliente'
   }, {
     size: 150,
     header: "Sede",
@@ -132,72 +139,74 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
         {/** to toggle dense and full screen */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
           <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ToggleFullScreenButton table={table} />
         </Box>
       </Box>
     ),
-    renderRowActionMenuItems: ({ row, closeMenu }) => ([// to options row (actions row)
-      // preview curriculum
-      <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          title: 'Ver Curriculum',
-          description: `¿Deseas ver el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-          action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
-        })
-      }}>
-        <ListItemIcon>
-          <Eye />
-        </ListItemIcon>
-        Visualizar
-      </MenuItem>,
+    renderRowActionMenuItems: ({ row, closeMenu }) => {
+      const baseItems = [// To show for all users
+        // preview curriculum
+        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Ver Curriculum',
+            description: `¿Deseas ver el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+            action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
+          })
+        }}>
+          <ListItemIcon>
+            <Eye />
+          </ListItemIcon>
+          Visualizar
+        </MenuItem>,
 
-      // descargar pdf
-      <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          title: 'Descargar curriculum',
-          description: `¿Deseas descargar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-          action: () => { handleDownload(row.original) }
-        })
-      }}>
-        <ListItemIcon>
-          <Download />
-        </ListItemIcon>
-        Descargar pdf
-      </MenuItem>,
-
-      // edit curriculum
-      <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          title: 'Editar curriculum',
-          description: `¿Deseas editar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-          action: () => { onChange(); navigate(`/form/curriculum/${row.original._id}`) }
-        })
-      }}>
-        <ListItemIcon>
-          <Update />
-        </ListItemIcon>
-        Actualizar
-      </MenuItem>,
-
-      // delete curriculum
-      <MenuItem key={3} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          isDestructive: true,
-          title: 'Eliminar curriculum',
-          description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-          action: () => { handleDelete(row.original._id) }
-        })
-      }}>
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        Eliminar
-      </MenuItem>
-    ]),
+        // descargar pdf
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Descargar curriculum',
+            description: `¿Deseas descargar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+            action: () => { handleDownload(row.original) }
+          })
+        }}>
+          <ListItemIcon>
+            <Download />
+          </ListItemIcon>
+          Descargar pdf
+        </MenuItem>
+      ]
+      const accessItems = (credentials?.role !== 'client') ? [// To show only admin and engineer
+        // edit curriculum
+        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Editar curriculum',
+            description: `¿Deseas editar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+            action: () => { onChange(); navigate(`/form/curriculum/${row.original._id}`) }
+          })
+        }}>
+          <ListItemIcon>
+            <Update />
+          </ListItemIcon>
+          Actualizar
+        </MenuItem>,
+        // delete curriculum
+        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            isDestructive: true,
+            title: 'Eliminar curriculum',
+            description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
+            action: () => { handleDelete(row.original._id) }
+          })
+        }}>
+          <ListItemIcon>
+            <Delete />
+          </ListItemIcon>
+          Eliminar
+        </MenuItem>
+      ] : []
+      return [...baseItems, ...accessItems]
+    },
     renderToolbarAlertBannerContent: ({ table }) => (// alert banner of rows selected (actions on multi select)
       <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/** info selected rows */}
@@ -227,25 +236,27 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
           >
             Descargar ZIP
           </Button>
-          <Button
-            size="small"
-            color="secondary"
-            variant="outlined"
-            startIcon={<Download />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.name
-              const otherCount = selectedRows.length - 1
-              confirmAction({
-                title: 'Descargar currículums + mantenimientos',
-                description: `¿Deseas descargar los currículums de:
-                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
-              })
-            }}
-          >
-            Descargar ZIP + mantenimientos
-          </Button>
+          {(credentials?.role !== 'client') && (
+            <Button
+              size="small"
+              color="secondary"
+              variant="outlined"
+              startIcon={<Download />}
+              onClick={() => {
+                const selectedRows = table.getSelectedRowModel().flatRows
+                const firstEquipment = selectedRows[0].original.name
+                const otherCount = selectedRows.length - 1
+                confirmAction({
+                  title: 'Descargar currículums + mantenimientos',
+                  description: `¿Deseas descargar los currículums de:
+                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
+                  action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
+                })
+              }}
+            >
+              Descargar ZIP + mantenimientos
+            </Button>
+          )}
         </Box>
       </Box>
     ),
@@ -253,21 +264,23 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
       <Box sx={{ gap: 2, boxShadow: 1, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
           <Typography variant="h6">Historial de Mantenimientos</Typography>
-          <Button
-            size="small"
-            color="info"
-            variant="outlined"
-            startIcon={<FileCogIcon />}
-            onClick={() => {
-              confirmAction({
-                title: 'Ver mantenimientos',
-                description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
-                action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
-              })
-            }}
-          >
-            Ver mantenimientos
-          </Button>
+          {(credentials?.role !== 'client') && (
+            <Button
+              size="small"
+              color="info"
+              variant="outlined"
+              startIcon={<FileCogIcon />}
+              onClick={() => {
+                confirmAction({
+                  title: 'Ver mantenimientos',
+                  description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
+                  action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
+                })
+              }}
+            >
+              Ver mantenimientos
+            </Button>
+          )}
           <Typography variant="subtitle1" color="text.secondary">
             Equipo: {row.original.name}
           </Typography>
@@ -330,37 +343,41 @@ const TableCurriculumSection = ({ theme, onChange }: TableCurriculumSectionProps
                   >
                     PDF
                   </Button>
-                  <Button
-                    size="small"
-                    color="warning"
-                    variant="outlined"
-                    startIcon={<Update />}
-                    onClick={() => {
-                      confirmAction({
-                        title: 'Editar mantenimiento',
-                        description: `¿Deseas editar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                        action: () => { onChange(); navigate(`/form/maintenance/${maintenance._id}`) }
-                      })
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    variant="outlined"
-                    startIcon={<Delete />}
-                    onClick={() => {
-                      confirmAction({
-                        isDestructive: true,
-                        title: 'Eliminar mantenimiento',
-                        description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                        action: () => { handleDeleteMaintenance(maintenance._id) }
-                      })
-                    }}
-                  >
-                    Eliminar
-                  </Button>
+                  {(credentials?.role !== 'client') && (
+                    <>
+                      <Button
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                        startIcon={<Update />}
+                        onClick={() => {
+                          confirmAction({
+                            title: 'Editar mantenimiento',
+                            description: `¿Deseas editar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
+                            action: () => { onChange(); navigate(`/form/maintenance/${maintenance._id}`) }
+                          })
+                        }}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        size="small"
+                        color="error"
+                        variant="outlined"
+                        startIcon={<Delete />}
+                        onClick={() => {
+                          confirmAction({
+                            isDestructive: true,
+                            title: 'Eliminar mantenimiento',
+                            description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
+                            action: () => { handleDeleteMaintenance(maintenance._id) }
+                          })
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </>
+                  )}
                 </Box>
               </Box>
             ))}

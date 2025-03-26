@@ -1,7 +1,7 @@
 import { Client, Headquarter, Office, Curriculum } from "@/interfaces/context.interface"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useQueryUser } from "@/hooks/query/useUserQuery"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 
 /** This hook is used to get the data of the location section of the curriculum form */
 const useLocationCV = () => {

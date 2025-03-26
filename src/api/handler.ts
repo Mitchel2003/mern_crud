@@ -58,14 +58,11 @@ const getBase = (type: string): string | undefined => {
     /*-------------------------files-------------------------*/
     case 'file': return '/storage'
     /*-------------------------user-------------------------*/
-    case 'user':
-    case 'company':
-    case 'client': return undefined
+    case 'user': return undefined
     /*-------------------------authentication-------------------------*/
     case 'login':
     case 'logout':
     case 'on-auth':
-    case 'register':
     case 'forgot-password': return '/auth'
     /*-------------------------format-------------------------*/
     case 'cv':

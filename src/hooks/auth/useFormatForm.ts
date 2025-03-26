@@ -1,7 +1,7 @@
-import { Accessory, Company, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { Accessory, User, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
-import { useQueryUser } from '@/hooks/query/useUserQuery'
+import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Metadata } from '@/interfaces/db.interface'
@@ -18,7 +18,8 @@ import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 
-/*--------------------------------------------------Curriculum form--------------------------------------------------*/
+/*==================================================useForm==================================================*/
+/*--------------------------------------------------curriculum form--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks de curriculum para el formulario
  * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
@@ -150,7 +151,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------Maintenance form--------------------------------------------------*/
+/*--------------------------------------------------maintenance form--------------------------------------------------*/
 /**
  * Hook principal que orquesta los sub-hooks de maintenance
  * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear
@@ -203,9 +204,10 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
     referenceData: referenceData.options,
   }
 }
-/*---------------------------------------------------------------------------------------------------------*/
+/*=========================================================================================================*/
 
-/*--------------------------------------------------Curriculum table--------------------------------------------------*/
+/*==================================================useTable==================================================*/
+/*--------------------------------------------------curriculum table--------------------------------------------------*/
 interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
 interface GroupedMaintenance extends Record<string, { allMaintenances: Maintenance[], curriculum: Curriculum }> { }
 interface ResourceMap {
@@ -229,10 +231,10 @@ export const useCurriculumTable = () => {
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
 
+  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company' })
   const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
   const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
-  const { data: companies } = queryUser.fetchAllUsers<Company>('company')
-  const client = onDownload?.office?.headquarter?.client
+  const client = onDownload?.office?.headquarter?.user //this user could be role client
   const company = companies?.[0]
 
   const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${client?._id}/preview`, enabled: !!client })
@@ -260,7 +262,7 @@ export const useCurriculumTable = () => {
     if (isLoading) return resourceMap
     const curriculums = onDownloadZip || onDownloadZipMts || [] // Use the available elements
     curriculums.forEach((cv: Curriculum) => {// Mapping all curriculums with their resources
-      const clientImages = zipFiles.find(q => q.data?.type === 'client' && q.data?.id === cv.office?.headquarter?.client?._id)?.data?.data as Metadata[] || []
+      const clientImages = zipFiles.find(q => q.data?.type === 'client' && q.data?.id === cv.office?.headquarter?.user?._id)?.data?.data as Metadata[] || []
       const curriculumImages = zipFiles.find(q => q.data?.type === 'curriculum' && q.data?.id === cv._id)?.data?.data as Metadata[] || []
       const curriculumAccs = zipFiles.find(q => q.data?.type === 'accessory' && q.data?.id === cv._id)?.data?.data as Accessory[] || []
       resourceMap.set(cv._id, { curriculumImages, clientImages, curriculumAccs } as ResourceMap)
@@ -327,8 +329,7 @@ export const useCurriculumTable = () => {
       return {
         fileName: `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`,
         component: CurriculumPDF, props: {
-          cv, accs: curriculumAccs,
-          com: company as Company,
+          cv, com: company!, accs: curriculumAccs,
           cvLogo: curriculumImage,
           cliLogo: clientImage,
           comLogo: imgCompany,
@@ -355,8 +356,7 @@ export const useCurriculumTable = () => {
       const curriculumAccs = resources.curriculumAccs || []
       const clientImage = resources.clientImages?.[0]?.url
       const pdf = await pdfToBase64(CurriculumPDF, {
-        cv, accs: curriculumAccs,
-        com: company as Company,
+        cv, com: company!, accs: curriculumAccs,
         cvLogo: curriculumImage,
         cliLogo: clientImage,
         comLogo: imgCompany,
@@ -367,7 +367,7 @@ export const useCurriculumTable = () => {
     const maintenancePromises = cvs.flatMap((cv) =>
       cv.hasMaintenances && cv.childRows?.length > 0
         ? cv.childRows.map(async (mt) => {
-          const pdf = await pdfToBase64(MaintenancePDF, { mt, com: company, imgs: imgCom })
+          const pdf = await pdfToBase64(MaintenancePDF, { mt, com: company!, imgs: imgCom })
           return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Mantenimientos/${mt.typeMaintenance}-${mt.dateMaintenance.toISOString().split('T')[0]}.pdf` }
         }) : []
     )
@@ -389,7 +389,7 @@ export const useCurriculumTable = () => {
     const fileName = `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`
     await downloadPDF({
       fileName, component: CurriculumPDF, props: {
-        cv, accs, com: company as Company,
+        cv, accs, com: company!,
         cvLogo: imgCurriculum,
         comLogo: imgCompany,
         cliLogo: imgClient,
@@ -437,21 +437,25 @@ export const useCurriculumTable = () => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------Maintenance table--------------------------------------------------*/
+/*--------------------------------------------------maintenance table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
 export const useMaintenanceTable = () => {
   const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
   const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
+  const { fetchAllFormats, fetchAllFiles } = useQueryFormat()
   const { downloadPDF, downloadZIP } = usePDFDownload()
   const isProcessing = useRef(false)
 
-  const { data: mts = [] } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
-  const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
+  const { data: mts = [] } = fetchAllFormats<Maintenance>('maintenance')
   const com = companies?.[0]
-
-  const { data: imgs } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `company/${com?._id}/preview`, enabled: !!com })
+  // Get company images from the first company (mean while)
+  const { data: imgs } = fetchAllFiles<Metadata>('file', {
+    path: `company/${com?._id}/preview`,
+    enabled: !!com
+  })
 
   /**
    * Función que se ejecuta cuando se descarga mantenimientos multiple
@@ -481,7 +485,7 @@ export const useMaintenanceTable = () => {
     // Generate zip name based on date and number of equipments
     const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
     await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })
-  }, [downloadZIP, com, imgs])
+  }, [downloadZIP, imgs, com])
 
   /**
    * Función que se ejecuta cuando se descarga un mantenimiento
@@ -493,7 +497,7 @@ export const useMaintenanceTable = () => {
     const fileName = `mantenimiento-${mt.curriculum?.name}-${mt.curriculum?.modelEquip} (${formatDateTime(mt.dateMaintenance)}).pdf`
     await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com, imgs } })
       .finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF, com, imgs])
+  }, [downloadPDF, imgs, com])
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
@@ -510,7 +514,7 @@ export const useMaintenanceTable = () => {
     onDelete && deleteMaintenance(onDelete)
     onDownload && downloadFile(onDownload)
     onDownloadZip && downloadFileZip(onDownloadZip)
-  }, [onDelete, onDownload, onDownloadZip, downloadFile, deleteMaintenance, downloadFileZip])
+  }, [downloadFile, deleteMaintenance, downloadFileZip, onDelete, onDownload, onDownloadZip])
 
   return {
     maintenances: useMemo(() => mts, [mts]),
@@ -519,3 +523,4 @@ export const useMaintenanceTable = () => {
     handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
   }
 }
+/*=========================================================================================================*/

@@ -1,7 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCityForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
-import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -9,7 +8,7 @@ import Skeleton from "#/common/skeletons/SkeletonLarge"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
-import { Card, CardContent } from "#/ui/card"
+import { CardContent } from "#/ui/card"
 
 interface FormCitySectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -24,45 +23,36 @@ const FormCitySection = ({ id, theme, onChange }: FormCitySectionProps) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit}>
-          <div className="flex justify-center">
-            <Card
-              className={cn(
-                'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-10rem)]',
-                'backdrop-filter backdrop-blur-lg',
-                theme === 'dark'
-                  ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-                  : 'bg-white hover:shadow-purple-500/60'
-              )}
-            >
-              <HeaderForm
-                theme={theme}
-                title={id ? "Edición de ciudad" : "Registro de ciudad"}
-                description={id ? "Actualiza los datos de la ciudad" : "Diligencia la información para registrar una ciudad"}
-              />
-              <CardContent className="py-6 space-y-6">
-                <InputField
-                  theme={theme}
-                  name="name"
-                  label="Nombre"
-                  placeholder="Nombre de la ciudad"
-                  type="text"
-                />
-                <SelectField
-                  name="state"
-                  theme={theme}
-                  options={options}
-                  label="Departamento"
-                  placeholder="Selecciona el departamento"
-                />
-              </CardContent>
-              <SubmitFooter
-                theme={theme}
-                to="/location/cities"
-                disabled={!methods.formState.isDirty}
-                onCancel={() => { methods.reset(); onChange('table') }}
-              />
-            </Card>
-          </div>
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title={id ? "Edición de ciudad" : "Registro de ciudad"}
+            description={id ? "Actualiza los datos de la ciudad" : "Diligencia la información para registrar una ciudad"}
+          />
+          {/* -------------------- Card content -------------------- */}
+          <CardContent className="py-6 space-y-6">
+            <InputField
+              theme={theme}
+              name="name"
+              label="Nombre"
+              placeholder="Nombre de la ciudad"
+              type="text"
+            />
+            <SelectField
+              name="state"
+              theme={theme}
+              options={options}
+              label="Departamento"
+              placeholder="Selecciona el departamento"
+            />
+          </CardContent>
+          {/* -------------------- Footer form -------------------- */}
+          <SubmitFooter
+            theme={theme}
+            to="/location/cities"
+            disabled={!methods.formState.isDirty}
+            onCancel={() => { methods.reset(); onChange('table') }}
+          />
         </form>
       </FormProvider>
 

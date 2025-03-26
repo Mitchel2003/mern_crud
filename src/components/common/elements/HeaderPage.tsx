@@ -9,33 +9,30 @@ export interface Stat {
   href?: string;
   title: string;
   icon: LucideIcon;
+  enabled?: boolean;
   value: number | string;
   color: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
 }
 
 interface PageHeaderProps {
   // Contenido principal
-  title: string;
-  icon?: LucideIcon;
-  description?: string;
-  badge?: {
-    text: string;
-    dot?: boolean;
-    variant?: 'default' | 'secondary' | 'outline' | 'success' | 'warning' | 'danger';
-  };
+  badge?: { text: string; dot?: boolean; variant?: 'default' | 'secondary' | 'outline' | 'success' | 'warning' | 'danger' }
+  description?: string
+  icon?: LucideIcon
+  title: string
 
   // Estadísticas
-  stats?: Stat[];
+  stats?: Stat[]
 
   // Opciones de estilo
-  className?: string;
-  size?: 'sm' | 'default' | 'lg';
-  variant?: 'default' | 'gradient' | 'subtle' | 'transparent';
+  variant?: 'default' | 'gradient' | 'subtle' | 'transparent'
+  size?: 'sm' | 'default' | 'lg'
+  className?: string
 
   // Animaciones
-  animate?: boolean;
-  sparkles?: boolean;
-  progressBar?: boolean;
+  animate?: boolean
+  sparkles?: boolean
+  progressBar?: boolean
 }
 
 const colorVariants = {
@@ -100,9 +97,9 @@ const sizeVariants = {
 
 export function PageHeader({
   // Contenido principal
-  title,
   description,
   icon: Icon,
+  title,
   badge,
 
   // Estadísticas
@@ -233,9 +230,10 @@ export function PageHeader({
             animate={animate ? { x: 0, opacity: 1, transition: { duration: 0.4, delay: 0.6 } } : false}
           >
             {stats.map((stat, index) => {
-              const StatIcon = stat.icon;
               const colors = colorVariants[stat.color || 'default'];
-
+              const enabled = stat.enabled !== false;
+              const StatIcon = stat.icon;
+              if (!enabled) return null;
               return (
                 <Card key={index} className="overflow-hidden">
                   <CardContent className="p-4">

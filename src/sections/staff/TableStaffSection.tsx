@@ -1,8 +1,8 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useCurriculumTable } from "@/hooks/auth/useFormatForm"
-import { useQueryUser } from "@/hooks/query/useUserQuery"
 import { ActionProps } from "@/interfaces/props.interface"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
@@ -31,7 +31,7 @@ interface ActionsProps {
  */
 const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: staff, isLoading } = useQueryUser().fetchAllUsers<User>('user')
+  const { data: staff, isLoading } = useQueryUser().fetchUserByQuery<User>({ role: 'engineer' })
   const { handleDelete } = useCurriculumTable()
 
   if (isLoading) return <Skeleton theme={theme} />

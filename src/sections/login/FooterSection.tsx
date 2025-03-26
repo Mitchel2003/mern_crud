@@ -5,8 +5,8 @@ import { Mail } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-import ForgotPasswordDialog from '#/common/elements/Dialog'
 import InputField from '#/common/fields/Input'
+import Dialog from '#/common/elements/Dialog'
 import { CardFooter } from '#/ui/card'
 import { Button } from '#/ui/button'
 
@@ -24,16 +24,16 @@ const FooterSection = ({ theme }: ThemeContextProps) => {
           <Mail className="h-4 w-4" />
         </Button>
 
-        <ForgotPasswordDialog
+        <Dialog
           theme={theme}
           iconSpan="info"
-          labelSubmit="Enviar enlace"
-          title="Recuperar contraseña"
-          description="Ingresa tu email para recibir un enlace de recuperación"
           open={showForgotDialog}
           fields={fields({ theme })}
           form={{ methods, onSubmit }}
           onOpenChange={setShowForgotDialog}
+          labelSubmit="Enviar enlace"
+          title="Recuperar contraseña"
+          description="Ingresa tu email para recibir un enlace de recuperación"
         />
       </div>
     </CardFooter>
@@ -44,13 +44,13 @@ export default FooterSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-// Campos del formulario
 const fields = ({ theme }: ThemeContextProps): DialogField[] => [
   {
     name: "email",
     component: (
       <InputField
         icon={Mail}
+        type="email"
         name="email"
         label="Email"
         theme={theme}

@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs } from '@/hooks/core/useTabs'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableStateSection from './TableStateSection'
@@ -25,17 +26,12 @@ const StateSection = ({ theme, id }: StateSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableStateSection
-            theme={theme}
-            onChange={handle}
-          />
+          <TableStateSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormStateSection
-            id={id}
-            theme={theme}
-            onChange={handle}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormStateSection id={id} theme={theme} onChange={handle} />
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

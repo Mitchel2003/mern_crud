@@ -1,13 +1,14 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Company, ThemeContextProps } from "@/interfaces/context.interface"
-import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
+import { ThemeContextProps, User } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { DataTable } from "#/ui/data-table/data-table"
 import { Card } from "#/ui/card"
 
+import { useAuthContext } from "@/context/AuthContext"
 import { ColumnDef } from "@tanstack/react-table"
 import { useNavigate } from "react-router-dom"
 import { Pencil, Trash } from "lucide-react"
@@ -15,7 +16,7 @@ import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
 interface TableCompanySectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface CompanyActionsProps { company: Company; onChange: (value: string) => void }
+interface CompanyActionsProps { company: User; onChange: (value: string) => void }
 
 /**
  * Permite construir un componente de tabla para mostrar las clientes
@@ -25,8 +26,7 @@ interface CompanyActionsProps { company: Company; onChange: (value: string) => v
  */
 const TableCompanySection = ({ theme, onChange }: TableCompanySectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: companies } = useQueryUser().fetchAllUsers<Company>('company')
-
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
   return (
     <>
       <div className="container p-0">
@@ -64,10 +64,11 @@ export default TableCompanySection
 * @param onChange - La función que se ejecutará cuando se seleccione una acción
 * @returns Array de columnas para la tabla de clientes
 */
-const columns = (onChange: (value: string) => void): ColumnDef<Company>[] => [
+const columns = (onChange: (value: string) => void): ColumnDef<User>[] => [
   {
     accessorKey: "name",
-    header: "Nombre del cliente"
+    header: "Nombre del cliente",
+    cell: ({ row }) => row.original.username
   },
   {
     accessorKey: "nit",
@@ -94,7 +95,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Company>[] => [
  * @returns Array de acciones disponibles para el cliente
  */
 const useCompanyActions = ({ company, onChange }: CompanyActionsProps): ActionProps[] => {
-  const { deleteUser } = useUserMutation('company')
+  const { delete: _delete } = useAuthContext()
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
@@ -104,8 +105,8 @@ const useCompanyActions = ({ company, onChange }: CompanyActionsProps): ActionPr
     onClick: () => {
       confirmAction({
         title: 'Editar Proveedor de servicios',
-        description: `¿Deseas editar el proveedor de servicios "${company.name}"?`,
-        action: () => { onChange('form'); navigate(`/company/${company._id}`) }
+        description: `¿Deseas editar el proveedor de servicios "${company?.username}"?`,
+        action: () => { onChange('form'); navigate(`/company/${company?._id}`) }
       })
     }
   }, {
@@ -116,8 +117,8 @@ const useCompanyActions = ({ company, onChange }: CompanyActionsProps): ActionPr
       confirmAction({
         isDestructive: true,
         title: 'Eliminar Proveedor de servicios',
-        description: `¿Estás seguro que deseas eliminar el proveedor de servicios "${company.name}"?`,
-        action: () => deleteUser({ id: company._id })
+        description: `¿Estás seguro que deseas eliminar el proveedor de servicios "${company?.username}"?`,
+        action: () => _delete('password from frontend (dialog form)')
       })
     }
   }]

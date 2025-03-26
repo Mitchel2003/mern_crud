@@ -1,6 +1,8 @@
 import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import ScrollToTop from '@/hooks/ui/useScrollTop'
+import { Outlet } from 'react-router-dom'
 
 import { AnimatedBackground as AnimatedBG } from '#/layout/AnimatedBackground'
 import { SidebarInset, SidebarProvider } from '#/ui/sidebar'
@@ -9,9 +11,6 @@ import { Sidebar } from '#/layout/Sidebar'
 import { Toaster } from '#/ui/toaster'
 import Footer from '#/layout/Footer'
 import Navbar from '#/layout/Navbar'
-
-import ScrollToTop from '@/hooks/ui/useScrollTop'
-import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => (
   <>

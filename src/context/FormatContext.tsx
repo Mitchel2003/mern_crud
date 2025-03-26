@@ -1,4 +1,4 @@
-import { FileReferenceDB, isAxiosResponse, Paginate } from "@/interfaces/db.interface"
+import { FileReferenceDB, isAxiosResponse } from "@/interfaces/db.interface"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
@@ -41,7 +41,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       return []
     }
   }
-
   /**
    * Obtiene un formato específico por su ID
    * @param {FormatType} type - El tipo de formato.
@@ -58,7 +57,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta
    * @param {FormatType} type - El tipo de formato, se utiliza para construir el endpoint.
@@ -76,25 +74,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
-  /**
-   * Obtiene todos los formatos de un tipo específico por una consulta, aplicando paginación.
-   * @param {FormatType} type - El tipo de formato, se utiliza para construir el endpoint.
-   * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
-   * @returns {Promise<Paginate<any>>} Un array con los datos de todos los formatos.
-   */
-  const getByPaginate = async (type: FormatType, query: QueryOptions): Promise<Paginate<any>> => {
-    return handler('Buscando por consulta...', async () => {
-      try {
-        if ('enabled' in query && query.enabled === false) return { data: [] }
-        return (await useApi(type).getByQuery(query)).data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-        return { data: [] }
-      }
-    })
-  }
-
   /**
    * Crea un nuevo formato
    * @param {FormatType} type - El tipo de formato.
@@ -113,7 +92,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Actualiza un formato existente
    * @param {FormatType} type - El tipo de formato.
@@ -133,7 +111,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Elimina un formato existente
    * @param {FormatType} type - El tipo de formato.
@@ -173,7 +150,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Sube archivos asociados a un formato
    * @param {FormatType} type - El tipo de formato
@@ -186,7 +162,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al subir archivos", message: e.response.data.message }) }
     })
   }
-
   /**
    * Elimina un archivo específico
    * @param {FormatType} type - El tipo de formato
@@ -207,7 +182,6 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       getAll,
       getById,
       getByQuery,
-      getByPaginate,
       create,
       update,
       delete: delete_,

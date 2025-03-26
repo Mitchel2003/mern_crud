@@ -9,10 +9,54 @@ const ClientForm = ({ theme }: ThemeContextProps) => {
   return (
     <FormWrapper theme={theme} title="Cliente" description="Proporcione la información del cliente.">
       <div className="flex flex-col gap-5">
-        <InputField theme={theme} label="Nombre" name="client.name" placeholder="Nombre del cliente" />
-        <InputField theme={theme} label="Email" name="client.email" placeholder="Email del cliente" icon={Mail} type="email" />
-        <InputField theme={theme} label="Teléfono" name="client.phone" placeholder="Teléfono del cliente" />
-        <InputField theme={theme} label="NIT" name="client.nit" placeholder="NIT del cliente" />
+        <div className="grid gap-5 md:grid-cols-2">
+          <InputField
+            icon={Mail}
+            theme={theme}
+            type="email"
+            label="Email"
+            name="client.email"
+            placeholder="Email del cliente"
+          />
+          <InputField
+            icon={Mail}
+            theme={theme}
+            type="password"
+            label="Password"
+            name="client.password"
+            placeholder="Password del cliente"
+          />
+        </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          <InputField
+            theme={theme}
+            label="Nombre"
+            name="client.username"
+            placeholder="Nombre del cliente"
+          />
+          <InputField
+            theme={theme}
+            label="Teléfono"
+            name="client.phone"
+            placeholder="Teléfono del cliente"
+          />
+        </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          <InputField
+            label="NIT"
+            theme={theme}
+            name="client.nit"
+            placeholder="NIT del cliente"
+          />
+          <InputField
+            readOnly
+            label="Rol"
+            theme={theme}
+            value="client"
+            name="client.role"
+            placeholder={`Selecciona el rol`}
+          />
+        </div>
         <CardIterable
           theme={theme}
           name="client.photoUrl"

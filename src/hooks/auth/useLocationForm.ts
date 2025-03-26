@@ -1,9 +1,9 @@
 import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/utils/constants"
-import { City, Client, Country, State, Headquarter, Office } from "@/interfaces/context.interface"
+import { City, Country, State, Headquarter, Office, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
-import { useQueryUser } from "@/hooks/query/useUserQuery"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
@@ -15,6 +15,8 @@ import {
   headquarterSchema, HeadquarterFormProps
 } from "@/schemas/location/location.schema"
 
+/*==================================================useForm==================================================*/
+/*--------------------------------------------------office form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de oficinas
  * @param id - ID de la oficina a actualizar, si no se proporciona, la request corresponde a crear
@@ -29,7 +31,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<OfficeFormProps>({
     resolver: zodResolver(officeSchema),
     defaultValues: officeDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   }, [office, methods.reset])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
+    onSubmit: async (data: OfficeFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
       methods.reset()
     },
@@ -56,7 +58,9 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     options: { headquarter: headquarters || [] }
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------headquarter form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de sedes
  * @param id - ID de la sede a actualizar, si no se proporciona, la request corresponde a crear
@@ -66,7 +70,7 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
   const { createLocation, updateLocation, isLoading } = useLocationMutation('headquarter')
   const { fetchAllLocations, fetchLocationById } = useQueryLocation()
   const { data: headquarter } = fetchLocationById<Headquarter>('headquarter', id as string)
-  const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' })
   const { data: countries } = fetchAllLocations<Country>('country')
   const { data: states } = fetchAllLocations<State>('state')
   const { data: cities } = fetchAllLocations<City>('city')
@@ -74,7 +78,7 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<HeadquarterFormProps>({
     resolver: zodResolver(headquarterSchema),
     defaultValues: headquarterDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
@@ -82,15 +86,16 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
       name: headquarter.name,
       address: headquarter.address,
       city: headquarter.city?._id || '',
-      client: headquarter.client?._id || '',
+      user: headquarter.user?._id || '',
       state: headquarter.city.state?._id || '',
       country: headquarter.city.state.country?._id || ''
     })
   }, [headquarter, cities, clients])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
-      const format = { name: data.name, city: data.city, client: data.client, address: data.address }
+    onSubmit: async (data: HeadquarterFormProps) => {
+      const { name, city, user, address } = data
+      const format = { name, city, user, address }
       id ? updateLocation({ id, data: format }) : createLocation(format)
       methods.reset()
     },
@@ -109,7 +114,9 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     }
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------city form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de ciudades
  * @param id - ID de la ciudad a actualizar, si no se proporciona, la request corresponde a crear
@@ -124,7 +131,7 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<CityFormProps>({
     resolver: zodResolver(citySchema),
     defaultValues: cityDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
@@ -135,7 +142,7 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
   }, [city, states])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
+    onSubmit: async (data: CityFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
       methods.reset()
     },
@@ -149,7 +156,9 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
     options: states?.map((e) => ({ value: e._id, label: e.name })) || []
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------state form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de departamentos
  * @param id - ID del departamento a actualizar, si no se proporciona, la request corresponde a crear
@@ -164,7 +173,7 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<StateFormProps>({
     resolver: zodResolver(stateSchema),
     defaultValues: stateDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
@@ -175,7 +184,7 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
   }, [state, countries])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
+    onSubmit: async (data: StateFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
       methods.reset()
     },
@@ -189,7 +198,9 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
     options: countries?.map((e) => ({ value: e._id, label: e.name })) || []
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------country form--------------------------------------------------*/
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de países
  * @param id - ID del país a actualizar, si no se proporciona, la request corresponde a crear
@@ -202,7 +213,7 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
   const methods = useForm<CountryFormProps>({
     resolver: zodResolver(countrySchema),
     defaultValues: countryDefaultValues,
-    mode: "onSubmit",
+    mode: "onChange",
   })
 
   useEffect(() => {
@@ -212,7 +223,7 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
   }, [country])
 
   const handleSubmit = useFormSubmit({
-    onSubmit: async (data: any) => {
+    onSubmit: async (data: CountryFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
       methods.reset()
     },
@@ -225,7 +236,10 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
     ...handleSubmit
   }
 }
+/*=========================================================================================================*/
 
+/*==================================================useTable==================================================*/
+/*--------------------------------------------------country table--------------------------------------------------*/
 export const useCountryTable = () => {
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteLocation } = useLocationMutation("country")
@@ -248,3 +262,4 @@ export const useCountryTable = () => {
     handleDelete: (id: string) => setOnDelete(id)
   }
 }
+/*=========================================================================================================*/

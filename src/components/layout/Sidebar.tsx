@@ -111,6 +111,7 @@ const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
     </SidebarMenuSubItem>
   )
 }
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 const IconChevron = ({ isOpen }: { isOpen: boolean }) => <ChevronDown className={`w-4 h-4 ms-auto transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />

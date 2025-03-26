@@ -2,7 +2,7 @@ import { Maintenance, Curriculum, Client, Headquarter, Office } from "@/interfac
 import { MaintenanceFormProps } from "@/schemas/format/maintenance.schema"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
-import { useQueryUser } from "@/hooks/query/useUserQuery"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 
 /** This hook is used to get the data of the reference section of the maintenance form */
 const useReferenceMT = () => {

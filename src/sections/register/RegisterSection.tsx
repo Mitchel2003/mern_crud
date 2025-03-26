@@ -36,7 +36,7 @@ const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
               className="bg-transparent/0"
               description="Diligencia la información para registrar un usuario"
             />
-            <FormSection theme={theme} options={options} />
+            <FormSection theme={theme} options={options.companies} />
             <FooterSection theme={theme} />
           </Card>
         </form>

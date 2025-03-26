@@ -7,7 +7,7 @@ import { UserSection } from './UserSection'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const AdminDashboard = ({ theme }: ThemeContextProps) => {
+const AdminSection = ({ theme }: ThemeContextProps) => {
   const [activeTab, setActiveTab] = useState('overview')
 
   return (
@@ -45,4 +45,4 @@ const AdminDashboard = ({ theme }: ThemeContextProps) => {
   )
 }
 
-export default AdminDashboard
+export default AdminSection

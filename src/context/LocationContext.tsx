@@ -41,7 +41,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       return []
     }
   }
-
   /**
    * Obtiene una ubicación específica por su ID
    * @param {string} type - El tipo de ubicación.
@@ -58,7 +57,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Obtiene todas las ubicaciones de un tipo específico por una consulta
    * @param {string} type - El tipo de ubicación, se utiliza para construir el endpoint.
@@ -76,7 +74,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Crea una nueva ubicación
    * @param {string} type - El tipo de ubicación.
@@ -95,7 +92,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Actualiza una ubicación existente
    * @param {string} type - El tipo de ubicación.
@@ -115,7 +111,6 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
       }
     })
   }
-
   /**
    * Elimina una ubicación existente
    * @param {string} type - El tipo de ubicación.

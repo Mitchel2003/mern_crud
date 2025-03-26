@@ -1,12 +1,6 @@
 import { z } from "zod"
 
 /*--------------------------------------------------authSchema--------------------------------------------------*/
-export const forgotPasswordSchema = z.object({
-  email: z
-    .string({ required_error: "El correo electrónico es requerido" })
-    .email({ message: "Correo electrónico inválido" })
-})
-
 export const loginSchema = z.object({
   email: z
     .string({ required_error: "El correo electrónico es requerido" })
@@ -15,132 +9,129 @@ export const loginSchema = z.object({
     .string({ required_error: "La contraseña es requerida" })
     .min(6, "La contraseña debe tener al menos 6 caracteres")
 })
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string({ required_error: "El correo electrónico es requerido" })
+    .email({ message: "Correo electrónico inválido" })
+})
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------userSchema--------------------------------------------------*/
 export const userSchema = z.object({
+  //previews
+  previewCompanySignature: z.string().optional(),
+  previewCompanyLogo: z.string().optional(),
+  previewClientImage: z.string().optional(),
+  //handle form fields optionals (update)
+  isUpdate: z
+    .boolean().optional(),
+  //auth-firebase
+  password: z
+    .string().optional(),
+  email: z
+    .string().optional(),
+  //user credentials
   username: z
     .string({ required_error: "El nombre de usuario es requerido" })
-    .min(5, "El nombre de usuario debe tener al menos 3 caracteres")
-    .max(50, "El nombre de usuario es demasiado largo"),
-  email: z
-    .string({ required_error: "El correo electrónico es requerido" })
-    .email({ message: "Correo electrónico inválido" }),
+    .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
+    .max(50, "El nombre de usuario debe tener menos de 50 caracteres"),
   phone: z
     .string({ required_error: "El teléfono es requerido" })
     .min(6, "El teléfono debe tener al menos 6 caracteres")
     .refine(value => /^[0-9]+$/.test(value), { message: "El teléfono debe contener solo números" }),
-  password: z
-    .string({ required_error: "La contraseña es requerida" })
-    .min(6, "La contraseña debe tener al menos 6 caracteres"),
+  //dependent role
+  nit: z
+    .string().optional(),
+  invima: z
+    .string().optional(),
+  profesionalLicense: z
+    .string().optional(),
+  //access (role)
   role: z
     .string({ required_error: "El rol es requerido" })
     .min(1, "Debes seleccionar un rol"),
-  company: z
-    .string().optional()
+  permissions: z
+    .array(z.string()).optional().default([]),
+  //user files (storage)
+  photoImage: z
+    .array(z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })).optional().default([]),
+  photoSignature: z
+    .array(z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })).optional().default([]),
+  photoLogo: z
+    .array(z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })).optional().default([])
 }).superRefine((data, ctx) => {
-  if (data.role !== "admin" && !data.company) {
-    ctx.addIssue({
-      path: ["company"],
-      code: z.ZodIssueCode.custom,
-      message: "La empresa es requerida para usuarios no administradores"
-    })
+  if (!data.isUpdate) {// if id exists, it's an update
+    if (!data.email || data.email.trim() === "") {
+      ctx.addIssue({ path: ["email"], code: z.ZodIssueCode.custom, message: "El correo electrónico es requerido" })
+    }
+    if (!data.password || data.password.trim() === "") {
+      ctx.addIssue({ path: ["password"], code: z.ZodIssueCode.custom, message: "La contraseña es requerida" })
+    }
   }
-})
 
-export const clientSchema = z.object({
-  preview: z.string().optional(),
-  name: z
-    .string({ required_error: "El nombre es requerido" })
-    .min(5, "El nombre es demasiado corto")
-    .max(50, "El nombre es demasiado largo"),
-  email: z
-    .string({ required_error: "El correo electrónico es requerido" })
-    .email("Correo electrónico inválido"),
-  phone: z
-    .string({ required_error: "El teléfono es requerido" })
-    .min(6, "El teléfono es requerido")
-    .max(15, "El teléfono es demasiado largo"),
-  nit: z
-    .string({ required_error: "El NIT es requerido" })
-    .min(10, "El NIT es muy corto")
-    .max(20, "El NIT es demasiado largo"),
-  photoUrl: z.array(
-    z.object({
-      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
-        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
-        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
-    })
-  ).optional().default([]),
-}).refine(data => { return /^[0-9]+$/.test(data.phone) }, {
-  message: "El teléfono debe contener solo números", path: ["phone"]
-})
-
-export const companySchema = z.object({
-  previewSignature: z.string().optional(),
-  previewLogo: z.string().optional(),
-  name: z
-    .string()
-    .min(5, "El nombre es requerido")
-    .max(50, "El nombre es demasiado largo"),
-  nit: z
-    .string({ required_error: "El NIT es requerido" })
-    .min(6, "El NIT es muy corto")
-    .max(50, "El NIT debe tener menos de 50 caracteres"),
-  invima: z
-    .string()
-    .min(5, "El invima es requerido")
-    .max(50, "El invima es demasiado largo"),
-  profesionalLicense: z
-    .string()
-    .min(5, "La licencia profesional es requerida")
-    .max(50, "La licencia profesional es demasiado larga"),
-  photoSignature: z.array(
-    z.object({
-      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
-        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
-        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
-    })
-  ).optional().default([]),
-  photoLogo: z.array(
-    z.object({
-      file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
-        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
-        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
-    })
-  ).optional().default([]),
+  // Validation for permissions according to role
+  if (data.role !== "admin" && data.role !== "client" && (!data.permissions || data.permissions.length === 0)) {
+    ctx.addIssue({ path: ["permissions"], code: z.ZodIssueCode.custom, message: "Los permisos son requeridos para usuarios no administradores y no clientes" })
+  }
+  // Validate nit for client and company
+  if ((data.role === "client" || data.role === "company") && (!data.nit || data.nit.trim() === "")) {
+    ctx.addIssue({ path: ["nit"], code: z.ZodIssueCode.custom, message: `El NIT es requerido para ${data.role}` })
+  }
+  // Validate company fields
+  if (data.role === "company") {
+    if (!data.invima || data.invima.trim() === "") {
+      ctx.addIssue({ path: ["invima"], code: z.ZodIssueCode.custom, message: "El Invima es requerido para proveedores de servicio" })
+    }
+    if (!data.profesionalLicense || data.profesionalLicense.trim() === "") {
+      ctx.addIssue({ path: ["profesionalLicense"], code: z.ZodIssueCode.custom, message: "La licencia profesional es requerida para proveedores de servicio" })
+    }
+  }
 })
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------userSchema (form-step)--------------------------------------------------*/
 export const clientFlowSchema = z.object({
   client: z.object({
-    preview: z.string().optional(),
-    name: z
-      .string()
-      .min(5, "El nombre es requerido")
-      .max(50, "El nombre es demasiado largo"),
-    email: z
-      .string()
+    email: z //auth-firebase
+      .string({ required_error: "El correo electrónico es requerido" })
       .email("Correo electrónico inválido"),
+    password: z
+      .string({ required_error: "La contraseña es requerida" })
+      .min(6, "La contraseña debe tener al menos 6 caracteres"),
+    username: z //user credentials
+      .string({ required_error: "El nombre de usuario es requerido" })
+      .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
+      .max(50, "El nombre de usuario debe tener menos de 50 caracteres"),
     phone: z
-      .string()
-      .min(6, "El teléfono es requerido")
-      .max(15, "El teléfono es demasiado largo"),
+      .string({ required_error: "El teléfono es requerido" })
+      .min(6, "El teléfono debe tener al menos 6 caracteres")
+      .refine(value => /^[0-9]+$/.test(value), { message: "El teléfono debe contener solo números" }),
     nit: z
-      .string()
+      .string({ required_error: "El NIT es requerido" })
       .min(8, "El NIT es requerido")
       .max(20, "El NIT es demasiado largo"),
-    photoUrl: z.array(
-      z.object({
+    role: z //access (role)
+      .string({ required_error: "El rol es requerido" })
+      .min(1, "Debes seleccionar un rol"),
+    photoUrl: z //user files (storage)
+      .array(z.object({
         file: z.instanceof(File, { message: "Debe seleccionar una imagen" })
           .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
           .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
-      })
-    ).optional().default([]),
-  }).refine(data => { return /^[0-9]+$/.test(data.phone) },
-    { message: "El teléfono debe contener solo números", path: ["phone"] }
-  ),
+      })).optional().default([]),
+  }),
   headquarter: z.array(
     z.object({
       name: z
@@ -183,7 +174,5 @@ export type LoginFormProps = z.infer<typeof loginSchema>
 export type ForgotPasswordFormProps = z.infer<typeof forgotPasswordSchema>
 
 export type UserFormProps = z.infer<typeof userSchema>
-export type ClientFormProps = z.infer<typeof clientSchema>
-export type CompanyFormProps = z.infer<typeof companySchema>
 export type ClientFlowProps = z.infer<typeof clientFlowSchema>
 /*---------------------------------------------------------------------------------------------------------*/

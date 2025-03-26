@@ -1,6 +1,6 @@
-import { Curriculum, Inspection, Accessory, ThemeContextProps, Company } from "@/interfaces/context.interface"
+import { Curriculum, Inspection, Accessory, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
-import { useQueryUser } from "@/hooks/query/useUserQuery"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { Metadata } from "@/interfaces/db.interface"
 
 import MaintenancePreviewCV from "#/pages/curriculum/preview/MaintenancePreviewCV"
@@ -18,11 +18,11 @@ interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
 const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) => {
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
-  const { data: com, isLoading: isLoadingCom } = queryUser.fetchAllUsers<Company>('company')
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id)
+  const { data: com, isLoading: isLoadingCom } = queryUser.fetchUserByQuery<User>({ role: 'company' })
   const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string)
   const { data: acc, isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
-  const idClient = cv?.office?.headquarter?.client._id
+  const idClient = cv?.office?.headquarter?.user?._id
   const idCompany = com?.[0]?._id
 
   const { data: imgCli = [], isLoading: isLoadingImgCl } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${idClient}/preview`, enabled: !!idClient })

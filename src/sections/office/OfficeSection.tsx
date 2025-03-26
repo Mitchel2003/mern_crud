@@ -4,6 +4,7 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableOfficeSection from './TableOfficeSection'
@@ -71,17 +72,12 @@ const OfficeSection = ({ theme, id }: OfficeSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableOfficeSection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableOfficeSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormOfficeSection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormOfficeSection id={id} theme={theme} onChange={handle} />
+          </Card>
         </TabsContent>
         <TabsContent value="clients"> <Skeleton theme={theme} /> </TabsContent>
         <TabsContent value="headquarters"> <Skeleton theme={theme} /> </TabsContent>

@@ -74,7 +74,7 @@ export interface CarouselContext {
 export interface NavItemProps {
   action?: () => void | Promise<void>
   subItems?: NavItemProps[]
-  icon: LucideIcon
+  icon: LucideIcon | any
   label: string
   href?: string
 }

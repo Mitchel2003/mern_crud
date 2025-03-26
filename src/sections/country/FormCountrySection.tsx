@@ -1,14 +1,13 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useCountryForm } from '@/hooks/auth/useLocationForm'
 import { FormProvider } from "react-hook-form"
-import { cn } from "@/lib/utils"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import Skeleton from '#/common/skeletons/SkeletonLarge'
 import AlertDialog from '#/common/elements/AlertDialog'
 import HeaderForm from "#/common/elements/HeaderForm"
 import InputField from "#/common/fields/Input"
-import { Card, CardContent } from "#/ui/card"
+import { CardContent } from "#/ui/card"
 
 interface FormCountrySectionProps extends ThemeContextProps {
   onChange: (value: string) => void
@@ -23,38 +22,29 @@ const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) =>
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit}>
-          <div className="flex justify-center">
-            <Card
-              className={cn(
-                'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-10rem)]',
-                'backdrop-filter backdrop-blur-lg',
-                theme === 'dark'
-                  ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-                  : 'bg-white hover:shadow-purple-500/60'
-              )}
-            >
-              <HeaderForm
-                theme={theme}
-                title={id ? "Edición de país" : "Registro de país"}
-                description={id ? "Actualiza los datos del país" : "Diligencia la información para registrar un país"}
-              />
-              <CardContent className="py-6 space-y-6">
-                <InputField
-                  theme={theme}
-                  name="name"
-                  label="Nombre del país"
-                  placeholder="Nombre del país"
-                  type="text"
-                />
-              </CardContent>
-              <SubmitFooter
-                theme={theme}
-                to="/location/countries"
-                disabled={!methods.formState.isDirty}
-                onCancel={() => { methods.reset(); onChange('table') }}
-              />
-            </Card>
-          </div>
+          {/* -------------------- Header form -------------------- */}
+          <HeaderForm
+            theme={theme}
+            title={id ? "Edición de país" : "Registro de país"}
+            description={id ? "Actualiza los datos del país" : "Diligencia la información para registrar un país"}
+          />
+          {/* -------------------- Card content -------------------- */}
+          <CardContent className="py-6 space-y-6">
+            <InputField
+              theme={theme}
+              name="name"
+              label="Nombre del país"
+              placeholder="Nombre del país"
+              type="text"
+            />
+          </CardContent>
+          {/* -------------------- Footer form -------------------- */}
+          <SubmitFooter
+            theme={theme}
+            to="/location/countries"
+            disabled={!methods.formState.isDirty}
+            onCancel={() => { methods.reset(); onChange('table') }}
+          />
         </form>
       </FormProvider>
 

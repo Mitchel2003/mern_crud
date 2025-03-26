@@ -129,7 +129,7 @@ const CLIENT_FORM_STEPS: Step[] = [
 ]
 
 const validationFields = {
-  0: ['client.name', 'client.email', 'client.phone', 'client.nit'],
+  0: ['client.email', 'client.password', 'client.username', 'client.phone', 'client.nit', 'client.role'],
   1: [{ subfield: 'headquarter' }],
   2: [{ subfield: 'office' }]
 }

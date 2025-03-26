@@ -5,8 +5,8 @@ import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
+import FormStaffSection from './../flow/user/FormUserSection'
 import TableStaffSection from './TableStaffSection'
-import FormStaffSection from './FormStaffSection'
 const route = '/staff'
 
 interface StaffSectionProps extends ThemeContextProps { id: string | undefined }
@@ -54,7 +54,9 @@ const StaffSection = ({ theme, id }: StaffSectionProps) => {
           <TableStaffSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <CardForm id={id} theme={theme} onChange={() => handle('table')} />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormStaffSection id={id} theme={theme} onChange={() => handle('table')} role="engineer" />
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
@@ -62,22 +64,3 @@ const StaffSection = ({ theme, id }: StaffSectionProps) => {
 }
 
 export default StaffSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-interface CardFormStaffSectionProps extends ThemeContextProps { id: string | undefined, onChange: () => void }
-const CardForm = ({ id, theme, onChange }: CardFormStaffSectionProps) => (
-  <div className="flex justify-center">
-    <Card
-      className={cn(
-        'relative w-[calc(100%-1rem)] md:max-w-[calc(100%-5rem)]',
-        'backdrop-filter backdrop-blur-lg',
-        theme === 'dark'
-          ? 'bg-zinc-800/90 hover:shadow-purple-900/60'
-          : 'bg-white hover:shadow-purple-500/60'
-      )}
-    >
-      <FormStaffSection id={id} theme={theme} onChange={onChange} />
-    </Card>
-  </div>
-)

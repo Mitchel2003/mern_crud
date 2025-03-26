@@ -1,5 +1,4 @@
-import { BaseMDB, FileReferenceDB, Paginate } from "@/interfaces/db.interface"
-
+import { BaseMDB, FileReferenceDB } from "@/interfaces/db.interface"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -31,33 +30,34 @@ export type DialogConfirmContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
+export type RoleProps = 'client' | 'company' | 'engineer' | 'admin'
+export type User = BaseMDB & {
+  uid: string
+  email: string
+  username: string
+  phone: string
+  nit?: string
+  invima?: string
+  profesionalLicense?: string
+  //user access
+  role: RoleProps
+  permissions?: string[]
+}
+
 export type AuthContext = {
-  user: User
+  user: User | undefined
   isAuth: boolean
   loading: boolean
-  signin: (data: object) => Promise<void>
-  signup: (data: object) => Promise<void>
   logout: () => Promise<void>
+  login: (data: object) => Promise<any>
   sendResetPassword: (email: string) => Promise<void>
-} | undefined
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------UserContext--------------------------------------------------*/
-interface Overwrite { create: boolean; read: boolean; update: boolean; delete: boolean }
-interface Permissions { overwrite: Overwrite; headquarters: string[] }
-export type UserType = 'user' | 'client' | 'company'
-
-export type User = BaseMDB & { uid: string; role: string; phone: string; email: string; username: string; company?: Company, permissions: Permissions } | null
-export type Company = BaseMDB & { name: string, nit: string, invima: string, profesionalLicense: string }
-export type Client = BaseMDB & { name: string, email: string, phone: string, nit: string }
-
-export type UserContext = {
-  getAll: <T>(type: UserType) => Promise<T[]>
-  getById: <T>(type: UserType, id: string) => Promise<T | undefined>
-  getByQuery: <T>(type: UserType, query: object) => Promise<T[]>
-  create: (type: UserType, data: object) => Promise<any>
-  update: (type: UserType, id: string, data: object) => Promise<any>
-  delete: (type: UserType, id: string) => Promise<any>
+  //user handlers
+  getAll: <T>() => Promise<T[]>
+  getById: <T>(id: string) => Promise<T | undefined>
+  getByQuery: <T>(query: object) => Promise<T[]>
+  create: (data: object) => Promise<any>
+  update: (id: string, data: object) => Promise<any>
+  delete: (id: string) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -67,7 +67,7 @@ export type LocationType = 'country' | 'state' | 'city' | 'headquarter' | 'offic
 export type Country = BaseMDB & { name: string }
 export type State = BaseMDB & { name: string; country: Country }
 export type City = BaseMDB & { name: string; state: State }
-export type Headquarter = BaseMDB & { name: string; address: string; client: Client; city: City }
+export type Headquarter = BaseMDB & { name: string; address: string; user: User; city: City }
 export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
 
 export type LocationContext = {
@@ -184,7 +184,6 @@ export type FormatContext = {
   getAll: <T>(type: FormatType) => Promise<T[]>
   getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
   getByQuery: <T>(type: FormatType, query: object) => Promise<T[]>
-  getByPaginate: <T>(type: FormatType, query: object) => Promise<Paginate<T>>
   create: (type: FormatType, data: object) => Promise<any>
   update: (type: FormatType, id: string, data: object) => Promise<any>
   delete: (type: FormatType, id: string) => Promise<any>

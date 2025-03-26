@@ -1,7 +1,6 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
-import { convertToMongoQuery, buildSortOptions, buildPaginationOptions } from "@/lib/mongodb-filters"
 import { useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query"
-import { FileReferenceDB, SearchParams } from "@/interfaces/db.interface"
+import { FileReferenceDB } from "@/interfaces/db.interface"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
 
@@ -55,31 +54,6 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   /**
-   * Buscar formato por término (Beta)
-   * @param {FormatType} path - Nos ayuda a construir la route
-   * @param {SearchParams} search - Terminos de busqueda
-   * @param {any[]} filters - Valores de filtro
-   */
-  const fetchFormatByPaginate = <T>(path: FormatType, search: SearchParams, filters: any[]) => useQuery({
-    queryKey: [
-      ...QUERY_KEYS.formats(path),
-      search.page,
-      search.perPage,
-      search.sort,
-      search.filters
-    ],
-    queryFn: async () => {
-      const sort = buildSortOptions(search.sort)
-      const query = convertToMongoQuery(search, filters)
-      const paginationOptions = buildPaginationOptions(Number(search.page), Number(search.perPage))
-      return await format.getByPaginate<T>(path, { sort, query, ...paginationOptions })
-    },
-    select: (data) => data || { data: [], totalCount: 0, pageCount: 0 },
-    enabled: Boolean(search.page) && Boolean(search.perPage),
-    initialData: { data: [], totalCount: 0, pageCount: 0 }
-  })
-
-  /**
    * Obtener todos los archivos de un formato
    * @param {FormatType} path - Nos ayuda a construir la route
    * @param {FileReferenceDB} data - Representa la referencia al path etc.
@@ -109,8 +83,8 @@ export const useQueryFormat = (): QueryReact_Format => {
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['client', q._id],
       queryFn: async () => {
-        const result = await format.getAllFiles<T>('file', { path: `client/${q.office?.headquarter?.client?._id}/preview` })
-        return { type: 'client', id: q.office?.headquarter?.client?._id, data: result, error: null }
+        const result = await format.getAllFiles<T>('file', { path: `client/${q.office?.headquarter?.user?._id}/preview` })
+        return { type: 'client', id: q.office?.headquarter?.user?._id, data: result, error: null }
       }
     }, {
       enabled: Boolean(q._id), retry: 1,
@@ -126,7 +100,6 @@ export const useQueryFormat = (): QueryReact_Format => {
     fetchAllFormats,
     fetchFormatById,
     fetchFormatByQuery,
-    fetchFormatByPaginate,
     fetchAllQueries,
     fetchAllFiles,
   }

@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
+import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import TableCountrySection from './TableCountrySection'
@@ -50,17 +51,12 @@ const CountrySection = ({ theme, id }: CountrySectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCountrySection
-            onChange={handle}
-            theme={theme}
-          />
+          <TableCountrySection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
-          <FormCountrySection
-            onChange={handle}
-            theme={theme}
-            id={id}
-          />
+          <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+            <FormCountrySection id={id} theme={theme} onChange={handle} />
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

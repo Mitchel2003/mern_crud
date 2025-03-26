@@ -1,7 +1,8 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Client, ThemeContextProps } from "@/interfaces/context.interface"
-import { useQueryUser, useUserMutation } from "@/hooks/query/useUserQuery"
+import { User, ThemeContextProps } from "@/interfaces/context.interface"
 import { ActionProps } from "@/interfaces/props.interface"
+import { useQueryUser } from "@/hooks/query/useAuthQuery"
+import { useUserTable } from "@/hooks/auth/useAuthForm"
 
 import ItemDropdown from "#/ui/data-table/item-dropdown"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -15,7 +16,11 @@ import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
 interface TableClientSectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface ClientActionsProps { client: Client; onChange: (value: string) => void }
+interface ClientActionsProps {
+  handleDelete: (value: User) => void
+  onChange: (value: string) => void
+  client: User
+}
 
 /**
  * Permite construir un componente de tabla para mostrar las clientes
@@ -25,8 +30,8 @@ interface ClientActionsProps { client: Client; onChange: (value: string) => void
  */
 const TableClientSection = ({ theme, onChange }: TableClientSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: clients } = useQueryUser().fetchAllUsers<Client>('client')
-
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' })
+  const { handleDelete } = useUserTable()
   return (
     <>
       <div className="container p-0">
@@ -37,7 +42,7 @@ const TableClientSection = ({ theme, onChange }: TableClientSectionProps) => {
           <DataTable
             filterColumn="name"
             data={clients || []}
-            columns={columns(onChange)}
+            columns={columns(onChange, handleDelete)}
           />
         </Card>
       </div>
@@ -64,10 +69,11 @@ export default TableClientSection
 * @param onChange - La función que se ejecutará cuando se seleccione una acción
 * @returns Array de columnas para la tabla de clientes
 */
-const columns = (onChange: (value: string) => void): ColumnDef<Client>[] => [
+const columns = (onChange: (value: string) => void, handleDelete: (value: User) => void): ColumnDef<User>[] => [
   {
     accessorKey: "name",
-    header: "Nombre del cliente"
+    header: "Nombre del cliente",
+    cell: ({ row }) => row.original?.username
   },
   {
     accessorKey: "email",
@@ -84,7 +90,7 @@ const columns = (onChange: (value: string) => void): ColumnDef<Client>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useClientActions({ client: row.original, onChange })} />
+    cell: ({ row }) => <ItemDropdown actions={useClientActions({ client: row.original, onChange, handleDelete })} />
   }
 ]
 
@@ -93,19 +99,17 @@ const columns = (onChange: (value: string) => void): ColumnDef<Client>[] => [
  * @param client - El cliente sobre el que se realizarán las acciones
  * @returns Array de acciones disponibles para el cliente
  */
-const useClientActions = ({ client, onChange }: ClientActionsProps): ActionProps[] => {
-  const { deleteUser } = useUserMutation('client')
+const useClientActions = ({ client, onChange, handleDelete }: ClientActionsProps): ActionProps[] => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
-
   return [{
     icon: Pencil,
     label: "Editar",
     onClick: () => {
       confirmAction({
         title: 'Editar Cliente',
-        description: `¿Deseas editar el cliente "${client.name}"?`,
-        action: () => { onChange('form'); navigate(`/client/${client._id}`) }
+        description: `¿Deseas editar el cliente "${client?.username}"?`,
+        action: () => { onChange('form'); navigate(`/client/${client?._id}`) }
       })
     }
   }, {
@@ -116,8 +120,8 @@ const useClientActions = ({ client, onChange }: ClientActionsProps): ActionProps
       confirmAction({
         isDestructive: true,
         title: 'Eliminar Cliente',
-        description: `¿Estás seguro que deseas eliminar el cliente "${client.name}"?`,
-        action: () => deleteUser({ id: client._id })
+        description: `¿Estás seguro que deseas eliminar el cliente "${client?.username}"?`,
+        action: () => handleDelete(client)
       })
     }
   }]

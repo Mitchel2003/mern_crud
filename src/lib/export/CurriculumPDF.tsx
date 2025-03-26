@@ -1,4 +1,4 @@
-import { Curriculum, Accessory, Company } from "@/interfaces/context.interface"
+import { Curriculum, Accessory, User } from "@/interfaces/context.interface"
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { formatDateTime } from "@/utils/format"
@@ -9,7 +9,7 @@ interface CurriculumPDFProps {
   cliLogo?: string
   cvLogo?: string
   cv: Curriculum
-  com: Company
+  com: User
 }
 
 const CurriculumPDF = ({ cv, accs, cliLogo, comLogo, cvLogo, com }: CurriculumPDFProps) => (
@@ -65,7 +65,7 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>NOMBRE:</Text>
-        <Text>{cv.office?.headquarter?.client?.name || 'N/A'}</Text>
+        <Text>{cv.office?.headquarter?.user?.username || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>SEDE:</Text>
@@ -80,7 +80,7 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>EMAIL:</Text>
-        <Text>{cv.office?.headquarter?.client?.email || 'N/A'}</Text>
+        <Text>{cv.office?.headquarter?.user?.email || 'N/A'}</Text>
       </View>
     </View>
 
@@ -91,11 +91,11 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
       </View>
       <View style={[styles.infoCol, styles.col4]}>
         <Text style={styles.label}>TELEFONO:</Text>
-        <Text>{cv.office?.headquarter?.client?.phone || 'N/A'}</Text>
+        <Text>{cv.office?.headquarter?.user?.phone || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col4]}>
         <Text style={styles.label}>NIT:</Text>
-        <Text>{cv.office?.headquarter?.client?.nit || 'N/A'}</Text>
+        <Text>{cv.office?.headquarter?.user?.nit || 'N/A'}</Text>
       </View>
     </View>
   </>
@@ -441,7 +441,7 @@ const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
 )
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ company, companyLogo }: { company: Company, companyLogo?: string }) => (
+const ServiceProviderSection = ({ company, companyLogo }: { company: User, companyLogo?: string }) => (
   <>
     <View style={[styles.sectionTitle, { marginBottom: '0pt' }]}>
       <Text style={styles.sectionTitleText}>PROVEEDOR DEL SERVICIO</Text>
@@ -453,7 +453,7 @@ const ServiceProviderSection = ({ company, companyLogo }: { company: Company, co
         <View style={styles.infoGroup}>
           <Text style={styles.providerLabel}>Nombre del proveedor:</Text>
           <Text style={styles.providerValue}>
-            {company?.name || 'N/A'}
+            {company?.username || 'N/A'}
           </Text>
         </View>
 

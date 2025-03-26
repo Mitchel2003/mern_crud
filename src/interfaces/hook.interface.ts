@@ -1,6 +1,6 @@
-import { FileReferenceDB, Paginate, SearchParams } from "@/interfaces/db.interface"
-import { FormatType, LocationType, UserType } from "@/interfaces/context.interface"
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
+import { FormatType, LocationType } from "@/interfaces/context.interface"
+import { FileReferenceDB } from "@/interfaces/db.interface"
 
 export interface FileMutationProps extends FileReferenceDB { }
 export interface UpdateMutationProps { id: string; data: Partial<any> }
@@ -9,14 +9,12 @@ export interface DeleteMutationProps { id: string }
 /*--------------------------------------------------to user--------------------------------------------------*/
 /*useQuery and useMutation*/
 export type QueryReact_User = {
-  fetchAllUsers: <T>(path: UserType) => UseQueryResult<T[], Error>
-  fetchUserById: <T>(path: UserType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchUserByQuery: <T>(path: UserType, query: object) => UseQueryResult<T[], Error>
+  fetchAllUsers: <T>() => UseQueryResult<T[], Error>
+  fetchUserById: <T>(id: string) => UseQueryResult<T | undefined, Error>
+  fetchUserByQuery: <T>(query: object) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {
-  createUser: UseMutateAsyncFunction<any, Error, object, unknown>
   updateUser: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
-  deleteUser: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -42,7 +40,6 @@ export type QueryReact_Format = {
   fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
   fetchFormatById: <T>(path: FormatType, id: string) => UseQueryResult<T | undefined, Error>
   fetchFormatByQuery: <T>(path: FormatType, query: object) => UseQueryResult<T[], Error>
-  fetchFormatByPaginate: <T>(path: FormatType, search: SearchParams, filters: any[]) => UseQueryResult<Paginate<T>, Error>
   fetchAllFiles: <T>(path: FormatType, data: FileReferenceDB) => UseQueryResult<T[], Error>
   fetchAllQueries: <T>(data: any[]) => {
     data?: { type: string; id: string; data: T[]; error: any }

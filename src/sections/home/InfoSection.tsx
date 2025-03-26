@@ -14,14 +14,9 @@ export default InfoSection
 
 export const heroItems = [
   {
-    image: 'assets/adds/parqueOca.jpg',
+    image: 'assets/adds/flexible.jpeg',
     title: 'Bienvenido a nuestro app biomedica',
     description: 'Descubre una experiencia de gestión única',
-  },
-  {
-    image: 'assets/adds/flexible.jpeg',
-    title: 'Disponibilidad de información desde cualquier lugar',
-    description: 'Puedes operar desde cualquier dispositivo, ya sea móvil o computadora',
   },
   {
     image: 'assets/adds/database.jpg',

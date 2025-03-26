@@ -4,9 +4,9 @@ import { Input } from '#/ui/input'
 
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
-import { Eye, EyeOff, LucideIcon } from 'lucide-react'
 import { useFormContext, Controller } from 'react-hook-form'
-import React, { useState } from 'react'
+import { Eye, EyeOff, LucideIcon } from 'lucide-react'
+import React, { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 
 export type InputType = 'text' | 'number' | 'email' | 'password'
@@ -36,8 +36,8 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   span,
 }, ref) => {
   const [showPassword, setShowPassword] = useState(false)
-  const { control } = useFormContext()
-
+  const { control, setValue } = useFormContext()
+  useMemo(() => readOnly && setValue(name, value), [readOnly, value])
   return (
     <FormItem>
       {/* Header label */}
@@ -59,7 +59,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
             {readOnly ? (
               <Input
                 readOnly
-                ref={ref as any}
+                ref={ref}
                 id={`${name}-input`}
                 placeholder={placeholder}
                 value={value || field.value || ''}
