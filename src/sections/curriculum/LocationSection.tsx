@@ -40,7 +40,7 @@ const LocationSection = ({ id, theme }: LocationSectionProps) => {
           label="Cliente"
           theme={theme}
           name="client"
-          options={options.clients?.map((c) => ({ label: c.name, value: c._id })) || []}
+          options={options.clients?.map((c) => ({ label: c.username, value: c._id })) || []}
           placeholder="Seleccionar cliente"
         />
         <SelectField

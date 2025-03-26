@@ -1,4 +1,4 @@
-import { Client, Headquarter, Office, Curriculum } from "@/interfaces/context.interface"
+import { Headquarter, Office, Curriculum, User } from "@/interfaces/context.interface"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
@@ -6,14 +6,14 @@ import { useQueryUser } from "@/hooks/query/useAuthQuery"
 /** This hook is used to get the data of the location section of the curriculum form */
 const useLocationCV = () => {
   const { fetchAllLocations } = useQueryLocation()
-  const { fetchAllUsers } = useQueryUser()
+  const { fetchUserByQuery } = useQueryUser()
 
   const { data: headquarters } = fetchAllLocations<Headquarter>('headquarter')
+  const { data: clients } = fetchUserByQuery<User>({ role: 'client' })
   const { data: offices } = fetchAllLocations<Office>('office')
-  const { data: clients } = fetchAllUsers<Client>('client')
 
   const mapValues = (cv: Curriculum) => ({
-    client: cv.office.headquarter?.client?._id,
+    client: cv.office.headquarter?.user?._id,
     headquarter: cv.office.headquarter?._id,
     office: cv.office?._id,
     service: cv.service
