@@ -1,5 +1,5 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2, UserSquare2 } from 'lucide-react'
-import { AssignmentInd, Description, Groups, Handyman, PermMedia, SwitchAccount, Dashboard } from '@mui/icons-material'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
+import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -51,10 +51,10 @@ export const links = () => {
       label: 'Usuarios',
       icon: AssignmentInd,
       subItems: [
-        {// staff
-          icon: Groups,
-          label: 'Personal interno',
-          href: '/staff',
+        {// engineer
+          icon: SupervisorAccount,
+          label: 'Ingenieros de servicio',
+          href: '/engineer',
         },
       ]
     },
@@ -112,14 +112,14 @@ export const links = () => {
       icon: UserCircle2,
       subItems: [
         {// proveedor of service
-          icon: UserSquare2,
-          label: 'Proveedores de servicios',
+          icon: Badge,
+          label: 'Proveedores',
           href: '/companies',
         },
-        {// staff
-          icon: Users,
-          label: 'Personal interno',
-          href: '/staff',
+        {// engineer
+          icon: SupervisorAccount,
+          label: 'Ingenieros',
+          href: '/engineer',
         },
       ]
     },

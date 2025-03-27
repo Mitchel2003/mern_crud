@@ -1,8 +1,13 @@
+import { ClientDashboardProps } from "@/interfaces/props.interface"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { Activity, AlertCircle, Shield, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const StatsClientSection = ({ theme }: ThemeContextProps) => {
+interface StatsClientSectionProps extends ThemeContextProps {
+  data: ClientDashboardProps
+}
+
+const StatsClientSection = ({ theme, data }: StatsClientSectionProps) => {
   return (
     <section className={cn('p-6 rounded-lg shadow-sm border', theme === 'dark'
       ? 'bg-zinc-950 border-zinc-700'
@@ -11,31 +16,31 @@ const StatsClientSection = ({ theme }: ThemeContextProps) => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <StatCard
           title="Total de Equipos"
-          value="12"
+          value={data.totalCurriculums.toString()}
           icon={<Shield className="h-5 w-5 text-blue-600" />}
-          change="+2 este mes"
+          change={`${data.totalCurriculums > 0 ? '+' : ''}${data.totalCurriculums} equipos`}
           trend="up"
         />
         <StatCard
           title="Mantenimientos"
-          value="24"
+          value={data.totalMaintenances.toString()}
           icon={<Activity className="h-5 w-5 text-green-600" />}
-          change="8 pendientes"
+          change={`${data.pendingMaintenances} pendientes`}
           trend="neutral"
         />
         <StatCard
-          title="Tiempo de Actividad"
-          value="98.2%"
+          title="Mantenimientos Completados"
+          value={`${data.completedMaintenances}`}
           icon={<Zap className="h-5 w-5 text-amber-600" />}
-          change="+0.5% vs mes anterior"
-          trend="up"
+          change={data.completedMaintenances > 0 ? "Buen rendimiento" : "Requiere atención"}
+          trend={data.completedMaintenances > 0 ? "up" : "neutral"}
         />
         <StatCard
           title="Alertas Activas"
-          value="3"
+          value={data.activeAlerts.toString()}
           icon={<AlertCircle className="h-5 w-5 text-red-600" />}
-          change="-2 vs mes anterior"
-          trend="down"
+          change={data.activeAlerts > 0 ? "Requiere atención" : "Todo en orden"}
+          trend={data.activeAlerts > 0 ? "down" : "up"}
         />
       </div>
     </section >

@@ -79,7 +79,37 @@ export interface NavItemProps {
   href?: string
 }
 
-// Dashboard
+// Dialog
+export interface DialogField {
+  component: React.ReactElement
+  name: string
+}
+export interface ConfirmTriggerProps {
+  onSubmit: (data: any) => Promise<void>
+  resetData: Record<string, any>
+  description: string
+  fieldName: string
+  title: string
+}
+
+// Step-form
+export interface AddOn {
+  subtitle: string
+  checked: boolean
+  title: string
+  price: number
+  id: number
+}
+export type FormItems = {
+  plan: 'arcade' | 'advanced' | 'pro'
+  yearly: boolean
+  addOns: AddOn[]
+  phone: string
+  email: string
+  name: string
+}
+
+// Dashboard (admin)
 export interface EventMaintenance {
   importance: 'critical' | 'warning' | 'normal'
   description: string
@@ -98,32 +128,41 @@ export interface Equipment {
   id: string
 }
 
-// Dialog
-export interface DialogField {
-  component: React.ReactElement
-  name: string
-}
-export interface ConfirmTriggerProps {
-  onSubmit: (data: any) => Promise<void>
-  resetData: Record<string, any>
-  description: string
-  fieldName: string
-  title: string
-}
+// Dashboard (client)
+export interface ClientDashboardProps {
+  // Estadísticas
+  completedMaintenances: number
+  pendingMaintenances: number
+  totalMaintenances: number
+  totalCurriculums: number
+  activeAlerts: number
+  // Documentos
+  totalDocuments: number
 
-// Step-form
-export interface AddOn {
-  subtitle: string;
-  checked: boolean;
-  title: string;
-  price: number;
-  id: number;
+  // Actividad reciente
+  recentActivities: Array<{
+    status: 'completed' | 'pending' | 'urgent'
+    type: 'maintenance' | 'request' | 'alert'
+    equipment: string
+    timeAgo: string
+    date: string
+    id: string
+  }>
+
+  // Próximos mantenimientos
+  upcomingMaintenances: Array<{
+    equipment: string
+    date: string
+    type: string
+    id: string
+  }>
+
+  // Estado de equipos
+  equipmentStatus: Array<{
+    color: string
+    total: number
+    count: number
+    name: string
+    id: number
+  }>
 }
-export type FormItems = {
-  plan: 'arcade' | 'advanced' | 'pro';
-  yearly: boolean;
-  addOns: AddOn[];
-  phone: string;
-  email: string;
-  name: string;
-};

@@ -55,25 +55,20 @@ const AlertDialog = ({
         className
       )}>
         <AlertDialogHeader>
-          <AlertDialogTitle className={cn(
-            theme === 'dark' ? 'text-zinc-50' : 'text-gray-900'
-          )}>
+          <AlertDialogTitle className={cn(theme === 'dark' ? 'text-zinc-50' : 'text-gray-900')}>
             {title}
           </AlertDialogTitle>
 
-          <AlertDialogDescription className={cn(
-            theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
-          )}>
+          <AlertDialogDescription className={cn(theme === 'dark' ? 'text-zinc-400' : 'text-gray-500')}>
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
           {cancelLabel && (
-            <AlertDialogCancel className={cn(
-              theme === 'dark'
-                ? 'bg-zinc-700 hover:bg-zinc-600 text-zinc-50'
-                : 'bg-white hover:bg-gray-100'
+            <AlertDialogCancel className={cn(theme === 'dark'
+              ? 'bg-zinc-700 hover:bg-zinc-600 text-zinc-50'
+              : 'bg-white hover:bg-gray-100'
             )}>
               {cancelLabel}
             </AlertDialogCancel>
@@ -81,8 +76,7 @@ const AlertDialog = ({
 
           <AlertDialogAction
             onClick={onConfirm}
-            className={cn(
-              variant === 'destructive' && 'bg-red-600 hover:bg-red-700',
+            className={cn(variant === 'destructive' && 'bg-red-600 hover:bg-red-700',
               theme === 'dark' && variant !== 'destructive' && 'bg-zinc-50 text-zinc-900'
             )}
           >

@@ -50,7 +50,6 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/curriculum/hoy',
-    enabled: credentials?.role === 'admin',
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 

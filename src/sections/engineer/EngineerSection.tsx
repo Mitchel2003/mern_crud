@@ -5,19 +5,19 @@ import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import FormStaffSection from './../flow/user/FormUserSection'
-import TableStaffSection from './TableStaffSection'
-const route = '/staff'
+import FormEngineerSection from '../flow/user/FormUserSection'
+import TableEngineerSection from './TableEngineerSection'
+const route = '/engineer'
 
-interface StaffSectionProps extends ThemeContextProps { id: string | undefined }
+interface EngineerSectionProps extends ThemeContextProps { id: string | undefined }
 
-const StaffSection = ({ theme, id }: StaffSectionProps) => {
+const EngineerSection = ({ theme, id }: EngineerSectionProps) => {
   const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Personal interno
+          Ingenieros de servicio
         </h1>
       </div>
 
@@ -51,11 +51,11 @@ const StaffSection = ({ theme, id }: StaffSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableStaffSection theme={theme} onChange={handle} />
+          <TableEngineerSection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormStaffSection id={id} theme={theme} onChange={() => handle('table')} role="engineer" />
+            <FormEngineerSection id={id} theme={theme} onChange={() => handle('table')} role="engineer" />
           </Card>
         </TabsContent>
       </Tabs>
@@ -63,4 +63,4 @@ const StaffSection = ({ theme, id }: StaffSectionProps) => {
   )
 }
 
-export default StaffSection
+export default EngineerSection

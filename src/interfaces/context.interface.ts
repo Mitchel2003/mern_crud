@@ -104,12 +104,6 @@ export type RepresentativeHeadquarter = BaseMDB & { headquarter: string, represe
 export type ManufacturerHeadquarter = BaseMDB & { headquarter: string, manufacturer: Manufacturer }
 export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Supplier }
 
-export type Equipment = BaseMDB & {
-  dateNextMaintenance: Date
-  dateLastMaintenance: Date
-  curriculum: Curriculum
-  status: string
-}
 export type Maintenance = BaseMDB & {
   //timestandard
   dateNextMaintenance?: Date

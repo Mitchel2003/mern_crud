@@ -1,9 +1,16 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FileText, ArrowRight, QrCode } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Card } from "#/ui/card"
+import { cn } from "@/lib/utils"
 
-const SolicitClientSection = ({ }: ThemeContextProps) => {
+interface SolicitClientSectionProps extends ThemeContextProps {
+  totalDocuments: number
+}
+
+const SolicitClientSection = ({ theme, totalDocuments }: SolicitClientSectionProps) => {
+  const navigate = useNavigate()
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Card para Ver Documentos */}
@@ -12,7 +19,9 @@ const SolicitClientSection = ({ }: ThemeContextProps) => {
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Card className="relative overflow-hidden h-64 cursor-pointer group" onClick={() => { }}>
+        <Card className={cn("relative overflow-hidden h-64 cursor-pointer group", 
+          theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100'
+        )} onClick={() => { navigate('/form/curriculum') }}>
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 opacity-90 group-hover:opacity-100 transition-opacity" />
           <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
             <div className="flex items-center">
@@ -38,7 +47,7 @@ const SolicitClientSection = ({ }: ThemeContextProps) => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            15 documentos
+            {totalDocuments} documento{totalDocuments !== 1 ? 's' : ''}
           </motion.div>
         </Card>
       </motion.div>
@@ -49,7 +58,9 @@ const SolicitClientSection = ({ }: ThemeContextProps) => {
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Card className="relative overflow-hidden h-64 cursor-pointer group" onClick={() => { }}>
+        <Card className={cn("relative overflow-hidden h-64 cursor-pointer group", 
+          theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100'
+        )} onClick={() => { }}>
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 opacity-90 group-hover:opacity-100 transition-opacity" />
           <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
             <div className="flex items-center">

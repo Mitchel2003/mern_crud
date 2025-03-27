@@ -25,7 +25,7 @@ const Navbar = () => {
       theme === 'dark' ? 'from-zinc-800 to-zinc-800/30 text-zinc-100' : 'from-white to-white/30 text-gray-900'
     )}>
       <div className="container flex h-16 p-4 items-center justify-between">
-        {isMobile ? <SidebarTrigger /> : null}
+        {isMobile && <SidebarTrigger />}
         <div className="flex items-center space-x-2">
           {!isMobile && (
             <motion.div initial={{ rotate: -10, scale: 0.9 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 0.5 }}>

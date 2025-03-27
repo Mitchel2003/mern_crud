@@ -16,22 +16,22 @@ import { Pencil, Trash } from "lucide-react"
 import { formatDate } from "@/utils/format"
 import { cn } from "@/lib/utils"
 
-interface TableStaffSectionProps extends ThemeContextProps { onChange: (value: string) => void }
+interface TableEngineerSectionProps extends ThemeContextProps { onChange: (value: string) => void }
 interface ActionsProps {
   onChange: (value: string) => void
   onDelete: (id: string) => void
-  staff: User
+  engineer: User
 }
 
 /**
- * Permite construir un componente de tabla para mostrar los curriculums
+ * Permite construir un componente de tabla para mostrar los ingenieros
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los ingenieros, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
+const TableEngineerSection = ({ theme, onChange }: TableEngineerSectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: staff, isLoading } = useQueryUser().fetchUserByQuery<User>({ role: 'engineer' })
+  const { data: engineers, isLoading } = useQueryUser().fetchUserByQuery<User>({ role: 'engineer' })
   const { handleDelete } = useCurriculumTable()
 
   if (isLoading) return <Skeleton theme={theme} />
@@ -44,7 +44,7 @@ const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
         )}>
           <DataTable
             filterColumn="name"
-            data={staff || []}
+            data={engineers || []}
             columns={useColumns(onChange, handleDelete)}
           />
         </Card>
@@ -65,15 +65,15 @@ const TableStaffSection = ({ theme, onChange }: TableStaffSectionProps) => {
   )
 }
 
-export default TableStaffSection
+export default TableEngineerSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /**
- * Hook para crear las columnas de la tabla de curriculums
+ * Hook para crear las columnas de la tabla de ingenieros
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
- * @returns Array de columnas para la tabla de curriculums
+ * @returns Array de columnas para la tabla de ingenieros
  */
 const useColumns = (onChange: (value: string) => void, onDelete: (id: string) => void): ColumnDef<User>[] => [
   {
@@ -98,18 +98,18 @@ const useColumns = (onChange: (value: string) => void, onDelete: (id: string) =>
   },
   {
     id: "actions",
-    cell: ({ row }) => <Actions staff={row.original} onChange={onChange} onDelete={onDelete} />
+    cell: ({ row }) => <Actions engineer={row.original} onChange={onChange} onDelete={onDelete} />
   }
 ]
 
 /**
  * Hook personalizado para manejar las acciones del dropdown de usuarios
- * @param staff - El usuario sobre el que se realizarán las acciones
+ * @param engineer - El usuario sobre el que se realizarán las acciones
  * @param onChange - La función que se ejecutará cuando se seleccione una acción
  * @param onDelete - La función que se ejecutará cuando se seleccione la acción de eliminar
  * @returns Array de acciones disponibles para el usuario
  */
-const Actions = ({ staff, onChange, onDelete }: ActionsProps) => {
+const Actions = ({ engineer, onChange, onDelete }: ActionsProps) => {
   const { confirmAction } = useDialogConfirm()
   const navigate = useNavigate()
 
@@ -119,8 +119,8 @@ const Actions = ({ staff, onChange, onDelete }: ActionsProps) => {
     onClick: () => {
       confirmAction({
         title: 'Editar Usuario',
-        description: `¿Deseas editar el usuario "${staff?.username || 'Sin nombre'}"?`,
-        action: () => { onChange('form'); navigate(`/staff/${staff?._id}`) }
+        description: `¿Deseas editar el usuario "${engineer?.username || 'Sin nombre'}"?`,
+        action: () => { onChange('form'); navigate(`/engineer/${engineer?._id}`) }
       })
     }
   }, {
@@ -131,8 +131,8 @@ const Actions = ({ staff, onChange, onDelete }: ActionsProps) => {
       confirmAction({
         isDestructive: true,
         title: 'Eliminar Usuario',
-        description: `¿Estás seguro que deseas eliminar el usuario "${staff?.username || 'Sin nombre'}"?`,
-        action: () => onDelete(staff?._id as string)
+        description: `¿Estás seguro que deseas eliminar el usuario "${engineer?.username || 'Sin nombre'}"?`,
+        action: () => onDelete(engineer?._id as string)
       })
     }
   }]

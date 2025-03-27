@@ -10,8 +10,8 @@ import RootLayout from "@/layouts/Root";
 import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Client, { ClientFlow } from "@/pages/Client";
 import Maintenance from "@/pages/Maintenance";
+import Engineer from "@/pages/Engineer";
 import Company from "@/pages/Company";
-import Staff from "@/pages/Staff";
 
 import Headquarter from "@/pages/Headquarter";
 import Country from "@/pages/Country";
@@ -52,9 +52,9 @@ function App() {
                     <Route path="/form/maintenance/:id" element={<Maintenance />} />
 
                     {/* user routes */}
-                    <Route path="/staff" element={<Staff />} /> {/*new user*/}
-                    <Route path="/staffs" element={<Staff />} /> {/*list users*/}
-                    <Route path="/staff/:id" element={<Staff />} /> {/*edit user*/}
+                    <Route path="/engineer" element={<Engineer />} /> {/*new user*/}
+                    <Route path="/engineers" element={<Engineer />} /> {/*list users*/}
+                    <Route path="/engineer/:id" element={<Engineer />} /> {/*edit user*/}
 
                     <Route path="/company" element={<Company />} /> {/*new company*/}
                     <Route path="/companies" element={<Company />} /> {/*list companies*/}
