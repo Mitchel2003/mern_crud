@@ -1,21 +1,21 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { ClientDashboardProps } from "@/interfaces/props.interface"
 import { Activity, Calendar, Clock, Cog, Wrench } from "lucide-react"
+import { ThemeContextProps } from "@/interfaces/context.interface"
+import { Progress } from "#/ui/progress"
 import { Card } from "#/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { ClientDashboardData } from "@/hooks/dashboard/useClientDashboard"
 import { cn } from "@/lib/utils"
 
 interface InfoClientSectionProps extends ThemeContextProps {
-  equipmentStatus: ClientDashboardData['equipmentStatus']
-  recentActivities: ClientDashboardData['recentActivities']
-  upcomingMaintenances: ClientDashboardData['upcomingMaintenances']
+  equipmentStatus: ClientDashboardProps['equipmentStatus']
+  recentActivities: ClientDashboardProps['recentActivities']
+  upcomingMaintenances: ClientDashboardProps['upcomingMaintenances']
 }
 
-const InfoClientSection = ({ 
-  theme, 
-  equipmentStatus, 
-  recentActivities, 
-  upcomingMaintenances 
+const InfoClientSection = ({
+  theme,
+  equipmentStatus,
+  recentActivities,
+  upcomingMaintenances
 }: InfoClientSectionProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -48,14 +48,14 @@ const InfoClientSection = ({
           {recentActivities.length > 0 ? (
             recentActivities.map((activity) => (
               <div key={activity.id} className="flex items-start">
-                <div className={cn('p-2 rounded-full mr-3', 
-                  activity.type === 'maintenance' ? 'bg-green-100' : 
-                  activity.type === 'request' ? 'bg-blue-100' : 'bg-red-100'
+                <div className={cn('p-2 rounded-full mr-3',
+                  activity.type === 'maintenance' ? 'bg-green-100' :
+                    activity.type === 'request' ? 'bg-blue-100' : 'bg-red-100'
                 )}>
                   {activity.type === 'maintenance' ? (
-                    <Wrench className={cn('h-4 w-4', 
-                      activity.type === 'maintenance' ? 'text-green-600' : 
-                      activity.type === 'request' ? 'text-blue-600' : 'text-red-600'
+                    <Wrench className={cn('h-4 w-4',
+                      activity.type === 'maintenance' ? 'text-green-600' :
+                        activity.type === 'request' ? 'text-blue-600' : 'text-red-600'
                     )} />
                   ) : activity.type === 'request' ? (
                     <Calendar className="h-4 w-4 text-blue-600" />
@@ -66,13 +66,13 @@ const InfoClientSection = ({
                 <div>
                   <div className="flex items-center">
                     <p className="text-sm font-medium">{activity.equipment}</p>
-                    <span className={cn('text-xs px-2 py-0.5 rounded ml-2', 
-                      activity.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                      activity.status === 'pending' ? 'bg-amber-100 text-amber-800' : 
-                      'bg-red-100 text-red-800'
+                    <span className={cn('text-xs px-2 py-0.5 rounded ml-2',
+                      activity.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        activity.status === 'pending' ? 'bg-amber-100 text-amber-800' :
+                          'bg-red-100 text-red-800'
                     )}>
-                      {activity.status === 'completed' ? 'Completado' : 
-                       activity.status === 'pending' ? 'Pendiente' : 'Urgente'}
+                      {activity.status === 'completed' ? 'Completado' :
+                        activity.status === 'pending' ? 'Pendiente' : 'Urgente'}
                     </span>
                   </div>
                   <div className="flex items-center text-xs text-gray-500 mt-1">
