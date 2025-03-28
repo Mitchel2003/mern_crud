@@ -4,6 +4,7 @@ import { type Curriculum } from "@/interfaces/context.interface"
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
@@ -28,11 +29,12 @@ export default Curriculum
 /*--------------------------------------------------preview--------------------------------------------------*/
 export const PreviewCurriculum = () => {
   const { theme } = useThemeContext()
-  const { id } = useParams()
+  const { id = '' } = useParams()
+  const isMobile = useIsMobile()
 
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
-      <PreviewCurriculumSection theme={theme} id={id as string} />
+      <PreviewCurriculumSection id={id} theme={theme} isMobile={isMobile} />
     </Suspense>
   )
 }

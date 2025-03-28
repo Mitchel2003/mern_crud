@@ -1,9 +1,11 @@
+import { Activity, AlertCircle, Calendar, Check, Clock, Cog, Wrench } from "lucide-react"
 import { ClientDashboardProps } from "@/interfaces/props.interface"
-import { Activity, Calendar, Clock, Cog, Wrench } from "lucide-react"
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { Progress } from "#/ui/progress"
 import { Card } from "#/ui/card"
 import { cn } from "@/lib/utils"
+import { Warning } from "@mui/icons-material"
 
 interface InfoClientSectionProps extends ThemeContextProps {
   equipmentStatus: ClientDashboardProps['equipmentStatus']
@@ -17,6 +19,7 @@ const InfoClientSection = ({
   recentActivities,
   upcomingMaintenances
 }: InfoClientSectionProps) => {
+  const isMobile = useIsMobile()
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Estado de Equipos */}
@@ -32,7 +35,7 @@ const InfoClientSection = ({
                 <span className="text-sm font-medium">{status.name}</span>
                 <span className="text-sm font-medium">{status.count}/{status.total}</span>
               </div>
-              <Progress value={(status.count / status.total) * 100} className={cn('h-2', status.color)} />
+              <Progress value={status.total > 0 ? Math.round((status.count / status.total) * 100) : 0} className={cn('h-2', status.color)} />
             </div>
           ))}
         </div>
@@ -63,16 +66,19 @@ const InfoClientSection = ({
                     <Activity className="h-4 w-4 text-red-600" />
                   )}
                 </div>
-                <div>
+                <div className="w-full">
                   <div className="flex items-center">
                     <p className="text-sm font-medium">{activity.equipment}</p>
-                    <span className={cn('text-xs px-2 py-0.5 rounded ml-2',
-                      activity.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        activity.status === 'pending' ? 'bg-amber-100 text-amber-800' :
-                          'bg-red-100 text-red-800'
+                    <span className={cn('text-xs ml-auto px-2 py-0.5 rounded bg-muted',
+                      activity.status === 'completed' ? 'text-green-800' :
+                        activity.status === 'pending' ? 'text-amber-800' :
+                          'text-red-800'
                     )}>
-                      {activity.status === 'completed' ? 'Completado' :
-                        activity.status === 'pending' ? 'Pendiente' : 'Urgente'}
+                      {activity.status === 'completed'
+                        ? (isMobile ? (<Check />) : 'Completado')
+                        : activity.status === 'pending'
+                          ? (isMobile ? (<Warning />) : 'Pendiente')
+                          : (isMobile ? (<AlertCircle />) : 'Urgente')}
                     </span>
                   </div>
                   <div className="flex items-center text-xs text-gray-500 mt-1">

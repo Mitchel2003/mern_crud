@@ -72,7 +72,7 @@ const EquipmentPreviewCV = ({ cv, accs, imgCv, theme }: EquipmentPreviewCVProps)
               <Separator className="my-4 bg-purple-100" />
 
               {/* Clasificación biomédica */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 {[
                   { label: "Clasificación uso", value: cv?.useClassification },
                   { label: "Tipo", value: cv?.typeClassification },

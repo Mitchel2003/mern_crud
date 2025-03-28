@@ -1,6 +1,7 @@
 import { ClientDashboardProps } from "@/interfaces/props.interface"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { Activity, AlertCircle, Shield, Zap } from "lucide-react"
+import { Activity, Shield, Zap } from "lucide-react"
+import { Separator } from "#/ui/separator"
 import { cn } from "@/lib/utils"
 
 interface StatsClientSectionProps extends ThemeContextProps {
@@ -13,7 +14,7 @@ const StatsClientSection = ({ theme, data }: StatsClientSectionProps) => {
       ? 'bg-zinc-950 border-zinc-700'
       : 'bg-white border-gray-100'
     )}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid sm:grid-cols-3 gap-6">
         <StatCard
           title="Total de Equipos"
           value={data.totalCurriculums.toString()}
@@ -21,6 +22,7 @@ const StatsClientSection = ({ theme, data }: StatsClientSectionProps) => {
           change={`${data.totalCurriculums > 0 ? '+' : ''}${data.totalCurriculums} equipos`}
           trend="up"
         />
+        <Separator orientation="horizontal" className="block sm:hidden" />
         <StatCard
           title="Mantenimientos"
           value={data.totalMaintenances.toString()}
@@ -28,19 +30,13 @@ const StatsClientSection = ({ theme, data }: StatsClientSectionProps) => {
           change={`${data.pendingMaintenances} pendientes`}
           trend="neutral"
         />
+        <Separator orientation="horizontal" className="block sm:hidden" />
         <StatCard
           title="Mantenimientos Completados"
           value={`${data.completedMaintenances}`}
           icon={<Zap className="h-5 w-5 text-amber-600" />}
           change={data.completedMaintenances > 0 ? "Buen rendimiento" : "Requiere atención"}
           trend={data.completedMaintenances > 0 ? "up" : "neutral"}
-        />
-        <StatCard
-          title="Alertas Activas"
-          value={data.activeAlerts.toString()}
-          icon={<AlertCircle className="h-5 w-5 text-red-600" />}
-          change={data.activeAlerts > 0 ? "Requiere atención" : "Todo en orden"}
-          trend={data.activeAlerts > 0 ? "down" : "up"}
         />
       </div>
     </section >

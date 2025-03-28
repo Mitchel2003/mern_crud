@@ -15,14 +15,18 @@ const SolicitClientSection = ({ theme, totalDocuments }: SolicitClientSectionPro
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Card para Ver Documentos */}
       <motion.div
-        whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.03 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Card className={cn("relative overflow-hidden h-64 cursor-pointer group", 
-          theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100'
-        )} onClick={() => { navigate('/form/curriculum') }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 opacity-90 group-hover:opacity-100 transition-opacity" />
+        <Card
+          onClick={() => { navigate('/form/curriculum') }}
+          className={cn("relative overflow-hidden h-64 cursor-pointer group", theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100')}
+        >
+          <div className={cn(
+            'absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity bg-gradient-to-br',
+            theme === 'dark' ? 'from-cyan-600 to-blue-700' : 'from-cyan-500 to-blue-600'
+          )} />
           <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
             <div className="flex items-center">
               <FileText className="h-10 w-10 mr-4" />
@@ -58,10 +62,14 @@ const SolicitClientSection = ({ theme, totalDocuments }: SolicitClientSectionPro
         whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <Card className={cn("relative overflow-hidden h-64 cursor-pointer group", 
-          theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100'
-        )} onClick={() => { }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 opacity-90 group-hover:opacity-100 transition-opacity" />
+        <Card
+          onClick={() => { navigate('/') }}
+          className={cn("relative overflow-hidden h-64 cursor-pointer group", theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100')}
+        >
+          <div className={cn(
+            'absolute inset-0 opacity-90 group-hover:opacity-100 transition-opacity bg-gradient-to-br',
+            theme === 'dark' ? 'from-emerald-600 to-green-700' : 'from-emerald-500 to-green-600'
+          )} />
           <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
             <div className="flex items-center">
               <QrCode className="h-10 w-10 mr-4" />

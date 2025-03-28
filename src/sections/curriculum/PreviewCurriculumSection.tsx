@@ -13,9 +13,12 @@ import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { Card, CardContent } from "#/ui/card"
 import { cn } from "@/lib/utils"
 
-interface PreviewCurriculumSectionProps extends ThemeContextProps { id: string }
+interface PreviewCurriculumSectionProps extends ThemeContextProps {
+  isMobile: boolean
+  id: string
+}
 
-const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) => {
+const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSectionProps) => {
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id)
@@ -33,7 +36,7 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
 
   if (isLoadingData || isLoadingFile) return <Skeleton theme={theme} />
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="container p-2">
       {cv && (
         <Card className={cn(
           'max-w-5xl mx-auto bg-gradient-to-br',
@@ -41,8 +44,8 @@ const PreviewCurriculumSection = ({ theme, id }: PreviewCurriculumSectionProps) 
             ? 'border-purple-100 from-gray-800 to-gray-900'
             : 'border-purple-100 from-white to-purple-50/30'
         )}>
-          <HeaderPreviewCV theme={theme} client={imgCli?.[0]?.url} />
-          <CardContent className="grid gap-8 px-6">
+          <HeaderPreviewCV theme={theme} client={imgCli?.[0]?.url} isMobile={isMobile} />
+          <CardContent className="grid gap-6 px-4 sm:px-6">
             {/*** Info of client ***/}
             <ClientPreviewCV theme={theme} cv={cv} client={imgCli?.[0]?.url} />
             {/*** Basic data, class biomedical and accessories associated ***/}

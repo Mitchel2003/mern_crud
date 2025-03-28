@@ -14,18 +14,18 @@ export default InfoSection
 
 export const heroItems = [
   {
-    image: 'assets/adds/flexible.jpeg',
-    title: 'Bienvenido a nuestro app biomedica',
-    description: 'Descubre una experiencia de gestión única',
+    image: 'assets/adds/gestion.png',
+    title: 'Bienvenido a ingenierías GEST',
+    description: 'Descubre una experiencia de administración única',
   },
   {
-    image: 'assets/adds/database.jpg',
+    image: 'assets/adds/avaliable.jpg',
     title: 'Red de datos en tiempo real',
-    description: 'Accede a la información de manera inmediata',
+    description: 'Obtén información de manera inmediata 24/7',
   },
   {
-    image: 'assets/adds/maintenance.png',
-    title: 'Accede a novedades, formatos y consultas',
-    description: 'Gestiona una amplia variedad de información de manera sencilla',
-  },
+    image: 'assets/adds/flexible.jpeg',
+    title: 'Accede desde cualquier sitio',
+    description: 'Opera cómodamente desde móvil, tablet o computadora',
+  }
 ]

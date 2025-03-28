@@ -16,7 +16,7 @@ const CurriculumSection = ({ id, theme }: CurriculumSectionProps) => {
   const { tab, handle } = useTabs({ id, to: route })
   const { user } = useAuthContext()
   return (
-    <main className="container p-6">
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
         {/* Local action tabs */}
         <TabsList className={cn(

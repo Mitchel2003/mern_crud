@@ -6,12 +6,12 @@ import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 
 export interface Stat {
-  href?: string;
-  title: string;
-  icon: LucideIcon;
-  enabled?: boolean;
-  value: number | string;
   color: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+  value: number | string;
+  enabled?: boolean;
+  icon: LucideIcon;
+  title: string;
+  href?: string;
 }
 
 interface PageHeaderProps {
@@ -35,66 +35,6 @@ interface PageHeaderProps {
   progressBar?: boolean
 }
 
-const colorVariants = {
-  default: {
-    bg: 'bg-muted/40',
-    text: 'text-foreground',
-    icon: 'text-muted-foreground',
-  },
-  primary: {
-    bg: 'bg-primary/10',
-    text: 'text-primary',
-    icon: 'text-primary',
-  },
-  secondary: {
-    bg: 'bg-secondary/10',
-    text: 'text-secondary',
-    icon: 'text-secondary',
-  },
-  success: {
-    bg: 'bg-green-500/10',
-    text: 'text-green-600 dark:text-green-400',
-    icon: 'text-green-500',
-  },
-  warning: {
-    bg: 'bg-yellow-500/10',
-    text: 'text-yellow-600 dark:text-yellow-400',
-    icon: 'text-yellow-500',
-  },
-  danger: {
-    bg: 'bg-red-500/10',
-    text: 'text-red-600 dark:text-red-400',
-    icon: 'text-red-500',
-  },
-  info: {
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-600 dark:text-blue-400',
-    icon: 'text-blue-500',
-  },
-};
-
-const badgeVariants = {
-  default: 'bg-primary text-primary-foreground',
-  secondary: 'bg-secondary text-secondary-foreground',
-  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-  success: 'bg-green-500/20 text-green-700 dark:text-green-300',
-  warning: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300',
-  danger: 'bg-red-500/20 text-red-700 dark:text-red-300',
-};
-
-const headerVariants = {
-  default: 'bg-card',
-  gradient: 'bg-gradient-to-br from-card/80 via-card to-card/80',
-  subtle: 'bg-muted/40',
-  transparent: 'bg-transparent',
-};
-
-const sizeVariants = {
-  sm: 'px-4 py-3',
-  default: 'px-6 py-6',
-  lg: 'px-8 py-8',
-};
-
 export function PageHeader({
   // Contenido principal
   description,
@@ -117,7 +57,8 @@ export function PageHeader({
 
   // Determinar el layout de las estadísticas
   const statsLayout = useMemo(() => {
-    const count = stats.length;
+    const count = stats.length - stats.filter(s => s.enabled === false).length
+    if (count <= 1) return 'grid-cols-1 md:grid-cols-1';
     if (count <= 2) return 'grid-cols-1 md:grid-cols-2';
     if (count <= 4) return 'grid-cols-1 md:grid-cols-4';
     return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
@@ -149,8 +90,8 @@ export function PageHeader({
                 className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
                 initial={animate ? { rotate: -10, scale: 0.9 } : false}
                 animate={animate ? {
-                  rotate: [0, -5, 0, 5, 0],
-                  scale: [1, 1.05, 1, 1.05, 1],
+                  rotate: [0, -10, 0, 10, 0],
+                  scale: [1, 1.10, 1, 1.10, 1],
                   transition: { duration: 5, repeat: Infinity, repeatType: "reverse" }
                 } : false}
               >
@@ -163,9 +104,9 @@ export function PageHeader({
                 className="text-3xl font-bold tracking-tight"
                 initial={animate ? { opacity: 0, y: 10 } : false}
                 animate={animate ? {
+                  transition: { duration: 0.4, delay: 0.2 },
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.4, delay: 0.2 }
                 } : false}
               >
                 {title}
@@ -232,7 +173,6 @@ export function PageHeader({
             {stats.map((stat, index) => {
               const colors = colorVariants[stat.color || 'default'];
               const enabled = stat.enabled !== false;
-              const StatIcon = stat.icon;
               if (!enabled) return null;
               return (
                 <Card key={index} className="overflow-hidden">
@@ -247,7 +187,7 @@ export function PageHeader({
                         </h3>
                       </div>
                       <div className={cn("rounded-full p-2", colors.bg)}>
-                        <StatIcon className={cn("h-5 w-5", colors.icon)} />
+                        <stat.icon className={cn("h-5 w-5", colors.icon)} />
                       </div>
                     </div>
 
@@ -294,4 +234,66 @@ export function PageHeader({
       )}
     </motion.div>
   )
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const colorVariants = {
+  default: {
+    bg: 'bg-muted/40',
+    text: 'text-foreground',
+    icon: 'text-muted-foreground',
+  },
+  primary: {
+    bg: 'bg-primary/10',
+    text: 'text-primary',
+    icon: 'text-primary',
+  },
+  secondary: {
+    bg: 'bg-secondary/10',
+    text: 'text-secondary',
+    icon: 'text-secondary',
+  },
+  success: {
+    bg: 'bg-green-500/10',
+    text: 'text-green-600 dark:text-green-400',
+    icon: 'text-green-500',
+  },
+  warning: {
+    bg: 'bg-yellow-500/10',
+    text: 'text-yellow-600 dark:text-yellow-400',
+    icon: 'text-yellow-500',
+  },
+  danger: {
+    bg: 'bg-red-500/10',
+    text: 'text-red-600 dark:text-red-400',
+    icon: 'text-red-500',
+  },
+  info: {
+    bg: 'bg-blue-500/10',
+    text: 'text-blue-600 dark:text-blue-400',
+    icon: 'text-blue-500',
+  }
+}
+
+const badgeVariants = {
+  default: 'bg-primary text-primary-foreground',
+  secondary: 'bg-secondary text-secondary-foreground',
+  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+  success: 'bg-green-500/20 text-green-700 dark:text-green-300',
+  warning: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300',
+  danger: 'bg-red-500/20 text-red-700 dark:text-red-300',
+}
+
+const headerVariants = {
+  default: 'bg-card',
+  subtle: 'bg-muted/40',
+  transparent: 'bg-transparent',
+  gradient: 'bg-gradient-to-br from-card/80 via-card to-card/80',
+}
+
+const sizeVariants = {
+  sm: 'px-4 py-3',
+  lg: 'px-8 py-8',
+  default: 'px-6 py-6',
 }

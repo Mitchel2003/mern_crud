@@ -1,4 +1,4 @@
-import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
+import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
 import { BarChart2, BookMarkedIcon, CalendarClock, Eye, FileCogIcon } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { PageHeader, Stat } from '#/common/elements/HeaderPage'
@@ -50,36 +50,43 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/curriculum/hoy',
+    enabled: credentials?.role !== 'client',
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
   /** Config table columns */
-  const columns = useMemo<MRT_ColumnDef<CurriculumChildren>[]>(() => [{
-    size: 150,
-    id: 'name',
-    header: 'Equipo',
-    accessorFn: (row) => row.name,
-  }, {
-    size: 100,
-    header: "Modelo",
-    id: "modelEquip",
-    accessorFn: (row) => row.modelEquip || 'Sin modelo'
-  }, {
-    size: 150,
-    header: "Cliente",
-    id: "office.headquarter.user.username",
-    accessorFn: (row) => row.office?.headquarter?.user?.username || 'Sin cliente'
-  }, {
-    size: 150,
-    header: "Sede",
-    id: "office.headquarter.address",
-    accessorFn: (row) => row.office?.headquarter?.address || 'Sin sede'
-  }, {
-    size: 90,
-    header: "Riesgo",
-    id: "riskClassification",
-    accessorFn: (row) => row.riskClassification
-  }], [])
+  const columns = useMemo<MRT_ColumnDef<CurriculumChildren>[]>(() => {
+    // to show columns default
+    const columnsArray: MRT_ColumnDef<CurriculumChildren>[] = [{
+      size: 150,
+      id: 'name',
+      header: 'Equipo',
+      accessorFn: (row) => row.name,
+    }, {
+      size: 100,
+      header: "Modelo",
+      id: "modelEquip",
+      accessorFn: (row) => row.modelEquip || 'Sin modelo'
+    }, {
+      size: 150,
+      header: "Sede",
+      id: "office.headquarter.name",
+      accessorFn: (row) => row.office?.headquarter?.name || 'Sin sede'
+    }]
+    // to show columns conditional
+    credentials?.role !== "client" && columnsArray.push({
+      size: 150,
+      header: "Cliente",
+      id: "office.headquarter.user.username",
+      accessorFn: (row) => row.office?.headquarter?.user?.username || 'Sin cliente'
+    }, {
+      size: 90,
+      header: "Riesgo",
+      id: "riskClassification",
+      accessorFn: (row) => row.riskClassification
+    })
+    return columnsArray
+  }, [credentials?.role])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
@@ -94,6 +101,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     initialState: {
       density: 'compact',
       showGlobalFilter: true,
+      showColumnFilters: true,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
     },
     positionToolbarAlertBanner: 'head-overlay',
@@ -112,7 +120,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { m: 'auto', width: 'auto', maxWidth: isMobile ? '140vw' : 'calc(100vw - 320px)' }
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? (credentials?.role !== 'client' ? '140vw' : '90vw') : '100%' }
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
@@ -120,30 +128,23 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     },
     renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
       <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
-        {/** to reset rows selected */}
-        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
-            <Button
-              size="small"
-              variant="text"
-              color="inherit"
-              onClick={() => table.resetRowSelection()}
-            >
-              Limpiar selección
-            </Button>
-          )}
-          <MRT_GlobalFilterTextField table={table} />
-          <MRT_ToggleFiltersButton table={table} />
-        </Box>
-        {/** to toggle dense and full screen */}
-        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-          <MRT_ToggleDensePaddingButton table={table} />
-        </Box>
+        {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+          <Button
+            size="small"
+            variant="text"
+            color="inherit"
+            onClick={() => table.resetRowSelection()}
+          >
+            Limpiar selección
+          </Button>
+        )}
+        <MRT_GlobalFilterTextField table={table} />
+        <MRT_ToggleFiltersButton table={table} />
       </Box>
     ),
     renderRowActionMenuItems: ({ row, closeMenu }) => {
-      const baseItems = [// To show for all users
-        // preview curriculum
+      // To show for all users (base)
+      const baseItems = [
         <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
@@ -152,14 +153,13 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
           })
         }}>
-          <ListItemIcon>
-            <Eye />
-          </ListItemIcon>
+          <ListItemIcon> <Eye /> </ListItemIcon>
           Visualizar
         </MenuItem>,
-
-        // descargar pdf
-        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+      ]
+      // To show only company, engineer and admin (conditional)
+      const conditionalItems = (credentials?.role !== 'client') ? [
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {//download curriculum
           closeMenu()
           confirmAction({
             title: 'Descargar curriculum',
@@ -167,15 +167,10 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             action: () => { handleDownload(row.original) }
           })
         }}>
-          <ListItemIcon>
-            <Download />
-          </ListItemIcon>
+          <ListItemIcon> <Download /> </ListItemIcon>
           Descargar pdf
-        </MenuItem>
-      ]
-      const accessItems = (credentials?.role !== 'client') ? [// To show only admin and engineer
-        // edit curriculum
-        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
+        </MenuItem>,
+        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {//edit curriculum
           closeMenu()
           confirmAction({
             title: 'Editar curriculum',
@@ -183,13 +178,10 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             action: () => { onChange(); navigate(`/form/curriculum/${row.original._id}`) }
           })
         }}>
-          <ListItemIcon>
-            <Update />
-          </ListItemIcon>
+          <ListItemIcon> <Update /> </ListItemIcon>
           Actualizar
         </MenuItem>,
-        // delete curriculum
-        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {
+        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {//delete curriculum
           closeMenu()
           confirmAction({
             isDestructive: true,
@@ -198,13 +190,11 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             action: () => { handleDelete(row.original._id) }
           })
         }}>
-          <ListItemIcon>
-            <Delete />
-          </ListItemIcon>
+          <ListItemIcon> <Delete /> </ListItemIcon>
           Eliminar
         </MenuItem>
       ] : []
-      return [...baseItems, ...accessItems]
+      return [...baseItems, ...conditionalItems]
     },
     renderToolbarAlertBannerContent: ({ table }) => (// alert banner of rows selected (actions on multi select)
       <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -398,8 +388,8 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           stats={stats}
           variant="gradient"
           icon={BookMarkedIcon}
-          title="Equipos biomédicos"
-          badge={{ text: "Sistema Activo", variant: "success", dot: true }}
+          title={`Equipos ${!isMobile ? 'biomédicos' : ''}`}
+          badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />
       </div>

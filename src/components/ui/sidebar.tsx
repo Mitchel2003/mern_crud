@@ -3,7 +3,7 @@ import { useThemeContext } from "@/context/ThemeContext"
 import { Slot } from "@radix-ui/react-slot"
 import * as React from "react"
 
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
@@ -205,7 +205,11 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="sr-only">
+              <SheetTitle>Menú de navegación</SheetTitle>
+              <SheetDescription>Navegación principal de la aplicación</SheetDescription>
+            </div>
+            {children}
           </SheetContent>
         </Sheet>
       )

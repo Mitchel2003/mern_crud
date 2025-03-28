@@ -196,7 +196,13 @@ const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
 
               <Separator className="bg-purple-100" />
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <Link to='https://wa.me/573178631535?text=Hola, quisiera saber más sobre tus servicios' target='_blank' rel='noopener noreferrer'>
+                  <Button variant="outline" className="gap-2">
+                    <Mail className="w-4 h-4" />
+                    Contactar
+                  </Button>
+                </Link>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="bg-purple-50">
                     Proveedor Verificado
@@ -205,12 +211,6 @@ const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
                     Servicio Activo
                   </Badge>
                 </div>
-                <Link to='https://wa.me/573178631535?text=Hola, quisiera saber más sobre tus servicios biomedicos' target='_blank' rel='noopener noreferrer'>
-                  <Button variant="outline" className="gap-2">
-                    <Mail className="w-4 h-4" />
-                    Contactar
-                  </Button>
-                </Link>
               </div>
             </div>
           </div>
