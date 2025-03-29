@@ -13,52 +13,59 @@ export const ScannerHub = () => {
   const [isScanning, setIsScanning] = useState(true)
   const [isUrl, setIsUrl] = useState(false)
 
-  // Verificar si el texto escaneado es una URL válida
+  /** Verifies if the scanned text is a valid URL and redirects immediately */
   useEffect(() => {
     if (lastScanned) {
       const urlValid = isValidUrl(lastScanned)
       setIsUrl(urlValid)
-
-      if (urlValid && !isRedirecting) {// Si es una URL válida, redirigir automáticamente
+      if (urlValid && !isRedirecting) {
         setIsRedirecting(true)
         notifyInfo({ title: "Redireccionando...", message: "Abriendo la URL detectada" })
-
-        // Pequeño retraso para que el usuario vea la notificación
-        setTimeout(() => { window.location.href = lastScanned }, 1500)
+        window.location.href = lastScanned
       }
     } else { setIsUrl(false) }
   }, [lastScanned])
 
+  /** Handles the success of a QR scan */
   const handleScanSuccess = (decodedText: string) => {
+    // Stop the scanner immediately
+    setIsScanning(false)
     setLastScanned(decodedText)
-    setIsScanning(false) // Pausar el escáner al detectar un código
-    // Verificar si es una URL
-    if (!isValidUrl(decodedText)) return;
-    notifySuccess({ title: "QR escaneado correctamente", message: "El contenido ha sido detectado y está listo para copiar." })
-    // Intentar copiar al portapapeles solo si NO es una URL    
-    navigator.clipboard.writeText(decodedText).then(() => {
-      notifyInfo({ title: "Copiado", message: "Contenido copiado al portapapeles" })
-    }).catch(() => { console.warn("No se pudo copiar automáticamente") })
+    // Verify if it's a URL
+    const isValidUrlResult = isValidUrl(decodedText)
+    if (!isValidUrlResult) {
+      notifySuccess({ title: "QR escaneado correctamente", message: "El contenido ha sido detectado y está listo para copiar." })
+      // Try to copy to clipboard only if it's not a URL
+      navigator.clipboard.writeText(decodedText)
+        .then(() => { notifyInfo({ title: "Copiado", message: "Contenido copiado al portapapeles" }) })
+        .catch(() => { console.warn("No se pudo copiar automáticamente") })
+    }
   }
-  const handleScanError = (error: string) => {// Solo notificar errores críticos y no repetitivos
-    !error.includes('MultiFormat') && notifyError({ title: "Error al escanear QR", message: error })
-  }
+
+  /** Handles the action of copying the last scanned content to the clipboard */
   const handleCopyToClipboard = () => {
     if (!lastScanned) return
-    navigator.clipboard.writeText(lastScanned).then(() => {
-      notifySuccess({ title: "Copiado", message: "Contenido copiado al portapapeles" })
-    }).catch((err) => { notifyError({ title: "Error", message: "No se pudo copiar al portapapeles." + err }) })
+    navigator.clipboard.writeText(lastScanned)
+      .then(() => { notifySuccess({ title: "Copiado", message: "Contenido copiado al portapapeles" }) })
+      .catch((err) => { notifyError({ title: "Error", message: "No se pudo copiar al portapapeles." + err }) })
   }
+  /** Handles the action of opening a URL. If the last scanned content is a valid URL, it redirects to that URL. */
   const handleOpenUrl = () => {
     if (!lastScanned || !isUrl) return
     window.location.href = lastScanned
+    setIsRedirecting(true)
   }
+  /** Resets the scanner state by clearing the last scanned content and reinitializing the scanner */
   const resetScanner = () => {
     setLastScanned(null)
     setIsScanning(true)
     setIsRedirecting(false)
   }
+  /** Handles errors during QR scanning */
+  const handleScanError = (error: string) => { !error.includes('MultiFormat') && notifyError({ title: "Error al escanear QR", message: error }) }
+  /** Toggles the scanner state between active and paused */
   const toggleScanner = () => { setIsScanning(prev => !prev) }
+
 
   return (
     <div className="container mx-auto p-4">
@@ -67,8 +74,8 @@ export const ScannerHub = () => {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">Escáner QR</h1>
             <Button
-              variant="outline"
               size="icon"
+              variant="outline"
               onClick={toggleScanner}
               title={isScanning ? "Pausar escáner" : "Activar escáner"}
             >
@@ -79,9 +86,10 @@ export const ScannerHub = () => {
           {isScanning ? (
             <div className="space-y-4">
               <QRScanner
-                onScanSuccess={handleScanSuccess}
-                onScanError={handleScanError}
                 fps={5}
+                isScanning={isScanning}
+                onScanError={handleScanError}
+                onScanSuccess={handleScanSuccess}
                 qrbox={{ width: 250, height: 250 }}
               />
               <p className="text-sm text-muted-foreground text-center">
@@ -99,22 +107,12 @@ export const ScannerHub = () => {
                     </p>
                     <div className="flex-shrink-0 flex gap-1">
                       {lastScanned && !isUrl && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={handleCopyToClipboard}
-                          title="Copiar al portapapeles"
-                        >
+                        <Button size="icon" variant="ghost" title="Copiar al portapapeles" onClick={handleCopyToClipboard}>
                           <Copy className="h-4 w-4" />
                         </Button>
                       )}
                       {isUrl && !isRedirecting && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={handleOpenUrl}
-                          title="Abrir enlace"
-                        >
+                        <Button size="icon" variant="ghost" title="Abrir enlace" onClick={handleOpenUrl}>
                           <ExternalLink className="h-4 w-4" />
                         </Button>
                       )}
@@ -124,29 +122,17 @@ export const ScannerHub = () => {
               </Card>
 
               <div className="flex justify-between mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={resetScanner}
-                >
+                <Button size="sm" variant="outline" onClick={resetScanner}>
                   Escanear otro código
                 </Button>
 
                 {isUrl && !isRedirecting && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={handleOpenUrl}
-                  >
+                  <Button size="sm" variant="default" onClick={handleOpenUrl}>
                     Visitar enlace
                   </Button>
                 )}
                 {isRedirecting && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    disabled
-                  >
+                  <Button disabled size="sm" variant="default">
                     Redireccionando...
                   </Button>
                 )}
