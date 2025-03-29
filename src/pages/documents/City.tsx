@@ -1,18 +1,18 @@
-import OfficeSection from "@/sections/office/OfficeSection"
-import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
+import { useThemeContext } from "@/context/ThemeContext"
+import CitySection from "@/sections/documents/city/CitySection"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
-const Office = () => {
+const City = () => {
   const { theme } = useThemeContext()
   const { id } = useParams()
 
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
-      <OfficeSection theme={theme} id={id} />
+      <CitySection theme={theme} id={id} />
     </Suspense>
   )
 }
 
-export default Office 
+export default City

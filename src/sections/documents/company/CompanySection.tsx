@@ -1,49 +1,28 @@
-import { defaultStyles, activeStyles, navigationTabs } from '@/utils/constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
-import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import FormClientSection from './../flow/user/FormUserSection'
-import TableClientSection from './TableClientSection'
-const route = '/client'
+import FormCompanySection from '../../flow/user/FormUserSection'
+import TableCompanySection from './TableCompanySection'
+const route = '/company'
 
-interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
+interface CompanySectionProps extends ThemeContextProps { id: string | undefined }
 
-const ClientSection = ({ theme, id }: ClientSectionProps) => {
-  const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
+const CompanySection = ({ theme, id }: CompanySectionProps) => {
   const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Clientes
+          Proveedores de servicios
         </h1>
       </div>
 
       <Tabs value={tab} onValueChange={handle}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Navigation action tabs */}
-          <TabsList className={cn("mb-4 md:mb-0",
-            "bg-muted/60 backdrop-blur transition-all",
-            "supports-[backdrop-filter]:bg-background/60"
-          )}>
-            {navigationTabs.map(({ value, label, icon, paths, baseRoute }) => (
-              <TabsTrigger
-                key={value}
-                className={getStateTab(paths)}
-                onClick={() => { handleTab(baseRoute) }}
-                value={paths.includes(route) ? 'table' : value}
-              >
-                {label}
-                <span className="duration-200 group-hover:scale-110"> {icon} </span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
           {/* Local action tabs */}
           <TabsList className={cn(
             "bg-muted/60 backdrop-blur transition-all",
@@ -72,18 +51,16 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableClientSection theme={theme} onChange={handle} />
+          <TableCompanySection theme={theme} onChange={handle} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormClientSection id={id} theme={theme} onChange={() => handle('table')} role="client" />
+            <FormCompanySection id={id} theme={theme} onChange={() => handle('table')} role="company" />
           </Card>
         </TabsContent>
-        <TabsContent value="headquarters"> <Skeleton theme={theme} /> </TabsContent>
-        <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>
       </Tabs>
     </div>
   )
 }
 
-export default ClientSection
+export default CompanySection

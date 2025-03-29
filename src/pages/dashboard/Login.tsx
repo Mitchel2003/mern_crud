@@ -1,4 +1,4 @@
-import LoginSection from '@/sections/login/LoginSection'
+import LoginSection from '@/sections/dashboard/login/LoginSection'
 import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom'

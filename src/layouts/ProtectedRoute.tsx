@@ -1,10 +1,10 @@
-import { useThemeContext } from "@/context/ThemeContext";
-import Skeleton from "#/common/skeletons/SkeletonLarge";
+import { useThemeContext } from "@/context/ThemeContext"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useAuthContext } from "@/context/AuthContext"
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom"
 
 function ProtectedRoute() {
-  const { isAuth, loading } = useAuthContext();
+  const { isAuth, loading } = useAuthContext()
   const { theme } = useThemeContext()
 
   if (loading) return <Skeleton theme={theme} />

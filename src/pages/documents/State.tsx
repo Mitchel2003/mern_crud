@@ -1,18 +1,18 @@
-import EngineerSection from "@/sections/engineer/EngineerSection"
+import StateSection from "@/sections/documents/state/StateSection"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
-const Engineer = () => {
+const State = () => {
   const { theme } = useThemeContext()
   const { id } = useParams()
 
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
-      <EngineerSection theme={theme} id={id} />
+      <StateSection theme={theme} id={id} />
     </Suspense>
   )
 }
 
-export default Engineer
+export default State

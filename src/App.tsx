@@ -1,29 +1,28 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import { LocationProvider } from "@/context/LocationContext";
 import { FormatProvider } from "@/context/FormatContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
-import ProtectedRoute from "@/auth/ProtectedRoute";
+
+import Curriculum, { PreviewCurriculum } from "@/pages/documents/Curriculum";
+import Client, { ClientFlow } from "@/pages/documents/Client";
+import Maintenance from "@/pages/documents/Maintenance";
+import Engineer from "@/pages/documents/Engineer";
+import Company from "@/pages/documents/Company";
+
+import Headquarter from "@/pages/documents/Headquarter";
+import Country from "@/pages/documents/Country";
+import Office from "@/pages/documents/Office";
+import State from "@/pages/documents/State";
+import City from "@/pages/documents/City";
+
+import ProtectedRoute from "@/layouts/ProtectedRoute";
+import { ScannerHub } from "@/pages/hub/ScannerHub";
+import DocumentsHub from "@/pages/hub/DocumentsHub";
+import Dashboard from "@/pages/dashboard/Dashboard";
+import Login from "@/pages/dashboard/Login";
+import Home from "@/pages/dashboard/Home";
 import RootLayout from "@/layouts/Root";
-
-import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
-import Client, { ClientFlow } from "@/pages/Client";
-import { ScannerHub } from "#/pages/hub/ScannerHub";
-import DocumentsHub from "#/pages/hub/DocumentsHub";
-import Maintenance from "@/pages/Maintenance";
-import Engineer from "@/pages/Engineer";
-import Company from "@/pages/Company";
-
-import Headquarter from "@/pages/Headquarter";
-import Country from "@/pages/Country";
-import Office from "@/pages/Office";
-import State from "@/pages/State";
-import City from "@/pages/City";
-
-import Dashboard from "@/pages/Dashboard";
-import Login from "@/pages/Login";
-import Home from "@/pages/Home";
 
 function App() {
   return (

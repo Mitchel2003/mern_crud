@@ -1,6 +1,6 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import Carousel from '#/common/elements/Carousel'
-import ItemInfo from '#/pages/home/ItemInfo'
+import ItemInfo from '@/components/pages/dashboard/home/ItemInfo'
 
 interface Info {
   image: string

@@ -1,4 +1,4 @@
-import { useClientDashboard } from "@/hooks/dashboard/useClientDashboard"
+import { useClientDashboard } from "@/hooks/format/client/useClientDashboard"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useAuthContext } from "@/context/AuthContext"

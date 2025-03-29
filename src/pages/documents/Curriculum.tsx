@@ -1,5 +1,5 @@
-import PreviewCurriculumSection from "@/sections/curriculum/PreviewCurriculumSection"
-import CurriculumSection from "@/sections/curriculum/CurriculumSection"
+import PreviewCurriculumSection from "@/sections/documents/curriculum/PreviewCurriculumSection"
+import CurriculumSection from "@/sections/documents/curriculum/CurriculumSection"
 import { type Curriculum } from "@/interfaces/context.interface"
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"

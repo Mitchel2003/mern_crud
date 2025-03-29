@@ -1,11 +1,11 @@
-import CountrySection from "@/sections/country/CountrySection"
+import MaintenanceSection from '@/sections/documents/maintenance/MaintenanceSection'
 import { createTheme, ThemeProvider } from '@mui/material'
-import { useParams, useLocation } from "react-router-dom"
-import { useThemeContext } from "@/context/ThemeContext"
-import Skeleton from "#/common/skeletons/SkeletonLarge"
-import { Suspense } from "react"
+import { useParams, useLocation } from 'react-router-dom'
+import { useThemeContext } from '@/context/ThemeContext'
+import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { Suspense } from 'react'
 
-const Country = () => {
+const Maintenance = () => {
   const { theme } = useThemeContext()
   const location = useLocation()
   const { id } = useParams()
@@ -16,10 +16,10 @@ const Country = () => {
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
       <ThemeProvider theme={table}>
-        <CountrySection theme={theme} id={filter || id} />
+        <MaintenanceSection theme={theme} id={filter || id} />
       </ThemeProvider>
     </Suspense>
   )
 }
 
-export default Country
+export default Maintenance

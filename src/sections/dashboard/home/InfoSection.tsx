@@ -1,5 +1,5 @@
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import CarouselInfo from '#/pages/home/CarouselInfo'
+import CarouselInfo from '@/components/pages/dashboard/home/CarouselInfo'
 
 const InfoSection = ({ theme }: ThemeContextProps) => (
   <CarouselInfo

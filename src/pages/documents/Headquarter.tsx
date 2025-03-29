@@ -1,18 +1,18 @@
-import CompanySection from "@/sections/company/CompanySection"
+import HeadquarterSection from "@/sections/documents/headquarter/HeadquarterSection"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
-const Company = () => {
+const Headquarter = () => {
   const { theme } = useThemeContext()
   const { id } = useParams()
 
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
-      <CompanySection theme={theme} id={id} />
+      <HeadquarterSection theme={theme} id={id} />
     </Suspense>
   )
 }
 
-export default Company
+export default Headquarter 

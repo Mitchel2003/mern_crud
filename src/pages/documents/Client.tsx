@@ -1,5 +1,5 @@
 import ClientFlowSection from "@/sections/flow/client/ClientFlowSection"
-import ClientSection from "@/sections/client/ClientSection"
+import ClientSection from "@/sections/documents/client/ClientSection"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useParams } from "react-router-dom"

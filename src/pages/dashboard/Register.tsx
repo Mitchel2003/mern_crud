@@ -1,4 +1,4 @@
-import RegisterSection from "@/sections/register/RegisterSection"
+import RegisterSection from "@/sections/dashboard/register/RegisterSection"
 import { useThemeContext } from "@/context/ThemeContext"
 import { useAuthContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
