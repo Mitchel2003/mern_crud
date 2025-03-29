@@ -16,8 +16,8 @@ import Navbar from '#/layout/Navbar'
 
 const RootLayout = () => {
   const [open, setOpen] = useState(true)
-  const { user } = useAuthContext()
-  useMemo(() => setOpen(user?.role !== 'client'), [user])
+  const { user: credentials } = useAuthContext()
+  useMemo(() => setOpen(credentials?.role !== 'client'), [credentials])
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

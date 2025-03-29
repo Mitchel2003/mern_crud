@@ -9,6 +9,7 @@ import RootLayout from "@/layouts/Root";
 
 import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Client, { ClientFlow } from "@/pages/Client";
+import DocumentsHub from "#/pages/hub/DocumentsHub";
 import Maintenance from "@/pages/Maintenance";
 import Engineer from "@/pages/Engineer";
 import Company from "@/pages/Company";
@@ -42,6 +43,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
 
                     {/* forms routes */}
+                    <Route path="/form" element={<DocumentsHub />} /> {/*list documents*/}
                     <Route path="/form/curriculum" element={<Curriculum />} />
                     <Route path="/form/curriculums" element={<Curriculum />} />
                     <Route path="/form/curriculum/:id" element={<Curriculum />} />

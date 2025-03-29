@@ -1,4 +1,4 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2, Calendar } from 'lucide-react'
 import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
@@ -34,10 +34,10 @@ export const links = () => {
       href: '/dashboard',
       icon: TerminalSquare
     },
-    {// equipment
-      label: 'Equipos',
-      icon: FileTextIcon,
-      href: '/form/curriculums',
+    {// documents
+      href: '/form',
+      icon: PermMedia,
+      label: 'Documentación'
     }
   ]
   /*--------------------------------------------------company--------------------------------------------------*/

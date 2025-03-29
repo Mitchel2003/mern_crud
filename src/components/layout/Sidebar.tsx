@@ -1,6 +1,7 @@
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "#/ui/collapsible"
 import { NavItemProps } from "@/interfaces/props.interface"
 import { Link, useLocation } from 'react-router-dom'
+import { useIsMobile } from '@/hooks/ui/use-mobile'
 import { ChevronDown } from 'lucide-react'
 import { links } from '@/utils/constants'
 import React from 'react'
@@ -15,10 +16,13 @@ import {
   SidebarMenuSub,
   SidebarContent,
   SidebarGroup,
-  SidebarMenu
+  SidebarMenu,
+  useSidebar
 } from "#/ui/sidebar"
 
 export const Sidebar = () => {
+  const { toggleSidebar } = useSidebar()
+  const isMobile = useIsMobile()
   const items = links()
   return (
     <SidebarShadcn>
@@ -29,7 +33,7 @@ export const Sidebar = () => {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarItem item={item} />
+                  <SidebarItem item={item} isMobile={isMobile} toggle={toggleSidebar} />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -40,14 +44,13 @@ export const Sidebar = () => {
   )
 }
 
-interface SidebarItemProps { item: NavItemProps }
-const SidebarItem = ({ item }: SidebarItemProps) => {
-  const location = useLocation()
-  const isActive = location.pathname === item.href
+interface SidebarItemProps { item: NavItemProps, isMobile: boolean, toggle: () => void }
+const SidebarItem = ({ item, isMobile, toggle }: SidebarItemProps) => {
+  const isActive = useLocation().pathname === item.href
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && toggle()}>
       <CollapsibleTrigger asChild>
         <SidebarMenuButton asChild isActive={isActive}>
           <Link
@@ -66,7 +69,7 @@ const SidebarItem = ({ item }: SidebarItemProps) => {
         <CollapsibleContent>
           <SidebarMenuSub>
             {item.subItems.map((subItem) => (
-              <SidebarSubItem key={subItem.label} item={subItem} />
+              <SidebarSubItem key={subItem.label} item={subItem} toggle={toggle} isMobile={isMobile} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>
@@ -75,15 +78,14 @@ const SidebarItem = ({ item }: SidebarItemProps) => {
   )
 }
 
-interface SidebarSubItemProps { item: NavItemProps }
-const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
-  const location = useLocation()
-  const isActive = location.pathname === item.href
+interface SidebarSubItemProps { item: NavItemProps, isMobile: boolean, toggle: () => void }
+const SidebarSubItem = ({ item, isMobile, toggle }: SidebarSubItemProps) => {
+  const isActive = useLocation().pathname === item.href
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
     <SidebarMenuSubItem>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && toggle()}>
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton asChild isActive={isActive}>
             <Link
@@ -102,7 +104,7 @@ const SidebarSubItem = ({ item }: SidebarSubItemProps) => {
           <CollapsibleContent>
             <SidebarMenuSub>
               {item.subItems.map((subSubItem) => (
-                <SidebarSubItem key={subSubItem.label} item={subSubItem} />
+                <SidebarSubItem key={subSubItem.label} item={subSubItem} toggle={toggle} isMobile={isMobile} />
               ))}
             </SidebarMenuSub>
           </CollapsibleContent>
