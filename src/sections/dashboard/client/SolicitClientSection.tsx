@@ -63,7 +63,7 @@ const SolicitClientSection = ({ theme, totalDocuments }: SolicitClientSectionPro
         transition={{ type: "spring", stiffness: 300 }}
       >
         <Card
-          onClick={() => { navigate('/') }}
+          onClick={() => { navigate('/scanner') }}
           className={cn("relative overflow-hidden h-64 cursor-pointer group", theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100')}
         >
           <div className={cn(

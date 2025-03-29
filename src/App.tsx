@@ -9,6 +9,7 @@ import RootLayout from "@/layouts/Root";
 
 import Curriculum, { PreviewCurriculum } from "@/pages/Curriculum";
 import Client, { ClientFlow } from "@/pages/Client";
+import { ScannerHub } from "#/pages/hub/ScannerHub";
 import DocumentsHub from "#/pages/hub/DocumentsHub";
 import Maintenance from "@/pages/Maintenance";
 import Engineer from "@/pages/Engineer";
@@ -41,6 +42,7 @@ function App() {
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/scanner" element={<ScannerHub />} />
 
                     {/* forms routes */}
                     <Route path="/form" element={<DocumentsHub />} /> {/*list documents*/}
