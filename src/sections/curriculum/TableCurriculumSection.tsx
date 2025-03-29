@@ -9,6 +9,7 @@ import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/c
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useCurriculumTable, useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
+import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
 import { tableTranslations } from "@/utils/constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
@@ -204,7 +205,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             {table.getSelectedRowModel().rows.length} currículum(s) seleccionado(s)
           </Typography>
         </Box>
-        {/** actions selected rows (2 buttons) */}
+        {/** actions selected rows (3 buttons) */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
           <Button
             size="small"
@@ -225,27 +226,46 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           >
             Descargar ZIP
           </Button>
-          {(credentials?.role !== 'client') && (
-            <Button
-              size="small"
-              color="secondary"
-              variant="outlined"
-              startIcon={<Download />}
-              onClick={() => {
-                const selectedRows = table.getSelectedRowModel().flatRows
-                const firstEquipment = selectedRows[0].original.name
-                const otherCount = selectedRows.length - 1
-                confirmAction({
-                  title: 'Descargar currículums + mantenimientos',
-                  description: `¿Deseas descargar los currículums de:
+
+          <Button
+            size="small"
+            color="secondary"
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={() => {
+              const selectedRows = table.getSelectedRowModel().flatRows
+              const firstEquipment = selectedRows[0].original.name
+              const otherCount = selectedRows.length - 1
+              confirmAction({
+                title: 'Descargar currículums + mantenimientos',
+                description: `¿Deseas descargar los currículums de:
                   ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                  action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
-                })
-              }}
-            >
-              Descargar ZIP + mantenimientos
-            </Button>
-          )}
+                action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
+              })
+            }}
+          >
+            Descargar ZIP + mantenimientos
+          </Button>
+
+          <Button
+            size="small"
+            color="info"
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={() => {
+              const selectedRows = table.getSelectedRowModel().flatRows
+              const firstEquipment = selectedRows[0].original.name
+              const otherCount = selectedRows.length - 1
+              confirmAction({
+                title: 'Descargar QRs',
+                description: `¿Deseas descargar los QRs de:
+                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
+                action: () => generatePDF(selectedRows.map(row => row.original))
+              })
+            }}
+          >
+            Descargar QRs
+          </Button>
         </Box>
       </Box>
     ),
