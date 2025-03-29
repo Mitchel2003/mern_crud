@@ -3,35 +3,22 @@ import { useEffect, useRef, useState } from "react"
 
 interface QRScannerProps {
   onScanSuccess: (decodedText: string) => void
+  qrbox?: { width: number; height: number }
   onScanError?: (error: string) => void
   fps?: number
-  qrbox?: { width: number; height: number }
 }
 
 export const QRScanner = ({
+  qrbox = { width: 250, height: 250 },
   onScanSuccess,
   onScanError,
   fps = 5, // Reducido a 5 fps para evitar problemas en dispositivos Android
-  qrbox = { width: 250, height: 250 }
 }: QRScannerProps) => {
   const qrRef = useRef<Html5Qrcode | null>(null)
   const [cameraList, setCameraList] = useState<CameraDevice[]>([])
   const [selectedCameraId, setSelectedCameraId] = useState<string>("")
   const [isScanning, setIsScanning] = useState<boolean>(false)
   const [error, setError] = useState<string>("")
-
-  // Función para solicitar permisos de cámara explícitamente
-  const requestCameraPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true })
-      return true
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Error al solicitar permisos de cámara: ${errorMessage}`)
-      onScanError?.(`Error al solicitar permisos de cámara: ${errorMessage}`)
-      return false
-    }
-  }
 
   // Función para obtener la lista de cámaras
   const getCameraList = async () => {
@@ -149,16 +136,13 @@ export const QRScanner = ({
       const qrScanner = new Html5Qrcode("qr-reader", /* verbose= */ true)
       qrRef.current = qrScanner
 
-      // Solicitar permisos y obtener lista de cámaras
-      const hasPermission = await requestCameraPermission()
-      if (hasPermission) {
-        const hasCameras = await getCameraList()
-        if (hasCameras) {
-          // Esperar un poco antes de iniciar el escaneo para evitar problemas
-          setTimeout(() => {
-            startScanning()
-          }, 500)
-        }
+      // Obtener lista de cámaras (los permisos los manejará el navegador automáticamente)
+      const hasCameras = await getCameraList()
+      if (hasCameras) {
+        // Esperar un poco antes de iniciar el escaneo para evitar problemas
+        setTimeout(() => {
+          startScanning()
+        }, 500)
       }
     }
 

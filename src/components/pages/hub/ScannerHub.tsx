@@ -1,122 +1,64 @@
 import { useNotification } from "@/hooks/ui/useNotification"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Camera, Copy, ExternalLink } from "lucide-react"
 import { isValidUrl } from "@/utils/validation"
 import { QRScanner } from "@/lib/qrs/QRScanner"
+import { Card, CardContent } from "#/ui/card"
 import { useState, useEffect } from "react"
+import { Button } from "#/ui/button"
 
 export const ScannerHub = () => {
   const { notifySuccess, notifyError, notifyInfo } = useNotification()
   const [lastScanned, setLastScanned] = useState<string | null>(null)
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const [isScanning, setIsScanning] = useState(true)
   const [isUrl, setIsUrl] = useState(false)
 
   // Verificar si el texto escaneado es una URL válida
   useEffect(() => {
     if (lastScanned) {
-      setIsUrl(isValidUrl(lastScanned))
-    } else {
-      setIsUrl(false)
-    }
+      const urlValid = isValidUrl(lastScanned)
+      setIsUrl(urlValid)
+
+      if (urlValid && !isRedirecting) {// Si es una URL válida, redirigir automáticamente
+        setIsRedirecting(true)
+        notifyInfo({ title: "Redireccionando...", message: "Abriendo la URL detectada" })
+
+        // Pequeño retraso para que el usuario vea la notificación
+        setTimeout(() => { window.location.href = lastScanned }, 1500)
+      }
+    } else { setIsUrl(false) }
   }, [lastScanned])
 
   const handleScanSuccess = (decodedText: string) => {
     setLastScanned(decodedText)
     setIsScanning(false) // Pausar el escáner al detectar un código
-
     // Verificar si es una URL
-    const isValidLink = isValidUrl(decodedText)
-
-    if (isValidLink) {
-      notifySuccess({
-        title: "URL detectada",
-        message: "Se ha detectado una URL válida. Puede visitarla o copiarla."
-      })
-    } else {
-      notifySuccess({
-        title: "QR escaneado correctamente",
-        message: "El contenido ha sido detectado y está listo para copiar."
-      })
-    }
-
-    // Intentar copiar al portapapeles
-    try {
-      navigator.clipboard.writeText(decodedText)
-        .then(() => {
-          notifyInfo({
-            title: "Copiado",
-            message: "Contenido copiado al portapapeles"
-          })
-        })
-        .catch(() => {
-          console.warn("No se pudo copiar automáticamente")
-        })
-    } catch (err) {
-      console.warn("Error al intentar copiar:", err)
-    }
+    if (!isValidUrl(decodedText)) return;
+    notifySuccess({ title: "QR escaneado correctamente", message: "El contenido ha sido detectado y está listo para copiar." })
+    // Intentar copiar al portapapeles solo si NO es una URL    
+    navigator.clipboard.writeText(decodedText).then(() => {
+      notifyInfo({ title: "Copiado", message: "Contenido copiado al portapapeles" })
+    }).catch(() => { console.warn("No se pudo copiar automáticamente") })
   }
-
-  const handleScanError = (error: string) => {
-    // Solo notificar errores críticos y no repetitivos
-    if (!error.includes('MultiFormat')) {
-      notifyError({
-        title: "Error al escanear QR",
-        message: error
-      })
-    }
+  const handleScanError = (error: string) => {// Solo notificar errores críticos y no repetitivos
+    !error.includes('MultiFormat') && notifyError({ title: "Error al escanear QR", message: error })
   }
-
   const handleCopyToClipboard = () => {
     if (!lastScanned) return
-
-    try {
-      navigator.clipboard.writeText(lastScanned)
-        .then(() => {
-          notifySuccess({
-            title: "Copiado",
-            message: "Contenido copiado al portapapeles"
-          })
-        })
-        .catch((err) => {
-          console.error("Error al copiar:", err)
-          notifyError({
-            title: "Error",
-            message: "No se pudo copiar al portapapeles. Su navegador puede no soportar esta función."
-          })
-        })
-    } catch (err) {
-      console.error("Error al intentar copiar:", err)
-      notifyError({
-        title: "Error",
-        message: "No se pudo copiar al portapapeles"
-      })
-    }
+    navigator.clipboard.writeText(lastScanned).then(() => {
+      notifySuccess({ title: "Copiado", message: "Contenido copiado al portapapeles" })
+    }).catch((err) => { notifyError({ title: "Error", message: "No se pudo copiar al portapapeles." + err }) })
   }
-
   const handleOpenUrl = () => {
     if (!lastScanned || !isUrl) return
-
-    try {
-      // Abrir en la misma pestaña
-      window.location.href = lastScanned
-    } catch (err) {
-      console.error("Error al abrir URL:", err)
-      notifyError({
-        title: "Error",
-        message: "No se pudo abrir la URL"
-      })
-    }
+    window.location.href = lastScanned
   }
-
-  const toggleScanner = () => {
-    setIsScanning(prev => !prev)
-  }
-
   const resetScanner = () => {
     setLastScanned(null)
     setIsScanning(true)
+    setIsRedirecting(false)
   }
+  const toggleScanner = () => { setIsScanning(prev => !prev) }
 
   return (
     <div className="container mx-auto p-4">
@@ -156,7 +98,7 @@ export const ScannerHub = () => {
                       {lastScanned || 'Ningún código escaneado aún'}
                     </p>
                     <div className="flex-shrink-0 flex gap-1">
-                      {lastScanned && (
+                      {lastScanned && !isUrl && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -166,7 +108,7 @@ export const ScannerHub = () => {
                           <Copy className="h-4 w-4" />
                         </Button>
                       )}
-                      {isUrl && (
+                      {isUrl && !isRedirecting && (
                         <Button
                           variant="ghost"
                           size="icon"
@@ -190,13 +132,22 @@ export const ScannerHub = () => {
                   Escanear otro código
                 </Button>
 
-                {isUrl && (
+                {isUrl && !isRedirecting && (
                   <Button
                     variant="default"
                     size="sm"
                     onClick={handleOpenUrl}
                   >
                     Visitar enlace
+                  </Button>
+                )}
+                {isRedirecting && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    disabled
+                  >
+                    Redireccionando...
                   </Button>
                 )}
               </div>
