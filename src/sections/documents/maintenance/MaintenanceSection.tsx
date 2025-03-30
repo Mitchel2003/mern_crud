@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
+import { useAuthContext } from "@/context/AuthContext"
 import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
@@ -13,13 +14,17 @@ interface MaintenanceSectionProps extends ThemeContextProps { id: string | undef
 
 const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
   const { tab, isQuery, handle } = useTabs({ id, to: route })
+  const { user } = useAuthContext()
+  const params = id && isQuery ?
+    JSON.parse(decodeURIComponent(id)) : null
   return (
-    <main className="container p-6">
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
         {/* Local action tabs */}
         <TabsList className={cn(
           "bg-muted/60 backdrop-blur transition-all",
-          "supports-[backdrop-filter]:bg-background/60"
+          "supports-[backdrop-filter]:bg-background/60",
+          user?.role === 'client' && 'hidden'
         )}>
           <TabsTrigger
             value="table"
@@ -43,7 +48,7 @@ const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} params={id && isQuery ? JSON.parse(decodeURIComponent(id)) : null} />
+          <TableMaintenanceSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

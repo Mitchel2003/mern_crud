@@ -1,4 +1,4 @@
-import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleDensePaddingButton, MRT_ToggleFiltersButton, MRT_ToggleFullScreenButton, useMaterialReactTable } from "material-react-table"
+import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
 import { BarChart2, CalendarClock, Clock, AlertTriangle, Wrench } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { PageHeader, Stat } from '#/common/elements/HeaderPage'
@@ -6,7 +6,7 @@ import { Update, Delete, Download } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Maintenance, ThemeContextProps } from "@/interfaces/context.interface"
+import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useMaintenanceTable } from "@/hooks/auth/useFormatForm"
 
 import { tableTranslations } from "@/utils/constants"
@@ -16,7 +16,11 @@ import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps {
+  /** Parámetros para filtrar la tabla de mantenimientos, trigger on table curriculum */
   params?: { name?: string; modelEquip?: string } | null
+  /** Credenciales del usuario, util para trabajar con los permisos, rol, etc */
+  credentials: User
+  /** Función para cambiar entre las pestañas tabs */
   onChange: () => void
 }
 
@@ -27,9 +31,10 @@ interface TableMaintenanceSectionProps extends ThemeContextProps {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los formatos, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSectionProps) => {
+const TableMaintenanceSection = ({ theme, params, credentials, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
+  const isClient = credentials?.role === 'client'
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
@@ -43,6 +48,7 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
     title: 'Total Mantenimientos',
   }, {
     color: 'success',
+    enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/mantenimiento/hoy',
@@ -62,37 +68,43 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
   }]
 
   /** Config table columns */
-  const columns = useMemo<MRT_ColumnDef<Maintenance>[]>(() => [{
-    size: 150,
-    header: 'Equipo',
-    id: 'curriculum.name',
-    accessorFn: (row) => row.curriculum.name,
-  }, {
-    size: 125,
-    header: "Modelo",
-    id: "curriculum.modelEquip",
-    accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
-  }, {
-    size: 200,
-    header: "Cliente",
-    id: "curriculum.office.headquarter.user.username",
-    accessorFn: (row) => row?.curriculum?.office?.headquarter?.user?.username || 'Sin cliente'
-  }, {
-    size: 100,
-    id: "typeMaintenance",
-    header: "Tipo mantenimiento",
-    accessorFn: (row) => row.typeMaintenance
-  }, {
-    size: 100,
-    header: "Estado",
-    id: "statusEquipment",
-    accessorFn: (row) => row.statusEquipment
-  }, {
-    size: 100,
-    id: "dateNextMaintenance",
-    header: "Prox. mantenimiento",
-    accessorFn: (row) => formatDateTime(row.dateNextMaintenance)
-  }], [])
+  const columns = useMemo(() => {
+    const array: MRT_ColumnDef<Maintenance>[] = [{
+      size: 150,
+      header: 'Equipo',
+      id: 'curriculum.name',
+      accessorFn: (row) => row.curriculum.name,
+    }, {
+      size: 125,
+      header: "Modelo",
+      id: "curriculum.modelEquip",
+      accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
+    }, {
+      size: 200,
+      header: "Cliente",
+      id: "curriculum.office.headquarter.user.username",
+      accessorFn: (row) => row?.curriculum?.office?.headquarter?.user?.username || 'Sin cliente'
+    }, {
+      size: 100,
+      id: "typeMaintenance",
+      header: "Tipo mantenimiento",
+      accessorFn: (row) => row.typeMaintenance
+    }, {
+      size: 100,
+      header: "Estado",
+      id: "statusEquipment",
+      accessorFn: (row) => row.statusEquipment
+    }, {
+      size: 100,
+      id: "dateNextMaintenance",
+      header: "Prox. mantenimiento",
+      accessorFn: (row) => formatDateTime(row.dateNextMaintenance)
+    }];
+
+    // to show columns conditional
+    isClient && array.splice(2, 1)
+    return array
+  }, [isClient])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
@@ -130,98 +142,94 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { m: 'auto', width: 'auto', maxWidth: isMobile ? '140vw' : 'calc(100vw - 320px)' }
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? (!isClient ? '140vw' : '100vw') : '100%' }
     },
+    displayColumnDefOptions: {//table column size (columns table default)
+      'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------top toolbar--------------------------------------------------*/
     renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
       <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
-        {/** to reset rows selected */}
-        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
-            <Button
-              size="small"
-              variant="text"
-              color="inherit"
-              onClick={() => table.resetRowSelection()}
-            >
-              Limpiar selección
-            </Button>
-          )}
-          <MRT_GlobalFilterTextField table={table} />
-          <MRT_ToggleFiltersButton table={table} />
-        </Box>
-        {/** to toggle dense and full screen */}
-        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-          <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ToggleFullScreenButton table={table} />
-        </Box>
+        {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+          <Button
+            size="small"
+            variant="text"
+            color="inherit"
+            onClick={() => table.resetRowSelection()}
+          >
+            Limpiar selección
+          </Button>
+        )}
+        <MRT_GlobalFilterTextField table={table} />
+        <MRT_ToggleFiltersButton table={table} />
       </Box>
     ),
-    renderRowActionMenuItems: ({ row, closeMenu }) => ([// to options row (actions row)
-      // download pdf
-      <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          title: 'Descargar mantenimiento',
-          description: `¿Deseas descargar el mantenimiento "${row.original.curriculum.name}"?`,
-          action: () => { handleDownload(row.original) }
-        })
-      }}>
-        <ListItemIcon>
-          <Download />
-        </ListItemIcon>
-        Descargar pdf
-      </MenuItem>,
+    /*---------------------------------------------------------------------------------------------------------*/
 
-      // edit maintenance
-      <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          title: 'Editar mantenimiento',
-          description: `¿Deseas editar el mantenimiento "${row.original.curriculum.name}"?`,
-          action: () => { onChange(); navigate(`/form/maintenance/${row.original._id}`) }
-        })
-      }}>
-        <ListItemIcon>
-          <Update />
-        </ListItemIcon>
-        Actualizar
-      </MenuItem>,
+    /*--------------------------------------------------row action menu--------------------------------------------------*/
+    renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
+      const baseItems = [// To show for all users (base)
+        // download pdf
+        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Descargar mantenimiento',
+            description: `¿Deseas descargar el mantenimiento "${row.original.curriculum.name}"?`,
+            action: () => { handleDownload(row.original) }
+          })
+        }}>
+          <ListItemIcon> <Download /> </ListItemIcon>
+          Descargar pdf
+        </MenuItem>
+      ];
 
-      // delete maintenance
-      <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
-        closeMenu()
-        confirmAction({
-          isDestructive: true,
-          title: 'Eliminar mantenimiento',
-          description: `¿Deseas eliminar el mantenimiento "${row.original.curriculum.name}"?`,
-          action: () => { handleDelete(row.original._id) }
-        })
-      }}>
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        Eliminar
-      </MenuItem>
-    ]),
-    renderToolbarAlertBannerContent: ({ table }) => (// alert banner of rows selected (actions on multi select)
-      <Box
-        sx={{
-          p: '8px',
-          gap: '0.5rem',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      const conditionalItems = !isClient ? [// To show only company, engineer and admin (conditional)
+        // edit maintenance
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Editar mantenimiento',
+            description: `¿Deseas editar el mantenimiento "${row.original.curriculum.name}"?`,
+            action: () => { onChange(); navigate(`/form/maintenance/${row.original._id}`) }
+          })
+        }}>
+          <ListItemIcon> <Update /> </ListItemIcon>
+          Actualizar
+        </MenuItem>,
+
+        // delete maintenance
+        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            isDestructive: true,
+            title: 'Eliminar mantenimiento',
+            description: `¿Deseas eliminar el mantenimiento "${row.original.curriculum.name}"?`,
+            action: () => { handleDelete(row.original._id) }
+          })
+        }}>
+          <ListItemIcon> <Delete /> </ListItemIcon>
+          Eliminar
+        </MenuItem>
+      ] : [];
+      return [...baseItems, ...conditionalItems];
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------Toolbar multi select--------------------------------------------------*/
+    renderToolbarAlertBannerContent: ({ table }) => (// alert toolbar of rows selected (actions on multi select)
+      <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Typography>
             {table.getSelectedRowModel().rows.length} mantenimiento(s) seleccionado(s)
           </Typography>
         </Box>
-        {/** actions selected rows (2 buttons) */}
+        {/** actions rows selected */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+          {/** Download maintenance (ZIP) */}
           <Button
             size="small"
             color="primary"
@@ -241,26 +249,30 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
           >
             Descargar ZIP
           </Button>
-          <Button
-            size="small"
-            color="error"
-            variant="contained"
-            startIcon={<Delete />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.curriculum.name
-              const otherCount = selectedRows.length - 1
-              confirmAction({
-                isDestructive: true,
-                title: 'Eliminación múltiple',
-                description: `¿Deseas eliminar los mantenimientos de:
+
+          {/** Delete maintenance */}
+          {!isClient && (
+            <Button
+              size="small"
+              color="error"
+              variant="contained"
+              startIcon={<Delete />}
+              onClick={() => {
+                const selectedRows = table.getSelectedRowModel().flatRows
+                const firstEquipment = selectedRows[0].original.curriculum.name
+                const otherCount = selectedRows.length - 1
+                confirmAction({
+                  isDestructive: true,
+                  title: 'Eliminación múltiple',
+                  description: `¿Deseas eliminar los mantenimientos de:
                 ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
-                action: () => selectedRows.forEach(row => handleDelete(row.original._id))
-              })
-            }}
-          >
-            Eliminar
-          </Button>
+                  action: () => selectedRows.forEach(row => handleDelete(row.original._id))
+                })
+              }}
+            >
+              Eliminar
+            </Button>
+          )}
         </Box>
       </Box>
     )
@@ -274,8 +286,8 @@ const TableMaintenanceSection = ({ theme, params, onChange }: TableMaintenanceSe
           icon={Wrench}
           stats={stats}
           variant="gradient"
-          title="Mantenimiento"
-          badge={{ text: "Sistema Activo", variant: "success", dot: true }}
+          title={`${!isMobile ? 'Historial de' : ''} Mantenimientos`}
+          badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />
       </div>

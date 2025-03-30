@@ -17,8 +17,10 @@ import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
-  onChange: () => void
+  /** Credenciales del usuario, util para trabajar con los permisos, rol, etc */
   credentials: User
+  /** Función para cambiar entre las pestañas tabs */
+  onChange: () => void
 }
 interface CurriculumChildren extends Curriculum {
   childRows: (Maintenance & { isPreventive: boolean })[]
@@ -27,6 +29,7 @@ interface CurriculumChildren extends Curriculum {
 
 /**
  * Permite construir un componente de tabla para mostrar los curriculums
+ * @param credentials - Credenciales del usuario
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
@@ -35,6 +38,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
   const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip, handleDownloadZipMts } = useCurriculumTable()
+  const isClient = credentials?.role === 'client'
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
@@ -48,17 +52,16 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     title: 'Total Equipos',
   }, {
     color: 'success',
+    enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
     href: '/curriculum/hoy',
-    enabled: credentials?.role !== 'client',
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
   /** Config table columns */
-  const columns = useMemo<MRT_ColumnDef<CurriculumChildren>[]>(() => {
-    // to show columns default
-    const columnsArray: MRT_ColumnDef<CurriculumChildren>[] = [{
+  const columns = useMemo(() => {
+    const array: MRT_ColumnDef<CurriculumChildren>[] = [{
       size: 150,
       id: 'name',
       header: 'Equipo',
@@ -73,9 +76,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       header: "Sede",
       id: "office.headquarter.name",
       accessorFn: (row) => row.office?.headquarter?.name || 'Sin sede'
-    }]
-    // to show columns conditional
-    credentials?.role !== "client" && columnsArray.push({
+    }];
+
+    !isClient && array.push({// to show columns conditional
       size: 150,
       header: "Cliente",
       id: "office.headquarter.user.username",
@@ -85,9 +88,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       header: "Riesgo",
       id: "riskClassification",
       accessorFn: (row) => row.riskClassification
-    })
-    return columnsArray
-  }, [credentials?.role])
+    });
+    return array
+  }, [isClient])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
@@ -121,12 +124,15 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { m: '0', width: '100%', maxWidth: isMobile ? (credentials?.role !== 'client' ? '140vw' : '90vw') : '100%' }
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? (!isClient ? '140vw' : '100vw') : '100%' }
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
       'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
     },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------top toolbar--------------------------------------------------*/
     renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
       <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
         {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
@@ -143,9 +149,12 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
         <MRT_ToggleFiltersButton table={table} />
       </Box>
     ),
-    renderRowActionMenuItems: ({ row, closeMenu }) => {
-      // To show for all users (base)
-      const baseItems = [
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------row action menu--------------------------------------------------*/
+    renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
+      const baseItems = [// To show for all users (base)
+        // View curriculum
         <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
@@ -157,10 +166,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           <ListItemIcon> <Eye /> </ListItemIcon>
           Visualizar
         </MenuItem>,
-      ]
-      // To show only company, engineer and admin (conditional)
-      const conditionalItems = (credentials?.role !== 'client') ? [
-        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {//download curriculum
+
+        // Download curriculum
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
             title: 'Descargar curriculum',
@@ -170,8 +178,12 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
         }}>
           <ListItemIcon> <Download /> </ListItemIcon>
           Descargar pdf
-        </MenuItem>,
-        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {//edit curriculum
+        </MenuItem>
+      ];
+
+      const conditionalItems = !isClient ? [// To show only company, engineer and admin (conditional)
+        // Edit curriculum
+        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
             title: 'Editar curriculum',
@@ -182,7 +194,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           <ListItemIcon> <Update /> </ListItemIcon>
           Actualizar
         </MenuItem>,
-        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {//delete curriculum
+
+        // Delete curriculum
+        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
             isDestructive: true,
@@ -194,10 +208,13 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           <ListItemIcon> <Delete /> </ListItemIcon>
           Eliminar
         </MenuItem>
-      ] : []
-      return [...baseItems, ...conditionalItems]
+      ] : [];
+      return [...baseItems, ...conditionalItems];
     },
-    renderToolbarAlertBannerContent: ({ table }) => (// alert banner of rows selected (actions on multi select)
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------Toolbar multi select--------------------------------------------------*/
+    renderToolbarAlertBannerContent: ({ table }) => (// alert toolbar of rows selected (actions on multi select)
       <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -205,8 +222,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             {table.getSelectedRowModel().rows.length} currículum(s) seleccionado(s)
           </Typography>
         </Box>
-        {/** actions selected rows (3 buttons) */}
+        {/** actions rows selected */}
         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+          {/** Download currículums (ZIP) */}
           <Button
             size="small"
             color="primary"
@@ -227,6 +245,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             Descargar ZIP
           </Button>
 
+          {/** Download currículums + mantenimientos (ZIP) */}
           <Button
             size="small"
             color="secondary"
@@ -247,65 +266,71 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             Descargar ZIP + mantenimientos
           </Button>
 
-          <Button
-            size="small"
-            color="info"
-            variant="outlined"
-            startIcon={<Download />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.name
-              const otherCount = selectedRows.length - 1
-              confirmAction({
-                title: 'Descargar QRs',
-                description: `¿Deseas descargar los QRs de:
-                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                action: () => generatePDF(selectedRows.map(row => row.original))
-              })
-            }}
-          >
-            Descargar QRs
-          </Button>
-        </Box>
-      </Box>
-    ),
-    renderDetailPanel: ({ row }) => (// row details (Dropdown collapsible)
-      <Box sx={{ gap: 2, boxShadow: 1, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
-          <Typography variant="h6">Historial de Mantenimientos</Typography>
-          {(credentials?.role !== 'client') && (
+          {/** Download QRs (ZIP) */}
+          {!isClient && (
             <Button
               size="small"
               color="info"
               variant="outlined"
-              startIcon={<FileCogIcon />}
+              startIcon={<Download />}
               onClick={() => {
+                const selectedRows = table.getSelectedRowModel().flatRows
+                const firstEquipment = selectedRows[0].original.name
+                const otherCount = selectedRows.length - 1
                 confirmAction({
-                  title: 'Ver mantenimientos',
-                  description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
-                  action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
+                  title: 'Descargar QRs',
+                  description: `¿Deseas descargar los QRs de:
+                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
+                  action: () => generatePDF(selectedRows.map(row => row.original))
                 })
               }}
             >
-              Ver mantenimientos
+              Descargar QRs
             </Button>
           )}
+        </Box>
+      </Box>
+    ),
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------Row details dropdown--------------------------------------------------*/
+    renderDetailPanel: ({ row }) => (// row details (Dropdown collapsible)
+      <Box sx={{ gap: 2, boxShadow: 1, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column' }}>
+        {/** Card details */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
+          <Typography variant="h6">Historial de Mantenimientos</Typography>
+          {/** View maintenances associated*/}
+          <Button
+            size="small"
+            color="info"
+            variant="outlined"
+            startIcon={<FileCogIcon />}
+            onClick={() => {
+              confirmAction({
+                title: 'Ver mantenimientos',
+                description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
+                action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
+              })
+            }}
+          >
+            Ver mantenimientos
+          </Button>
+
+          {/** Badge info equipment */}
           <Typography variant="subtitle1" color="text.secondary">
             Equipo: {row.original.name}
           </Typography>
         </Box>
+
+        {/** Child rows (maintenances) - sorted by date */}
         {row.original.childRows?.length > 0 ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {row.original.childRows.map((maintenance) => (
               <Box
                 key={maintenance._id}
                 sx={{
-                  p: 1.5,
-                  borderLeft: 4,
-                  borderRadius: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+                  p: 1.5, borderLeft: 4, borderRadius: 1,
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   borderLeftColor: maintenance.isPreventive ? 'primary.main' : maintenance.typeMaintenance.includes('reacondicionamiento') ? 'burlywood' : 'grey.400',
                   bgcolor: !maintenance.isPreventive
                     ? maintenance.typeMaintenance.includes('reacondicionamiento') ? 'rgba(222, 184, 135, 0.1)' : 'rgba(255, 255, 255, 0.05)'
@@ -352,8 +377,11 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
                   >
                     PDF
                   </Button>
-                  {(credentials?.role !== 'client') && (
+
+                  {/** actions with permissions */}
+                  {!isClient && (
                     <>
+                      {/** edit maintenance */}
                       <Button
                         size="small"
                         color="warning"
@@ -369,6 +397,8 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
                       >
                         Editar
                       </Button>
+
+                      {/** delete maintenance */}
                       <Button
                         size="small"
                         color="error"
