@@ -5,152 +5,110 @@ interface QRScannerProps {
   onScanSuccess: (decodedText: string) => void
   qrbox?: { width: number; height: number }
   onScanError?: (error: string) => void
+  isScanning?: boolean
   fps?: number
-  isScanning?: boolean // Nuevo prop para controlar externamente el estado del escáner
 }
 
 export const QRScanner = ({
   qrbox = { width: 250, height: 250 },
-  isScanning = true, // Por defecto el escáner está activo
+  isScanning = true,
   onScanSuccess,
   onScanError,
-  fps = 5, // Reducido a 5 fps para evitar problemas en dispositivos Android
+  fps = 5,
 }: QRScannerProps) => {
   const qrRef = useRef<Html5Qrcode | null>(null)
   const [cameraList, setCameraList] = useState<CameraDevice[]>([])
   const [selectedCameraId, setSelectedCameraId] = useState<string>("")
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
+  const [isInitializing, setIsInitializing] = useState<boolean>(false)
   const [scannerActive, setScannerActive] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
-
-  const getCameraList = async () => {
-    try {
-      const devices = await Html5Qrcode.getCameras()
-      if (devices && devices.length) {
-        setCameraList(devices)
-        // Try to find the back camera
-        const backCamera = devices.find(device =>
-          device.label.toLowerCase().includes('back') ||
-          device.label.toLowerCase().includes('trasera') ||
-          device.label.toLowerCase().includes('rear')
-        )
-        setSelectedCameraId(backCamera?.id || devices[0].id)
-        return true
-      } else {
-        setError("No se encontraron cámaras disponibles")
-        onScanError?.("No se encontraron cámaras disponibles")
-        return false
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      setError(`Error al obtener la lista de cámaras: ${errorMessage}`)
-      onScanError?.(`Error al obtener la lista de cámaras: ${errorMessage}`)
-      return false
-    }
-  }
 
   const startScanning = async () => {
-    if (!qrRef.current || !selectedCameraId) return false
+    if (!qrRef.current || !selectedCameraId || isTransitioning) return false
     try {
-      // Config qr scanner
-      const config = {
-        fps,
-        qrbox,
-        aspectRatio: 1.0,
-        disableFlip: false,
-        videoConstraints: {
-          facingMode: "environment",
-          deviceId: selectedCameraId,
-          width: { ideal: 1280 }, height: { ideal: 720 }
-        },
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+      setIsTransitioning(true)// Verify if already scanning
+      if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) { setIsTransitioning(false); return true }
+      const config = {// Config qr scanner
+        fps, qrbox, aspectRatio: 1.0, disableFlip: false,
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+        videoConstraints: { facingMode: "environment", deviceId: selectedCameraId, width: { ideal: 1280 }, height: { ideal: 720 } }
       }
-
       await qrRef.current.start(selectedCameraId, config,
-        // Detener el escáner inmediatamente después de detectar un código
         (decodedText) => { stopScanning().then(() => { onScanSuccess(decodedText) }) },
-        // Filtrar mensajes de error no críticos
         (errorMessage) => { if (!errorMessage.includes('MultiFormat')) { console.warn("QR Scanner warning:", errorMessage) } }
       )
+      setIsTransitioning(false)
       setScannerActive(true)
-      setError("")
       return true
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err)
-      // handle errors
-      if (errorMessage.includes('NotReadableError')) { setError("No se pudo acceder a la cámara. Intente cerrar otras aplicaciones que puedan estar usando la cámara."); onScanError?.("No se pudo acceder a la cámara. Intente cerrar otras aplicaciones que puedan estar usando la cámara.") }
-      else { setError(`Error al iniciar el escáner: ${errorMessage}`); onScanError?.(`Error al iniciar el escáner: ${errorMessage}`) }
+      if (errorMessage.includes('NotReadableError')) { onScanError?.("No se pudo acceder a la cámara. Intente cerrar otras aplicaciones que puedan estar usando la cámara.") }
+      else { onScanError?.(`Error al iniciar el escáner: ${errorMessage}`) }
+      setIsTransitioning(false)
       return false
     }
   }
 
-  const stopScanning = async () => {
-    if (!qrRef.current) return
-    try {
-      if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) { await qrRef.current.stop(); setScannerActive(false) }
-    } catch (err) { console.error("Error al detener el escáner:", err) }
-  }
-
-  const switchCamera = async () => {
-    await stopScanning()
-    if (cameraList.length <= 1) return
-    // Find the index of the current camera
-    const currentIndex = cameraList.findIndex(camera => camera.id === selectedCameraId)
-    const nextIndex = (currentIndex + 1) % cameraList.length
-    setSelectedCameraId(cameraList[nextIndex].id)
-  }
-
   useEffect(() => {// Initialize the scanner
-    const initScanner = async () => {
-      // Initialize the scanner with verbose for debugging
-      const qrScanner = new Html5Qrcode("qr-reader", true)
-      qrRef.current = qrScanner
-      // Get list of cameras (permissions will be handled automatically by the browser)
-      const hasCameras = await getCameraList()
-      // Wait a bit before starting the scan to avoid issues
-      if (hasCameras && isScanning) { setTimeout(() => { startScanning() }, 500) }
-    }
-
+    if (isInitializing) return
+    setIsInitializing(true)
     setTimeout(() => {// Timeout to avoid double rendering issues
       const container = document.getElementById("qr-reader")
       if (container && container.innerHTML === "") { initScanner() }
-    }, 0)
+    }, 100)
 
     return () => {// Cleanup when component unmounts
       if (qrRef.current) {
+        setIsTransitioning(true)
         stopScanning().then(() => {
           if (qrRef.current) {// free resources
             try { qrRef.current.clear(); qrRef.current = null }
             catch (err) { console.error("Error al limpiar el escáner:", err) }
+            finally { setIsTransitioning(false) }
           }
-        })
+        }).catch(err => { console.error("Error al detener el escáner durante limpieza:", err); setIsTransitioning(false) })
       }
     }
   }, []) // Only executed once when the component mounts
 
-
   useEffect(() => {// control scanner state when isScanning changes
-    if (qrRef.current) {
-      if (isScanning && !scannerActive && selectedCameraId) { startScanning() }
-      else if (!isScanning && scannerActive) { stopScanning() }
-    }
+    if (!qrRef.current || isTransitioning) return
+    else { updateScannerState() }
   }, [isScanning, scannerActive, selectedCameraId])
 
-
   useEffect(() => {// reboot scanner when camera changes
-    if (selectedCameraId && qrRef.current && isScanning) {
-      stopScanning().then(() => { setTimeout(() => { startScanning() }, 500) })
-    }
+    if (!selectedCameraId || !qrRef.current || !isScanning || isTransitioning) return
+    else { restartScanner() }
   }, [selectedCameraId])
+
+  /** Initializes the scanner */
+  const initScanner = async () => {
+    qrRef.current = new Html5Qrcode("qr-reader", true) // qr scanner instance
+    const hasCameras = await getCameraList({ setSelectedCameraId, setCameraList, onScanError })
+    if (hasCameras && isScanning) { setTimeout(() => { startScanning() }, 500) }
+  }
+  /** Restarts the scanner */
+  const restartScanner = async () => {
+    await stopScanning()
+    setTimeout(() => { startScanning() }, 500)
+  }
+  /** Updates the scanner state */
+  const updateScannerState = async () => {
+    if (isScanning && !scannerActive && selectedCameraId) { await startScanning() }
+    else if (!isScanning && scannerActive) { await stopScanning() }
+  }
+  /** Stops the scanner accurately */
+  const stopScanning = async () => {
+    if (!qrRef.current || isTransitioning) return
+    setIsTransitioning(true)
+    try { if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) { await qrRef.current.stop(); setScannerActive(false) } }
+    catch (err) { console.error("Error al detener el escáner:", err) }
+    finally { setIsTransitioning(false) }
+  }
 
   return (
     <div className="qr-container relative">
       <div id="qr-reader" className="w-full h-[300px] bg-gray-100 rounded-lg overflow-hidden" />
-      {error && (
-        <div className="absolute top-0 left-0 right-0 bg-red-500 text-white p-2 text-sm">
-          {error}
-        </div>
-      )}
-
       <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -165,9 +123,9 @@ export const QRScanner = ({
 
       {cameraList.length > 1 && (
         <button
-          onClick={switchCamera}
           aria-label="Cambiar cámara"
           className="absolute bottom-4 right-4 bg-white rounded-full p-2 shadow-md"
+          onClick={() => switchCamera({ cameraList, selectedCameraId, isTransitioning, stopScanning, setSelectedCameraId })}
         >
           <svg
             width="20"
@@ -190,4 +148,66 @@ export const QRScanner = ({
       )}
     </div>
   )
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+interface CameraListParams {
+  /** Callback function to handle the selected camera ID. */
+  setSelectedCameraId: (id: string) => void
+  /** Callback function to handle the list of available cameras. */
+  setCameraList: (value: CameraDevice[]) => void
+  /** Optional callback function to handle scan errors. */
+  onScanError?: (error: string) => void
+}
+/**
+ * Get the list of available cameras and select the first one.
+ * @returns Promise that resolves to true if cameras are available, false otherwise.
+ */
+const getCameraList = async ({ setCameraList, setSelectedCameraId, onScanError }: CameraListParams) => {
+  try {
+    const devices = await Html5Qrcode.getCameras()
+    if (devices && devices.length) {
+      setCameraList(devices)
+      // Try to find the back camera
+      const backCamera = devices.find(device =>
+        device.label.toLowerCase().includes('back') ||
+        device.label.toLowerCase().includes('trasera') ||
+        device.label.toLowerCase().includes('rear')
+      )
+      setSelectedCameraId(backCamera?.id || devices[0].id)
+      return true
+    } else {
+      onScanError?.("No se encontraron cámaras disponibles")
+      return false
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err)
+    onScanError?.(`Error al obtener la lista de cámaras: ${errorMessage}`)
+    return false
+  }
+}
+
+interface SwitchCameraParams {
+  /** Callback function to handle the selected camera ID. */
+  setSelectedCameraId: (id: string) => void
+  /** Callback function to handle the list of available cameras. */
+  stopScanning: () => Promise<void>
+  /** List of available cameras. */
+  cameraList: CameraDevice[]
+  /** ID of the currently selected camera. */
+  selectedCameraId: string
+  /** Whether the camera switch is currently in transition. */
+  isTransitioning: boolean
+}
+/**
+ * Switches to the next available camera.
+ */
+const switchCamera = async ({ cameraList, selectedCameraId, isTransitioning, stopScanning, setSelectedCameraId }: SwitchCameraParams) => {
+  if (isTransitioning) return
+  await stopScanning()
+  if (cameraList.length <= 1) return
+  const currentIndex = cameraList.findIndex(camera => camera.id === selectedCameraId)
+  const nextIndex = (currentIndex + 1) % cameraList.length
+  setSelectedCameraId(cameraList[nextIndex].id)
 }
