@@ -19,66 +19,44 @@ export const QRScanner = ({
   const qrRef = useRef<Html5Qrcode | null>(null)
   const [cameraList, setCameraList] = useState<CameraDevice[]>([])
   const [selectedCameraId, setSelectedCameraId] = useState<string>("")
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
-  const [isInitializing, setIsInitializing] = useState<boolean>(false)
   const [scannerActive, setScannerActive] = useState<boolean>(false)
 
   const startScanning = async () => {
-    if (!qrRef.current || !selectedCameraId || isTransitioning) return false
-    try {
-      setIsTransitioning(true)// Verify if already scanning
-      if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) { setIsTransitioning(false); return true }
-      const config = {// Config qr scanner
-        fps, qrbox, aspectRatio: 1.0, disableFlip: false,
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-        videoConstraints: { facingMode: "environment", deviceId: selectedCameraId, width: { ideal: 1280 }, height: { ideal: 720 } }
-      }
-      await qrRef.current.start(selectedCameraId, config,
-        (decodedText) => { stopScanning().then(() => { onScanSuccess(decodedText) }) },
-        (errorMessage) => { if (!errorMessage.includes('MultiFormat')) { console.warn("QR Scanner warning:", errorMessage) } }
-      )
-      setIsTransitioning(false)
-      setScannerActive(true)
-      return true
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err)
-      if (errorMessage.includes('NotReadableError')) { onScanError?.("No se pudo acceder a la cámara. Intente cerrar otras aplicaciones que puedan estar usando la cámara.") }
-      else { onScanError?.(`Error al iniciar el escáner: ${errorMessage}`) }
-      setIsTransitioning(false)
-      return false
+    if (!qrRef.current || !selectedCameraId) return false
+    if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) return true
+    const config = {// Config qr scanner
+      fps, qrbox, aspectRatio: 1.0, disableFlip: false,
+      formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+      videoConstraints: { facingMode: "environment", deviceId: selectedCameraId, width: { ideal: 1280 }, height: { ideal: 720 } }
     }
+    await qrRef.current.start(selectedCameraId, config,
+      (decodedText) => { stopScanning().then(() => { onScanSuccess(decodedText) }) },
+      (errorMessage) => { if (!errorMessage.includes('MultiFormat')) { console.warn("QR Scanner warning:", errorMessage) } }
+    )
+    setScannerActive(true)
+    return true
   }
 
-  useEffect(() => {// Initialize the scanner
-    if (isInitializing) return
-    setIsInitializing(true)
+  // Initialize the scanner
+  useEffect(() => {
     setTimeout(() => {// Timeout to avoid double rendering issues
       const container = document.getElementById("qr-reader")
       if (container && container.innerHTML === "") { initScanner() }
     }, 100)
-
-    return () => {// Cleanup when component unmounts
-      if (qrRef.current) {
-        setIsTransitioning(true)
-        stopScanning().then(() => {
-          if (qrRef.current) {// free resources
-            try { qrRef.current.clear(); qrRef.current = null }
-            catch (err) { console.error("Error al limpiar el escáner:", err) }
-            finally { setIsTransitioning(false) }
-          }
-        }).catch(err => { console.error("Error al detener el escáner durante limpieza:", err); setIsTransitioning(false) })
-      }
+    return () => {
+      stopScanning()// Cleanup when component unmounts
+        .then(() => { if (qrRef.current) { qrRef.current.clear(); qrRef.current = null } })
+        .catch(err => { console.error("Error al detener el escáner durante limpieza:", err) })
     }
-  }, []) // Only executed once when the component mounts
+  }, [])
 
-  useEffect(() => {// control scanner state when isScanning changes
-    if (!qrRef.current || isTransitioning) return
-    else { updateScannerState() }
+  // control scanner state when isScanning changes
+  useEffect(() => {
+    if (!qrRef.current) { return } else { updateScannerState() }
   }, [isScanning, scannerActive, selectedCameraId])
 
   useEffect(() => {// reboot scanner when camera changes
-    if (!selectedCameraId || !qrRef.current || !isScanning || isTransitioning) return
-    else { restartScanner() }
+    if (!selectedCameraId || !qrRef.current || !isScanning) { return } else { restartScanner() }
   }, [selectedCameraId])
 
   /** Initializes the scanner */
@@ -99,11 +77,9 @@ export const QRScanner = ({
   }
   /** Stops the scanner accurately */
   const stopScanning = async () => {
-    if (!qrRef.current || isTransitioning) return
-    setIsTransitioning(true)
+    if (!qrRef.current) return
     try { if (qrRef.current.getState() === Html5QrcodeScannerState.SCANNING) { await qrRef.current.stop(); setScannerActive(false) } }
     catch (err) { console.error("Error al detener el escáner:", err) }
-    finally { setIsTransitioning(false) }
   }
 
   return (
@@ -125,7 +101,7 @@ export const QRScanner = ({
         <button
           aria-label="Cambiar cámara"
           className="absolute bottom-4 right-4 bg-white rounded-full p-2 shadow-md"
-          onClick={() => switchCamera({ cameraList, selectedCameraId, isTransitioning, stopScanning, setSelectedCameraId })}
+          onClick={() => switchCamera({ cameraList, selectedCameraId, stopScanning, setSelectedCameraId })}
         >
           <svg
             width="20"
@@ -168,8 +144,7 @@ const getCameraList = async ({ setCameraList, setSelectedCameraId, onScanError }
   try {
     const devices = await Html5Qrcode.getCameras()
     if (devices && devices.length) {
-      setCameraList(devices)
-      // Try to find the back camera
+      setCameraList(devices)// Try to find the back camera
       const backCamera = devices.find(device =>
         device.label.toLowerCase().includes('back') ||
         device.label.toLowerCase().includes('trasera') ||
@@ -197,14 +172,11 @@ interface SwitchCameraParams {
   cameraList: CameraDevice[]
   /** ID of the currently selected camera. */
   selectedCameraId: string
-  /** Whether the camera switch is currently in transition. */
-  isTransitioning: boolean
 }
 /**
  * Switches to the next available camera.
  */
-const switchCamera = async ({ cameraList, selectedCameraId, isTransitioning, stopScanning, setSelectedCameraId }: SwitchCameraParams) => {
-  if (isTransitioning) return
+const switchCamera = async ({ cameraList, selectedCameraId, stopScanning, setSelectedCameraId }: SwitchCameraParams) => {
   await stopScanning()
   if (cameraList.length <= 1) return
   const currentIndex = cameraList.findIndex(camera => camera.id === selectedCameraId)

@@ -15,33 +15,24 @@ export const ScannerHub = () => {
 
   /** Verifies if the scanned text is a valid URL and redirects immediately */
   useEffect(() => {
-    if (lastScanned) {
-      const urlValid = isValidUrl(lastScanned)
-      setIsUrl(urlValid)
-      if (urlValid && !isRedirecting) {
-        setIsRedirecting(true)
-        notifyInfo({ title: "Redireccionando...", message: "Abriendo la URL detectada" })
-        window.location.href = lastScanned
-      }
-    } else { setIsUrl(false) }
+    if (!lastScanned) return setIsUrl(false)
+    const urlValid = isValidUrl(lastScanned)
+    setIsUrl(urlValid)
+    if (urlValid && !isRedirecting) { window.location.href = lastScanned; setIsRedirecting(true) }
   }, [lastScanned])
 
   /** Handles the success of a QR scan */
   const handleScanSuccess = (decodedText: string) => {
-    // Stop the scanner immediately
     setIsScanning(false)
     setLastScanned(decodedText)
-    // Verify if it's a URL
     const isValidUrlResult = isValidUrl(decodedText)
-    if (!isValidUrlResult) {
+    if (!isValidUrlResult) {// Verify if it's a URL
       notifySuccess({ title: "QR escaneado correctamente", message: "El contenido ha sido detectado y está listo para copiar." })
-      // Try to copy to clipboard only if it's not a URL
-      navigator.clipboard.writeText(decodedText)
+      navigator.clipboard.writeText(decodedText)// Try to copy to clipboard only if it's not a URL
         .then(() => { notifyInfo({ title: "Copiado", message: "Contenido copiado al portapapeles" }) })
         .catch(() => { console.warn("No se pudo copiar automáticamente") })
     }
   }
-
   /** Handles the action of copying the last scanned content to the clipboard */
   const handleCopyToClipboard = () => {
     if (!lastScanned) return
@@ -65,7 +56,6 @@ export const ScannerHub = () => {
   const handleScanError = (error: string) => { !error.includes('MultiFormat') && notifyError({ title: "Error al escanear QR", message: error }) }
   /** Toggles the scanner state between active and paused */
   const toggleScanner = () => { setIsScanning(prev => !prev) }
-
 
   return (
     <div className="container mx-auto p-4">
