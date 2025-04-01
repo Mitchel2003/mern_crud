@@ -51,7 +51,6 @@ export type AuthContext = {
   logout: () => Promise<void>
   login: (data: object) => Promise<any>
   sendResetPassword: (email: string) => Promise<void>
-  sendMessage: (phone: string, message: string) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
   getById: <T>(id: string) => Promise<T | undefined>
