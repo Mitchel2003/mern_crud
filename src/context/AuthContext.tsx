@@ -170,6 +170,19 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
     })
   }
+  /**
+   * Permite enviar un mensaje de WhatsApp
+   * @param {string} phone - Corresponde al número de teléfono para enviar el mensaje.
+   * @param {string} message - Corresponde al mensaje para enviar.
+   */
+  const sendMessage = async (phone: string, message: string): Promise<void> => {
+    return handler('Enviando mensaje...', async () => {
+      try {
+        await useApi('send-message').void({ phone, message })
+        notifySuccess({ title: "Exito al enviar mensaje", message: "El mensaje se ha completado" })
+      } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar mensaje", message: e.response.data.message }) }
+    })
+  }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------helpers--------------------------------------------------*/
@@ -197,7 +210,22 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (
-    <Auth.Provider value={{ isAuth, user, loading, login, logout, getAll, getById, getByQuery, create, update, delete: _delete, sendResetPassword }}>
+    <Auth.Provider
+      value={{
+        isAuth,
+        user,
+        loading,
+        login,
+        logout,
+        getAll,
+        getById,
+        getByQuery,
+        create,
+        update,
+        delete: _delete,
+        sendResetPassword,
+        sendMessage,
+      }}>
       {children}
     </Auth.Provider>
   )

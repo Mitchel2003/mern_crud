@@ -142,7 +142,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { m: '0', width: '100%', maxWidth: isMobile ? (!isClient ? '140vw' : '100vw') : '100%' }
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? (!isClient ? '140vw' : '95vw') : '100%' }
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },

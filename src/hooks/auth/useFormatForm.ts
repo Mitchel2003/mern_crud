@@ -1,19 +1,22 @@
 import { Accessory, User, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
+import { useNotification } from '@/hooks/ui/useNotification'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Metadata } from '@/interfaces/db.interface'
 
+import { curriculumDefaultValues, maintenanceDefaultValues, solicitDefaultValues } from '@/utils/constants'
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
-import { curriculumDefaultValues, maintenanceDefaultValues } from '@/utils/constants'
+import { solicitSchema, SolicitFormProps } from '@/schemas/format/solicit.schema'
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
-import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { processFile, pdfToBase64 } from '@/lib/utils'
+import { useAuthContext } from '@/context/AuthContext'
+import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
@@ -86,7 +89,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
    * @param e - Valores del formulario
    */
   const handleSubmit = useFormSubmit({
-    onSubmit: async (e: any) => {
+    onSubmit: async (e: CurriculumFormProps) => {
       const data = {
         ...characteristicsData.submitData(e),
         ...accessoryData.submitData(e),
@@ -160,7 +163,6 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
 export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   const { referenceData, observationData } = formatHooks.maintenance()
   const { createFormat, updateFormat } = useFormatMutation("maintenance")
-
   const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
 
   const methods = useForm<MaintenanceFormProps>({
@@ -186,11 +188,8 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
    * @param e - Valores del formulario
    */
   const handleSubmit = useFormSubmit({
-    onSubmit: async (e: any) => {
-      const data = {
-        ...referenceData.submitData(e),
-        ...observationData.submitData(e)
-      }
+    onSubmit: async (e: MaintenanceFormProps) => {
+      const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
       id ? updateFormat({ id, data }) : createFormat(data)
       methods.reset()
     },
@@ -204,6 +203,64 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
     referenceData: referenceData.options,
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------solicit form--------------------------------------------------*/
+/**
+ * Hook principal que orquesta los sub-hooks de solicitud para el formulario
+ * @param id - ID del currículum a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
+  const { observationData } = formatHooks.solicit()
+  const { createFormat } = useFormatMutation("solicit")
+  const { createFile } = useFormatMutation("file")
+  const { notifyError } = useNotification()
+  const { sendMessage } = useAuthContext()
+
+  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
+  const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
+  // const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
+  // const company = com?.[0]
+
+  const methods = useForm<SolicitFormProps>({
+    resolver: zodResolver(solicitSchema),
+    defaultValues: solicitDefaultValues,
+    mode: "onChange",
+  })
+
+  //to load the form on update mode "id"
+  useEffect(() => { id && cv && methods.reset({ ...observationData.mapValues(cv) }) }, [id, cv, isLoading])
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: SolicitFormProps) => {
+      const data = { ...observationData.submitData(e, id!) }
+      id && cv ? (createFormat(data).then(async () => {
+        const photoUrl = e.photoUrl[0]?.file
+        if (!photoUrl) return
+        const { name, type, size } = photoUrl
+        const base64 = await processFile(photoUrl)
+        const file = { buffer: base64, originalname: name, mimetype: type, size }
+        await createFile({ files: [file], path: `files/${id}/solicit/${formatDateTime(new Date(Date.now()), '-')}`, unique: true })
+      }).finally(async () => await sendMessage('3244814033', `Mensaje de prueba; el cliente "${cv.office.headquarter.user.username}" ha creado una solicitud de mantenimiento`))
+      ) : (notifyError({ title: "Error al crear la solicitud", message: "No tienes acceso a este currículum" }))
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    ...handleSubmit,
+    img: img?.[0]?.url || '',
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 /*=========================================================================================================*/
 
 /*==================================================useTable==================================================*/
@@ -523,4 +580,5 @@ export const useMaintenanceTable = () => {
     handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 /*=========================================================================================================*/

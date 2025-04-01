@@ -3,8 +3,11 @@ import { useThemeContext } from "@/context/ThemeContext"
 import { Separator } from "#/ui/separator"
 
 /*--------------------------------------------------format date--------------------------------------------------*/
-/** returns date in format dd/mm/yyyy */
-export const formatDateTime = (date: Date | string | undefined): string => date ? new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '/') : 'N/A'
+/** returns date in format dd/mm/yyyy or with custom separator
+ * @param date - Date to format
+ * @param separator - Character to use as separator (default: '/')
+ */
+export const formatDateTime = (date: Date | string | undefined, separator: string = '/'): string => date ? new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/[\.\/]/g, separator) : 'N/A'
 /** returns date in format "dd de month yyyy" */
 export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date)) : 'N/A'
 /*---------------------------------------------------------------------------------------------------------*/

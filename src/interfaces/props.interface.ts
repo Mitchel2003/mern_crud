@@ -50,10 +50,10 @@ export interface SelectOptionProps<T = string> {
 
 // StatusCheck
 export interface CheckProps {
-  name: string
+  icon: LucideIcon | any
   label: string
   color: string
-  icon: LucideIcon
+  name: string
 }
 
 // Carousel

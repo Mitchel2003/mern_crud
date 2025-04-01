@@ -96,7 +96,7 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
           <div className="p-4 rounded-lg border border-purple-100 bg-purple-50/50">
             <h4 className="font-medium mb-2 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-purple-600" />
-              Información de la oficina
+              Información del consultorio
             </h4>
             <div className="grid gap-3">
               <div className="text-sm">
@@ -104,7 +104,7 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
                 <p className="font-medium">{cv?.service}</p>
               </div>
               <div className="text-sm">
-                <p className="text-muted-foreground">Oficina</p>
+                <p className="text-muted-foreground">Consultorio</p>
                 <p className="font-medium">{cv?.office?.name}</p>
               </div>
               <div className="text-sm">

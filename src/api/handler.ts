@@ -63,9 +63,11 @@ const getBase = (type: string): string | undefined => {
     case 'login':
     case 'logout':
     case 'on-auth':
+    case 'send-message':
     case 'forgot-password': return '/auth'
     /*-------------------------format-------------------------*/
     case 'cv':
+    case 'solicit':
     case 'reminder':
     case 'equipment':
     case 'calibration':

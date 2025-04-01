@@ -9,6 +9,7 @@ import Client, { ClientFlow } from "@/pages/documents/Client";
 import Maintenance from "@/pages/documents/Maintenance";
 import Engineer from "@/pages/documents/Engineer";
 import Company from "@/pages/documents/Company";
+import Solicit from "@/pages/documents/Solicit";
 
 import Headquarter from "@/pages/documents/Headquarter";
 import Country from "@/pages/documents/Country";
@@ -53,6 +54,10 @@ function App() {
                     <Route path="/form/maintenance" element={<Maintenance />} />
                     <Route path="/form/maintenances" element={<Maintenance />} />
                     <Route path="/form/maintenance/:id" element={<Maintenance />} />
+
+                    <Route path="/form/solicit" element={<Solicit />} />
+                    <Route path="/form/solicits" element={<Solicit />} />
+                    <Route path="/form/solicit/:id" element={<Solicit />} />
 
                     {/* user routes */}
                     <Route path="/engineer" element={<Engineer />} /> {/*new user*/}

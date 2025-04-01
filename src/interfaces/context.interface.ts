@@ -51,6 +51,7 @@ export type AuthContext = {
   logout: () => Promise<void>
   login: (data: object) => Promise<any>
   sendResetPassword: (email: string) => Promise<void>
+  sendMessage: (phone: string, message: string) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
   getById: <T>(id: string) => Promise<T | undefined>
@@ -82,12 +83,10 @@ export type LocationContext = {
 
 /*--------------------------------------------------FormatContext--------------------------------------------------*/
 export type FormatType =
-  | 'cv' | 'equipment' | 'maintenance' | 'file' //globals
+  | 'cv' | 'maintenance' | 'solicit' | 'file' //globals
 
   //maintenance
   | 'check' | 'checkMaintenance'
-  //equipment
-  | 'calibration' | 'reminder' | 'calibrationEquipment'
   //curriculum
   | 'inspection' | 'accessory'
   | 'supplier' | 'manufacturer' | 'representative'
@@ -104,6 +103,12 @@ export type RepresentativeHeadquarter = BaseMDB & { headquarter: string, represe
 export type ManufacturerHeadquarter = BaseMDB & { headquarter: string, manufacturer: Manufacturer }
 export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Supplier }
 
+export type Solicit = BaseMDB & {
+  status: 'pendiente' | 'asignado' | 'cerrado'
+  curriculum: Curriculum
+  priority: boolean
+  message: string
+}
 export type Maintenance = BaseMDB & {
   //timestandard
   dateNextMaintenance?: Date

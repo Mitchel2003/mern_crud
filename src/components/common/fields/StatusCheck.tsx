@@ -23,6 +23,13 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
 }, ref) => {
   const { control } = useFormContext()
 
+  const layout = () => {
+    const count = options.length
+    if (count <= 1) return 'lg:grid-cols-1';
+    if (count <= 2) return 'lg:grid-cols-2';
+    if (count <= 3) return 'lg:grid-cols-3';
+    return 'lg:grid-cols-2 xl:grid-cols-4';
+  }
   return (
     <FormItem>
       {/* Header */}
@@ -40,7 +47,7 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div ref={ref} className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div ref={ref} className={cn("grid gap-4", layout())}>
               {options.map((option) => (
                 <StatusButton
                   key={option.name}
@@ -51,7 +58,7 @@ const StatusCheck = React.forwardRef<HTMLDivElement, StatusCheckProps>(({
                 />
               ))}
             </div>
-            
+
             {error && (
               <FormMessage className={cn(theme === 'dark' ? 'text-red-400' : 'text-red-600')}>
                 {error.message}

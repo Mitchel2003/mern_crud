@@ -18,13 +18,14 @@ interface ReferenceProps extends ThemeContextProps { id: boolean }
 const ReferenceSection = ({ id, theme }: ReferenceProps) => {
   const { referenceData: options } = useMaintenanceForm()
   const { watch } = useFormContext()
+
   const headquarterId = watch('headquarter')
   const clientId = watch('client')
   const officeId = watch('office')
   const cvId = watch('curriculum')
 
+  //fetch on the component instead of hooks: by reactive find image of equipment selected
   const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${cvId}/preview`, enabled: !!cvId })
-
   const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.user?._id === clientId)
   const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === headquarterId)
   const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)

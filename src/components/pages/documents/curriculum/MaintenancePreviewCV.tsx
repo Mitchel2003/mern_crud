@@ -133,7 +133,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Clipboard className="w-5 h-5 text-purple-600" />
-                <CardTitle>Inspecciones</CardTitle>
+                <CardTitle>Actividades</CardTitle>
               </div>
               <HoverCard>
                 <HoverCardTrigger asChild>
@@ -143,7 +143,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80">
                   <div className="space-y-2">
-                    <h4 className="font-medium">Sobre las Inspecciones</h4>
+                    <h4 className="font-medium">Sobre las Actividades</h4>
                     <p className="text-sm text-muted-foreground">
                       Lista de verificaciones necesarias para asegurar el correcto funcionamiento del equipo.
                     </p>
@@ -168,9 +168,9 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
               {/* Lista de inspecciones */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium">Lista de Inspecciones</h3>
+                  <h3 className="font-medium">Lista de Actividades</h3>
                   <Badge variant="outline" className="bg-purple-50">
-                    {ins?.typeInspection?.length || 0} puntos de inspección
+                    {ins?.typeInspection?.length || 0} puntos de actividad
                   </Badge>
                 </div>
 

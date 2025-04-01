@@ -325,6 +325,12 @@ export const clientFlowDefaultValues = {
   headquarter: [{ name: '', address: '', city: '' }],
   office: [{ headquarter: '', services: [], name: '' }]
 }
+export const solicitDefaultValues = {
+  cv: { name: '', brand: '', serie: '', modelEquip: '', healthRecord: '' },
+  message: '',
+  priority: '',
+  photoUrl: [],
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/
