@@ -63,6 +63,8 @@ const getBase = (type: string): string | undefined => {
     case 'login':
     case 'logout':
     case 'on-auth':
+    case 'fcm-token':
+    case 'fcm-notification':
     case 'forgot-password': return '/auth'
     /*-------------------------format-------------------------*/
     case 'cv':

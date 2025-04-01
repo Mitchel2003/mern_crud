@@ -15,6 +15,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import { processFile, pdfToBase64 } from '@/lib/utils'
+import { useAuthContext } from '@/context/AuthContext'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
@@ -218,8 +219,8 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
 
   const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
   const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
-  // const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
-  // const company = com?.[0]
+  const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
+  const company = com?.[0]
 
   const methods = useForm<SolicitFormProps>({
     resolver: zodResolver(solicitSchema),
@@ -245,7 +246,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
         const base64 = await processFile(photoUrl)
         const file = { buffer: base64, originalname: name, mimetype: type, size }
         await createFile({ files: [file], path: `files/${id}/solicit/${formatDateTime(new Date(Date.now()), '-')}`, unique: true })
-      }).finally(() => {/** send notification email */ })
+      }).finally(() => { useAuthContext().sendNotification({ userId: company?._id, title: "Nueva solicitud", message: "Se ha creado una nueva solicitud" }) })
       ) : (notifyError({ title: "Error al crear la solicitud", message: "No tienes acceso a este currículum" }))
       methods.reset()
     },

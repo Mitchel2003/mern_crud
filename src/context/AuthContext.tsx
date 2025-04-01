@@ -170,6 +170,26 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
     })
   }
+  /**
+   * Envia un mensaje de notificacion al usuario.
+   * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
+   */
+  const sendNotification = async (data: object): Promise<void> => {
+    try {
+      await useApi('fcm-notification').void(data)
+      notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })
+    } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
+  }
+  /**
+   * Nos permite guardar el token de Firebase Cloud Messaging (FCM) en el usuario.
+   * @param {string} userId - Corresponde al ID del usuario.
+   */
+  const saveToken = async (userId: string): Promise<void> => {
+    try {
+      await useApi('fcm-token').void({ userId })
+      notifySuccess({ title: "Exito al guardar token FCM", message: "El token se ha guardado correctamente" })
+    } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al guardar token FCM", message: e.response.data.message }) }
+  }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------helpers--------------------------------------------------*/
@@ -197,7 +217,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (
-    <Auth.Provider value={{ isAuth, user, loading, login, logout, getAll, getById, getByQuery, create, update, delete: _delete, sendResetPassword }}>
+    <Auth.Provider value={{
+      isAuth, user, loading, login, logout, getAll, getById, getByQuery,
+      create, update, delete: _delete, sendResetPassword, sendNotification, saveToken
+    }}>
       {children}
     </Auth.Provider>
   )

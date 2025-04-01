@@ -33,10 +33,7 @@ export const useLoginForm = () => {
     defaultValues: { email: '', password: '' },
     mode: 'onSubmit',
   })
-  const onSubmit = methods.handleSubmit(async (data: LoginFormProps) => {
-    await login(data)
-    methods.reset()
-  })
+  const onSubmit = methods.handleSubmit(async (data: LoginFormProps) => await login(data))
   return { methods, onSubmit }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -50,10 +47,7 @@ export const useForgotPasswordForm = () => {
     defaultValues: { email: '' },
     mode: 'onSubmit',
   })
-  const onSubmit = methods.handleSubmit(async (data: ForgotPasswordFormProps) => {
-    await sendResetPassword(data.email)
-    methods.reset()
-  })
+  const onSubmit = methods.handleSubmit(async (data: ForgotPasswordFormProps) => await sendResetPassword(data.email))
   return { methods, onSubmit }
 }
 /*---------------------------------------------------------------------------------------------------------*/

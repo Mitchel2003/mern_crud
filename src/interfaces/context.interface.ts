@@ -41,6 +41,7 @@ export type User = BaseMDB & {
   profesionalLicense?: string
   //user access
   role: RoleProps
+  fcmToken?: string
   permissions?: string[]
 }
 
@@ -51,6 +52,8 @@ export type AuthContext = {
   logout: () => Promise<void>
   login: (data: object) => Promise<any>
   sendResetPassword: (email: string) => Promise<void>
+  sendNotification: (data: object) => Promise<void>
+  saveToken: (userId: string) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
   getById: <T>(id: string) => Promise<T | undefined>
