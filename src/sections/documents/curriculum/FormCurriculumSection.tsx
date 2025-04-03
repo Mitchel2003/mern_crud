@@ -27,19 +27,21 @@ interface FormCurriculumSectionProps extends ThemeContextProps {
 }
 
 const FormCurriculumSection = ({ id, theme, onChange, footer: Footer }: FormCurriculumSectionProps) => {
-  const { open, methods, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, onChange)
+  const { open, methods, locationData, basicData, detailsData, inspectionData, setOpen, onConfirm, handleSubmit } = useCurriculumForm(id, onChange)
 
   const formSections = useMemo(() => [
-    <LocationSection key="location" theme={theme} id={!!id} />,
-    <BasicDataSection key="basic" theme={theme} id={!!id} />,
-    <DetailsEquipmentSection key="details" theme={theme} />,
+    /** general information technical */
+    <LocationSection key="location" theme={theme} id={!!id} options={locationData} />,
+    <BasicDataSection key="basic" theme={theme} id={!!id} options={basicData} />,
+    <DetailsEquipmentSection key="details" theme={theme} options={detailsData} />,
     <EquipmentClassificationSection key="equipment" theme={theme} />,
     <TechnicalCharacteristicsSection key="technical" theme={theme} />,
+    /** maintenance and complementaries */
     <MaintenanceSection key="maintenance" theme={theme} />,
-    <InspectionSection key="inspection" theme={theme} />,
+    <InspectionSection key="inspection" theme={theme} options={inspectionData} />,
     <AccessoriesSection key="accessory" theme={theme} />,
     <CharacteristicsSection key="characteristics" theme={theme} />
-  ], [theme])
+  ], [locationData, basicData, detailsData, inspectionData])
 
   return (
     <>

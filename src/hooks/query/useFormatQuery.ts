@@ -1,13 +1,13 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
 import { useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query"
-import { FileReferenceDB } from "@/interfaces/db.interface"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
+import { FileReference } from "@/interfaces/db.interface"
 
 // Keys constantes para mejor mantenimiento
 const QUERY_KEYS = {
   formats: (path: FormatType) => ['formats', path],
-  files: (data: FileReferenceDB) => ['files', data.path],
+  files: (data: FileReference) => ['files', data.path],
   format: (path: FormatType, id: string) => ['format', path, id],
   search: (path: FormatType, query: object) => ['formats', 'search', path, query],
 }
@@ -55,12 +55,11 @@ export const useQueryFormat = (): QueryReact_Format => {
 
   /**
    * Obtener todos los archivos de un formato
-   * @param {FormatType} path - Nos ayuda a construir la route
-   * @param {FileReferenceDB} data - Representa la referencia al path etc.
+   * @param {FileReference} data - Representa la referencia al path etc.
    */
-  const fetchAllFiles = <T>(path: FormatType, data: FileReferenceDB) => useQuery({
+  const fetchAllFiles = <T>(data: FileReference) => useQuery({
     queryKey: QUERY_KEYS.files(data),
-    queryFn: () => format.getAllFiles<T>(path, data),
+    queryFn: () => format.getAllFiles<T>(data),
     select: (data) => data || [],
     enabled: Boolean(data.path),
     initialData: []
@@ -76,14 +75,14 @@ export const useQueryFormat = (): QueryReact_Format => {
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['files', q._id],
       queryFn: async () => {
-        const result = await format.getAllFiles<T>('file', { path: `files/${q._id}/preview` })
+        const result = await format.getAllFiles<T>({ path: `files/${q._id}/preview` })
         return { type: 'curriculum', id: q._id, data: result, error: null }
       }
     }, {
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['client', q._id],
       queryFn: async () => {
-        const result = await format.getAllFiles<T>('file', { path: `client/${q.office?.headquarter?.user?._id}/preview` })
+        const result = await format.getAllFiles<T>({ path: `client/${q.office?.headquarter?.user?._id}/preview` })
         return { type: 'client', id: q.office?.headquarter?.user?._id, data: result, error: null }
       }
     }, {
@@ -155,7 +154,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
    * @param {FileMutationProps} props - Propiedades para crear el archivo
    */
   const createFileMutation = useMutation({
-    mutationFn: async (data: FileMutationProps) => await uploadFiles(path, data),
+    mutationFn: async (data: FileMutationProps) => await uploadFiles(data),
     onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 
@@ -164,7 +163,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
    * @param {FileMutationProps} props - Propiedades para eliminar el archivo
    */
   const deleteFileMutation = useMutation({
-    mutationFn: async (data: FileMutationProps) => await deleteFile(path, data),
+    mutationFn: async (data: FileMutationProps) => await deleteFile(data),
     onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 

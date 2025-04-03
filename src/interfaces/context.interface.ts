@@ -1,4 +1,4 @@
-import { BaseMDB, FileReferenceDB } from "@/interfaces/db.interface"
+import { BaseMDB, FileReference } from "@/interfaces/db.interface"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -50,10 +50,9 @@ export type AuthContext = {
   isAuth: boolean
   loading: boolean
   logout: () => Promise<void>
-  login: (data: object) => Promise<any>
+  login: (data: object) => Promise<void>
   sendResetPassword: (email: string) => Promise<void>
   sendNotification: (data: object) => Promise<void>
-  saveToken: (userId: string) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
   getById: <T>(id: string) => Promise<T | undefined>
@@ -189,8 +188,8 @@ export type FormatContext = {
   update: (type: FormatType, id: string, data: object) => Promise<any>
   delete: (type: FormatType, id: string) => Promise<any>
   // file operations
-  getAllFiles: <T>(type: FormatType, data: FileReferenceDB) => Promise<T[]>
-  uploadFiles: (type: FormatType, data: FileReferenceDB) => Promise<void>
-  deleteFile: (type: FormatType, data: FileReferenceDB) => Promise<void>
+  getAllFiles: <T>(data: FileReference) => Promise<T[]>
+  uploadFiles: (data: FileReference) => Promise<void>
+  deleteFile: (data: FileReference) => Promise<void>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/

@@ -1,6 +1,6 @@
-import { ThemeContext, Theme as TypeTheme } from '@/interfaces/context.interface';
-import { createContext, useContext, useState, useEffect } from 'react';
-import { Props } from '@/interfaces/props.interface';
+import { ThemeContext, Theme as TypeTheme } from '@/interfaces/context.interface'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { Props } from '@/interfaces/props.interface'
 
 const Theme = createContext<ThemeContext>(undefined)
 

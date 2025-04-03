@@ -1,22 +1,22 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
+import { Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { groupCollection as groups } from "@/utils/constants"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"
 
-interface LocationSectionProps extends ThemeContextProps { id: boolean }
+interface LocationSectionProps extends ThemeContextProps {
+  options: { headquarters: Headquarter[], offices: Office[], clients: User[] }
+  id: boolean
+}
 
-const LocationSection = ({ id, theme }: LocationSectionProps) => {
-  const { locationData: options } = useCurriculumForm()
+const LocationSection = ({ id, theme, options }: LocationSectionProps) => {
   const { watch } = useFormContext()
-
-  const headquarterId = watch('headquarter')
+  const hqId = watch('headquarter')
   const clientId = watch('client')
   const officeId = watch('office')
 
   const headquarters = id ? options.headquarters : options.headquarters?.filter((head) => head.user?._id === clientId)
-  const offices = id ? options.offices : options.offices?.filter((office) => office.headquarter?._id === headquarterId)
+  const offices = id ? options.offices : options.offices?.filter((office) => office.headquarter?._id === hqId)
   const services = groups.flatMap(group => group.services).filter(service => {
     const office = offices?.find(office => office._id === officeId)
     return !id ? office?.services.includes(service) : true

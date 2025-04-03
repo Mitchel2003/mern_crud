@@ -20,12 +20,12 @@ interface FormMaintenanceSectionProps extends ThemeContextProps {
 }
 
 const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMaintenanceSectionProps) => {
-  const { open, methods, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
+  const { open, methods, referenceData, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
 
   const formSections = useMemo(() => [
-    <ReferenceSection key="reference" theme={theme} id={!!id} />,
+    <ReferenceSection key="reference" theme={theme} id={!!id} options={referenceData} />,
     <ObservationSection key="observation" theme={theme} />
-  ], [theme])
+  ], [referenceData])
 
   return (
     <>

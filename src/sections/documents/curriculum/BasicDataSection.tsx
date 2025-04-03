@@ -1,6 +1,6 @@
 import InputSearchableField from '#/common/fields/InputSearchable'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import { SelectOptionProps } from '@/interfaces/props.interface'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import ImagePreview from '#/common/fields/ImagePreview'
 import CardIterable from '#/common/fields/CardIterable'
@@ -9,12 +9,13 @@ import InputField from '#/common/fields/Input'
 import ImageField from '#/common/fields/Image'
 import { cn } from '@/lib/utils'
 
-interface BasicDataProps extends ThemeContextProps { id: boolean }
+interface BasicDataProps extends ThemeContextProps {
+  options: SelectOptionProps[]
+  id: boolean
+}
 
-const BasicDataSection = ({ id, theme }: BasicDataProps) => {
-  const { basicData: options } = useCurriculumForm()
+const BasicDataSection = ({ id, theme, options }: BasicDataProps) => {
   const { getValues } = useFormContext()
-
   return (
     <div className="space-y-6">
       {/* -------------------- Header -------------------- */}

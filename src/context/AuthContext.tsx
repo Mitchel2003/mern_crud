@@ -1,12 +1,13 @@
-import { Props, QueryOptions } from "@/interfaces/props.interface";
-import { AuthContext, User } from "@/interfaces/context.interface";
-import { useNotification } from "@/hooks/ui/useNotification";
-import { isAxiosResponse } from "@/interfaces/db.interface";
-import { useLoading } from "@/hooks/ui/useLoading";
-import { useApi } from "@/api/handler";
+import { getTokenMessaging } from "@/controllers/messaging.controller"
+import { Props, QueryOptions } from "@/interfaces/props.interface"
+import { AuthContext, User } from "@/interfaces/context.interface"
+import { useNotification } from "@/hooks/ui/useNotification"
+import { isAxiosResponse } from "@/interfaces/db.interface"
+import { useLoading } from "@/hooks/ui/useLoading"
+import { useApi } from "@/api/handler"
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { AxiosResponse } from "axios";
+import { createContext, useContext, useEffect, useState } from "react"
+import { AxiosResponse } from "axios"
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -38,20 +39,15 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /**
    * Inicia sesión con las credenciales del usuario.
    * @param {object} credentials - Las credenciales del usuario.
-   * @returns {Promise<any>} Los datos del usuario autenticado.
    */
-  const login = async (credentials: object): Promise<any> => {
+  const login = async (credentials: object): Promise<void> => {
     return handler('Iniciando sesión...', async () => {
       try {
         const res = await useApi('login').create(credentials)
-        notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión correctamente" })
+        await updateTokenMessaging(res.data._id)
+        notifySuccess({ message: "¡Bienvenido!" })
         setAuthStatus(res)
-        return res
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
-        setAuthStatus()
-        return undefined
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ message: e.response.data.message }); setAuthStatus() }
     })
   }
   /**
@@ -60,10 +56,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const logout = async (): Promise<void> => {
     return handler('Cerrando sesión...', async () => {
-      try {
-        await useApi('logout').void().finally(() => setAuthStatus())
-        notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
-      } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message }) }
+      try { await useApi('logout').void().then(() => setAuthStatus()).finally(() => notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })) }
+      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message }) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -71,45 +65,36 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /*--------------------------------------------------user handlers--------------------------------------------------*/
   /**
    * Obtiene todos los usuarios de un tipo específico
-   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
+   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios o un array vacío.
    */
   const getAll = async (): Promise<any[]> => {
     try { return (await useApi('user').getAll()).data }
-    catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
   }
   /**
    * Obtiene un usuario específico por su ID
    * @param {string} id - El ID del usuario.
-   * @returns {Promise<any>} Los datos del usuario.
+   * @returns {Promise<any | undefined>} Los datos del usuario o undefined.
    */
   const getById = async (id: string): Promise<any | undefined> => {
     try { return (await useApi('user').getById(id)).data }
-    catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-      return undefined
-    }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message }); return undefined }
   }
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
    * @param {QueryOptions} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
-   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios.
+   * @returns {Promise<any[]>} Un array con los datos de todos los usuarios o un array vacío.
    */
   const getByQuery = async (query: QueryOptions): Promise<any[]> => {
     try {
       if ('enabled' in query && query.enabled === false) return []
       return (await useApi('user').getByQuery({ ...query, enabled: undefined })).data
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    }
+    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
   }
   /**
    * Registra un nuevo usuario con los datos proporcionados.
    * @param {object} data - Los datos del nuevo usuario.
-   * @returns {Promise<any>} Los datos del usuario registrado.
+   * @returns {Promise<any>} Los datos del usuario registrado o undefined.
    */
   const create = async (data: object): Promise<any> => {
     return handler('Registrando usuario...', async () => {
@@ -129,7 +114,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * Actualiza un usuario existente
    * @param {string} id - El ID del usuario.
    * @param {object} data - Los datos del usuario.
-   * @returns {Promise<any>} Los datos del usuario actualizado.
+   * @returns {Promise<any>} Los datos del usuario actualizado o undefined.
    */
   const update = async (id: string, data: object): Promise<any> => {
     return handler('Actualizando...', async () => {
@@ -137,10 +122,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi('user').update(id, data)
         notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
         return response.data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-        return undefined
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }); return undefined }
     })
   }
   /**
@@ -152,7 +134,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       try {
         await useApi('user').delete(id)
         notifySuccess({ title: "Cuenta eliminada", message: "Tu cuenta ha sido eliminada permanentemente" })
-      } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar cuenta", message: e.response.data.message }) }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar cuenta", message: e.response.data.message }) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -164,10 +146,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const sendResetPassword = async (email: string): Promise<void> => {
     return handler('Validando solicitud...', async () => {
-      try {
-        await useApi('forgot-password').void({ email })
-        notifySuccess({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })
-      } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
+      try { await useApi('forgot-password').void({ email }).then(() => notifySuccess({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
+      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
     })
   }
   /**
@@ -175,20 +155,21 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
    */
   const sendNotification = async (data: object): Promise<void> => {
-    try {
-      await useApi('fcm-notification').void(data)
-      notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })
-    } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
+    try { await useApi('fcm-notification').void(data).then(() => notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
   }
   /**
    * Nos permite guardar el token de Firebase Cloud Messaging (FCM) en el usuario.
    * @param {string} userId - Corresponde al ID del usuario.
    */
-  const saveToken = async (userId: string): Promise<void> => {
+  const updateTokenMessaging = async (userId: string): Promise<void> => {
     try {
-      await useApi('fcm-token').void({ userId })
-      notifySuccess({ title: "Exito al guardar token FCM", message: "El token se ha guardado correctamente" })
-    } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al guardar token FCM", message: e.response.data.message }) }
+      const permission = await Notification.requestPermission()
+      if (permission !== "granted") return // to allow messages
+      const token: string = await getTokenMessaging()
+      const res = (await useApi('user').update(userId, { fcmToken: token })).data
+      if (!res) return notifyError({ message: "El token de Cloud Messaging no se ha guardado" })
+    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al guardar token de Cloud Messaging", message: e.response.data.message }) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
@@ -219,7 +200,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   return (
     <Auth.Provider value={{
       isAuth, user, loading, login, logout, getAll, getById, getByQuery,
-      create, update, delete: _delete, sendResetPassword, sendNotification, saveToken
+      create, update, delete: _delete, sendResetPassword, sendNotification
     }}>
       {children}
     </Auth.Provider>

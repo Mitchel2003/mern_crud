@@ -10,7 +10,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { MapPinHouseIcon, UserRoundCheck } from "lucide-react"
 import { useAuthContext } from "@/context/AuthContext"
 import { useForm } from "react-hook-form"
-import { processFile } from "@/lib/utils"
 import {
   userDefaultValues,
   clientFlowDefaultValues,
@@ -69,7 +68,7 @@ export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => voi
   const { data: user } = queryUser.fetchUserById<User>(id as string)
   const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: role === 'company' })
   const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: role === 'client' })
-  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>('file', { path: `${role}/${id}/preview`, enabled: !!id && !!role })
+  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>({ path: `${role}/${id}/preview`, enabled: !!id && !!role })
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
@@ -112,13 +111,8 @@ export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => voi
           ].filter(f => f.file instanceof File)
 
           await Promise.all(files.map(async ({ file, exist, ref }) => {
-            if (!file) return
             const path = `${ref === 'img' ? 'client' : 'company'}/${id}/preview/${ref}`
-            exist && await deleteFile({ path })
-            const { name, type, size } = file
-            const base64 = await processFile(file)
-            const blob = { buffer: base64, originalname: name, mimetype: type, size }
-            await createFile({ files: [blob], path, unique: true })
+            exist && file && await deleteFile({ path }).then(async () => { await createFile({ files: [file], path, unique: true }) })
           }))
         })
       ) : (
@@ -131,12 +125,8 @@ export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => voi
           ].filter(f => f.file instanceof File)
 
           await Promise.all(files.map(async ({ file, ref }) => {
-            if (!file) return
-            const { name, type, size } = file
-            const base64 = await processFile(file)
-            const blob = { buffer: base64, originalname: name, mimetype: type, size }
             const path = `${ref !== 'img' ? 'company' : 'client'}/${e._id}/preview/${ref}`
-            await createFile({ files: [blob], path, unique: true })
+            file && await createFile({ files: [file], path, unique: true })
           }))
         })
       )
@@ -182,6 +172,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
     onSubmit: async (data: ClientFlowProps) => {
       const user: User = await createUser(data.client)
       const userImg = data.client.photoUrl?.[0]?.file
+      const path = `client/${user._id}/preview/img`
       await Promise.all(//create headquarter and offices in parallel
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, user: user._id })
@@ -199,12 +190,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
           }))
         })
       )
-      if (userImg) {//upload the image user
-        const { name, type, size } = userImg
-        const base64 = await processFile(userImg)
-        const file = { buffer: base64, originalname: name, mimetype: type, size }
-        await createFile({ files: [file], path: `client/${user._id}/preview/img`, unique: true })
-      }
+      userImg && await createFile({ files: [userImg], path, unique: true })
       methods.reset()
     },
     onSuccess

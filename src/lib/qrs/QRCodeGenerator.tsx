@@ -1,3 +1,4 @@
+import config from '@/utils/config'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 
@@ -14,12 +15,11 @@ const spaceBetweenQR = 40
  * @param rows Array of objects containing name and _id properties
  */
 export const generatePDF = async (rows: any[]) => {
-  const frontendUrl = import.meta.env.VITE_FRONTEND_URL
   const doc = new jsPDF()
 
   // Generate all QR codes in parallel
   const qrPromises = rows.map(async row => {
-    const url = `${frontendUrl}/form/solicit/${row._id}`
+    const url = `${config.frontendUrl}/form/solicit/${row._id}`
     return QRCode.toDataURL(url, { width: 150 }).then(qrCode => ({ name: row.name, qrCode }))
   })
 

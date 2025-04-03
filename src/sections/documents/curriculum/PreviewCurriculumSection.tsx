@@ -28,9 +28,9 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
   const idClient = cv?.office?.headquarter?.user?._id
   const idCompany = com?.[0]?._id
 
-  const { data: imgCli = [], isLoading: isLoadingImgCl } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${idClient}/preview`, enabled: !!idClient })
-  const { data: imgCom = [], isLoading: isLoadingImgCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${idCompany}/preview`, enabled: !!idCompany })
-  const { data: imgCv = [], isLoading: isLoadingImgCv } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
+  const { data: imgCom = [], isLoading: isLoadingImgCom } = queryFormat.fetchAllFiles<Metadata>({ path: `company/${idCompany}/preview`, enabled: !!idCompany })
+  const { data: imgCli = [], isLoading: isLoadingImgCl } = queryFormat.fetchAllFiles<Metadata>({ path: `client/${idClient}/preview`, enabled: !!idClient })
+  const { data: imgCv = [], isLoading: isLoadingImgCv } = queryFormat.fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
   const isLoadingData = isLoadingCv || isLoadingIns || isLoadingAcc || isLoadingCom
   const isLoadingFile = isLoadingImgCv || isLoadingImgCl || isLoadingImgCom
 

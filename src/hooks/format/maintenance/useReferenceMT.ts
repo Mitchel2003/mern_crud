@@ -19,13 +19,18 @@ const useReferenceMT = () => {
   })
 
   const submitData = (data: MaintenanceFormProps) => ({
-    curriculum: data.curriculum,
+    curriculum: data.curriculum
   })
 
   return {
     mapValues,
     submitData,
-    options: { clients, headquarters, offices, curriculums }
+    options: {
+      clients: clients || [],
+      offices: offices || [],
+      curriculums: curriculums || [],
+      headquarters: headquarters || []
+    }
   }
 }
 

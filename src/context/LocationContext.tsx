@@ -30,55 +30,45 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
   const { handler } = useLoading()
 
   /**
-   * Obtiene todas las ubicaciones de un tipo específico
-   * @param {string} type - El tipo de ubicación.
-   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
+   * Obtiene todas las ubicaciones de un tipo específico.
+   * @param {LocationType} type - El tipo de ubicación.
+   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones o un array vacío.
    */
   const getAll = async (type: LocationType): Promise<any[]> => {
     try { return (await useApi(type).getAll()).data }
-    catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-      return []
-    }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
   }
   /**
-   * Obtiene una ubicación específica por su ID
-   * @param {string} type - El tipo de ubicación.
+   * Obtiene una ubicación específica por su ID.
+   * @param {LocationType} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
-   * @returns {Promise<any>} Los datos de la ubicación.
+   * @returns {Promise<any>} Los datos de la ubicación o undefined.
    */
   const getById = async (type: LocationType, id: string): Promise<any | undefined> => {
     return handler('Buscando por identificador...', async () => {
-      try {
-        return (await useApi(type).getById(id)).data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message })
-        return undefined
-      }
+      try { return (await useApi(type).getById(id)).data }
+      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message }); return undefined }
     })
   }
   /**
    * Obtiene todas las ubicaciones de un tipo específico por una consulta
-   * @param {string} type - El tipo de ubicación, se utiliza para construir el endpoint.
+   * @param {LocationType} type - El tipo de ubicación, se utiliza para construir el endpoint.
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
-   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones.
+   * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones o un array vacío.
    */
   const getByQuery = async (type: LocationType, query: QueryOptions): Promise<any[]> => {
     return handler('Buscando por consulta...', async () => {
       try {
         if ('enabled' in query && query.enabled === false) return []
         return (await useApi(type).getByQuery(query)).data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message })
-        return []
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
     })
   }
   /**
    * Crea una nueva ubicación
-   * @param {string} type - El tipo de ubicación.
+   * @param {LocationType} type - El tipo de ubicación.
    * @param {object} data - Los datos de la ubicación.
-   * @returns {Promise<any>} Los datos de la ubicación creada.
+   * @returns {Promise<any>} Los datos de la ubicación creada o undefined.
    */
   const create = async (type: LocationType, data: object): Promise<any> => {
     return handler('Creando...', async () => {
@@ -86,18 +76,15 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi(type).create(data)
         notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
         return response.data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message })
-        return undefined
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message }); return undefined }
     })
   }
   /**
    * Actualiza una ubicación existente
-   * @param {string} type - El tipo de ubicación.
+   * @param {LocationType} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
    * @param {object} data - Los datos de la ubicación.
-   * @returns {Promise<any>} Los datos de la ubicación actualizada.
+   * @returns {Promise<any>} Los datos de la ubicación actualizada o undefined.
    */
   const update = async (type: LocationType, id: string, data: object): Promise<any> => {
     return handler('Actualizando...', async () => {
@@ -105,17 +92,14 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi(type).update(id, data)
         notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
         return response.data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message })
-        return undefined
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }); return undefined }
     })
   }
   /**
    * Elimina una ubicación existente
-   * @param {string} type - El tipo de ubicación.
+   * @param {LocationType} type - El tipo de ubicación.
    * @param {string} id - El ID de la ubicación.
-   * @returns {Promise<any>} Los datos de la ubicación eliminada.
+   * @returns {Promise<any>} Los datos de la ubicación eliminada o undefined.
    */
   const delete_ = async (type: LocationType, id: string): Promise<any> => {
     return handler('Eliminando...', async () => {
@@ -123,10 +107,7 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi(type).delete(id)
         notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
         return response.data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message })
-        return undefined
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message }); return undefined }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/

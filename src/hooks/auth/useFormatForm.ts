@@ -14,11 +14,11 @@ import { solicitSchema, SolicitFormProps } from '@/schemas/format/solicit.schema
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
-import { processFile, pdfToBase64 } from '@/lib/utils'
 import { useAuthContext } from '@/context/AuthContext'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
+import { pdfToBase64 } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 
 /*==================================================useForm==================================================*/
@@ -35,7 +35,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { createFile, deleteFile } = useFormatMutation("file")
   const queryFormat = useQueryFormat()
 
-  const { data: img = [], isLoading: isLoadingImg } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
+  const { data: img = [], isLoading: isLoadingImg } = queryFormat.fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
   const { data: acc = [], isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id as string)
   const isLoading = isLoadingAcc || isLoadingCv || isLoadingImg
@@ -119,22 +119,14 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
             await Promise.all(acc.map(async (acc) => await deleteAcc({ id: acc._id })))
             await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })))
           }
-
-          data.photoUrl && await deleteFile({ path: `files/${id}/preview/img` }).then(async () => {
-            const { name, type, size } = data.photoUrl
-            const base64 = await processFile(data.photoUrl)
-            const file = { buffer: base64, originalname: name, mimetype: type, size }
-            await createFile({ files: [file], path: `files/${id}/preview/img`, unique: true })
-          })
+          const file = data.photoUrl
+          const path = `files/${id}/preview/img`
+          file && await deleteFile({ path }).then(async () => await createFile({ files: [file], path, unique: true }))
         })
       ) : (
         createCV(data).then(async (e) => {
           await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: e._id })))
-          if (!data.photoUrl) return
-          const { name, type, size } = data.photoUrl
-          const base64 = await processFile(data.photoUrl)
-          const file = { buffer: base64, originalname: name, mimetype: type, size }
-          await createFile({ files: [file], path: `files/${e._id}/preview/img`, unique: true })
+          data.photoUrl && await createFile({ files: [data.photoUrl], path: `files/${e._id}/preview/img`, unique: true })
         })
       )
       methods.reset()
@@ -215,9 +207,10 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
   const { observationData } = formatHooks.solicit()
   const { createFormat } = useFormatMutation("solicit")
   const { createFile } = useFormatMutation("file")
+  const { sendNotification } = useAuthContext()
   const { notifyError } = useNotification()
 
-  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${id}/preview`, enabled: !!id })
+  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
   const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
   const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
   const company = com?.[0]
@@ -239,15 +232,13 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: SolicitFormProps) => {
       const data = { ...observationData.submitData(e, id!) }
-      id && cv ? (createFormat(data).then(async () => {
-        const photoUrl = e.photoUrl[0]?.file
-        if (!photoUrl) return
-        const { name, type, size } = photoUrl
-        const base64 = await processFile(photoUrl)
-        const file = { buffer: base64, originalname: name, mimetype: type, size }
-        await createFile({ files: [file], path: `files/${id}/solicit/${formatDateTime(new Date(Date.now()), '-')}`, unique: true })
-      }).finally(() => { useAuthContext().sendNotification({ userId: company?._id, title: "Nueva solicitud", message: "Se ha creado una nueva solicitud" }) })
-      ) : (notifyError({ title: "Error al crear la solicitud", message: "No tienes acceso a este currículum" }))
+      id && cv ? (
+        createFormat(data).then(async () => {
+          const file = e.photoUrl[0]?.file
+          const path = `files/${id}/solicit/${formatDateTime(new Date(Date.now()), '-')}`
+          file && await createFile({ files: [file], path, unique: true })
+        }).finally(() => { sendNotification({ id: company?._id, title: "Nueva solicitud", body: "Se ha creado una nueva solicitud" }) })
+      ) : (notifyError({ message: "No tienes acceso a este currículum" }))
       methods.reset()
     },
     onSuccess
@@ -293,9 +284,9 @@ export const useCurriculumTable = () => {
   const client = onDownload?.office?.headquarter?.user //this user could be role client
   const company = companies?.[0]
 
-  const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>('file', { path: `client/${client?._id}/preview`, enabled: !!client })
-  const { data: imgCom, isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>('file', { path: `company/${company?._id}/preview`, enabled: !!company })
-  const { data: imgCv, isLoading: isLoadingCv } = queryFormat.fetchAllFiles<Metadata>('file', { path: `files/${onDelete || onDownload?._id}/preview`, enabled: !!onDelete || !!onDownload })
+  const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>({ path: `client/${client?._id}/preview`, enabled: !!client })
+  const { data: imgCom, isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>({ path: `company/${company?._id}/preview`, enabled: !!company })
+  const { data: imgCv, isLoading: isLoadingCv } = queryFormat.fetchAllFiles<Metadata>({ path: `files/${onDelete || onDownload?._id}/preview`, enabled: !!onDelete || !!onDownload })
   const { data: accs } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete || onDownload?._id, enabled: !!onDelete || !!onDownload })
   const zipFiles = queryFormat.fetchAllQueries((onDownloadZip || onDownloadZipMts || []))
 
@@ -507,8 +498,8 @@ export const useMaintenanceTable = () => {
   const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
   const { data: mts = [] } = fetchAllFormats<Maintenance>('maintenance')
   const com = companies?.[0]
-  // Get company images from the first company (mean while)
-  const { data: imgs } = fetchAllFiles<Metadata>('file', {
+  /** Get company images */
+  const { data: imgs } = fetchAllFiles<Metadata>({
     path: `company/${com?._id}/preview`,
     enabled: !!com
   })

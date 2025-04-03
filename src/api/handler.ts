@@ -55,8 +55,6 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  */
 const getBase = (type: string): string | undefined => {
   switch (type) {
-    /*-------------------------files-------------------------*/
-    case 'file': return '/storage'
     /*-------------------------user-------------------------*/
     case 'user': return undefined
     /*-------------------------authentication-------------------------*/

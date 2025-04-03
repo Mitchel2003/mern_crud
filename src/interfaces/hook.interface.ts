@@ -1,8 +1,8 @@
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
 import { FormatType, LocationType } from "@/interfaces/context.interface"
-import { FileReferenceDB } from "@/interfaces/db.interface"
+import { FileReference } from "@/interfaces/db.interface"
 
-export interface FileMutationProps extends FileReferenceDB { }
+export interface FileMutationProps extends FileReference { }
 export interface UpdateMutationProps { id: string; data: Partial<any> }
 export interface DeleteMutationProps { id: string }
 
@@ -40,7 +40,7 @@ export type QueryReact_Format = {
   fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
   fetchFormatById: <T>(path: FormatType, id: string) => UseQueryResult<T | undefined, Error>
   fetchFormatByQuery: <T>(path: FormatType, query: object) => UseQueryResult<T[], Error>
-  fetchAllFiles: <T>(path: FormatType, data: FileReferenceDB) => UseQueryResult<T[], Error>
+  fetchAllFiles: <T>(data: FileReference) => UseQueryResult<T[], Error>
   fetchAllQueries: <T>(data: any[]) => {
     data?: { type: string; id: string; data: T[]; error: any }
     isFetching: boolean

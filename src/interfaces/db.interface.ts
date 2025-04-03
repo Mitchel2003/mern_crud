@@ -24,10 +24,25 @@ export interface Metadata {
   name: string
   url: string
 }
-export interface FileReferenceDB {
+export interface FileReference {
   enabled?: boolean
   unique?: boolean
-  files?: any[]
+  files?: File[]
   path: string
 }
 /*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------Firebase--------------------------------------------------*/
+export interface StorageService {
+  /*-----------------> get <-----------------*/
+  getFile(path: string): Promise<Result<string>>
+  getFiles(path: string): Promise<Result<string[]>>
+  getFilesWithMetadata(path: string): Promise<Result<Metadata[]>>
+  /*-----------------> upload <-----------------*/
+  uploadFile(file: File, path: string): Promise<Result<string>>
+  uploadFiles(files: File[], path: string): Promise<Result<string[]>>
+  /*-----------------> update <-----------------*/
+  updateFile(file: File, path: string): Promise<Result<string>>
+  deleteFile(path: string): Promise<Result<void>>
+}
+export interface MessagingService { getTokenCloudMessaging(registration: ServiceWorkerRegistration): Promise<Result<string>> }

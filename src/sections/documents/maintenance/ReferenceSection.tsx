@@ -1,5 +1,4 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useMaintenanceForm } from "@/hooks/auth/useFormatForm"
+import { Curriculum, Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Metadata } from "@/interfaces/db.interface"
 import { CheckCircle, Search } from "lucide-react"
@@ -13,23 +12,23 @@ import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
 
-interface ReferenceProps extends ThemeContextProps { id: boolean }
+interface ReferenceProps extends ThemeContextProps {
+  options: { clients: User[], offices: Office[], curriculums: Curriculum[], headquarters: Headquarter[] }
+  id: boolean
+}
 
-const ReferenceSection = ({ id, theme }: ReferenceProps) => {
-  const { referenceData: options } = useMaintenanceForm()
+const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
   const { watch } = useFormContext()
-
-  const headquarterId = watch('headquarter')
+  const hqId = watch('headquarter')
   const clientId = watch('client')
   const officeId = watch('office')
   const cvId = watch('curriculum')
 
   //fetch on the component instead of hooks: by reactive find image of equipment selected
-  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>('file', { path: `files/${cvId}/preview`, enabled: !!cvId })
+  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${cvId}/preview`, enabled: !!cvId })
   const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.user?._id === clientId)
-  const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === headquarterId)
   const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)
-
+  const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === hqId)
   const selectedCv = curriculums?.find(cv => cv._id === cvId)
   return (
     <div className="space-y-8">

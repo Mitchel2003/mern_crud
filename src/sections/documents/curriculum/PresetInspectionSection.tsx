@@ -6,20 +6,19 @@ import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
+import { DialogField, SelectOptionProps } from "@/interfaces/props.interface"
 import InspectionCV from '@/hooks/format/curriculum/useInspectionCV'
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
-import { DialogField } from "@/interfaces/props.interface"
 import { useFormUtils } from '@/hooks/core/useFormUtils'
 
-interface PresetInspectionProps extends ThemeContextProps { }
+interface PresetInspectionProps extends ThemeContextProps {
+  options: { inspections: SelectOptionProps[] }
+}
 
-const PresetInspectionSection = ({ theme }: PresetInspectionProps) => {
+const PresetInspectionSection = ({ theme, options }: PresetInspectionProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { hasErrors, isDirtyField, ConfirmTrigger } = useFormUtils()
-  const { inspectionData: options } = useCurriculumForm()
   const { onSubmit } = InspectionCV.useInspection()
-
   return (
     <>
       <div className="space-y-6">

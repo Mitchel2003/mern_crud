@@ -7,21 +7,21 @@ import InputField from '#/common/fields/Input'
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
 import { ThemeContextProps } from '@/interfaces/context.interface'
-import { useCurriculumForm } from '@/hooks/auth/useFormatForm'
+import { SelectOptionProps } from '@/interfaces/props.interface'
 import DetailsCV from '@/hooks/format/curriculum/useDetailsCV'
 import { useFormUtils } from '@/hooks/core/useFormUtils'
 import { defaultWarranty } from '@/utils/constants'
 
-interface DetailsEquipmentProps extends ThemeContextProps { }
+interface DetailsEquipmentProps extends ThemeContextProps {
+  options: { suppliers: SelectOptionProps[], representatives: SelectOptionProps[], manufacturers: SelectOptionProps[] }
+}
 
-const DetailsEquipmentSection = ({ theme }: DetailsEquipmentProps) => {
+const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
   const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
   const { hasErrors, isDirtyField, ConfirmTrigger } = useFormUtils()
   const { onSubmit: onSubmitRep } = DetailsCV.useRepresentative()
   const { onSubmit: onSubmitMan } = DetailsCV.useManufacturer()
   const { onSubmit: onSubmitSup } = DetailsCV.useSupplier()
-  const { detailsData: options } = useCurriculumForm()
-
   return (
     <>
       <div className='space-y-6'>
