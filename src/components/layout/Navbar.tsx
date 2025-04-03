@@ -41,7 +41,7 @@ const Navbar = () => {
           {isAuth && user && (
             <>
               <Notifications theme={theme} />
-              <UserMenu user={user} theme={theme} />
+              <UserMenu theme={theme} />
             </>
           )}
         </div>

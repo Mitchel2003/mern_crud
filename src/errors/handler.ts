@@ -1,8 +1,7 @@
-import { Result, success, failure } from '@/interfaces/db.interface';
-import HandlerErrorsFB from '@/errors/firebase.error';
-import ErrorAPI from '@/errors';
-
-import { FirebaseError } from 'firebase/app';
+import { Result, success, failure } from '@/interfaces/db.interface'
+import HandlerErrorsFB from '@/errors/firebase.error'
+import { FirebaseError } from 'firebase/app'
+import ErrorAPI from '@/errors'
 
 /*--------------------------------------------------handlers--------------------------------------------------*/
 /**

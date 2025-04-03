@@ -24,12 +24,20 @@ class MessagingService implements IMessaging {
     return MessagingService.instance
   }
 
+  /*---------------> helpers <---------------*/
   /**
    * Verifies if the browser supports Firebase Cloud Messaging
    * @returns {Promise<Result<boolean>>} - Returns true if the browser supports FCM, false otherwise
    */
   async isSupported(): Promise<Result<boolean>> {
     return handler(async () => await isSupported(), 'verificar soporte de Firebase Cloud Messaging')
+  }
+  /**
+   * Configures a listener for messages in the foreground
+   * @param {Function} callback - Function to execute when a message is received
+   */
+  async setupMessageListener(callback: (payload: any) => void): Promise<Result<Unsubscribe>> {
+    return handler(async () => onMessage(this.messaging, (payload) => callback(payload)), 'configurar listener de mensajes')
   }
   /*----------------------------------------------------*/
 
@@ -45,13 +53,6 @@ class MessagingService implements IMessaging {
       if (!supported.success) throw new ErrorAPI(supported.error)
       return getToken(this.messaging, { vapidKey: config.vapidKey, serviceWorkerRegistration: registration })
     }, 'obtener token Firebase Cloud Messaging')
-  }
-  /**
-   * Configures a listener for messages in the foreground
-   * @param {Function} callback - Function to execute when a message is received
-   */
-  async setupMessageListener(callback: (payload: any) => void): Promise<Result<Unsubscribe>> {
-    return handler(async () => onMessage(this.messaging, (payload) => callback(payload)), 'configurar listener de mensajes')
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

@@ -1,7 +1,8 @@
-import { success, failure, FileReference, Result, Metadata } from "@/interfaces/db.interface";
-import { storageService } from "@/services/firebase/storage.service";
-import { normalizeError } from "@/errors/handler";
-import ErrorAPI from "@/errors";
+/** Este módulo proporciona funciones para la gestión de archivos con Firebase Cloud Storage */
+import { success, failure, FileReference, Result, Metadata } from "@/interfaces/db.interface"
+import { storageService } from "@/services/firebase/storage.service"
+import { normalizeError } from "@/errors/handler"
+import ErrorAPI from "@/errors"
 
 /**
  * Obtiene los metadatos de los archivos en una ruta específica

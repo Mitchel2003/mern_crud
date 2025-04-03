@@ -1,12 +1,14 @@
+import { login as loginFB, logout as logoutFB, signin, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
 import { getTokenMessaging } from "@/controllers/messaging.controller"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { AuthContext, User } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { isAxiosResponse } from "@/interfaces/db.interface"
+import { LoginFormProps } from "@/schemas/auth/auth.schema"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState, useRef } from "react"
 import { AxiosResponse } from "axios"
 
 const Auth = createContext<AuthContext>(undefined)
@@ -29,25 +31,41 @@ export const useAuthContext = () => {
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
   const { notifySuccess, notifyError } = useNotification()
-  const [user, setUser] = useState<User | undefined>(undefined)
+  const unsubscribe = useRef<(() => void) | null>(null)
+  const [user, setUser] = useState<User | undefined>()
   const [loading, setLoading] = useState(true)
   const [isAuth, setIsAuth] = useState(false)
   const { handler } = useLoading()
 
-  useEffect(() => { verifyAuth() }, [])
+  useEffect(() => {// To subscribe authentication state
+    const initialUser = getCurrentUser()// Get initial state
+    if (initialUser) { getUser(initialUser.uid) }
+    else { setAuthStatus(); setLoading(false) }
+    // Subscribe to authentication changes on mount
+    unsubscribe.current = subscribeAuthChanges((firebaseUser) => {
+      if (firebaseUser) { getUser(firebaseUser.uid) }
+      else { setAuthStatus(); setLoading(false) }
+    })// Clean up subscription on unmount
+    return () => { if (unsubscribe.current) { unsubscribe.current(); unsubscribe.current = null } }
+  }, [])
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /**
    * Inicia sesión con las credenciales del usuario.
-   * @param {object} credentials - Las credenciales del usuario.
+   * @param {LoginFormProps} data - Las credenciales del usuario.
    */
-  const login = async (credentials: object): Promise<void> => {
+  const login = async (data: LoginFormProps): Promise<void> => {
     return handler('Iniciando sesión...', async () => {
       try {
-        const res = await useApi('login').create(credentials)
-        await updateTokenMessaging(res.data._id)
-        notifySuccess({ message: "¡Bienvenido!" })
-        setAuthStatus(res)
-      } catch (e) { isAxiosResponse(e) && notifyError({ message: e.response.data.message }); setAuthStatus() }
+        const res = await loginFB(data.email, data.password)
+        const user = await useApi('user').getByQuery({ uid: res.uid })
+        if (!user?.data?.[0]) throw new Error('No se encontro el usuario')
+        await updateTokenMessaging(user.data[0]._id)// handle messaging token
+        notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión" })
+        setAuthStatus(user)
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
+        setAuthStatus()
+      }
     })
   }
   /**
@@ -56,8 +74,14 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const logout = async (): Promise<void> => {
     return handler('Cerrando sesión...', async () => {
-      try { await useApi('logout').void().then(() => setAuthStatus()).finally(() => notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })) }
-      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message }) }
+      try {
+        await logoutFB()
+        setAuthStatus()
+        notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
+      } catch (e: unknown) {
+        isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
+        setAuthStatus()
+      }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -92,22 +116,20 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
   }
   /**
-   * Registra un nuevo usuario con los datos proporcionados.
-   * @param {object} data - Los datos del nuevo usuario.
+   * Registra un nuevo usuario (auth) con los datos proporcionados.
+   * Seguido, procede a registrar el usuario en la base de datos (MongoDB).
+   * @param {object} data - Los datos del nuevo usuario, contiene email and password
    * @returns {Promise<any>} Los datos del usuario registrado o undefined.
    */
   const create = async (data: object): Promise<any> => {
     return handler('Registrando usuario...', async () => {
       try {
-        const res = await useApi('user').create(data)
-        notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta, tienes 15 minutos para confirmarlo" })
-        setAuthStatus(res)
-        return res.data
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message })
-        setAuthStatus()
-        return undefined
-      }
+        const authentication = await signin(data as any)
+        const response = await useApi('user').create(authentication)
+        notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
+        setAuthStatus(response)
+        return response.data
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message }); setAuthStatus() }
     })
   }
   /**
@@ -122,7 +144,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi('user').update(id, data)
         notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }); return undefined }
+      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }) }
     })
   }
   /**
@@ -131,10 +153,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const _delete = async (id: string): Promise<void> => {
     return handler('Eliminando cuenta...', async () => {
-      try {
-        await useApi('user').delete(id)
-        notifySuccess({ title: "Cuenta eliminada", message: "Tu cuenta ha sido eliminada permanentemente" })
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar cuenta", message: e.response.data.message }) }
+      try { await useApi('user').delete(id).then(() => notifySuccess({ title: "Cuenta eliminada", message: "La cuenta ha sido eliminada permanentemente" })) }
+      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar cuenta", message: e.response.data.message }) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -146,7 +166,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const sendResetPassword = async (email: string): Promise<void> => {
     return handler('Validando solicitud...', async () => {
-      try { await useApi('forgot-password').void({ email }).then(() => notifySuccess({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
+      try { await forgotPassword(email).then(() => notifySuccess({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
       catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
     })
   }
@@ -155,7 +175,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
    */
   const sendNotification = async (data: object): Promise<void> => {
-    try { await useApi('fcm-notification').void(data).then(() => notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
+    try { await useApi('fcm').void(data).then(() => notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
     catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
   }
   /**
@@ -179,22 +199,17 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setAuthStatus = (res?: AxiosResponse) => {
-    setUser(res?.data ?? undefined)
+    setUser(res?.data?.[0] || res?.data || undefined)
     setIsAuth(Boolean(res?.data))
   }
   /**
-   * Verifica el estado de autenticación del usuario (auth)
-   * logramos obtener un "user | null" segun corresponda
+   * Obtiene los datos del usuario desde la base de datos
+   * @param {string} uid - ID del usuario en Firebase
    */
-  const verifyAuth = async (): Promise<void> => {
-    try {
-      const res = await useApi('on-auth').get()
-      if (!res?.data) return setAuthStatus()
-      setAuthStatus(res)
-    } catch (e: unknown) {
-      isAxiosResponse(e) && notifyError({ title: "Error solicitud de verificación", message: e.response.data.message })
-      setAuthStatus()
-    } finally { setLoading(false) }
+  const getUser = async (uid: string) => {
+    try { await useApi('user').getByQuery({ uid }).then((res) => { setAuthStatus(res) }) }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
+    finally { setLoading(false) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (

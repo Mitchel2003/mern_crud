@@ -1,4 +1,5 @@
 import { BaseMDB, FileReference } from "@/interfaces/db.interface"
+import { LoginFormProps } from "@/schemas/auth/auth.schema"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -50,7 +51,7 @@ export type AuthContext = {
   isAuth: boolean
   loading: boolean
   logout: () => Promise<void>
-  login: (data: object) => Promise<void>
+  login: (data: LoginFormProps) => Promise<void>
   sendResetPassword: (email: string) => Promise<void>
   sendNotification: (data: object) => Promise<void>
   //user handlers

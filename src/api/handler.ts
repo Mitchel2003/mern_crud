@@ -55,23 +55,19 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
  */
 const getBase = (type: string): string | undefined => {
   switch (type) {
-    /*-------------------------user-------------------------*/
-    case 'user': return undefined
     /*-------------------------authentication-------------------------*/
-    case 'login':
-    case 'logout':
-    case 'on-auth':
-    case 'fcm-token':
-    case 'fcm-notification':
-    case 'forgot-password': return '/auth'
+    case 'fcm': return '/auth'
+    case 'user': return undefined
+    /*-------------------------location-------------------------*/
+    case 'country':
+    case 'state':
+    case 'city':
+    case 'office':
+    case 'headquarter': return '/location'
     /*-------------------------format-------------------------*/
     case 'cv':
     case 'solicit':
-    case 'reminder':
-    case 'equipment':
-    case 'calibration':
-    case 'maintenance':
-    case 'calibrationEquipment': return '/form'
+    case 'maintenance': return '/form'
     case 'inspection':
     case 'accessory': return '/form/cv/sub'
     case 'supplier':
@@ -80,12 +76,6 @@ const getBase = (type: string): string | undefined => {
     case 'supplierHeadquarter':
     case 'manufacturerHeadquarter':
     case 'representativeHeadquarter': return '/form/cv/stakeholder'
-    /*-------------------------location-------------------------*/
-    case 'country':
-    case 'state':
-    case 'city':
-    case 'office':
-    case 'headquarter': return '/location'
   }
   return undefined
 }

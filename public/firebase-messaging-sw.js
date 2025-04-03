@@ -25,7 +25,6 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SET_FIREBASE_CONFIG') {
     try {
       const config = event.data.config
-      console.log('[firebase-messaging-sw.js] Configuración recibida')
 
       // Inicializar Firebase solo si no se ha hecho ya
       if (!self.firebase || !messagingInstance) {
@@ -35,7 +34,6 @@ self.addEventListener('message', (event) => {
 
         // Configurar el manejador de mensajes en segundo plano
         messagingInstance.onBackgroundMessage((payload) => {
-          console.log('[firebase-messaging-sw.js] Mensaje en segundo plano recibido:', payload)
           try {
             const notificationTitle = payload.notification?.title || 'Nueva notificación'
             const notificationOptions = {

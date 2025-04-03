@@ -1,7 +1,7 @@
 /** Este módulo proporciona funciones para la gestión de notificaciones push con Firebase Cloud Messaging */
-import { messagingService as messagingFB } from "@/services/firebase/messaging.service";
-import { normalizeError } from "@/errors/handler";
-import ErrorAPI from "@/errors";
+import { messagingService as messagingFB } from "@/services/firebase/messaging.service"
+import { normalizeError } from "@/errors/handler"
+import ErrorAPI from "@/errors"
 
 /*--------------------------------------------------messaging token--------------------------------------------------*/
 /**
@@ -11,16 +11,11 @@ import ErrorAPI from "@/errors";
  */
 export const getTokenMessaging = async (): Promise<string> => {
   try {
-    // Register or retrieve the service worker
     const registration = await registerServiceWorker()
-    // Request the FCM token
-    console.log('Solicitando token FCM...');//check control
-    const result = await messagingFB.getTokenCloudMessaging(registration);
-    // Verify if the request was successful
+    const result = await messagingFB.getTokenCloudMessaging(registration)
     if (!result.success) throw new ErrorAPI(result.error)
-    console.log('Token FCM obtenido correctamente');//check control
-    return result.data;
-  } catch (e: unknown) { throw new ErrorAPI(normalizeError(e, 'obtener token Firebase Cloud Messaging')) }
+    return result.data
+  } catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener token Firebase Cloud Messaging')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -32,22 +27,15 @@ export const getTokenMessaging = async (): Promise<string> => {
 async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
   try {
     if (!('serviceWorker' in navigator)) throw new Error('Este navegador no soporta Service Workers, necesarios para las notificaciones push')
-    console.log('Registrando service worker para Firebase Cloud Messaging...');//check control
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/', type: 'classic', updateViaCache: 'none' })
-    await navigator.serviceWorker.ready //wait for service worker to be ready
-    // Send configuration to service worker active
-    if (navigator.serviceWorker.controller) {
-      console.log('Enviando configuración de Firebase al service worker...');//check control
+    await navigator.serviceWorker.ready //wait for service worker to be ready    
+    if (navigator.serviceWorker.controller) {// Send configuration to service worker active
       navigator.serviceWorker.controller.postMessage({ type: 'SET_FIREBASE_CONFIG', config: (window as any).__FIREBASE_CONFIG__ })
     }
-
-    // If the service worker is installing, wait for activation
-    if (registration.installing) {
-      console.log('Service worker instalándose, esperando activación...');//check control
+    if (registration.installing) {// If the service worker is installing, wait for activation
       await new Promise<void>((resolve) => {
         registration.installing?.addEventListener('statechange', (e) => {
           if ((e.target as ServiceWorker).state === 'activated') {
-            console.log('Service worker activado');//check control
             if (registration.active) {// Send configuration to the newly activated service worker
               registration.active.postMessage({ type: 'SET_FIREBASE_CONFIG', config: (window as any).__FIREBASE_CONFIG__ })
             }
@@ -56,11 +44,8 @@ async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
         })
       })
     } else if (registration.active) {
-      console.log('Service worker ya activo, enviando configuración...');//check control
       registration.active.postMessage({ type: 'SET_FIREBASE_CONFIG', config: (window as any).__FIREBASE_CONFIG__ })
     }
-
-    console.log('Service worker registrado correctamente');//check control
-    return registration;
+    return registration //Service worker registered correctly
   } catch (e) { throw new ErrorAPI(normalizeError(e, 'registrar script del worker')) }
 }
