@@ -1,13 +1,15 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "#/ui/dropdown-menu"
-import { ThemeContextProps, User } from "@/interfaces/context.interface"
+import { ThemeContextProps } from "@/interfaces/context.interface"
 import { Avatar, AvatarFallback, AvatarImage } from "#/ui/avatar"
+import SkeletonLarge from "#/common/skeletons/SkeletonLarge"
 import { useAuthContext } from "@/context/AuthContext"
 import { LogOut, Settings } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "#/ui/button"
 
-const UserMenu = ({ }: ThemeContextProps) => {
-  const { user = {} as User, logout } = useAuthContext()
+const UserMenu = ({ theme }: ThemeContextProps) => {
+  const { user, logout } = useAuthContext()
+  if (!user) return <SkeletonLarge theme={theme} />
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
