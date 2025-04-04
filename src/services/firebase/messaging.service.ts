@@ -44,14 +44,13 @@ class MessagingService implements IMessaging {
   /*---------------> actions requests <---------------*/
   /**
    * Handles the process of getting a token for Firebase Cloud Messaging (FCM).
-   * @param {ServiceWorkerRegistration} registration - The registration object for the service worker.
    * @returns {Promise<Result<string>>} - Returns the token if the request is successful, or an error if it fails.
    */
-  async getTokenCloudMessaging(registration: ServiceWorkerRegistration): Promise<Result<string>> {
+  async getTokenCloudMessaging(): Promise<Result<string>> {
     return handler(async () => {
-      const supported = await this.isSupported();
+      const supported = await this.isSupported()
       if (!supported.success) throw new ErrorAPI(supported.error)
-      return getToken(this.messaging, { vapidKey: config.vapidKey, serviceWorkerRegistration: registration })
+      return getToken(this.messaging, { vapidKey: config.vapidKey })
     }, 'obtener token Firebase Cloud Messaging')
   }
 }

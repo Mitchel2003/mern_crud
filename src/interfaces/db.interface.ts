@@ -81,5 +81,5 @@ export interface MessagingService {
   isSupported(): Promise<Result<boolean>>
   setupMessageListener(callback: (payload: any) => void): Promise<Result<Unsubscribe>>
   /*-----------------> actions requests <-----------------*/
-  getTokenCloudMessaging(registration: ServiceWorkerRegistration): Promise<Result<string>>
+  getTokenCloudMessaging(): Promise<Result<string>>
 }
