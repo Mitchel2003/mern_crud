@@ -1,8 +1,8 @@
 /** Este módulo proporciona funciones para la gestión de autenticación con Firebase Authentication */
 import { authService as authFB } from "@/services/firebase/auth.service"
-import { AccountProps } from "@/interfaces/db.interface";
-import { normalizeError } from "@/errors/handler";
-import { User } from "firebase/auth";
+import { AccountProps } from "@/interfaces/db.interface"
+import { normalizeError } from "@/errors/handler"
+import { User } from "firebase/auth"
 import ErrorAPI from "@/errors"
 
 /*--------------------------------------------------auth--------------------------------------------------*/
@@ -76,6 +76,7 @@ export const getCurrentUser = (): User | null => {
  * @returns {function} - Función para cancelar la suscripción
  */
 export const subscribeAuthChanges = (callback: (user: User | null) => void): (() => void) => {
-  return authFB.subscribeAuthChanges(callback)
+  try { return authFB.subscribeAuthChanges(callback) }
+  catch (e) { throw new ErrorAPI(normalizeError(e, 'suscribir cambios de autenticación')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/

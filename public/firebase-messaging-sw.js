@@ -28,7 +28,6 @@ self.addEventListener('message', (event) => {
 
       // Inicializar Firebase solo si no se ha hecho ya
       if (!self.firebase || !messagingInstance) {
-        console.log('[firebase-messaging-sw.js] Inicializando Firebase con config:', config)
         firebase.initializeApp(config)
         messagingInstance = firebase.messaging()
 
@@ -42,7 +41,6 @@ self.addEventListener('message', (event) => {
               badge: '/assets/gs_ico.ico',
               data: payload.data || {}
             }
-
             return self.registration.showNotification(notificationTitle, notificationOptions)
           } catch (error) { console.error('[firebase-messaging-sw.js] Error al mostrar notificación:', error) }
         })

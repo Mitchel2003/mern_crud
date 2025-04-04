@@ -61,7 +61,6 @@ export interface AuthService {
   /*-----------------> handlers state <-----------------*/
   getCurrentUser(): User | null
   subscribeAuthChanges(listener: (user: User | null) => void): () => void
-  cleanup(): void
 }
 
 export interface StorageService {

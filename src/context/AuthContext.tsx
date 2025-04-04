@@ -37,15 +37,19 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const [isAuth, setIsAuth] = useState(false)
   const { handler } = useLoading()
 
-  useEffect(() => {// To subscribe authentication state
-    const initialUser = getCurrentUser()// Get initial state
-    if (initialUser) { getUser(initialUser.uid) }
-    else { setAuthStatus(); setLoading(false) }
-    // Subscribe to authentication changes on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const storedUid = localStorage.getItem('uid')
+    if (token && storedUid) { getUser(storedUid) }
+    else {// If no token or uid, check for existing
+      const initialUser = getCurrentUser()
+      if (initialUser) { getUser(initialUser.uid) }
+      else { setAuthStatus(); setLoading(false) }
+    }// Subscribe to authentication changes on mount
     unsubscribe.current = subscribeAuthChanges((firebaseUser) => {
       if (firebaseUser) { getUser(firebaseUser.uid) }
       else { setAuthStatus(); setLoading(false) }
-    })// Clean up subscription on unmount
+    })// Clean subscription on unmount
     return () => { if (unsubscribe.current) { unsubscribe.current(); unsubscribe.current = null } }
   }, [])
   /*--------------------------------------------------authentication--------------------------------------------------*/
@@ -201,14 +205,18 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const setAuthStatus = (res?: AxiosResponse) => {
     setUser(res?.data || undefined)
     setIsAuth(Boolean(res?.data))
+    if (!res?.data) localStorage.removeItem('uid')
   }
   /**
    * Obtiene los datos del usuario desde la base de datos
    * @param {string} uid - ID del usuario en Firebase
    */
   const getUser = async (uid: string) => {
-    try { await useApi('user').getById(uid).then((res) => { setAuthStatus(res) }) }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
+    try {
+      const res = await useApi('user').getById(uid)
+      res?.data && localStorage.setItem('uid', uid)
+      setAuthStatus(res)
+    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
     finally { setLoading(false) }
   }
   /*---------------------------------------------------------------------------------------------------------*/

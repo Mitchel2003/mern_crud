@@ -1,16 +1,18 @@
+import { handlerService as handler, normalizeError } from "@/errors/handler"
 import { AuthService as IAuth } from "@/interfaces/db.interface"
-import { handlerService as handler } from "@/errors/handler"
 import { AccountProps } from "@/interfaces/db.interface"
 import { Result } from "@/interfaces/db.interface"
 import { firebaseApp } from "@/services/db"
-import { NotFound } from "@/errors"
+import ErrorAPI, { NotFound } from "@/errors"
 
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  browserLocalPersistence,
   sendPasswordResetEmail,
   sendEmailVerification,
   onAuthStateChanged,
+  setPersistence,
   UserCredential,
   updateProfile,
   Unsubscribe,
@@ -33,8 +35,11 @@ class AuthService implements IAuth {
 
   private constructor() {
     this.auth = getAuth(firebaseApp)
-    this.setupAuthObserver()
-    this.setupTokenExpiration()
+    const storedUid = localStorage.getItem('uid')
+    const existingToken = localStorage.getItem('token')
+    if (existingToken && storedUid) AuthService.user = { uid: storedUid } as User
+    setPersistence(this.auth, browserLocalPersistence).then(() => { this.setupAuthObserver() })
+      .catch((e) => { this.setupAuthObserver(); throw new ErrorAPI(normalizeError(e, 'configurar persistencia')) })
   }
 
   /**
@@ -109,34 +114,29 @@ class AuthService implements IAuth {
   /** Returns the current user or null if there is no authenticated user */
   getCurrentUser(): User | null { return AuthService.user }
   /**
-   * Configura un único observador para cambios en el estado de autenticación
-   * Este método se llama una sola vez durante la inicialización
-   * @private
+   * Configures a unique observer for changes in the authentication state
+   * This method is called only once during initialization @private
    */
   private setupAuthObserver(): void {
     if (this.authStateUnsubscribe) { this.authStateUnsubscribe() }// Clean previous subscription
-    this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user) => {// Create new subscription
-      AuthService.user = user;
-      if (user) {//if exist, refresh token auth
-        const newToken = await user.getIdToken(true)
-        localStorage.setItem('token', newToken)
-      } else { localStorage.removeItem('token') }//if not exist user, remove token
-      this.authStateListeners.forEach(listener => listener(user))// Notify to all listeners
-    })
-  }
-  /**
-   * Configura un listener para el evento de token a punto de expirar
-   * Este método se llama una sola vez durante la inicialización
-   * (Bind) para preservar el estado en contexto
-   * @private
-   */
-  private setupTokenExpiration(): void {
-    this.handleTokenExpiring = this.handleTokenExpiring.bind(this)
-    window.addEventListener('token-expiring', this.handleTokenExpiring)
+    if (localStorage.getItem('token')) this.existingToken()// If token exists, set user (uid)
+    this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user) => {
+      AuthService.user = user// Define current user with the authentication state
+      if (!user) { localStorage.removeItem('token'); localStorage.removeItem('uid'); return }
+      const newToken = await user.getIdToken(true)
+      localStorage.setItem('token', newToken)
+      localStorage.setItem('uid', user.uid)
+      this.authStateListeners.forEach(listener => listener(user))
+    }, (e) => { throw new ErrorAPI(normalizeError(e, 'observador de autenticación')) })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------helpers--------------------------------------------------*/
+  /** Set the user state listeners with the existing user */
+  private existingToken(): void {
+    const storedUid = localStorage.getItem('uid')
+    storedUid && this.authStateListeners.forEach(listener => listener({ uid: storedUid } as User))
+  }
   /**
    * Allows subscription to changes in the authentication state
    * @param {function} listener - Callback function that will be executed when the authentication state changes
@@ -146,30 +146,6 @@ class AuthService implements IAuth {
     this.authStateListeners.add(listener)
     listener(AuthService.user)
     return () => { this.authStateListeners.delete(listener) }
-  }
-  /**
-   * Cleans up resources when the service is no longer needed
-   * Primarily for testing and cases where we need to restart the service
-   */
-  public cleanup(): void {
-    if (this.authStateUnsubscribe) {
-      this.authStateUnsubscribe()
-      this.authStateUnsubscribe = null
-    }
-    this.authStateListeners.clear()
-    window.removeEventListener('token-expiring', this.handleTokenExpiring)
-  }
-  /**
-   * Maneja el evento de token a punto de expirar
-   * Renueva el token automáticamente si hay un usuario autenticado
-   */
-  private handleTokenExpiring = async (): Promise<void> => {
-    handler(async () => {
-      const user = this.getCurrentUser()
-      if (!user) throw new Error('Usuario no autenticado')
-      const newToken = await user.getIdToken(true)
-      localStorage.setItem('token', newToken)
-    }, 'renovar token')
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
