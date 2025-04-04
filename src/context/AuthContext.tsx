@@ -57,9 +57,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     return handler('Iniciando sesión...', async () => {
       try {
         const res = await loginFB(data.email, data.password)
-        const user = await useApi('user').getByQuery({ uid: res.uid })
-        if (!user?.data?.[0]) throw new Error('No se encontro el usuario')
-        await updateTokenMessaging(user.data[0]._id)// handle messaging token
+        const user = await useApi('user').getById(res.uid)
+        if (!user?.data) throw new Error('No se encontro el usuario')
+        await updateTokenMessaging(user.data._id)// handle messaging token
         notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión" })
         setAuthStatus(user)
       } catch (e: unknown) {
@@ -199,7 +199,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
   const setAuthStatus = (res?: AxiosResponse) => {
-    setUser(res?.data?.[0] || res?.data || undefined)
+    setUser(res?.data || undefined)
     setIsAuth(Boolean(res?.data))
   }
   /**
@@ -207,7 +207,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {string} uid - ID del usuario en Firebase
    */
   const getUser = async (uid: string) => {
-    try { await useApi('user').getByQuery({ uid }).then((res) => { setAuthStatus(res) }) }
+    try { await useApi('user').getById(uid).then((res) => { setAuthStatus(res) }) }
     catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
     finally { setLoading(false) }
   }
