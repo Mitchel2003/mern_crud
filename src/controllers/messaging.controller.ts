@@ -1,6 +1,7 @@
 /** Este módulo proporciona funciones para la gestión de notificaciones push con Firebase Cloud Messaging */
 import { messagingService as messagingFB } from "@/services/firebase/messaging.service"
 import { normalizeError } from "@/errors/handler"
+import { Unsubscribe } from "firebase/auth"
 import ErrorAPI from "@/errors"
 
 /*--------------------------------------------------messaging token--------------------------------------------------*/
@@ -15,3 +16,19 @@ export const getTokenMessaging = async (): Promise<string> => {
     return result.data
   } catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener token Firebase Cloud Messaging')) }
 }
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------notifications--------------------------------------------------*/
+/**
+ * Configura un listener para recibir mensajes en primer plano
+ * @param {Function} callback - Función que se ejecutará cuando se reciba un mensaje
+ * @returns {Promise<Unsubscribe>} - Función para cancelar la suscripción
+ */
+export const listenMessages = async (callback: (payload: any) => void): Promise<Unsubscribe> => {
+  try {
+    const result = await messagingFB.setupMessageListener(callback)
+    if (!result.success) throw new ErrorAPI(result.error)
+    return result.data
+  } catch (e: unknown) { throw new ErrorAPI(normalizeError(e, 'configurar listener de mensajes')) }
+}
+/*---------------------------------------------------------------------------------------------------------*/

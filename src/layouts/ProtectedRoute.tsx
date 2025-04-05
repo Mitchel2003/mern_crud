@@ -13,7 +13,7 @@ function ProtectedRoute() {
   useEffect(() => {
     if (!hasToken) return setShowSkeleton(false)
     if (loading) {// if token exists but still loading, give time auth
-      const timeoutId = setTimeout(() => { setShowSkeleton(false) }, 3000)
+      const timeoutId = setTimeout(() => setShowSkeleton(false), 3000)
       return () => clearTimeout(timeoutId)
     } else { setShowSkeleton(false) }
   }, [loading, hasToken])

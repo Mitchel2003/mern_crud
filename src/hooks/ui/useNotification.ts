@@ -2,9 +2,9 @@ import { useToast } from "@/hooks/ui/use-toast"
 import { useCallback } from "react"
 
 interface NotificationProps {
-  type?: "success" | "error" | "warning" | "info"
-  title?: string
+  type?: "success" | "warning" | "error" | "info" | "default"
   message: string
+  title?: string
 }
 
 export const useNotification = () => {
@@ -12,16 +12,18 @@ export const useNotification = () => {
 
   const notify = useCallback(({ title, message, type = "info" }: NotificationProps) => {
     const variants = {
-      success: "default",
       error: "destructive",
-      warning: "default",
-      info: "default"
+      success: "success",
+      warning: "warning",
+      default: "default",
+      info: "info"
     } as const
 
     toast({
       title: title,
       description: message,
       variant: variants[type],
+      action: undefined,
       duration: 5000,
     })
   }, [toast])
@@ -29,11 +31,11 @@ export const useNotification = () => {
   return {
     notifySuccess: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "success" }),
-    notifyError: (props: Omit<NotificationProps, "type">) =>
-      notify({ ...props, type: "error" }),
     notifyWarning: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "warning" }),
+    notifyError: (props: Omit<NotificationProps, "type">) =>
+      notify({ ...props, type: "error" }),
     notifyInfo: (props: Omit<NotificationProps, "type">) =>
-      notify({ ...props, type: "info" })
+      notify({ ...props, type: "default" })
   }
 } 

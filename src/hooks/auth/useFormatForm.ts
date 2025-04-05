@@ -234,10 +234,13 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
       const data = { ...observationData.submitData(e, id!) }
       id && cv ? (
         createFormat(data).then(async () => {
-          const file = e.photoUrl[0]?.file
+          const file = e.photoUrl?.[0]?.file
           const path = `files/${id}/solicit/${formatDateTime(new Date(Date.now()), '-')}`
           file && await createFile({ files: [file], path, unique: true })
-        }).finally(() => { sendNotification({ id: company?._id, title: "Nueva solicitud", body: "Se ha creado una nueva solicitud" }) })
+        }).finally(async () => {
+          const client = cv?.office?.headquarter?.user
+          await sendNotification({ id: company?._id, title: `Nueva solicitud de ${client?.username}`, body: `(${data.priority}) ${data.message}` })
+        })
       ) : (notifyError({ message: "No tienes acceso a este currículum" }))
       methods.reset()
     },

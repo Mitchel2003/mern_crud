@@ -1,5 +1,5 @@
 import { login as loginFB, logout as logoutFB, signin, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
-import { getTokenMessaging } from "@/controllers/messaging.controller"
+import { getTokenMessaging, listenMessages } from "@/controllers/messaging.controller"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { AuthContext, User } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
@@ -9,6 +9,7 @@ import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
 
 import { createContext, useContext, useEffect, useState, useRef } from "react"
+import { Unsubscribe } from "firebase/auth"
 import { AxiosResponse } from "axios"
 
 const Auth = createContext<AuthContext>(undefined)
@@ -30,14 +31,21 @@ export const useAuthContext = () => {
  * @returns {JSX.Element} Elemento JSX que envuelve a los hijos con el contexto de autenticación.
  */
 export const AuthProvider = ({ children }: Props): JSX.Element => {
-  const { notifySuccess, notifyError } = useNotification()
+  const { notifySuccess, notifyWarning, notifyError, notifyInfo } = useNotification()
   const unsubscribe = useRef<(() => void) | null>(null)
+  const messaging = useRef<Unsubscribe | null>(null)
   const [user, setUser] = useState<User | undefined>()
   const [loading, setLoading] = useState(true)
   const [isAuth, setIsAuth] = useState(false)
   const { handler } = useLoading()
 
-  useEffect(() => {
+  useEffect(() => {// Message listener
+    if (!user) return
+    setupMessageListener()
+    return () => { if (messaging.current) { messaging.current(); messaging.current = null } }
+  }, [user])
+
+  useEffect(() => {// Authentication listener
     const token = localStorage.getItem('token')
     const storedUid = localStorage.getItem('uid')
     if (token && storedUid) { getUser(storedUid) }
@@ -64,7 +72,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const user = await useApi('user').getById(res.uid)
         if (!user?.data) throw new Error('No se encontro el usuario')
         await updateTokenMessaging(user.data._id)// handle messaging token
-        notifySuccess({ title: "¡Bienvenido!", message: "Has iniciado sesión" })
+        notifyInfo({ title: "¡Bienvenido!", message: "Has iniciado sesión" })
         setAuthStatus(user)
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
@@ -81,7 +89,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       try {
         await logoutFB()
         setAuthStatus()
-        notifySuccess({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
+        notifyInfo({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
       } catch (e: unknown) {
         isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
         setAuthStatus()
@@ -170,7 +178,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const sendResetPassword = async (email: string): Promise<void> => {
     return handler('Validando solicitud...', async () => {
-      try { await forgotPassword(email).then(() => notifySuccess({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
+      try { await forgotPassword(email).then(() => notifyInfo({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
       catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
     })
   }
@@ -179,7 +187,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
    */
   const sendNotification = async (data: object): Promise<void> => {
-    try { await useApi('fcm').void(data).then(() => notifySuccess({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
+    try { await useApi('fcm').void(data).then(() => notifyInfo({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
     catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
   }
   /**
@@ -199,6 +207,18 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /*--------------------------------------------------helpers--------------------------------------------------*/
   /**
+   * Obtiene los datos del usuario desde la base de datos
+   * @param {string} uid - ID del usuario en Firebase
+  */
+  const getUser = async (uid: string) => {
+    try {
+      const res = await useApi('user').getById(uid)
+      res?.data && localStorage.setItem('uid', uid)
+      setAuthStatus(res)
+    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
+    finally { setLoading(false) }
+  }
+  /**
    * Actualiza el estado de autenticación basado en la respuesta del servidor.
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
@@ -207,17 +227,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     setIsAuth(Boolean(res?.data))
     if (!res?.data) localStorage.removeItem('uid')
   }
-  /**
-   * Obtiene los datos del usuario desde la base de datos
-   * @param {string} uid - ID del usuario en Firebase
-   */
-  const getUser = async (uid: string) => {
-    try {
-      const res = await useApi('user').getById(uid)
-      res?.data && localStorage.setItem('uid', uid)
-      setAuthStatus(res)
-    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
-    finally { setLoading(false) }
+  /** Configura un listener para recibir mensajes en primer plano */
+  const setupMessageListener = async () => {
+    try { messaging.current = await listenMessages((m) => notifyWarning({ title: m.notification?.title, message: 'Revisa la bandeja de entrada' })) }
+    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al configurar listener de mensajes", message: e.response.data.message }) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (
