@@ -239,7 +239,9 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
           file && await createFile({ files: [file], path, unique: true })
         }).finally(async () => {
           const client = cv?.office?.headquarter?.user
-          await sendNotification({ id: company?._id, title: `Nueva solicitud de ${client?.username}`, body: `(${data.priority}) ${data.message}` })
+          const title = `Nueva solicitud de ${client?.username}`
+          const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
+          await sendNotification({ id: company?._id, title, body }) //send to company
         })
       ) : (notifyError({ message: "No tienes acceso a este currículum" }))
       methods.reset()

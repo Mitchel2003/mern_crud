@@ -17,8 +17,8 @@ export interface Stat {
 interface PageHeaderProps {
   // Contenido principal
   badge?: { text: string; dot?: boolean; variant?: 'default' | 'secondary' | 'outline' | 'success' | 'warning' | 'danger' }
+  icon?: LucideIcon | any
   description?: string
-  icon?: LucideIcon
   title: string
 
   // Estadísticas
@@ -225,11 +225,11 @@ export function PageHeader({
       {/* Barra de progreso */}
       {progressBar && animate && (
         <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/70 to-primary"
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500/80 via-green-500/80 to-orange-500/80"
           initial={{ width: 0 }}
           animate={{
             width: "100%",
-            transition: { duration: 2, ease: "easeOut" }
+            transition: { duration: 3, ease: "easeOut" }
           }}
         />
       )}

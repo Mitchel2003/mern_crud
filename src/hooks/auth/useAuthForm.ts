@@ -6,7 +6,7 @@ import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Metadata } from "@/interfaces/db.interface"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapPinHouseIcon, UserRoundCheck } from "lucide-react"
 import { useAuthContext } from "@/context/AuthContext"
 import { useForm } from "react-hook-form"
@@ -55,20 +55,20 @@ export const useForgotPasswordForm = () => {
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de usuarios
  * @param id - ID del usuario a actualizar, si no se proporciona, la request corresponde a crear
- * @param role - Rol del usuario, actualmente manejados: company, client, engineer, admin
+ * @param to - Contexto del formulario usuario, actualmente manejados: company, client, engineer, admin
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
-export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => void) => {
+export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void) => {
+  const { create: createUser, user: credentials } = useAuthContext()
   const { createFile, deleteFile } = useFormatMutation('file')
-  const { create: createUser } = useAuthContext()
   const { updateUser } = useUserMutation()
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
 
   const { data: user } = queryUser.fetchUserById<User>(id as string)
-  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: role === 'company' })
-  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: role === 'client' })
-  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>({ path: `${role}/${id}/preview`, enabled: !!id && !!role })
+  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' })
+  const { data: company } = queryUser.fetchUserById<User>(credentials?.uid as string, credentials?.role === 'company')
+  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>({ path: `${to}/${id}/preview`, enabled: !!id && !!to })
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
@@ -141,7 +141,7 @@ export const useUserForm = (id?: string, role?: RoleProps, onSuccess?: () => voi
     ...handleSubmit,
     options: {
       clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
-      companies: companies?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
+      companies: [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }]
     }
   }
 }
@@ -209,11 +209,13 @@ export const useClientFlow = (onSuccess?: () => void) => {
 /*==================================================useTable==================================================*/
 /*--------------------------------------------------user table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de usuarios para la tabla */
-export const useUserTable = () => {
+export const useUserTable = (to: RoleProps) => {
   const [onDelete, setOnDelete] = useState<User | undefined>(undefined)
   const { deleteFile } = useFormatMutation('file')
   const { delete: _delete } = useAuthContext()
   const isProcessing = useRef(false)
+
+  const { data: users } = useQueryUser().fetchUserByQuery<User>({ role: to })
 
   /**
    * Función que se ejecuta cuando se elimina un usuario
@@ -232,6 +234,9 @@ export const useUserTable = () => {
   /** just one useEffect */
   useEffect(() => { onDelete && deleteUser(onDelete) }, [onDelete, deleteUser])
 
-  return { handleDelete: (user: User) => setOnDelete(user) }
+  return {
+    users: useMemo(() => users, [users]),
+    handleDelete: (user: User) => setOnDelete(user)
+  }
 }
 /*=========================================================================================================*/

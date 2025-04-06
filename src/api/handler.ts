@@ -1,3 +1,4 @@
+import { toPlural } from "@/utils/format"
 import axios from "./axios"
 
 export const getRequest = async (endpoint: string, params?: Record<string, any>) => axios.get(endpoint, { params, paramsSerializer: { indexes: null /* serializar correctamente los arrays */ } })
@@ -37,12 +38,10 @@ interface BuildEndpointParams {
   id?: string
 }
 const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
-  const formatPlural = type.slice(-1) === 'y' ? type.slice(0, -1) + 'ies' : type + 's'
   const base = getBase(type) ?? ''
-
   switch (action) {
     case 'void': return `${base}/${type}` // to create => /base/type (POST)
-    case 'many': return `${base}/${formatPlural}` // to getAll => /base/types (GET)
+    case 'many': return `${base}/${toPlural(type)}` // to getAll => /base/types (GET)
     case 'one': return `${base}/${type}/${id}` // to getOne, update, delete => /base/type/123 (GET, PUT, DELETE)
   }
 }

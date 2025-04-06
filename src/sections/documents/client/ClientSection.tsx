@@ -4,26 +4,22 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
+import { useAuthContext } from '@/context/AuthContext'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import FormClientSection from '../../flow/user/FormUserSection'
-import TableClientSection from './TableClientSection'
+import TableClientSection from '@/sections/flow/user/TableUserSection'
+import FormClientSection from '@/sections/flow/user/FormUserSection'
 const route = '/client'
 
 interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
 
-const ClientSection = ({ theme, id }: ClientSectionProps) => {
+const ClientSection = ({ theme, id }: ClientSectionProps) => { //its ready!!!
   const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
   const { tab, handle } = useTabs({ id, to: route })
+  const { user } = useAuthContext()
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Clientes
-        </h1>
-      </div>
-
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Navigation action tabs */}
@@ -72,17 +68,17 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableClientSection theme={theme} onChange={handle} />
+          <TableClientSection theme={theme} onChange={() => handle('form')} credentials={user!} to="client" />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormClientSection id={id} theme={theme} onChange={() => handle('table')} role="client" />
+            <FormClientSection id={id} theme={theme} onChange={() => handle('table')} to="client" />
           </Card>
         </TabsContent>
         <TabsContent value="headquarters"> <Skeleton theme={theme} /> </TabsContent>
         <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>
       </Tabs>
-    </div>
+    </main>
   )
 }
 

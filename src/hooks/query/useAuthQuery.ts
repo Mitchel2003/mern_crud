@@ -28,9 +28,9 @@ export const useQueryUser = (): QueryReact_User => {
    * Obtener usuario por ID
    * @param {string} id - Corresponde al id del usuario
    */
-  const fetchUserById = <T>(id: string) => useQuery({
+  const fetchUserById = <T>(id: string, enabled?: boolean) => useQuery({
     queryKey: QUERY_KEYS.user(id),
-    queryFn: () => user.getById<T>(id),
+    queryFn: () => user.getById<T>(id, enabled),
     select: (data) => data || undefined,
     enabled: Boolean(id)
   })

@@ -1,6 +1,5 @@
 /** Este módulo proporciona funciones para la gestión de autenticación con Firebase Authentication */
 import { authService as authFB } from "@/services/firebase/auth.service"
-import { AccountProps } from "@/interfaces/db.interface"
 import { normalizeError } from "@/errors/handler"
 import { User } from "firebase/auth"
 import ErrorAPI from "@/errors"
@@ -17,26 +16,10 @@ export const login = async (email: string, password: string): Promise<User> => {
   try {
     const auth = await authFB.login(email, password)
     if (!auth.success) throw new ErrorAPI(auth.error)
-    const user: User = auth.data.user
-    const idToken = await user.getIdToken()
+    const idToken = await auth.data.user.getIdToken()
     localStorage.setItem("token", idToken)
-    return user
+    return auth.data.user
   } catch (e) { throw new ErrorAPI(normalizeError(e, 'iniciar sesión')) }
-}
-/**
- * Maneja el proceso de registro de un nuevo usuario.
- * crea el usuario en firebase y envia un email de verificacion (authentication)
- * @param {AccountProps} data - Objeto con las credenciales del usuario.
- * @returns {Promise<User>} - Envía el usuario creado o un mensaje de error.
- */
-export const signin = async (data: AccountProps): Promise<User> => {
-  try {
-    const auth = await authFB.registerAccount(data)
-    if (!auth.success) throw new ErrorAPI(auth.error)
-    const sendEmail = await authFB.sendEmailVerification()
-    if (!sendEmail.success) throw new ErrorAPI(sendEmail.error)
-    return auth.data
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'registrarse')) }
 }
 /**
  * Maneja el proceso de cierre de sesión del usuario.

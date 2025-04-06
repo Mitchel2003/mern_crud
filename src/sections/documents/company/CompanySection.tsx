@@ -11,7 +11,7 @@ const route = '/company'
 
 interface CompanySectionProps extends ThemeContextProps { id: string | undefined }
 
-const CompanySection = ({ theme, id }: CompanySectionProps) => {
+const CompanySection = ({ theme, id }: CompanySectionProps) => {//continue implementing here....
   const { tab, handle } = useTabs({ id, to: route })
   return (
     <div className="container mx-auto p-6 space-y-8">

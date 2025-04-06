@@ -10,7 +10,7 @@ export interface DeleteMutationProps { id: string }
 /*useQuery and useMutation*/
 export type QueryReact_User = {
   fetchAllUsers: <T>() => UseQueryResult<T[], Error>
-  fetchUserById: <T>(id: string) => UseQueryResult<T | undefined, Error>
+  fetchUserById: <T>(id: string, enabled?: boolean) => UseQueryResult<T | undefined, Error>
   fetchUserByQuery: <T>(query: object) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {

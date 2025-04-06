@@ -56,7 +56,7 @@ export type AuthContext = {
   sendNotification: (data: object) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
-  getById: <T>(id: string) => Promise<T | undefined>
+  getById: <T>(id: string, enabled?: boolean) => Promise<T | undefined>
   getByQuery: <T>(query: object) => Promise<T[]>
   create: (data: object) => Promise<any>
   update: (id: string, data: object) => Promise<any>

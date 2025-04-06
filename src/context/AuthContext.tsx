@@ -1,4 +1,4 @@
-import { login as loginFB, logout as logoutFB, signin, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
+import { login as loginFB, logout as logoutFB, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
 import { getTokenMessaging, listenMessages } from "@/controllers/messaging.controller"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { AuthContext, User } from "@/interfaces/context.interface"
@@ -11,6 +11,8 @@ import { useApi } from "@/api/handler"
 import { createContext, useContext, useEffect, useState, useRef } from "react"
 import { Unsubscribe } from "firebase/auth"
 import { AxiosResponse } from "axios"
+import { txt } from "@/utils/format"
+import { NotFound } from "@/errors"
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -70,14 +72,11 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       try {
         const res = await loginFB(data.email, data.password)
         const user = await useApi('user').getById(res.uid)
-        if (!user?.data) throw new Error('No se encontro el usuario')
+        if (!user?.data) throw new NotFound({ message: 'usuario' })
         await updateTokenMessaging(user.data._id)// handle messaging token
-        notifyInfo({ title: "¡Bienvenido!", message: "Has iniciado sesión" })
+        notifyInfo(txt('login'))
         setAuthStatus(user)
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al iniciar sesión", message: e.response.data.message })
-        setAuthStatus()
-      }
+      } catch (e) { isAxiosResponse(e) && notifyError(txt('login', e)); setAuthStatus() }
     })
   }
   /**
@@ -86,14 +85,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const logout = async (): Promise<void> => {
     return handler('Cerrando sesión...', async () => {
-      try {
-        await logoutFB()
-        setAuthStatus()
-        notifyInfo({ title: "Sesión cerrada", message: "Has cerrado sesión correctamente" })
-      } catch (e: unknown) {
-        isAxiosResponse(e) && notifyError({ title: "Error al cerrar sesión", message: e.response.data.message })
-        setAuthStatus()
-      }
+      try { await logoutFB().then(() => notifyInfo(txt('logout'))).finally(() => setAuthStatus()) }
+      catch (e) { isAxiosResponse(e) && notifyError(txt('logout', e)); setAuthStatus() }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -105,16 +98,16 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const getAll = async (): Promise<any[]> => {
     try { return (await useApi('user').getAll()).data }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
+    catch (e) { isAxiosResponse(e) && notifyError(txt('getAllUser', e)); return [] }
   }
   /**
    * Obtiene un usuario específico por su ID
    * @param {string} id - El ID del usuario.
    * @returns {Promise<any | undefined>} Los datos del usuario o undefined.
    */
-  const getById = async (id: string): Promise<any | undefined> => {
-    try { return (await useApi('user').getById(id)).data }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message }); return undefined }
+  const getById = async (id: string, enabled?: boolean): Promise<any | undefined> => {
+    try { return enabled ? (await useApi('user').getById(id)).data : undefined }
+    catch (e) { isAxiosResponse(e) && notifyError(txt('getUserById', e)); return undefined }
   }
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
@@ -125,7 +118,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     try {
       if ('enabled' in query && query.enabled === false) return []
       return (await useApi('user').getByQuery({ ...query, enabled: undefined })).data
-    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
+    } catch (e) { isAxiosResponse(e) && notifyError(txt('getUserByQuery', e)); return [] }
   }
   /**
    * Registra un nuevo usuario (auth) con los datos proporcionados.
@@ -136,12 +129,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const create = async (data: object): Promise<any> => {
     return handler('Registrando usuario...', async () => {
       try {
-        const authentication = await signin(data as any)
-        const response = await useApi('user').create(authentication)
-        notifySuccess({ title: "¡Registro exitoso!", message: "Hemos enviado un correo de verificación a tu cuenta" })
-        setAuthStatus(response)
+        const response = await useApi('user').create(data)
+        notifySuccess(txt('createUser'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error en el registro", message: e.response.data.message }); setAuthStatus() }
+      } catch (e) { isAxiosResponse(e) && notifyError(txt('createUser', e)) }
     })
   }
   /**
@@ -154,9 +145,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     return handler('Actualizando...', async () => {
       try {
         const response = await useApi('user').update(id, data)
-        notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+        notifySuccess(txt('updateUser'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }) }
+      } catch (e) { isAxiosResponse(e) && notifyError(txt('updateUser', e)) }
     })
   }
   /**
@@ -165,8 +156,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const _delete = async (id: string): Promise<void> => {
     return handler('Eliminando cuenta...', async () => {
-      try { await useApi('user').delete(id).then(() => notifySuccess({ title: "Cuenta eliminada", message: "La cuenta ha sido eliminada permanentemente" })) }
-      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar cuenta", message: e.response.data.message }) }
+      try { await useApi('user').delete(id).then(() => notifySuccess(txt('deleteUser'))) }
+      catch (e) { isAxiosResponse(e) && notifyError(txt('deleteUser', e)) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -178,8 +169,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const sendResetPassword = async (email: string): Promise<void> => {
     return handler('Validando solicitud...', async () => {
-      try { await forgotPassword(email).then(() => notifyInfo({ title: "Exito al enviar solicitud de restablecimiento de contraseña", message: "La solicitud se ha completado" })) }
-      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar solicitud de restablecimiento de contraseña", message: e.response.data.message }) }
+      try { await forgotPassword(email).then(() => notifyInfo(txt('send-reset-pass'))) }
+      catch (e) { isAxiosResponse(e) && notifyError(txt('send-reset-pass', e)) }
     })
   }
   /**
@@ -187,8 +178,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
    */
   const sendNotification = async (data: object): Promise<void> => {
-    try { await useApi('fcm').void(data).then(() => notifyInfo({ title: "Exito al enviar notificación", message: "La notificación se ha completado" })) }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al enviar notificación", message: e.response.data.message }) }
+    try { await useApi('fcm').void(data).then(() => notifyInfo(txt('send-notification'))) }
+    catch (e) { isAxiosResponse(e) && notifyError(txt('send-notification', e)) }
   }
   /**
    * Nos permite guardar el token de Firebase Cloud Messaging (FCM) en el usuario.
@@ -197,11 +188,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const updateTokenMessaging = async (userId: string): Promise<void> => {
     try {
       const permission = await Notification.requestPermission()
-      if (permission !== "granted") return // to allow messages
-      const token: string = await getTokenMessaging()
-      const res = (await useApi('user').update(userId, { fcmToken: token })).data
-      if (!res) return notifyError({ message: "El token de Cloud Messaging no se ha guardado" })
-    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al guardar token de Cloud Messaging", message: e.response.data.message }) }
+      if (permission !== "granted") return;// to allow messages
+      const token: string = await getTokenMessaging()// fcm token
+      await useApi('user').update(userId, { fcmToken: token })
+    } catch (e) { isAxiosResponse(e) && notifyError(txt('update-token-messaging', e)) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
@@ -214,8 +204,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     try {
       const res = await useApi('user').getById(uid)
       res?.data && localStorage.setItem('uid', uid)
-      setAuthStatus(res)
-    } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos de usuario", message: e.response.data.message }); setAuthStatus() }
+      setAuthStatus(res) //set local and context status
+    } catch (e) { isAxiosResponse(e) && notifyError(txt('getUserById', e)); setAuthStatus() }
     finally { setLoading(false) }
   }
   /**
@@ -229,8 +219,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
   /** Configura un listener para recibir mensajes en primer plano */
   const setupMessageListener = async () => {
-    try { messaging.current = await listenMessages((m) => notifyWarning({ title: m.notification?.title, message: 'Revisa la bandeja de entrada' })) }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al configurar listener de mensajes", message: e.response.data.message }) }
+    try { messaging.current = await listenMessages(() => notifyWarning(txt('setup-messaging-listener'))) }
+    catch (e) { isAxiosResponse(e) && notifyError(txt('setup-messaging-listener', e)) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (

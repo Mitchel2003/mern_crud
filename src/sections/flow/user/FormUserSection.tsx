@@ -11,6 +11,7 @@ import { Separator } from "#/ui/separator"
 import { CardContent } from "#/ui/card"
 
 import { RoleProps, ThemeContextProps } from "@/interfaces/context.interface"
+import { convertRole, toPlural } from "@/utils/format"
 import { useUserForm } from "@/hooks/auth/useAuthForm"
 import { FormProvider } from "react-hook-form"
 import { Mail, Lock } from "lucide-react"
@@ -19,11 +20,11 @@ import { cn } from "@/lib/utils"
 interface FormUserSectionProps extends ThemeContextProps {
   id: string | undefined
   onChange: () => void
-  role: RoleProps
+  to: RoleProps
 }
 
-const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useUserForm(id, role, onChange)
+const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useUserForm(id, to, onChange)
   if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
@@ -32,8 +33,8 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
           {/* -------------------- Header form -------------------- */}
           <HeaderForm
             theme={theme}
-            title={id ? `Edición de ${toStr(role)}` : `Registro de ${toStr(role)}`}
-            description={id ? `Actualiza los datos del ${toStr(role)}` : `Diligencia la información para registrar un ${toStr(role)}`}
+            title={id ? `Edición de ${convertRole(to)}` : `Registro de ${convertRole(to)}`}
+            description={id ? `Actualiza los datos del ${convertRole(to)}` : `Diligencia la información para registrar un ${convertRole(to)}`}
           />
           {/* -------------------- Card content -------------------- */}
           <CardContent className="py-6 space-y-6">
@@ -64,7 +65,7 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
                 type="text"
                 label="Nombre"
                 name="username"
-                placeholder={`Nombre ${toStr(role)}`}
+                placeholder={`Nombre ${convertRole(to)}`}
               />
               <InputField
                 theme={theme}
@@ -75,37 +76,37 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
               />
             </div>
 
-            <div className={cn('grid gap-4', role === 'client' ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
-              {(role === 'company' || role === 'client') && (
+            <div className={cn('grid gap-4', to === 'client' || to === 'engineer' ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
+              {(to === 'company' || to === 'client') && (
                 <InputField
                   theme={theme}
                   type="text"
                   name="nit"
                   label="NIT"
-                  placeholder={`Nit ${toStr(role)}`}
+                  placeholder={`Nit ${convertRole(to)}`}
                 />
               )}
               <InputField
                 readOnly
-                theme={theme}
+                value={to}
                 name="role"
                 label="Rol"
-                value={role}
+                theme={theme}
                 placeholder={`Selecciona el rol`}
               />
-              {role !== 'client' && (
+              {to !== 'client' && (
                 <SelectMulti
                   theme={theme}
                   name="permissions"
-                  label="Acceso a clientes"
-                  options={options.clients}
-                  placeholder={`Selecciona el cliente`}
                   span="Selecciona varios"
+                  options={to === 'engineer' ? options.companies : options.clients}
+                  placeholder={`Selecciona el ${to === 'engineer' ? 'proveedor de servicio' : 'cliente'}`}
+                  label={`Acceso a ${to === 'engineer' ? 'proveedores de servicio' : 'clientes'}`}
                 />
               )}
             </div>
 
-            <div className={cn('grid gap-4 md:grid-cols-2', role !== 'company' && 'hidden')}>
+            <div className={cn('grid gap-4 md:grid-cols-2', to !== 'company' && 'hidden')}>
               <InputField
                 theme={theme}
                 type="text"
@@ -122,7 +123,7 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
               />
             </div>
 
-            <div className={cn('md:col-span-5', role !== 'client' && 'hidden')}>
+            <div className={cn('md:col-span-5', to !== 'client' && 'hidden')}>
               <div className={cn(!id || methods.getValues('photoImage') ? 'hidden' : 'block')}>
                 <ImagePreview
                   theme={theme}
@@ -140,9 +141,9 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
               />
             </div>
 
-            <Separator className={cn(role !== 'company' && 'hidden')} />
+            <Separator className={cn(to !== 'company' && 'hidden')} />
 
-            <div className={cn('md:col-span-5', role !== 'company' && 'hidden')}>
+            <div className={cn('md:col-span-5', to !== 'company' && 'hidden')}>
               <div className={cn(!id || methods.getValues('photoLogo') ? 'hidden' : 'block')}>
                 <ImagePreview
                   theme={theme}
@@ -160,9 +161,9 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
               />
             </div>
 
-            <Separator className={cn(role !== 'company' && 'hidden')} />
+            <Separator className={cn(to !== 'company' && 'hidden')} />
 
-            <div className={cn('md:col-span-5', role !== 'company' && 'hidden')}>
+            <div className={cn('md:col-span-5', to !== 'company' && 'hidden')}>
               <div className={cn(!id || methods.getValues('photoSignature') ? 'hidden' : 'block')}>
                 <ImagePreview
                   theme={theme}
@@ -179,25 +180,25 @@ const FormUserSection = ({ id, role, theme, onChange }: FormUserSectionProps) =>
                 fields={fieldsSignature.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
               />
             </div>
-            <Separator className={cn(role !== 'company' && 'hidden')} />
+            <Separator className={cn(to !== 'company' && 'hidden')} />
           </CardContent>
 
           {/* -------------------- Submit footer -------------------- */}
           <SubmitFooter
             theme={theme}
-            to={`/${toPlural(role)}`}
+            to={`/${toPlural(to)}`}
             disabled={!methods.formState.isDirty}
             onCancel={() => { methods.reset(); onChange() }}
           />
         </form>
-      </FormProvider >
+      </FormProvider>
 
       <AlertDialog
         open={open}
         theme={theme}
         onConfirm={onConfirm}
         onOpenChange={() => setOpen(false)}
-        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : `Se creará un nuevo ${toStr(role)}`}`}
+        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : `Se creará un nuevo ${convertRole(to)}`}`}
         confirmLabel="Confirmar"
         cancelLabel="Cancelar"
         title="Confirmación"
@@ -213,17 +214,3 @@ export default FormUserSection
 const fieldsImage = [{ name: "photoImage.file", label: "Logo cliente", sizeImage: "w-60 h-60" }]
 const fieldsLogo = [{ name: "photoLogo.file", label: "Imagen del logo", sizeImage: "w-60 h-60" }]
 const fieldsSignature = [{ name: "photoSignature.file", label: "Imagen de la firma", sizeImage: "w-60 h-60" }]
-
-/** To convert rol to spanish */
-const toStr = (str: RoleProps) => {
-  switch (str) {
-    case "client": return "cliente"
-    case "company": return "proveedor de servicios"
-    case "engineer": return "ingeniero"
-    case "admin": return "administrador"
-    default: return str
-  }
-}
-
-/** To convert on plural */
-const toPlural = (str: string) => str.slice(-1) === 'y' ? str.slice(0, -1) + 'ies' : str + 's'

@@ -1,12 +1,10 @@
 import { handlerService as handler, normalizeError } from "@/errors/handler"
 import { AuthService as IAuth } from "@/interfaces/db.interface"
-import { AccountProps } from "@/interfaces/db.interface"
 import { Result } from "@/interfaces/db.interface"
 import { firebaseApp } from "@/services/db"
 import ErrorAPI, { NotFound } from "@/errors"
 
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   browserLocalPersistence,
   sendPasswordResetEmail,
@@ -14,7 +12,6 @@ import {
   onAuthStateChanged,
   setPersistence,
   UserCredential,
-  updateProfile,
   Unsubscribe,
   getAuth,
   signOut,
@@ -68,23 +65,6 @@ class AuthService implements IAuth {
    */
   async login(email: string, password: string): Promise<Result<UserCredential>> {
     return handler(async () => await signInWithEmailAndPassword(this.auth, email, password), 'verificar credenciales')
-  }
-  /**
-   * Creates a user with credentials in Firebase.
-   * We use user properties (UserInfo) to save the profile,
-   * @param {AccountProps} credentials - Contains the primary user information (form register)
-   * @returns {Promise<Result<User>>} - Returns the user if the credentials are valid, or an error if they are not.
-   * @example photoURL - example: 'role;permissions;phone;nit;invima;profesionalLicense'
-   */
-  async registerAccount(credentials: AccountProps): Promise<Result<User>> {
-    return handler(async () => {
-      const { role, phone, nit, invima, profesionalLicense, permissions } = credentials;
-      const dataStr = `${role};${permissions ? JSON.stringify(permissions) : '[]'}
-        ;${phone};${nit ?? ''};${invima ?? ''};${profesionalLicense ?? ''}`;
-      const res = await createUserWithEmailAndPassword(this.auth, credentials.email, credentials.password);
-      await updateProfile(res.user, { displayName: credentials.username, photoURL: dataStr });
-      return res.user;
-    }, 'crear usuario (Firebase Auth)')
   }
   /*---------------------------------------------------------------------------------------------------------*/
 

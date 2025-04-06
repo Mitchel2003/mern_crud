@@ -48,15 +48,9 @@ export const links = () => {
       label: 'Panel del usuario',
     },
     {// users
-      label: 'Usuarios',
+      href: '/engineer',
       icon: AssignmentInd,
-      subItems: [
-        {// engineer
-          icon: SupervisorAccount,
-          label: 'Ingenieros de servicio',
-          href: '/engineer',
-        },
-      ]
+      label: 'Usuarios de servicio',
     },
     {/** forms **/
       icon: PermMedia,
