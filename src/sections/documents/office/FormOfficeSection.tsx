@@ -14,12 +14,12 @@ import { HandHelpingIcon } from "lucide-react"
 import { CardContent } from "#/ui/card"
 
 interface FormOfficeSectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
   id: string | undefined
+  onChange: () => void
 }
 
 const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, onChange)
   const groupName = methods.watch('group')
 
   const groupSelected = groups.find((group) => group.name === groupName)
@@ -77,7 +77,7 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
             theme={theme}
             to="/location/offices"
             disabled={!methods.formState.isDirty}
-            onCancel={() => { methods.reset(); onChange('table') }}
+            onCancel={() => { methods.reset(); onChange() }}
           />
         </form>
       </FormProvider>

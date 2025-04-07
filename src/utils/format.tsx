@@ -79,7 +79,9 @@ type Context =
   | 'login' | 'logout'
   | 'getAllUser' | 'getUserById' | 'getUserByQuery' | 'createUser' | 'updateUser' | 'deleteUser'
   | 'send-reset-pass' | 'forgot-password' | 'reset-password'
+  // Messaging
   | 'send-notification' | 'update-token-messaging' | 'setup-messaging-listener'
+  | 'expired-token'
 
 interface AlertContext { title: string; message: string }
 
@@ -113,6 +115,7 @@ export const txt = (context: Context, e?: any): AlertContext => {
     case 'send-notification': return { title: !e ? 'Notificación enviada' : 'Error al enviar notificación', message: !e ? 'La notificación se ha enviado correctamente' : errorMessage }
     case 'update-token-messaging': return { title: !e ? 'Token actualizado' : 'Error al actualizar token', message: !e ? 'El token de mensajería ha sido actualizado' : errorMessage }
     case 'setup-messaging-listener': return { title: !e ? 'Nueva notificación' : 'Error al configurar listener de mensajería', message: !e ? 'Revisa la bandeja de entrada' : errorMessage }
+    case 'expired-token': return { title: !e ? 'Token expirado, por favor, inicie sesión nuevamente' : 'Error al renovar token', message: !e ? 'El token de mensajería ha expirado' : errorMessage }
 
     // Default case
     default: return { title: !e ? 'Acción completada' : 'Error en la acción', message: !e ? 'La acción se ha completado correctamente' : errorMessage }

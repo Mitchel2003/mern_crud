@@ -1,16 +1,22 @@
-import Skeleton from "#/common/skeletons/SkeletonLarge"
-import { useThemeContext } from "@/context/ThemeContext"
 import CitySection from "@/sections/documents/city/CitySection"
+import { createTheme, ThemeProvider } from "@mui/material"
+import { useThemeContext } from "@/context/ThemeContext"
+import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
 const City = () => {
   const { theme } = useThemeContext()
   const { id } = useParams()
+  const table = createTheme({
+    palette: { mode: theme }
+  })
 
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
-      <CitySection theme={theme} id={id} />
+      <ThemeProvider theme={table}>
+        <CitySection theme={theme} id={id} />
+      </ThemeProvider>
     </Suspense>
   )
 }

@@ -1,7 +1,7 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
-import { BarChart2, CalendarClock, Clock, AlertTriangle, Wrench } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { PageHeader, Stat } from '#/common/elements/HeaderPage'
+import { BarChart2, Clock, AlertTriangle, Wrench } from "lucide-react"
+import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import { Update, Delete, Download } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 
@@ -16,12 +16,9 @@ import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps {
-  /** Parámetros para filtrar la tabla de mantenimientos, trigger on table curriculum */
-  params?: { name?: string; modelEquip?: string } | null
-  /** Credenciales del usuario, util para trabajar con los permisos, rol, etc */
-  credentials: User
-  /** Función para cambiar entre las pestañas tabs */
+  params?: { name?: string; modelEquip?: string; statusEquipment?: string } | null
   onChange: () => void
+  credentials: User
 }
 
 /**
@@ -39,32 +36,24 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
   const isMobile = useIsMobile()
 
   /** Header stats */
-  const today = new Date().toISOString().split('T')[0];
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    value: maintenances?.length || 0,
-    href: '/mantenimiento/todos',
+    href: '/form/maintenance',
     title: 'Total Mantenimientos',
-  }, {
-    color: 'success',
-    enabled: !isClient,
-    icon: CalendarClock,
-    title: 'Creados Hoy',
-    href: '/mantenimiento/hoy',
-    value: maintenances?.filter(m => new Date(m.createdAt).toISOString().split('T')[0] === today).length || 0,
+    value: maintenances?.length || 0,
   }, {
     icon: Clock,
     color: 'warning',
     title: 'En Espera de Repuestos',
-    href: '/mantenimiento/espera',
     value: maintenances?.filter(m => m.statusEquipment === 'en espera de repuestos').length || 0,
+    href: `/form/maintenance/${getQueryParams({ data: { statusEquipment: 'en espera de repuestos' } })}`,
   }, {
     color: 'danger',
     icon: AlertTriangle,
     title: 'Fuera de Servicio',
-    href: '/mantenimiento/fuera-servicio',
     value: maintenances?.filter(m => m.statusEquipment === 'fuera de servicio').length || 0,
+    href: `/form/maintenance/${getQueryParams({ data: { statusEquipment: 'fuera de servicio' } })}`,
   }]
 
   /** Config table columns */
@@ -123,7 +112,8 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
       columnFilters: params ? [
         ...(params.name ? [{ id: 'curriculum.name', value: params.name }] : []),
-        ...(params.modelEquip ? [{ id: 'curriculum.modelEquip', value: params.modelEquip }] : [])
+        ...(params.modelEquip ? [{ id: 'curriculum.modelEquip', value: params.modelEquip }] : []),
+        ...(params.statusEquipment ? [{ id: 'statusEquipment', value: params.statusEquipment }] : [])
       ] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
@@ -178,7 +168,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
           confirmAction({
             title: 'Descargar mantenimiento',
             description: `¿Deseas descargar el mantenimiento "${row.original.curriculum.name}"?`,
-            action: () => { handleDownload(row.original) }
+            action: () => handleDownload(row.original)
           })
         }}>
           <ListItemIcon> <Download /> </ListItemIcon>
@@ -207,7 +197,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
             isDestructive: true,
             title: 'Eliminar mantenimiento',
             description: `¿Deseas eliminar el mantenimiento "${row.original.curriculum.name}"?`,
-            action: () => { handleDelete(row.original._id) }
+            action: () => handleDelete(row.original._id)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>
@@ -264,8 +254,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
                 confirmAction({
                   isDestructive: true,
                   title: 'Eliminación múltiple',
-                  description: `¿Deseas eliminar los mantenimientos de:
-                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
+                  description: `¿Deseas eliminar los mantenimientos de: ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
                   action: () => selectedRows.forEach(row => handleDelete(row.original._id))
                 })
               }}
@@ -308,3 +297,10 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
 }
 
 export default TableMaintenanceSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const getQueryParams = ({ data }: { [x: string]: any }) => {
+  const filterParams = { statusEquipment: data.statusEquipment }
+  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
+}

@@ -17,10 +17,8 @@ import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
-  /** Credenciales del usuario, util para trabajar con los permisos, rol, etc */
-  credentials: User
-  /** Función para cambiar entre las pestañas tabs */
   onChange: () => void
+  credentials: User
 }
 interface CurriculumChildren extends Curriculum {
   childRows: (Maintenance & { isPreventive: boolean })[]

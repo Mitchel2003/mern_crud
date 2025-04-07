@@ -1,34 +1,40 @@
-import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
-import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { PageHeader, Stat } from '#/common/elements/HeaderPage'
-import { BarChart2, CalendarClock, Eye } from 'lucide-react'
-import AlertDialog from "#/common/elements/AlertDialog"
-import { Delete, SupervisedUserCircle, Update } from "@mui/icons-material"
-
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { RoleProps, ThemeContextProps, User } from "@/interfaces/context.interface"
+import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
+import { Delete, SupervisedUserCircle, Update } from "@mui/icons-material"
+import { convertRole, formatDateTime, toPlural } from "@/utils/format"
+import { PageHeader, Stat } from '#/common/elements/HeaderPage'
+import { BarChart2, CalendarClock, Eye } from 'lucide-react'
 import { useUserTable } from "@/hooks/auth/useAuthForm"
-
-import { convertRole, toPlural } from "@/utils/format"
-import { tableTranslations } from "@/utils/constants"
+import AlertDialog from "#/common/elements/AlertDialog"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+
+import { tableTranslations } from "@/utils/constants"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
+import {
+  MRT_GlobalFilterTextField,
+  MRT_ToggleFiltersButton,
+  useMaterialReactTable,
+  MaterialReactTable,
+  MRT_ColumnDef,
+} from "material-react-table"
 
 interface TableUserSectionProps extends ThemeContextProps {
+  params?: { createdAt?: string } | null
   onChange: () => void
   credentials: User
   to: RoleProps
 }
 
 /**
- * Permite construir un componente de tabla para mostrar los curriculums
+ * Permite construir un componente de tabla para mostrar los usuarios
  * @param credentials - Credenciales del usuario
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los usuarios, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSectionProps) => {
+const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUserSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { users, handleDelete } = useUserTable(to)
   const isClient = credentials?.role === 'client'
@@ -48,7 +54,7 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
     enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/${toPlural(to)}`,
+    href: `/${to}/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
     value: users?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -89,6 +95,13 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
       header: "Licencia profesional",
       accessorFn: (row) => row.profesionalLicense || 'Sin licencia'
     });
+
+    array.push({ //to show column date created
+      size: 90,
+      id: "createdAt",
+      header: "Creado",
+      accessorFn: (row) => row.createdAt ? formatDateTime(row.createdAt) : 'Sin fecha'
+    })
     return array
   }, [isClient])
 
@@ -107,6 +120,7 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
       showGlobalFilter: true,
       showColumnFilters: true,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',
@@ -160,7 +174,7 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
           confirmAction({
             title: 'Ver Usuario',
             description: `¿Deseas ver el usuario "${row.original.username}" con su historial?`,
-            action: () => { navigate(`/${to}/preview/${row.original._id}`) }
+            action: () => navigate(`/${to}/preview/${row.original._id}`)
           })
         }}>
           <ListItemIcon> <Eye /> </ListItemIcon>
@@ -189,7 +203,7 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
             isDestructive: true,
             title: 'Eliminar usuario',
             description: `¿Deseas eliminar el usuario "${row.original.username}"?`,
-            action: () => { handleDelete(row.original) }
+            action: () => handleDelete(row.original)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>
@@ -243,3 +257,10 @@ const TableUserSection = ({ to, theme, credentials, onChange }: TableUserSection
 }
 
 export default TableUserSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const getQueryParams = ({ data }: { [x: string]: any }) => {
+  const filterParams = { createdAt: data.createdAt }
+  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
+}

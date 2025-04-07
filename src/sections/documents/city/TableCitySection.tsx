@@ -1,45 +1,199 @@
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { City, ThemeContextProps } from "@/interfaces/context.interface"
-import { ActionProps } from "@/interfaces/props.interface"
-
-import ItemDropdown from "#/ui/data-table/item-dropdown"
+import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
+import { ThemeContextProps, City } from "@/interfaces/context.interface"
+import { Delete, LocationCity, Update } from "@mui/icons-material"
+import { PageHeader, Stat } from "#/common/elements/HeaderPage"
+import { useCityTable } from "@/hooks/auth/useLocationForm"
 import AlertDialog from "#/common/elements/AlertDialog"
-import { DataTable } from "#/ui/data-table/data-table"
-import { Card } from "#/ui/card"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { BarChart2, CalendarClock } from "lucide-react"
+import { tableTranslations } from "@/utils/constants"
+import { formatDateTime } from "@/utils/format"
 import { useNavigate } from "react-router-dom"
-import { Pencil, Trash } from "lucide-react"
-import { formatDate } from "@/utils/format"
-import { cn } from "@/lib/utils"
+import { useMemo } from "react"
+import {
+  MRT_GlobalFilterTextField,
+  MRT_ToggleFiltersButton,
+  useMaterialReactTable,
+  MaterialReactTable,
+  MRT_ColumnDef,
+} from "material-react-table"
 
-interface TableCitySectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface CityActionsProps { city: City; onChange: (value: string) => void }
+interface TableCitySectionProps extends ThemeContextProps {
+  params?: { createdAt?: string } | null
+  onChange: () => void
+}
 
 /**
  * Permite construir un componente de tabla para mostrar las ciudades
  * @param theme - El tema contexto de la aplicación
+ * @param params - Parametros de la ruta
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con las ciudades, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: cities } = useQueryLocation().fetchAllLocations<City>('city')
+const TableCitySection = ({ theme, params, onChange }: TableCitySectionProps) => {
+  const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
+  const { cities, handleDelete } = useCityTable()
+  const navigate = useNavigate()
+  const isMobile = useIsMobile()
+
+  /** Header stats */
+  const today = new Date().toISOString().split('T')[0];
+  const stats: Stat[] = [{
+    color: 'info',
+    icon: BarChart2,
+    href: `/location/city`,
+    value: cities?.length || 0,
+    title: `Total ciudades`,
+  }, {
+    color: 'success',
+    icon: CalendarClock,
+    title: 'Creados Hoy',
+    href: `/location/city/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    value: cities?.filter(s => s?.createdAt ? new Date(s.createdAt).toISOString().split('T')[0] === today : false).length || 0,
+  }]
+
+  /** Config table columns */
+  const columns = useMemo(() => {
+    const array: MRT_ColumnDef<City>[] = [{
+      size: 100,
+      id: 'name',
+      header: 'Nombre',
+      accessorFn: (row) => row.name,
+    }, {
+      size: 100,
+      id: 'state.name',
+      header: 'Departamento',
+      accessorFn: (row) => row.state.name
+    }, {
+      size: 100,
+      id: "createdAt",
+      header: "Fecha de creación",
+      accessorFn: (row) => formatDateTime(row.createdAt)
+    }];
+    return array
+  }, [])
+
+  /** Table config (MRT) */
+  const table = useMaterialReactTable({
+    columns,
+    data: cities || [],
+    localization: tableTranslations,
+    enableColumnFilterModes: true,
+    enableColumnPinning: true,
+    enableFacetedValues: true,
+    enableRowSelection: true,
+    enableRowActions: true,
+    initialState: {
+      density: 'compact',
+      showGlobalFilter: true,
+      showColumnFilters: true,
+      columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
+    },
+    positionToolbarAlertBanner: 'head-overlay',
+    paginationDisplayMode: 'pages',
+    layoutMode: 'semantic',
+    muiPaginationProps: {
+      shape: 'rounded',
+      color: 'secondary',
+      variant: 'outlined',
+      rowsPerPageOptions: [10, 20, 30],
+    },
+    muiTableProps: {//table inside (titles row)
+      sx: { width: '100%', tableLayout: 'fixed' }
+    },
+    muiTableContainerProps: {//table container (inside)
+      sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
+    },
+    muiTablePaperProps: {//table inside
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? '95vw' : '100%' }
+    },
+    displayColumnDefOptions: {//table column size (columns table default)
+      'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------top toolbar--------------------------------------------------*/
+    renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
+      <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+        {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+          <Button
+            size="small"
+            variant="text"
+            color="inherit"
+            onClick={() => table.resetRowSelection()}
+          >
+            Limpiar selección
+          </Button>
+        )}
+        <MRT_GlobalFilterTextField table={table} />
+        <MRT_ToggleFiltersButton table={table} />
+      </Box>
+    ),
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------row action menu--------------------------------------------------*/
+    renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
+      const baseItems = [// To show for all users (base)
+        // Edit city
+        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Editar ciudad',
+            description: `¿Deseas editar la ciudad "${row.original.name}"?`,
+            action: () => { onChange(); navigate(`/location/city/${row.original._id}`) }
+          })
+        }}>
+          <ListItemIcon> <Update /> </ListItemIcon>
+          Actualizar
+        </MenuItem>,
+
+        // Delete city
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            isDestructive: true,
+            title: 'Eliminar ciudad',
+            description: `¿Deseas eliminar la ciudad "${row.original.name}"?`,
+            action: () => handleDelete(row.original._id)
+          })
+        }}>
+          <ListItemIcon> <Delete /> </ListItemIcon>
+          Eliminar
+        </MenuItem>
+      ];
+      return [...baseItems]
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------Toolbar multi select--------------------------------------------------*/
+    renderToolbarAlertBannerContent: ({ table }) => (// alert toolbar of rows selected (actions on multi select)
+      <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/** info selected rows */}
+        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Typography>
+            {table.getSelectedRowModel().rows.length} ciudad(es) seleccionada(s)
+          </Typography>
+        </Box>
+      </Box>
+    )
+  })
 
   return (
     <>
-      <div className="container p-0">
-        <Card className={cn(
-          "p-4 border-rounded-md shadow-md",
-          theme === "dark" ? "bg-zinc-900/80" : "bg-white"
-        )}>
-          <DataTable
-            filterColumn="name"
-            data={cities || []}
-            columns={columns(onChange)}
-          />
-        </Card>
+      <div className="flex flex-col gap-2">
+        <PageHeader
+          size="lg"
+          stats={stats}
+          title="Ciudades"
+          variant="gradient"
+          icon={LocationCity}
+          badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
+        />
+        <MaterialReactTable table={table} />
       </div>
 
       <AlertDialog
@@ -58,64 +212,10 @@ const TableCitySection = ({ theme, onChange }: TableCitySectionProps) => {
 }
 
 export default TableCitySection
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Hook para crear las columnas de la tabla de ciudades
- * @param onChange - La función que se ejecutará cuando se seleccione una acción
- * @returns Array de columnas para la tabla de ciudades
- */
-const columns = (onChange: (value: string) => void): ColumnDef<City>[] => [
-  {
-    accessorKey: "name",
-    header: "Nombre de la ciudad"
-  },
-  {
-    accessorKey: "state",
-    header: "Departamento",
-    cell: ({ row }) => row.original.state?.name || 'Sin departamento'
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Última actualización",
-    cell: ({ row }) => formatDate(row.original?.updatedAt)
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useCityActions({ city: row.original, onChange })} />
-  }
-]
-
-/**
- * Hook personalizado para manejar las acciones del dropdown de ciudades
- * @param city - La ciudad sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para la ciudad
- */
-const useCityActions = ({ city, onChange }: CityActionsProps): ActionProps[] => {
-  const { deleteLocation } = useLocationMutation('city')
-  const { confirmAction } = useDialogConfirm()
-  const navigate = useNavigate()
-
-  return [{
-    icon: Pencil,
-    label: "Editar",
-    onClick: () => {
-      confirmAction({
-        title: 'Editar Ciudad',
-        description: `¿Deseas editar la ciudad "${city.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/city/${city._id}`) }
-      })
-    }
-  }, {
-    icon: Trash,
-    label: "Eliminar",
-    className: "text-red-600",
-    onClick: () => {
-      confirmAction({
-        isDestructive: true,
-        title: 'Eliminar Ciudad',
-        description: `¿Estás seguro que deseas eliminar la ciudad "${city.name}"?`,
-        action: () => deleteLocation({ id: city._id })
-      })
-    }
-  }]
+const getQueryParams = ({ data }: { [x: string]: any }) => {
+  const filterParams = { createdAt: data.createdAt }
+  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
 }

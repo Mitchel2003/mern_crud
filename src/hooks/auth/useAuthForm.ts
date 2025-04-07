@@ -59,15 +59,16 @@ export const useForgotPasswordForm = () => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void) => {
-  const { create: createUser, user: credentials } = useAuthContext()
   const { createFile, deleteFile } = useFormatMutation('file')
-  const { updateUser } = useUserMutation()
+  const { createUser, updateUser } = useUserMutation()
+  const { user: credentials } = useAuthContext()
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
 
-  const { data: user } = queryUser.fetchUserById<User>(id as string)
+  const { data: user } = queryUser.fetchUserById<User>(id as string, !!id)
   const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' })
-  const { data: company } = queryUser.fetchUserById<User>(credentials?.uid as string, credentials?.role === 'company')
+  const { data: company } = queryUser.fetchUserById<User>(credentials?.uid as string, credentials?.role === 'company') //to company
+  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: credentials?.role === 'admin' }) //to admin
   const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>({ path: `${to}/${id}/preview`, enabled: !!id && !!to })
 
   const methods = useForm<UserFormProps>({
@@ -100,7 +101,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
       const companySignature: File | undefined = data.photoSignature?.[0]?.file
       const companyLogo: File | undefined = data.photoLogo?.[0]?.file
       const clientImg: File | undefined = data.photoImage?.[0]?.file
-      id && delete data.email // delete field email for update
+      id && delete data.email // delete field email for update (fb)
       id ? (
         updateUser({ id, data }).then(async () => {
           if (!clientImg && !companySignature && !companyLogo) return
@@ -141,7 +142,9 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
     ...handleSubmit,
     options: {
       clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
-      companies: [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }]
+      companies: credentials?.role === 'admin'
+        ? companies?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
+        : company ? [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }] : []
     }
   }
 }
@@ -212,7 +215,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
 export const useUserTable = (to: RoleProps) => {
   const [onDelete, setOnDelete] = useState<User | undefined>(undefined)
   const { deleteFile } = useFormatMutation('file')
-  const { delete: _delete } = useAuthContext()
+  const { deleteUser: _delete } = useUserMutation()
   const isProcessing = useRef(false)
 
   const { data: users } = useQueryUser().fetchUserByQuery<User>({ role: to })
@@ -225,7 +228,7 @@ export const useUserTable = (to: RoleProps) => {
     if (isProcessing.current) return
     isProcessing.current = true
     const credential = `${user._id}-${user.uid}`
-    await _delete(credential).then(async () => {
+    await _delete({ id: credential }).then(async () => {
       const files = user.role === 'client' ? [{ path: 'client', ref: 'img' }] : [{ path: 'company', ref: 'logo' }, { path: 'company', ref: 'signature' }]
       await Promise.all(files.map(async ({ path, ref }) => await deleteFile({ path: `${path}/${user._id}/preview/${ref}` })))
     }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
@@ -239,4 +242,5 @@ export const useUserTable = (to: RoleProps) => {
     handleDelete: (user: User) => setOnDelete(user)
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 /*=========================================================================================================*/

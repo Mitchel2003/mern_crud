@@ -82,7 +82,7 @@ class AuthService implements IAuth {
   /**
    * Sends a password reset email to the email provided by the user.
    * The redirect link is defined in the firebase configuration file (templates).
-   * @param {string} email - The user's email.
+   * @param {string} email - The user's email to send reset password message to inbox.
    * @returns {Promise<Result<void>>} - Executes the request and returns a state (success or failure).
    */
   async sendEmailResetPassword(email: string): Promise<Result<void>> {
@@ -126,6 +126,17 @@ class AuthService implements IAuth {
     this.authStateListeners.add(listener)
     listener(AuthService.user)
     return () => { this.authStateListeners.delete(listener) }
+  }
+  /**
+   * Gets a fresh token from the current user
+   * Useful when a token expiration error is received
+   * @returns {Promise<Result<string | null>>} - Executes a token refresh and returns a state (success or failure).
+   */
+  public async refreshToken(): Promise<Result<string | null>> {
+    return handler(async () => {
+      if (!this.auth.currentUser) return null
+      return await this.auth.currentUser.getIdToken(true)
+    }, 'obtener token renovado')
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

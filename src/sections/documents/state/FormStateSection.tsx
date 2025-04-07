@@ -11,13 +11,12 @@ import InputField from "#/common/fields/Input"
 import { CardContent } from "#/ui/card"
 
 interface FormStateSectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
   id: string | undefined
+  onChange: () => void
 }
 
 const FormStateSection = ({ id, theme, onChange }: FormStateSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useStateForm(id, () => { onChange('table') })
-
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useStateForm(id, onChange)
   if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
@@ -51,7 +50,7 @@ const FormStateSection = ({ id, theme, onChange }: FormStateSectionProps) => {
             theme={theme}
             to="/location/states"
             disabled={!methods.formState.isDirty}
-            onCancel={() => { methods.reset(); onChange('table') }}
+            onCancel={() => { methods.reset(); onChange() }}
           />
         </form>
       </FormProvider>

@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils'
 
 const AdminSection = ({ theme }: ThemeContextProps) => {
   const [activeTab, setActiveTab] = useState('overview')
-
   return (
     <div className="container mx-auto p-6 space-y-8">
       <h1

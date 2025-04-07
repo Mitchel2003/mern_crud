@@ -17,10 +17,8 @@ import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
-  /** Credenciales del usuario, util para trabajar con los permisos, rol, etc */
-  credentials: User
-  /** Función para cambiar entre las pestañas tabs */
   onChange: () => void
+  credentials: User
 }
 interface CurriculumChildren extends Curriculum {
   childRows: (Maintenance & { isPreventive: boolean })[]
@@ -48,14 +46,14 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     color: 'info',
     icon: BarChart2,
     value: cvs?.length || 0,
-    href: '/curriculum/todos',
+    href: '/form/curriculum',
     title: 'Total Equipos',
   }, {
     color: 'success',
     enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: '/curriculum/hoy',
+    href: '/form/curriculum',
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -160,7 +158,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           confirmAction({
             title: 'Ver Curriculum',
             description: `¿Deseas ver el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
+            action: () => navigate(`/form/curriculum/preview/${row.original._id}`)
           })
         }}>
           <ListItemIcon> <Eye /> </ListItemIcon>
@@ -173,7 +171,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           confirmAction({
             title: 'Descargar curriculum',
             description: `¿Deseas descargar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { handleDownload(row.original) }
+            action: () => handleDownload(row.original)
           })
         }}>
           <ListItemIcon> <Download /> </ListItemIcon>
@@ -202,7 +200,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             isDestructive: true,
             title: 'Eliminar curriculum',
             description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { handleDelete(row.original._id) }
+            action: () => handleDelete(row.original._id)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>
@@ -409,7 +407,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
                             isDestructive: true,
                             title: 'Eliminar mantenimiento',
                             description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                            action: () => { handleDeleteMaintenance(maintenance._id) }
+                            action: () => handleDeleteMaintenance(maintenance._id)
                           })
                         }}
                       >
@@ -465,5 +463,5 @@ export default TableCurriculumSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 const getQueryParams = ({ data }: { [x: string]: any }) => {
   const filterParams = { name: data.name, modelEquip: data.modelEquip }
-  return encodeURIComponent(JSON.stringify(filterParams))// Convert to codify url
+  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
 }

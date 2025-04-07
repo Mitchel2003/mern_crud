@@ -1,8 +1,8 @@
 /** Este módulo proporciona funciones para la gestión de autenticación con Firebase Authentication */
 import { authService as authFB } from "@/services/firebase/auth.service"
 import { normalizeError } from "@/errors/handler"
+import ErrorAPI, { NotFound } from "@/errors"
 import { User } from "firebase/auth"
-import ErrorAPI from "@/errors"
 
 /*--------------------------------------------------auth--------------------------------------------------*/
 /**
@@ -33,6 +33,30 @@ export const logout = async (): Promise<void> => {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------state--------------------------------------------------*/
+/**
+ * Obtiene el estado actual de autenticación del usuario de forma sincrónica.
+ * @returns {User | null} - El usuario autenticado o null si no hay sesión activa.
+ */
+export const getCurrentUser = (): User | null => {
+  try { return authFB.getCurrentUser() }
+  catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener usuario actual')) }
+}
+/**
+ * Obtiene un nuevo token de autenticación renovado.
+ * @returns {string} - El nuevo token de autenticación renovado.
+ */
+export const getRefreshToken = async (): Promise<string> => {
+  try {
+    const result = await authFB.refreshToken()
+    if (!result.success) throw new ErrorAPI(result.error)
+    if (!result.data) throw new NotFound({ message: 'refrescar token' })
+    localStorage.setItem('token', result.data) // Store new token in localStorage
+    return result.data // Return new token to be used on requests (axios interceptor)
+  } catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener token renovado')) }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------verify--------------------------------------------------*/
 /**
  * Maneja el proceso de restablecimiento de contraseña.
@@ -46,18 +70,10 @@ export const forgotPassword = async (email: string): Promise<void> => {
   } catch (e) { throw new ErrorAPI(normalizeError(e, 'enviar email de restablecimiento de contraseña')) }
 }
 /**
- * Obtiene el estado actual de autenticación del usuario de forma sincrónica
- * @returns {User | null} - El usuario autenticado o null si no hay sesión activa
- */
-export const getCurrentUser = (): User | null => {
-  try { return authFB.getCurrentUser() }
-  catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener usuario actual')) }
-}
-/**
  * Suscribe una función callback a los cambios de estado de autenticación
  * @param {function} callback - Función que se ejecutará cuando cambie el estado de autenticación
  * @returns {function} - Función para cancelar la suscripción
- */
+*/
 export const subscribeAuthChanges = (callback: (user: User | null) => void): (() => void) => {
   try { return authFB.subscribeAuthChanges(callback) }
   catch (e) { throw new ErrorAPI(normalizeError(e, 'suscribir cambios de autenticación')) }

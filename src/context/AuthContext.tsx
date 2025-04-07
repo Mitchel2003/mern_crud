@@ -41,27 +41,36 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const [isAuth, setIsAuth] = useState(false)
   const { handler } = useLoading()
 
-  useEffect(() => {// Message listener
-    if (!user) return
-    setupMessageListener()
-    return () => { if (messaging.current) { messaging.current(); messaging.current = null } }
-  }, [user])
-
-  useEffect(() => {// Authentication listener
-    const token = localStorage.getItem('token')
-    const storedUid = localStorage.getItem('uid')
-    if (token && storedUid) { getUser(storedUid) }
-    else {// If no token or uid, check for existing
-      const initialUser = getCurrentUser()
-      if (initialUser) { getUser(initialUser.uid) }
-      else { setAuthStatus(); setLoading(false) }
-    }// Subscribe to authentication changes on mount
+  useEffect(() => { //This effect runs once time
+    initializeAuth() //Initialize handler authentication
     unsubscribe.current = subscribeAuthChanges((firebaseUser) => {
       if (firebaseUser) { getUser(firebaseUser.uid) }
       else { setAuthStatus(); setLoading(false) }
-    })// Clean subscription on unmount
-    return () => { if (unsubscribe.current) { unsubscribe.current(); unsubscribe.current = null } }
+    }) //Add listeners events (token-expired, token-expiring)
+    window.addEventListener('token-expired', handleTokenExpired)
+    window.addEventListener('token-expiring', handleTokenExpiring)
+    return () => { //unmount listeners and unsubscribe handlers
+      window.removeEventListener('token-expired', handleTokenExpired)
+      window.removeEventListener('token-expiring', handleTokenExpiring)
+      if (messaging.current) { messaging.current(); messaging.current = null }
+      if (unsubscribe.current) { unsubscribe.current(); unsubscribe.current = null }
+    }
   }, [])
+
+  /** Handle message listener when user changes */
+  useEffect(() => { if (user) setupMessageListener() }, [user])
+
+  /** Checks for existing token and uid in storage, or current user from Firebase */
+  const initializeAuth = () => {
+    const token = localStorage.getItem('token')
+    const storedUid = localStorage.getItem('uid')
+    if (token && storedUid) { getUser(storedUid) }
+    else { //If no token or uid, check current user
+      const initialUser = getCurrentUser() //this.auth
+      if (initialUser) { getUser(initialUser.uid) }
+      else { setAuthStatus(); setLoading(false) }
+    }
+  }
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /**
    * Inicia sesión con las credenciales del usuario.
@@ -114,9 +123,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {QueryOptions} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios o un array vacío.
    */
-  const getByQuery = async (query: QueryOptions): Promise<any[]> => {
+  const getByQuery = async (query: QueryOptions, enabled?: boolean): Promise<any[]> => {
     try {
-      if ('enabled' in query && query.enabled === false) return []
+      if (('enabled' in query && query.enabled === false) || !enabled) return []
       return (await useApi('user').getByQuery({ ...query, enabled: undefined })).data
     } catch (e) { isAxiosResponse(e) && notifyError(txt('getUserByQuery', e)); return [] }
   }
@@ -221,6 +230,16 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const setupMessageListener = async () => {
     try { messaging.current = await listenMessages(() => notifyWarning(txt('setup-messaging-listener'))) }
     catch (e) { isAxiosResponse(e) && notifyError(txt('setup-messaging-listener', e)) }
+  }
+  /** Handle token expired (not renewable) */
+  const handleTokenExpired = () => { notifyWarning(txt('expired-token')); logout() }
+  /** Handle token expiring (renewable) */
+  const handleTokenExpiring = async () => {
+    const auth = getCurrentUser()
+    if (auth) { // Get a fresh token
+      const token = await auth.getIdToken(true)
+      localStorage.setItem('token', token) //storage
+    }
   }
   /*---------------------------------------------------------------------------------------------------------*/
   return (

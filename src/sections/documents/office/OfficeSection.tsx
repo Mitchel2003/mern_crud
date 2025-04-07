@@ -15,15 +15,10 @@ interface OfficeSectionProps extends ThemeContextProps { id: string | undefined 
 
 const OfficeSection = ({ theme, id }: OfficeSectionProps) => {
   const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
-  const { tab, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Consultorios
-        </h1>
-      </div>
-
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Navigation action tabs */}
@@ -72,17 +67,17 @@ const OfficeSection = ({ theme, id }: OfficeSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableOfficeSection theme={theme} onChange={handle} />
+          <TableOfficeSection theme={theme} onChange={() => handle('form')} params={params} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormOfficeSection id={id} theme={theme} onChange={handle} />
+            <FormOfficeSection id={id} theme={theme} onChange={() => handle('table')} />
           </Card>
         </TabsContent>
         <TabsContent value="clients"> <Skeleton theme={theme} /> </TabsContent>
-        <TabsContent value="headquarters"> <Skeleton theme={theme} /> </TabsContent>
-      </Tabs >
-    </div>
+        <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>
+      </Tabs>
+    </main>
   )
 }
 

@@ -1,7 +1,7 @@
 import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/utils/constants"
 import { City, Country, State, Headquarter, Office, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -239,18 +239,130 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
 /*=========================================================================================================*/
 
 /*==================================================useTable==================================================*/
+/*--------------------------------------------------office table--------------------------------------------------*/
+export const useOfficeTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteLocation } = useLocationMutation("office")
+  const isOperating = useRef(false)
+
+  const { data: offices } = useQueryLocation().fetchAllLocations<Office>('office')
+
+  const deleteOffice = useCallback(async (id: string) => {
+    if (isOperating.current) return
+    isOperating.current = true
+    await deleteLocation({ id }).finally(() => {
+      isOperating.current = false
+      setOnDelete(undefined)
+    })
+  }, [deleteLocation])
+
+  useEffect(() => { onDelete && deleteOffice(onDelete) }, [onDelete, deleteOffice])
+
+  return {
+    offices: useMemo(() => offices, [offices]),
+    handleDelete: (id: string) => setOnDelete(id)
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------headquarter table--------------------------------------------------*/
+export const useHeadquarterTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteLocation } = useLocationMutation("headquarter")
+  const isOperating = useRef(false)
+
+  const { data: headquarters } = useQueryLocation().fetchAllLocations<Headquarter>('headquarter')
+
+  const deleteHeadquarter = useCallback(async (id: string) => {
+    if (isOperating.current) return
+    isOperating.current = true
+    await deleteLocation({ id }).finally(() => {
+      isOperating.current = false
+      setOnDelete(undefined)
+    })
+  }, [deleteLocation])
+
+  useEffect(() => {
+    onDelete && deleteHeadquarter(onDelete)
+  }, [onDelete, deleteHeadquarter])
+
+  return {
+    headquarters: useMemo(() => headquarters, [headquarters]),
+    handleDelete: (id: string) => setOnDelete(id)
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------city table--------------------------------------------------*/
+export const useCityTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteLocation } = useLocationMutation("city")
+  const isOperating = useRef(false)
+
+  const { data: cities } = useQueryLocation().fetchAllLocations<City>('city')
+
+  const deleteCity = useCallback(async (id: string) => {
+    if (isOperating.current) return
+    isOperating.current = true
+    await deleteLocation({ id }).finally(() => {
+      isOperating.current = false
+      setOnDelete(undefined)
+    })
+  }, [deleteLocation])
+
+  useEffect(() => {
+    onDelete && deleteCity(onDelete)
+  }, [onDelete, deleteCity])
+
+  return {
+    cities: useMemo(() => cities, [cities]),
+    handleDelete: (id: string) => setOnDelete(id)
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------state table--------------------------------------------------*/
+export const useStateTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteLocation } = useLocationMutation("state")
+  const isOperating = useRef(false)
+
+  const { data: states } = useQueryLocation().fetchAllLocations<State>('state')
+
+  const deleteState = useCallback(async (id: string) => {
+    if (isOperating.current) return
+    isOperating.current = true
+    await deleteLocation({ id }).finally(() => {
+      isOperating.current = false
+      setOnDelete(undefined)
+    })
+  }, [deleteLocation])
+
+  useEffect(() => {
+    onDelete && deleteState(onDelete)
+  }, [onDelete, deleteState])
+
+  return {
+    states: useMemo(() => states, [states]),
+    handleDelete: (id: string) => setOnDelete(id)
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------country table--------------------------------------------------*/
 export const useCountryTable = () => {
   const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
   const { deleteLocation } = useLocationMutation("country")
   const isOperating = useRef(false)
 
+  const { data: countries } = useQueryLocation().fetchAllLocations<Country>('country')
+
   const deleteCountry = useCallback(async (id: string) => {
     if (isOperating.current) return
     isOperating.current = true
     await deleteLocation({ id }).finally(() => {
-      setOnDelete(undefined)
       isOperating.current = false
+      setOnDelete(undefined)
     })
   }, [deleteLocation])
 
@@ -259,7 +371,9 @@ export const useCountryTable = () => {
   }, [onDelete, deleteCountry])
 
   return {
+    countries: useMemo(() => countries, [countries]),
     handleDelete: (id: string) => setOnDelete(id)
   }
 }
+/*---------------------------------------------------------------------------------------------------------*/
 /*=========================================================================================================*/

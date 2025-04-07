@@ -13,7 +13,8 @@ const route = '/engineer'
 interface EngineerSectionProps extends ThemeContextProps { id: string | undefined }
 
 const EngineerSection = ({ id, theme }: EngineerSectionProps) => {
-  const { tab, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const { user } = useAuthContext()
   return (
     <main className="container p-2 sm:p-4">
@@ -45,7 +46,7 @@ const EngineerSection = ({ id, theme }: EngineerSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableEngineerSection theme={theme} onChange={() => handle('form')} credentials={user!} to="engineer" />
+          <TableEngineerSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} to="engineer" />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

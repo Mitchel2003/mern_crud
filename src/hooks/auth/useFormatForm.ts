@@ -323,12 +323,12 @@ export const useCurriculumTable = () => {
   }, [onDownloadZip, onDownloadZipMts, zipFiles])
 
   /**
-   * Function that formats and combines curriculum and maintenance data for the table; this allow us:
-   * 1. Show all curriculums even if they don't have maintenances
-   * 2. Group maintenances by equipment and sort them by date
-   * @param curriculums - Array of curriculum records
-   * @param maintenances - Array of maintenance records
-   * @returns Array of formatted curriculum records with their associated maintenances
+   * Funcion que formatea y combina los datos de currículums y mantenimientos para la tabla; esto nos permite:
+   * 1. Mostrar todos los currículums incluso si no tienen mantenimientos
+   * 2. Agrupar los mantenimientos por equipo y ordenarlos por fecha
+   * @param curriculums - Array de registros de currículum
+   * @param maintenances - Array de registros de mantenimiento
+   * @returns Array de currículums formateados con sus mantenimientos asociados
    */
   const formatTableData = useCallback((curriculums: Curriculum[], maintenances: Maintenance[]): CurriculumChildren[] => {
     // 1. Normalize maintenance data

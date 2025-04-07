@@ -10,13 +10,12 @@ import InputField from "#/common/fields/Input"
 import { CardContent } from "#/ui/card"
 
 interface FormCountrySectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
   id: string | undefined
+  onChange: () => void
 }
 
 const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) => {
-  const { methods, isLoading, open, setOpen, onConfirm, handleSubmit } = useCountryForm(id, () => { onChange('table') })
-
+  const { methods, isLoading, open, setOpen, onConfirm, handleSubmit } = useCountryForm(id, onChange)
   if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
@@ -43,7 +42,7 @@ const FormCountrySection = ({ id, theme, onChange }: FormCountrySectionProps) =>
             theme={theme}
             to="/location/countries"
             disabled={!methods.formState.isDirty}
-            onCancel={() => { methods.reset(); onChange('table') }}
+            onCancel={() => { methods.reset(); onChange() }}
           />
         </form>
       </FormProvider>

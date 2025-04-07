@@ -1,5 +1,6 @@
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
 import { FormatType, LocationType } from "@/interfaces/context.interface"
+import { QueryOptions } from "@/interfaces/props.interface"
 import { FileReference } from "@/interfaces/db.interface"
 
 export interface FileMutationProps extends FileReference { }
@@ -11,10 +12,12 @@ export interface DeleteMutationProps { id: string }
 export type QueryReact_User = {
   fetchAllUsers: <T>() => UseQueryResult<T[], Error>
   fetchUserById: <T>(id: string, enabled?: boolean) => UseQueryResult<T | undefined, Error>
-  fetchUserByQuery: <T>(query: object) => UseQueryResult<T[], Error>
+  fetchUserByQuery: <T>(query: QueryOptions, enabled?: boolean) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {
+  createUser: UseMutateAsyncFunction<any, Error, object, unknown>
   updateUser: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
+  deleteUser: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/

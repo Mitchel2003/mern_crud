@@ -40,6 +40,10 @@ export const uploadFiles = async (data: FileReference): Promise<Result<void>> =>
  */
 export const deleteFile = async (path: string): Promise<Result<void>> => {
   try {
+    const folderPath = path.split('/').slice(0, -1).join('/')
+    const files = await storageService.getFiles(folderPath)
+    if (!files.success) throw new ErrorAPI(files.error)
+    if (files.data.length === 0) return success(undefined)
     const result = await storageService.deleteFile(path)
     if (!result.success) throw new ErrorAPI(result.error)
     return success(undefined)

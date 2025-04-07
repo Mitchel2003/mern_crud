@@ -15,15 +15,10 @@ interface HeadquarterSectionProps extends ThemeContextProps { id: string | undef
 
 const HeadquarterSection = ({ theme, id }: HeadquarterSectionProps) => {
   const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
-  const { tab, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Sedes
-        </h1>
-      </div>
-
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Navigation action tabs */}
@@ -72,17 +67,17 @@ const HeadquarterSection = ({ theme, id }: HeadquarterSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableHeadquarterSection theme={theme} onChange={handle} />
+          <TableHeadquarterSection theme={theme} onChange={() => handle('form')} params={params} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormHeadquarterSection id={id} theme={theme} onChange={handle} />
+            <FormHeadquarterSection id={id} theme={theme} onChange={() => handle('table')} />
           </Card>
         </TabsContent>
         <TabsContent value="clients"> <Skeleton theme={theme} /> </TabsContent>
         <TabsContent value="offices"> <Skeleton theme={theme} /> </TabsContent>
-      </Tabs >
-    </div >
+      </Tabs>
+    </main>
   )
 }
 

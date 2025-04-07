@@ -11,55 +11,48 @@ const route = '/location/city'
 
 interface CitySectionProps extends ThemeContextProps { id: string | undefined }
 
-const CitySection = ({ theme, id }: CitySectionProps) => {
-  const { tab, handle } = useTabs({ id, to: route })
+const CitySection = ({ id, theme }: CitySectionProps) => {
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className={cn('text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
-          Ciudades
-        </h1>
-      </div>
-
+    <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Local action tabs */}
-          <TabsList className={cn(
-            "bg-muted/60 backdrop-blur transition-all",
-            "supports-[backdrop-filter]:bg-background/60"
-          )}>
-            <TabsTrigger
-              value="table"
-              className={cn(
-                'flex px-6 gap-2 items-center',
-                'duration-200 hover:scale-105 hover:bg-accent/50'
-              )}
-            >
-              Tabla <TableProperties className='h-4 w-4' />
-            </TabsTrigger>
-            <TabsTrigger
-              value="form"
-              className={cn(
-                'flex px-6 gap-2 items-center',
-                'duration-200 hover:scale-105 hover:bg-accent/50'
-              )}
-            >
-              Añadir <PlusCircle className='h-4 w-4' />
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        {/* Local action tabs */}
+        <TabsList className={cn(
+          "bg-muted/60 backdrop-blur transition-all",
+          "supports-[backdrop-filter]:bg-background/60"
+        )}>
+          <TabsTrigger
+            value="table"
+            className={cn(
+              'flex px-6 gap-2 items-center',
+              'duration-200 hover:scale-105 hover:bg-accent/50'
+            )}
+          >
+            Tabla <TableProperties className='h-4 w-4' />
+          </TabsTrigger>
+          <TabsTrigger
+            value="form"
+            className={cn(
+              'flex px-6 gap-2 items-center',
+              'duration-200 hover:scale-105 hover:bg-accent/50'
+            )}
+          >
+            Añadir <PlusCircle className='h-4 w-4' />
+          </TabsTrigger>
+        </TabsList>
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCitySection theme={theme} onChange={handle} />
+          <TableCitySection theme={theme} onChange={() => handle('form')} params={params} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-            <FormCitySection id={id} theme={theme} onChange={handle} />
+            <FormCitySection id={id} theme={theme} onChange={() => handle('table')} />
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </main>
   )
 }
 

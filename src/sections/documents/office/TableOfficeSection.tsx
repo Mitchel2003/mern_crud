@@ -1,44 +1,203 @@
-import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { Office, ThemeContextProps } from "@/interfaces/context.interface"
-import { ActionProps } from "@/interfaces/props.interface"
-
-import ItemDropdown from "#/ui/data-table/item-dropdown"
+import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
+import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
+import { Delete, LocalPrintshop, Update } from "@mui/icons-material"
+import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import AlertDialog from "#/common/elements/AlertDialog"
-import { DataTable } from "#/ui/data-table/data-table"
-import { Card } from "#/ui/card"
+import { tableTranslations } from "@/utils/constants"
+import { formatDateTime } from "@/utils/format"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
+import { ThemeContextProps, Office } from "@/interfaces/context.interface"
+import { useOfficeTable } from "@/hooks/auth/useLocationForm"
+import { BarChart2, CalendarClock } from "lucide-react"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
-import { Pencil, Trash } from "lucide-react"
-import { formatDate } from "@/utils/format"
-import { cn } from "@/lib/utils"
+import { useMemo } from "react"
 
-interface TableOfficeSectionProps extends ThemeContextProps { onChange: (value: string) => void }
-interface OfficeActionsProps { office: Office; onChange: (value: string) => void }
+interface TableOfficeSectionProps extends ThemeContextProps {
+  params?: { createdAt?: string } | null
+  onChange: () => void
+}
 
 /**
- * Permite construir un componente de tabla para mostrar las oficinas
+ * Permite construir un componente de tabla para mostrar los consultorios.
+ * @param credentials - Credenciales del usuario
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con las oficinas, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los consultorios, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableOfficeSection = ({ theme, onChange }: TableOfficeSectionProps) => {
-  const { show, setShow, handleConfirm, title, description, isDestructive } = useDialogConfirm()
-  const { data: offices } = useQueryLocation().fetchAllLocations<Office>('office')
+const TableOfficeSection = ({ theme, params, onChange }: TableOfficeSectionProps) => {
+  const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
+  const { offices, handleDelete } = useOfficeTable()
+  const navigate = useNavigate()
+  const isMobile = useIsMobile()
+
+  /** Header stats */
+  const today = new Date().toISOString().split('T')[0];
+  const stats: Stat[] = [{
+    color: 'info',
+    icon: BarChart2,
+    href: `/location/office`,
+    value: offices?.length || 0,
+    title: `Total oficinas`,
+  }, {
+    color: 'success',
+    icon: CalendarClock,
+    title: 'Creados Hoy',
+    href: `/location/office/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    value: offices?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
+  }]
+
+  /** Config table columns */
+  const columns = useMemo(() => {
+    const array: MRT_ColumnDef<Office>[] = [{
+      size: 150,
+      id: 'name',
+      header: 'Nombre',
+      accessorFn: (row) => row.name,
+    }, {
+      size: 200,
+      id: "services",
+      header: "Servicios",
+      accessorFn: (row) => row.services.map((e) => e).join(', ') || 'Sin servicios'
+    }, {
+      size: 150,
+      header: "Sede",
+      id: "headquarter.name",
+      accessorFn: (row) => row.headquarter?.name || 'Sin sede'
+    }, {
+      size: 200,
+      header: "Cliente",
+      id: "headquarter.user.username",
+      accessorFn: (row) => row.headquarter?.user?.username || 'Sin cliente'
+    }, {
+      size: 100,
+      id: "createdAt",
+      header: "Fecha de creación",
+      accessorFn: (row) => formatDateTime(row.createdAt)
+    }];
+    return array
+  }, [])
+
+  /** Table config (MRT) */
+  const table = useMaterialReactTable({
+    columns,
+    data: offices || [],
+    localization: tableTranslations,
+    enableColumnFilterModes: true,
+    enableColumnPinning: true,
+    enableFacetedValues: true,
+    enableRowSelection: true,
+    enableRowActions: true,
+    initialState: {
+      density: 'compact',
+      showGlobalFilter: true,
+      showColumnFilters: true,
+      columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
+    },
+    positionToolbarAlertBanner: 'head-overlay',
+    paginationDisplayMode: 'pages',
+    layoutMode: 'semantic',
+    muiPaginationProps: {
+      shape: 'rounded',
+      color: 'secondary',
+      variant: 'outlined',
+      rowsPerPageOptions: [10, 20, 30],
+    },
+    muiTableProps: {//table inside (titles row)
+      sx: { width: '100%', tableLayout: 'fixed' }
+    },
+    muiTableContainerProps: {//table container (inside)
+      sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
+    },
+    muiTablePaperProps: {//table inside
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? '95vw' : '100%' }
+    },
+    displayColumnDefOptions: {//table column size (columns table default)
+      'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------top toolbar--------------------------------------------------*/
+    renderTopToolbar: ({ table }) => (// to define toolbar top (header toolbar)
+      <Box sx={{ p: '8px', gap: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+        {(table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+          <Button
+            size="small"
+            variant="text"
+            color="inherit"
+            onClick={() => table.resetRowSelection()}
+          >
+            Limpiar selección
+          </Button>
+        )}
+        <MRT_GlobalFilterTextField table={table} />
+        <MRT_ToggleFiltersButton table={table} />
+      </Box>
+    ),
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------row action menu--------------------------------------------------*/
+    renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
+      const baseItems = [// To show for all users (base)
+        // Edit office
+        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            title: 'Editar consultorio',
+            description: `¿Deseas editar el consultorio "${row.original.name}"?`,
+            action: () => { onChange(); navigate(`/location/office/${row.original._id}`) }
+          })
+        }}>
+          <ListItemIcon> <Update /> </ListItemIcon>
+          Actualizar
+        </MenuItem>,
+
+        // Delete office
+        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+          closeMenu()
+          confirmAction({
+            isDestructive: true,
+            title: 'Eliminar consultorio',
+            description: `¿Deseas eliminar el consultorio "${row.original.name}"?`,
+            action: () => handleDelete(row.original._id)
+          })
+        }}>
+          <ListItemIcon> <Delete /> </ListItemIcon>
+          Eliminar
+        </MenuItem>
+      ];
+      return [...baseItems]
+    },
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /*--------------------------------------------------Toolbar multi select--------------------------------------------------*/
+    renderToolbarAlertBannerContent: ({ table }) => (// alert toolbar of rows selected (actions on multi select)
+      <Box sx={{ p: '8px', gap: '0.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/** info selected rows */}
+        <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Typography>
+            {table.getSelectedRowModel().rows.length} sede(s) seleccionada(s)
+          </Typography>
+        </Box>
+      </Box>
+    )
+  })
+
   return (
     <>
-      <div className="container p-0">
-        <Card className={cn(
-          "p-4 border-rounded-md shadow-md",
-          theme === "dark" ? "bg-zinc-900/80" : "bg-white"
-        )}>
-          <DataTable
-            filterColumn="name"
-            data={offices || []}
-            columns={columns(onChange)}
-          />
-        </Card>
+      <div className="flex flex-col gap-2">
+        <PageHeader
+          size="lg"
+          stats={stats}
+          variant="gradient"
+          title="Consultorios"
+          icon={LocalPrintshop}
+          badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
+        />
+        <MaterialReactTable table={table} />
       </div>
 
       <AlertDialog
@@ -57,74 +216,10 @@ const TableOfficeSection = ({ theme, onChange }: TableOfficeSectionProps) => {
 }
 
 export default TableOfficeSection
+/*---------------------------------------------------------------------------------------------------------*/
+
 /*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Hook para crear las columnas de la tabla de oficinas
- * @param onChange - La función que se ejecutará cuando se seleccione una acción
- * @returns Array de columnas para la tabla de oficinas
- */
-const columns = (onChange: (value: string) => void): ColumnDef<Office>[] => [
-  {
-    accessorKey: "name",
-    header: "Nombre del consultorio"
-  },
-  {
-    header: "Servicios",
-    accessorKey: "services",
-    cell: ({ row }) => row.original.services.map((e) => e).join(', ') || 'Sin servicios'
-  },
-  {
-    header: "Sede",
-    accessorKey: "headquarter",
-    cell: ({ row }) => row.original?.headquarter?.address || 'Sin sede'
-  },
-  {
-    header: "Cliente",
-    accessorKey: "client",
-    cell: ({ row }) => row.original?.headquarter?.user?.username || 'Sin cliente'
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Última actualización",
-    cell: ({ row }) => formatDate(row.original?.updatedAt)
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <ItemDropdown actions={useOfficeActions({ office: row.original, onChange })} />
-  }
-]
-
-/**
- * Hook personalizado para manejar las acciones del dropdown de oficinas
- * @param office - La oficina sobre la que se realizarán las acciones
- * @returns Array de acciones disponibles para la oficina
- */
-const useOfficeActions = ({ office, onChange }: OfficeActionsProps): ActionProps[] => {
-  const { deleteLocation } = useLocationMutation('office')
-  const { confirmAction } = useDialogConfirm()
-  const navigate = useNavigate()
-
-  return [{
-    icon: Pencil,
-    label: "Editar",
-    onClick: () => {
-      confirmAction({
-        title: 'Editar Consultorio',
-        description: `¿Deseas editar el consultorio "${office.name}"?`,
-        action: () => { onChange('form'); navigate(`/location/office/${office._id}`) }
-      })
-    }
-  }, {
-    icon: Trash,
-    label: "Eliminar",
-    className: "text-red-600",
-    onClick: () => {
-      confirmAction({
-        isDestructive: true,
-        title: 'Eliminar Consultorio',
-        description: `¿Estás seguro que deseas eliminar el consultorio "${office.name}"?`,
-        action: () => deleteLocation({ id: office._id })
-      })
-    }
-  }]
-} 
+const getQueryParams = ({ data }: { [x: string]: any }) => {
+  const filterParams = { createdAt: data.createdAt }
+  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
+}

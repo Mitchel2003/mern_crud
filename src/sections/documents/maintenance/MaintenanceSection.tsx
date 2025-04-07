@@ -13,10 +13,9 @@ const route = '/form/maintenance'
 interface MaintenanceSectionProps extends ThemeContextProps { id: string | undefined }
 
 const MaintenanceSection = ({ theme, id }: MaintenanceSectionProps) => {
-  const { tab, isQuery, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const { user } = useAuthContext()
-  const params = id && isQuery ?
-    JSON.parse(decodeURIComponent(id)) : null
   return (
     <main className="container p-2 sm:p-4">
       <Tabs value={tab} onValueChange={handle}>

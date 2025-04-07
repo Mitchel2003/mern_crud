@@ -13,12 +13,12 @@ import { Separator } from "#/ui/separator"
 import { CardContent } from "#/ui/card"
 
 interface FormHeadquarterSectionProps extends ThemeContextProps {
-  onChange: (value: string) => void
   id: string | undefined
+  onChange: () => void
 }
 
 const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useHeadquarterForm(id, () => { onChange('table') })
+  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useHeadquarterForm(id, onChange)
   const countryId = methods.watch('country')
   const stateId = methods.watch('state')
 
@@ -99,7 +99,7 @@ const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionP
             theme={theme}
             to="/location/headquarters"
             disabled={!methods.formState.isDirty}
-            onCancel={() => { methods.reset(); onChange('table') }}
+            onCancel={() => { methods.reset(); onChange() }}
           />
         </form>
       </FormProvider>

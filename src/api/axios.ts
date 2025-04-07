@@ -29,17 +29,33 @@ instance.interceptors.request.use(
 /**
  * Interceptors to all responses
  * - Detects when token is about to expire and triggers renewal
+ * - Handles token expired errors and attempts to refresh the token
  */
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
-    const tokenExpiringHeader = response.headers['x-token-expiring-soon'];
+    const tokenExpiringHeader = response.headers['x-token-expiring-soon']
     if (tokenExpiringHeader === 'true') {// Check if token is expired
-      // Dispatch an event that can be caught by the auth service
-      const tokenExpiringEvent = new CustomEvent('token-expiring');
-      window.dispatchEvent(tokenExpiringEvent);
-      console.log('Token is about to expire, renewal needed');
+      const tokenExpiringEvent = new CustomEvent('token-expiring')
+      window.dispatchEvent(tokenExpiringEvent)
     }
     return response
+  },
+  async (error) => {
+    const originalRequest = error.config
+    // If the error is 401 (Unauthorized) and we haven't tried to renew the token yet
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true // Mark that we've tried to renew
+      try {
+        const { getRefreshToken } = await import('@/controllers/auth.controller')
+        const newToken = await getRefreshToken() // Obtain new token generated
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return instance(originalRequest) // Retry request (new token)
+      } catch (e) {// If we can't renew the token, dispatch event
+        const tokenExpiredEvent = new CustomEvent('token-expired')
+        window.dispatchEvent(tokenExpiredEvent)
+      }
+    }
+    return Promise.reject(error)
   }
 )
 

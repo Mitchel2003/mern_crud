@@ -1,5 +1,6 @@
 import { BaseMDB, FileReference } from "@/interfaces/db.interface"
 import { LoginFormProps } from "@/schemas/auth/auth.schema"
+import { QueryOptions } from "@/interfaces/props.interface"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -57,7 +58,7 @@ export type AuthContext = {
   //user handlers
   getAll: <T>() => Promise<T[]>
   getById: <T>(id: string, enabled?: boolean) => Promise<T | undefined>
-  getByQuery: <T>(query: object) => Promise<T[]>
+  getByQuery: <T>(query: QueryOptions, enabled?: boolean) => Promise<T[]>
   create: (data: object) => Promise<any>
   update: (id: string, data: object) => Promise<any>
   delete: (id: string) => Promise<void>

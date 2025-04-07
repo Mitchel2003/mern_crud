@@ -14,9 +14,10 @@ const route = '/client'
 
 interface ClientSectionProps extends ThemeContextProps { id: string | undefined }
 
-const ClientSection = ({ theme, id }: ClientSectionProps) => { //its ready!!!
+const ClientSection = ({ id, theme }: ClientSectionProps) => {
   const { getStateTab, handleTab } = useTabNavigator({ defaultStyles, activeStyles })
-  const { tab, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const { user } = useAuthContext()
   return (
     <main className="container p-2 sm:p-4">
@@ -68,7 +69,7 @@ const ClientSection = ({ theme, id }: ClientSectionProps) => { //its ready!!!
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableClientSection theme={theme} onChange={() => handle('form')} credentials={user!} to="client" />
+          <TableClientSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} to="client" />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

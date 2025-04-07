@@ -1,4 +1,4 @@
-import { CustomMutation_User, QueryReact_User, UpdateMutationProps } from '@/interfaces/hook.interface'
+import { CustomMutation_User, DeleteMutationProps, QueryReact_User, UpdateMutationProps } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { QueryOptions } from '@/interfaces/props.interface'
 import { useAuthContext } from '@/context/AuthContext'
@@ -27,23 +27,24 @@ export const useQueryUser = (): QueryReact_User => {
   /**
    * Obtener usuario por ID
    * @param {string} id - Corresponde al id del usuario
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
    */
-  const fetchUserById = <T>(id: string, enabled?: boolean) => useQuery({
+  const fetchUserById = <T>(id: string, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.user(id),
     queryFn: () => user.getById<T>(id, enabled),
     select: (data) => data || undefined,
-    enabled: Boolean(id)
+    enabled: Boolean(id) && enabled
   })
 
   /**
    * Buscar usuario por término
    * @param {object} query - Elementos de busqueda
    */
-  const fetchUserByQuery = <T>(query: QueryOptions) => useQuery({
+  const fetchUserByQuery = <T>(query: QueryOptions, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.search(query),
-    queryFn: () => user.getByQuery<T>(query),
+    queryFn: () => user.getByQuery<T>(query, enabled),
+    enabled: Boolean(query) && enabled,
     select: (data) => data || [],
-    enabled: Boolean(query)
   })
 
   return {
@@ -57,8 +58,18 @@ export const useQueryUser = (): QueryReact_User => {
 /*--------------------------------------------------useMutation--------------------------------------------------*/
 /** Hook personalizado para gestionar mutaciones de usuarios */
 export const useUserMutation = (): CustomMutation_User => {
-  const { update } = useAuthContext()
+  const { create, update, delete: deleteUser } = useAuthContext()
   const queryClient = useQueryClient()
+
+  /**
+   * Mutation para crear un formato
+   * @param {object} data - La data del documento a crear.
+   * @returns {Promise<any>} Los datos del formato creado.
+   */
+  const createMutation = useMutation({
+    mutationFn: async (data: object) => await create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.users() })
+  })
 
   /**
    * Mutation para actualizar un usuario
@@ -73,8 +84,23 @@ export const useUserMutation = (): CustomMutation_User => {
     }
   })
 
+  /**
+   * Mutation para eliminar un formato
+   * @param {string} _id - Corresponde al uid default del formato.
+   * @returns {Promise<any>} Los datos del formato eliminado.
+   */
+  const deleteMutation = useMutation({
+    mutationFn: async ({ id }: DeleteMutationProps) => await deleteUser(id),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.users() })
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.user(variables.id) })
+    }
+  })
+
   return {
+    createUser: createMutation.mutateAsync,
     updateUser: updateMutation.mutateAsync,
-    isLoading: updateMutation.isPending
+    deleteUser: deleteMutation.mutateAsync,
+    isLoading: createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
   }
 }
