@@ -17,25 +17,14 @@ const messaging = firebase.messaging()
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
   try {
-    if (payload.data) {// Verificar si es un dispositivo móvil (Android/iOS)
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(self.navigator.userAgent)
-      if (payload.notification && isMobile) return
-      const notificationTitle = payload.data.title || payload.notification?.title || 'Nueva notificación'
+    if (payload.data) { //Prioritize the 'data' field over 'notification'
+      const notificationTitle = payload.data.title || 'Nueva notificación'
       const notificationOptions = {
-        body: payload.data.body || payload.notification?.body || 'Tienes una nueva notificación',
+        body: payload.data.body || 'Tienes una nueva notificación',
+        tag: payload.data.timestamp || Date.now().toString(),
         badge: '/assets/gs_ico.ico',
         icon: '/assets/gs_ico.ico',
-        data: payload.data
-      }
-      return self.registration.showNotification(notificationTitle, notificationOptions)
-    }
-
-    if (payload.notification) {
-      const notificationTitle = payload.notification.title || 'Nueva notificación'
-      const notificationOptions = {
-        body: payload.notification.body || 'Tienes una nueva notificación',
-        badge: '/assets/gs_ico.ico',
-        icon: '/assets/gs_ico.ico',
+        data: payload.data,
       }
       return self.registration.showNotification(notificationTitle, notificationOptions)
     }
