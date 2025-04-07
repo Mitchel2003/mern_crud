@@ -20,8 +20,6 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification?.title || 'Nueva notificación'
     const notificationOptions = {
       body: payload.notification?.body || 'Tienes una nueva notificación',
-      icon: '/assets/gs_ico.ico',
-      badge: '/assets/gs_ico.ico',
       data: payload.data || {}
     }
     return self.registration.showNotification(notificationTitle, notificationOptions)
