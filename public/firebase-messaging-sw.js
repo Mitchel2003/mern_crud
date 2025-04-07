@@ -17,11 +17,27 @@ const messaging = firebase.messaging()
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
   try {
-    const notificationTitle = payload.notification?.title || 'Nueva notificación'
-    const notificationOptions = {
-      body: payload.notification?.body || 'Tienes una nueva notificación',
-      data: payload.data || {}
+    if (payload.data) {// Verificar si es un dispositivo móvil (Android/iOS)
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(self.navigator.userAgent)
+      if (payload.notification && isMobile) return
+      const notificationTitle = payload.data.title || payload.notification?.title || 'Nueva notificación'
+      const notificationOptions = {
+        body: payload.data.body || payload.notification?.body || 'Tienes una nueva notificación',
+        badge: '/assets/gs_ico.ico',
+        icon: '/assets/gs_ico.ico',
+        data: payload.data
+      }
+      return self.registration.showNotification(notificationTitle, notificationOptions)
     }
-    return self.registration.showNotification(notificationTitle, notificationOptions)
+
+    if (payload.notification) {
+      const notificationTitle = payload.notification.title || 'Nueva notificación'
+      const notificationOptions = {
+        body: payload.notification.body || 'Tienes una nueva notificación',
+        badge: '/assets/gs_ico.ico',
+        icon: '/assets/gs_ico.ico',
+      }
+      return self.registration.showNotification(notificationTitle, notificationOptions)
+    }
   } catch (error) { console.error('[firebase-messaging-sw.js] Error al mostrar notificación:', error) }
 })
