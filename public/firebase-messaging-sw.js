@@ -1,3 +1,13 @@
+// IMPORTANTE: El manejador de notificationclick debe estar ANTES de importar Firebase
+// para evitar que Firebase sobrescriba nuestro manejador personalizado
+const TARGET_URL = 'https://mern-crud-three-lemon.vercel.app/form/solicits';
+
+self.addEventListener('notificationclick', function (event) {
+  event.notification.close()
+  const urlToOpen = event.notification.data?.url || TARGET_URL
+  event.waitUntil(clients.openWindow(urlToOpen))
+})
+
 // Import Firebase scripts
 importScripts('https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js')
 importScripts('https://www.gstatic.com/firebasejs/10.7.2/firebase-messaging-compat.js')
@@ -18,13 +28,16 @@ const messaging = firebase.messaging()
 messaging.onBackgroundMessage((payload) => {
   try {
     if (payload.data) { //Prioritize the 'data' field over 'notification'
+      const notificationData = { ...payload.data, url: payload.data.url || TARGET_URL }
       const notificationTitle = payload.data.title || 'Nueva notificación'
       const notificationOptions = {
         body: payload.data.body || 'Tienes una nueva notificación',
         tag: payload.data.timestamp || Date.now().toString(),
         badge: '/assets/gs_ico.ico',
         icon: '/assets/gs_ico.ico',
-        data: payload.data,
+        requireInteraction: true,
+        data: notificationData,
+        actions: [{ action: 'open', title: 'Ver detalles' }],
       }
       return self.registration.showNotification(notificationTitle, notificationOptions)
     }
