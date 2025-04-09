@@ -1,6 +1,7 @@
 import { CustomMutation_User, DeleteMutationProps, QueryReact_User, UpdateMutationProps } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { QueryOptions } from '@/interfaces/props.interface'
+import { UserFormProps } from '@/schemas/auth/auth.schema'
 import { useAuthContext } from '@/context/AuthContext'
 
 // Keys constantes para mejor mantenimiento
@@ -39,6 +40,7 @@ export const useQueryUser = (): QueryReact_User => {
   /**
    * Buscar usuario por término
    * @param {object} query - Elementos de busqueda
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
    */
   const fetchUserByQuery = <T>(query: QueryOptions, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.search(query),
@@ -67,7 +69,7 @@ export const useUserMutation = (): CustomMutation_User => {
    * @returns {Promise<any>} Los datos del formato creado.
    */
   const createMutation = useMutation({
-    mutationFn: async (data: object) => await create(data),
+    mutationFn: async (data: UserFormProps) => await create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.users() })
   })
 

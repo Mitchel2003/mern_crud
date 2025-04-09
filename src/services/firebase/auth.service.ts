@@ -1,9 +1,8 @@
 import { handlerService as handler, normalizeError } from "@/errors/handler"
 import { AuthService as IAuth } from "@/interfaces/db.interface"
 import { Result } from "@/interfaces/db.interface"
-import { firebaseApp } from "@/services/db"
 import ErrorAPI, { NotFound } from "@/errors"
-
+import { firebaseApp } from "@/services/db"
 import {
   signInWithEmailAndPassword,
   browserLocalPersistence,

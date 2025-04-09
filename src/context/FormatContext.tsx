@@ -1,13 +1,13 @@
 import { uploadFiles as upload, deleteFile as remove, getFiles } from "@/controllers/storage.controller"
-import { FileReference, isAxiosResponse, Result } from "@/interfaces/db.interface"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
+import { FileReference } from "@/interfaces/db.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
+import { txt } from "@/utils/format"
 
 import { createContext, useContext } from "react"
-import ErrorAPI from "@/errors"
 
 const Format = createContext<FormatContext>(undefined)
 
@@ -38,7 +38,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    */
   const getAll = async (type: FormatType): Promise<any[]> => {
     try { return (await useApi(type).getAll()).data }
-    catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
+    catch (e) { notifyError(txt('getAllFormat', e)); return [] }
   }
   /**
    * Obtiene un formato específico por su ID
@@ -46,11 +46,9 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID del formato.
    * @returns {Promise<any>} Los datos del formato o undefined.
    */
-  const getById = async (type: FormatType, id: string): Promise<any> => {
-    return handler('Buscando por identificador...', async () => {
-      try { return (await useApi(type).getById(id)).data }
-      catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener datos", message: e.response.data.message }); return undefined }
-    })
+  const getById = async (type: FormatType, id: string, enabled?: boolean): Promise<any | undefined> => {
+    try { return enabled ? (await useApi(type).getById(id)).data : undefined }
+    catch (e) { notifyError(txt('getFormatById', e)); return undefined }
   }
   /**
    * Obtiene todos los formatos de un tipo específico por una consulta
@@ -58,13 +56,11 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos o un array vacío.
    */
-  const getByQuery = async (type: FormatType, query: QueryOptions): Promise<any[]> => {
-    return handler('Buscando por consulta...', async () => {
-      try {
-        if ('enabled' in query && query.enabled === false) return []
-        return (await useApi(type).getByQuery(query)).data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al obtener lista", message: e.response.data.message }); return [] }
-    })
+  const getByQuery = async (type: FormatType, query: QueryOptions, enabled?: boolean): Promise<any[]> => {
+    try {
+      if (('enabled' in query && query.enabled === false) || !enabled) return []
+      return (await useApi(type).getByQuery({ ...query, enabled: undefined })).data
+    } catch (e) { notifyError(txt('getFormatByQuery', e)); return [] }
   }
   /**
    * Crea un nuevo formato
@@ -76,9 +72,9 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
     return handler('Creando...', async () => {
       try {
         const response = await useApi(type).create(data)
-        notifySuccess({ title: "Éxito", message: "Registro creado correctamente" })
+        notifySuccess(txt('createFormat'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al crear", message: e.response.data.message }); return undefined }
+      } catch (e) { notifyError(txt('createFormat', e)) }
     })
   }
   /**
@@ -92,24 +88,24 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
     return handler('Actualizando...', async () => {
       try {
         const response = await useApi(type).update(id, data)
-        notifySuccess({ title: "Éxito", message: "Registro actualizado correctamente" })
+        notifySuccess(txt('updateFormat'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError({ title: "Error al actualizar", message: e.response.data.message }); return undefined }
+      } catch (e) { notifyError(txt('updateFormat', e)) }
     })
   }
   /**
    * Elimina un formato existente
    * @param {FormatType} type - El tipo de formato.
-   * @param {string} id - El ID del formato.
+   * @param {string} id - El ID del formato a eliminar.
    * @returns {Promise<any>} Los datos del formato eliminado o undefined.
    */
   const delete_ = async (type: FormatType, id: string): Promise<any> => {
     return handler('Eliminando...', async () => {
       try {
         const response = await useApi(type).delete(id)
-        notifySuccess({ title: "Éxito", message: "Registro eliminado correctamente" })
+        notifySuccess(txt('deleteFormat'))
         return response.data
-      } catch (e: unknown) { isAxiosResponse(e) && notifyError({ title: "Error al eliminar", message: e.response.data.message }); return undefined }
+      } catch (e) { notifyError(txt('deleteFormat', e)) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -123,10 +119,8 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
   const getAllFiles = async (data: FileReference): Promise<any[]> => {
     try {
       if ('enabled' in data && data.enabled === false) return []
-      const result: Result<any[]> = await getFiles(data.path)
-      if (!result.success) throw new ErrorAPI(result.error)
-      return result.data
-    } catch (e: unknown) { notifyError({ title: "Error al obtener archivos", message: (e as Error).message }); return [] }
+      return await getFiles(data.path) //get files from this path
+    } catch (e) { notifyError(txt('getAllFiles', e)); return [] }
   }
   /**
    * Sube archivos asociados a un formato
@@ -135,11 +129,8 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    */
   const uploadFiles = async (data: FileReference): Promise<void> => {
     return handler('Subiendo archivos...', async () => {
-      try {
-        const result = await upload(data)
-        if (!result.success) throw new ErrorAPI(result.error)
-        notifySuccess({ title: "Éxito", message: "Archivos subidos correctamente" })
-      } catch (e: unknown) { notifyError({ title: "Error al subir archivos", message: (e as Error).message }) }
+      try { await upload(data).then(() => notifySuccess(txt('upload-files'))) }
+      catch (e) { notifyError(txt('upload-files', e)) }
     })
   }
   /**
@@ -149,16 +140,13 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    */
   const deleteFile = async (data: FileReference): Promise<void> => {
     return handler('Eliminando archivo...', async () => {
-      try {
-        const result = await remove(data.path)
-        if (!result.success) throw new ErrorAPI(result.error)
-        notifySuccess({ title: "Éxito", message: "Archivo eliminado correctamente" })
-      } catch (e: unknown) { notifyError({ title: "Error al eliminar archivo", message: (e as Error).message }) }
+      try { await remove(data.path).then(() => notifySuccess(txt('delete-file'))) }
+      catch (e) { notifyError(txt('delete-file', e)) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
-  /*--------------------------------------------------Return context--------------------------------------------------*/
+  /*--------------------------------------------------returns--------------------------------------------------*/
   return (
     <Format.Provider value={{
       getAll,

@@ -1,18 +1,17 @@
 import { login as loginFB, logout as logoutFB, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
 import { getTokenMessaging, listenMessages } from "@/controllers/messaging.controller"
+import { LoginFormProps, UserFormProps } from "@/schemas/auth/auth.schema"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { AuthContext, User } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
-import { isAxiosResponse } from "@/interfaces/db.interface"
-import { LoginFormProps } from "@/schemas/auth/auth.schema"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { useApi } from "@/api/handler"
+import { txt } from "@/utils/format"
+import { NotFound } from "@/errors"
 
 import { createContext, useContext, useEffect, useState, useRef } from "react"
 import { Unsubscribe } from "firebase/auth"
 import { AxiosResponse } from "axios"
-import { txt } from "@/utils/format"
-import { NotFound } from "@/errors"
 
 const Auth = createContext<AuthContext>(undefined)
 
@@ -59,18 +58,6 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
   /** Handle message listener when user changes */
   useEffect(() => { if (user) setupMessageListener() }, [user])
-
-  /** Checks for existing token and uid in storage, or current user from Firebase */
-  const initializeAuth = () => {
-    const token = localStorage.getItem('token')
-    const storedUid = localStorage.getItem('uid')
-    if (token && storedUid) { getUser(storedUid) }
-    else { //If no token or uid, check current user
-      const initialUser = getCurrentUser() //this.auth
-      if (initialUser) { getUser(initialUser.uid) }
-      else { setAuthStatus(); setLoading(false) }
-    }
-  }
   /*--------------------------------------------------authentication--------------------------------------------------*/
   /**
    * Inicia sesión con las credenciales del usuario.
@@ -82,10 +69,10 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const res = await loginFB(data.email, data.password)
         const user = await useApi('user').getById(res.uid)
         if (!user?.data) throw new NotFound({ message: 'usuario' })
-        await updateTokenMessaging(user.data._id)// handle messaging token
+        await updateTokenMessaging(user.data._id) //handle messaging
         notifyInfo(txt('login'))
         setAuthStatus(user)
-      } catch (e) { isAxiosResponse(e) && notifyError(txt('login', e)); setAuthStatus() }
+      } catch (e) { notifyError(txt('login', e)); setAuthStatus() }
     })
   }
   /**
@@ -95,7 +82,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const logout = async (): Promise<void> => {
     return handler('Cerrando sesión...', async () => {
       try { await logoutFB().then(() => notifyInfo(txt('logout'))).finally(() => setAuthStatus()) }
-      catch (e) { isAxiosResponse(e) && notifyError(txt('logout', e)); setAuthStatus() }
+      catch (e) { notifyError(txt('logout', e)); setAuthStatus() }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -107,7 +94,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const getAll = async (): Promise<any[]> => {
     try { return (await useApi('user').getAll()).data }
-    catch (e) { isAxiosResponse(e) && notifyError(txt('getAllUser', e)); return [] }
+    catch (e) { notifyError(txt('getAllUser', e)); return [] }
   }
   /**
    * Obtiene un usuario específico por su ID
@@ -116,7 +103,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const getById = async (id: string, enabled?: boolean): Promise<any | undefined> => {
     try { return enabled ? (await useApi('user').getById(id)).data : undefined }
-    catch (e) { isAxiosResponse(e) && notifyError(txt('getUserById', e)); return undefined }
+    catch (e) { notifyError(txt('getUserById', e)); return undefined }
   }
   /**
    * Obtiene todos los usuarios de un tipo específico por una consulta
@@ -127,7 +114,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
     try {
       if (('enabled' in query && query.enabled === false) || !enabled) return []
       return (await useApi('user').getByQuery({ ...query, enabled: undefined })).data
-    } catch (e) { isAxiosResponse(e) && notifyError(txt('getUserByQuery', e)); return [] }
+    } catch (e) { notifyError(txt('getUserByQuery', e)); return [] }
   }
   /**
    * Registra un nuevo usuario (auth) con los datos proporcionados.
@@ -135,13 +122,13 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Los datos del nuevo usuario, contiene email and password
    * @returns {Promise<any>} Los datos del usuario registrado o undefined.
    */
-  const create = async (data: object): Promise<any> => {
+  const create = async (data: UserFormProps): Promise<any> => {
     return handler('Registrando usuario...', async () => {
       try {
         const response = await useApi('user').create(data)
         notifySuccess(txt('createUser'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError(txt('createUser', e)) }
+      } catch (e) { notifyError(txt('createUser', e)) }
     })
   }
   /**
@@ -156,17 +143,21 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const response = await useApi('user').update(id, data)
         notifySuccess(txt('updateUser'))
         return response.data
-      } catch (e) { isAxiosResponse(e) && notifyError(txt('updateUser', e)) }
+      } catch (e) { notifyError(txt('updateUser', e)) }
     })
   }
   /**
-   * Elimina la cuenta del usuario actual en Firebase Auth, pide la confirmación de la contraseña
-   * Esta operación es irreversible y elimina el usuario de Firebase
+   * Elimina la cuenta del usuario
+   * @param {string} id - El ID del usuario.
+   * @returns {Promise<any>} Los datos del usuario eliminado o undefined.
    */
-  const _delete = async (id: string): Promise<void> => {
+  const _delete = async (id: string): Promise<any> => {
     return handler('Eliminando cuenta...', async () => {
-      try { await useApi('user').delete(id).then(() => notifySuccess(txt('deleteUser'))) }
-      catch (e) { isAxiosResponse(e) && notifyError(txt('deleteUser', e)) }
+      try {
+        const response = await useApi('user').delete(id)
+        notifySuccess(txt('deleteUser'))
+        return response.data
+      } catch (e) { notifyError(txt('deleteUser', e)) }
     })
   }
   /*---------------------------------------------------------------------------------------------------------*/
@@ -179,7 +170,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   const sendResetPassword = async (email: string): Promise<void> => {
     return handler('Validando solicitud...', async () => {
       try { await forgotPassword(email).then(() => notifyInfo(txt('send-reset-pass'))) }
-      catch (e) { isAxiosResponse(e) && notifyError(txt('send-reset-pass', e)) }
+      catch (e) { notifyError(txt('send-reset-pass', e)) }
     })
   }
   /**
@@ -188,7 +179,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const sendNotification = async (data: object): Promise<void> => {
     try { await useApi('fcm').void(data).then(() => notifyInfo(txt('send-notification'))) }
-    catch (e) { isAxiosResponse(e) && notifyError(txt('send-notification', e)) }
+    catch (e) { notifyError(txt('send-notification', e)) }
   }
   /**
    * Nos permite guardar el token de Firebase Cloud Messaging (FCM) en el usuario.
@@ -200,48 +191,65 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       if (permission !== "granted") return;// to allow messages
       const token: string = await getTokenMessaging()// fcm token
       await useApi('user').update(userId, { fcmToken: token })
-    } catch (e) { isAxiosResponse(e) && notifyError(txt('update-token-messaging', e)) }
+    } catch (e) { notifyError(txt('update-token-messaging', e)) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------helpers--------------------------------------------------*/
   /**
+   * Actualiza el estado de autenticación basado en la respuesta del servidor.
+   * @param {AxiosResponse | undefined} res - La respuesta del servidor.
+   */
+  const setAuthStatus = (res?: AxiosResponse) => {
+    if (!res?.data) localStorage.removeItem('uid')
+    setUser(res?.data || undefined)
+    setIsAuth(Boolean(res?.data))
+  }
+  /**
+   * Inicializa el estado de autenticación
+   * Chequea el token y uid en localStorage,
+   * o el current user de Firebase Authentication
+   */
+  const initializeAuth = async () => {
+    const token = localStorage.getItem('token')
+    const storedUid = localStorage.getItem('uid')
+    if (token && storedUid) await getUser(storedUid)
+    else { //If no token or uid, check current user
+      const initialUser = getCurrentUser() //this.auth
+      if (initialUser) await getUser(initialUser.uid)
+      else { setAuthStatus(); setLoading(false) }
+    }
+  }
+  /**
    * Obtiene los datos del usuario desde la base de datos
    * @param {string} uid - ID del usuario en Firebase
-  */
+   */
   const getUser = async (uid: string) => {
     try {
       const res = await useApi('user').getById(uid)
       res?.data && localStorage.setItem('uid', uid)
       setAuthStatus(res) //set local and context status
-    } catch (e) { isAxiosResponse(e) && notifyError(txt('getUserById', e)); setAuthStatus() }
+    } catch (e) { notifyError(txt('getUserById', e)); setAuthStatus() }
     finally { setLoading(false) }
   }
-  /**
-   * Actualiza el estado de autenticación basado en la respuesta del servidor.
-   * @param {AxiosResponse | undefined} res - La respuesta del servidor.
-   */
-  const setAuthStatus = (res?: AxiosResponse) => {
-    setUser(res?.data || undefined)
-    setIsAuth(Boolean(res?.data))
-    if (!res?.data) localStorage.removeItem('uid')
-  }
+  /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------tools--------------------------------------------------*/
   /** Configura un listener para recibir mensajes en primer plano */
   const setupMessageListener = async () => {
     try { messaging.current = await listenMessages(() => notifyWarning(txt('setup-messaging-listener'))) }
-    catch (e) { isAxiosResponse(e) && notifyError(txt('setup-messaging-listener', e)) }
+    catch (e) { notifyError(txt('setup-messaging-listener', e)) }
   }
   /** Handle token expired (not renewable) */
-  const handleTokenExpired = () => { notifyWarning(txt('expired-token')); logout() }
+  const handleTokenExpired = async () => { notifyWarning(txt('expired-token')); await logout() }
   /** Handle token expiring (renewable) */
   const handleTokenExpiring = async () => {
-    const auth = getCurrentUser()
-    if (auth) { // Get a fresh token
-      const token = await auth.getIdToken(true)
-      localStorage.setItem('token', token) //storage
-    }
+    const auth = getCurrentUser() //current user from firebase
+    if (auth) { const token = await auth.getIdToken(true); localStorage.setItem('token', token) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------returns--------------------------------------------------*/
   return (
     <Auth.Provider value={{
       isAuth, user, loading, login, logout, getAll, getById, getByQuery,

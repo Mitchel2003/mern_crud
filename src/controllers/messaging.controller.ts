@@ -12,9 +12,9 @@ import ErrorAPI from "@/errors"
 export const getTokenMessaging = async (): Promise<string> => {
   try {
     const result = await messagingFB.getTokenCloudMessaging()
-    if (!result.success) throw new ErrorAPI(result.error)
-    return result.data
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener token Firebase Cloud Messaging')) }
+    if (!result.success) throw result.error //is ErrorAPI
+    return result.data //token firebase cloud messaging
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'obtener token Firebase Cloud Messaging')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -27,8 +27,8 @@ export const getTokenMessaging = async (): Promise<string> => {
 export const listenMessages = async (callback: (payload: any) => void): Promise<Unsubscribe> => {
   try {
     const result = await messagingFB.setupMessageListener(callback)
-    if (!result.success) throw new ErrorAPI(result.error)
-    return result.data
-  } catch (e: unknown) { throw new ErrorAPI(normalizeError(e, 'configurar listener de mensajes')) }
+    if (!result.success) throw result.error //is ErrorAPI
+    return result.data //unsubscribe function to stop listening
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'configurar listener de mensajes')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/

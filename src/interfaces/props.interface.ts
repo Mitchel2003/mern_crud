@@ -3,7 +3,7 @@ import { type LucideIcon } from "lucide-react"
 /*--------------------------------------------------Component Props--------------------------------------------------*/
 //interface defautl props
 export interface Props { children?: React.ReactNode }
-
+export interface EndpointParams { id?: string; type: string; action: 'one' | 'many' | 'void' }
 /*---------------------- ui components ----------------------*/
 // items actions to dropdown (data-table)
 export interface ActionProps {

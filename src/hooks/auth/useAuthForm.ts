@@ -173,7 +173,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: ClientFlowProps) => {
-      const user: User = await createUser(data.client)
+      const user: User = await createUser(data.client as any)
       const userImg = data.client.photoUrl?.[0]?.file
       const path = `client/${user._id}/preview/img`
       await Promise.all(//create headquarter and offices in parallel

@@ -15,7 +15,10 @@ const QUERY_KEYS = {
 export const useQueryLocation = (): QueryReact_Location => {
   const location = useLocationContext()
 
-  // Obtener todas las ubicaciones
+  /**
+   * Obtener todas las ubicaciones
+   * @param {LocationType} path - Nos ayuda a construir la route
+   */
   const fetchAllLocations = <T>(path: LocationType) => useQuery({
     queryKey: QUERY_KEYS.locations(path),
     queryFn: () => location.getAll<T>(path),
@@ -23,20 +26,30 @@ export const useQueryLocation = (): QueryReact_Location => {
     initialData: []
   })
 
-  // Obtener ubicación por ID
-  const fetchLocationById = <T>(path: LocationType, id: string) => useQuery({
+  /**
+   * Obtener ubicación por ID
+   * @param {LocationType} path - Nos ayuda a construir la route
+   * @param {string} id - Corresponde al id de la ubicación a consultar
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   */
+  const fetchLocationById = <T>(path: LocationType, id: string, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.location(path, id),
-    queryFn: () => location.getById<T>(path, id),
+    queryFn: () => location.getById<T>(path, id, enabled),
     select: (data) => data || undefined,
-    enabled: Boolean(id)
+    enabled: Boolean(id) && enabled
   })
 
-  // Buscar ubicación por término
-  const fetchLocationByQuery = <T>(path: LocationType, query: object) => useQuery({
+  /**
+   * Buscar ubicación por término
+   * @param {LocationType} path - Nos ayuda a construir la route
+   * @param {object} query - Elementos de query, corresponde al parámetro de búsqueda
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   */
+  const fetchLocationByQuery = <T>(path: LocationType, query: object, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => location.getByQuery<T>(path, query),
-    select: (data) => data || [],
-    enabled: Boolean(query)
+    queryFn: () => location.getByQuery<T>(path, query, enabled),
+    enabled: Boolean(query) && enabled,
+    select: (data) => data || []
   })
 
   return {

@@ -1,3 +1,4 @@
+import { EndpointParams } from "@/interfaces/props.interface"
 import { toPlural } from "@/utils/format"
 import axios from "./axios"
 
@@ -23,21 +24,16 @@ export const useApi = (type: string) => ({
 
 /**
  * Función helper para construir endpoints
- * @param {string} id - El ID del elemento en contexto (opcional).
- * @param {string} type - Corresponde al contexto de la solicitud.
- * @param {string} action - La acción a realizar, puede ser: one, many, void.
+ * @param {string} params.id - El ID del elemento en contexto (opcional).
+ * @param {string} params.type - Corresponde al contexto de la solicitud.
+ * @param {string} params.action - La acción a realizar, puede ser: one, many, void.
  * @returns {string} El endpoint construido.
  * @example
  * one => /base/type/123,
  * many => /base/types,
  * void => /base/type,
  */
-interface BuildEndpointParams {
-  action: 'one' | 'many' | 'void',
-  type: string,
-  id?: string
-}
-const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
+const buildEndpoint = ({ id, type, action }: EndpointParams): string => {
   const base = getBase(type) ?? ''
   switch (action) {
     case 'void': return `${base}/${type}` // to create => /base/type (POST)
@@ -49,13 +45,18 @@ const buildEndpoint = ({ id, type, action }: BuildEndpointParams) => {
 /**
  * Función helper para obtener la base de la solicitud
  * @param {string} type - Corresponde al contexto de la solicitud.
- * @returns {string} La base de la solicitud.
+ * @returns {string} La base de la solicitud (o undefined si no corresponde).
  * @example headquarter: '/location' => backend = 'api/location/headquarter'
  */
 const getBase = (type: string): string | undefined => {
   switch (type) {
     /*-------------------------authentication-------------------------*/
-    case 'fcm': return '/auth'
+    case 'fcm':
+    case 'notifications':
+    case 'notifications/read':
+    case 'notifications/create':
+    case 'notifications/read/all':
+    case 'notifications/unread/count': return '/auth'
     case 'user': return undefined
     /*-------------------------location-------------------------*/
     case 'country':

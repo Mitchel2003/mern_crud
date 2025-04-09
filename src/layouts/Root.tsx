@@ -1,5 +1,6 @@
 import { DialogConfirmProvider as ConfirmProvider } from '@/context/DialogConfirmContext'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { NotificationProvider } from '@/context/NotificationContext'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useAuthContext } from '@/context/AuthContext'
 import ScrollToTop from '@/hooks/ui/useScrollTop'
@@ -21,24 +22,26 @@ const RootLayout = () => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <ConfirmProvider>
-          <SidebarProvider open={open} onOpenChange={setOpen}>
-            {/* Sidebar */}
-            <Sidebar />
+        <NotificationProvider>
+          <ConfirmProvider>
+            <SidebarProvider open={open} onOpenChange={setOpen}>
+              {/* Sidebar */}
+              <Sidebar />
 
-            {/* Main content */}
-            <SidebarInset>
-              <AnimatedBG>
-                <Navbar />
-                <main className="z-10">
-                  <Outlet />
-                </main>
-                <Footer />
-              </AnimatedBG>
-            </SidebarInset>
+              {/* Main content */}
+              <SidebarInset>
+                <AnimatedBG>
+                  <Navbar />
+                  <main className="z-10">
+                    <Outlet />
+                  </main>
+                  <Footer />
+                </AnimatedBG>
+              </SidebarInset>
 
-          </SidebarProvider>
-        </ConfirmProvider>
+            </SidebarProvider>
+          </ConfirmProvider>
+        </NotificationProvider>
       </LocalizationProvider>
 
       {/* Componentes UI globales */}

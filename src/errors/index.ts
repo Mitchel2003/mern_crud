@@ -1,7 +1,7 @@
 /** Error base personalizado para la aplicación */
 export default class ErrorAPI extends Error {
   public readonly code?: string
-  public readonly details?: unknown
+  public readonly details?: any
   public readonly statusCode: number
 
   constructor({ message, statusCode = 500, code, details }: ErrorProps) {

@@ -32,25 +32,27 @@ export const useQueryFormat = (): QueryReact_Format => {
   /**
    * Obtener formato por ID
    * @param {FormatType} path - Nos ayuda a construir la route
-   * @param {string} id - Corresponde al id del formato
+   * @param {string} id - Corresponde al id del formato a consultar
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
    */
-  const fetchFormatById = <T>(path: FormatType, id: string) => useQuery({
+  const fetchFormatById = <T>(path: FormatType, id: string, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.format(path, id),
-    queryFn: () => format.getById<T>(path, id),
+    queryFn: () => format.getById<T>(path, id, enabled),
     select: (data) => data || undefined,
-    enabled: Boolean(id)
+    enabled: Boolean(id) && enabled
   })
 
   /**
    * Buscar formato por término
    * @param {FormatType} path - Nos ayuda a construir la route
-   * @param {object} query - Elementos de busqueda
+   * @param {object} query - Elementos de query, corresponde al parámetro de búsqueda
+   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
    */
-  const fetchFormatByQuery = <T>(path: FormatType, query: object) => useQuery({
+  const fetchFormatByQuery = <T>(path: FormatType, query: object, enabled: boolean = true) => useQuery({
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => format.getByQuery<T>(path, query),
-    select: (data) => data || [],
-    enabled: Boolean(query)
+    queryFn: () => format.getByQuery<T>(path, query, enabled),
+    enabled: Boolean(query) && enabled,
+    select: (data) => data || []
   })
 
   /**

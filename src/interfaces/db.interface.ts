@@ -1,7 +1,8 @@
 import { Unsubscribe, User, UserCredential } from "firebase/auth"
+import ErrorAPI from "@/errors";
 
 /*--------------------------------------------------results DB--------------------------------------------------*/
-type IError = { message: string, code?: string, details?: any, statusCode?: number }
+interface IError extends ErrorAPI { }
 export interface Success<T> { success: true, data: T }
 export interface Failure { success: false; error: IError }
 

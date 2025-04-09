@@ -1,5 +1,6 @@
 import { Accessory, User, Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
+import { useNotificationContext } from '@/context/NotificationContext'
 import { useNotification } from '@/hooks/ui/useNotification'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
@@ -204,6 +205,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
+  const { createNotification } = useNotificationContext()
   const { observationData } = formatHooks.solicit()
   const { createFormat } = useFormatMutation("solicit")
   const { createFile } = useFormatMutation("file")
@@ -241,7 +243,12 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
           const client = cv?.office?.headquarter?.user
           const title = `Nueva solicitud de ${client?.username}`
           const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
-          await sendNotification({ id: company?._id, title, body }) //send to company
+          company && await sendNotification({ id: company._id, title, body }) //send message
+          company && await createNotification({ //create notification inbox
+            url: `https://mern-crud-three-lemon.vercel.app/form/solicit/${id}`,
+            title, message: body, type: data.priority ? 'payment' : 'alert',
+            recipientId: company._id, senderId: client?._id,
+          })
         })
       ) : (notifyError({ message: "No tienes acceso a este currículum" }))
       methods.reset()

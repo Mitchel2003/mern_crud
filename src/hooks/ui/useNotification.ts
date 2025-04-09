@@ -38,4 +38,4 @@ export const useNotification = () => {
     notifyInfo: (props: Omit<NotificationProps, "type">) =>
       notify({ ...props, type: "default" })
   }
-} 
+}

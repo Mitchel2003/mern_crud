@@ -15,11 +15,11 @@ import { User } from "firebase/auth"
 export const login = async (email: string, password: string): Promise<User> => {
   try {
     const auth = await authFB.login(email, password)
-    if (!auth.success) throw new ErrorAPI(auth.error)
+    if (!auth.success) throw auth.error //is ErrorAPI
     const idToken = await auth.data.user.getIdToken()
-    localStorage.setItem("token", idToken)
-    return auth.data.user
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'iniciar sesión')) }
+    localStorage.setItem("token", idToken) //store token
+    return auth.data.user //user auth-firebase on context
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'iniciar sesión')) }
 }
 /**
  * Maneja el proceso de cierre de sesión del usuario.
@@ -28,8 +28,8 @@ export const login = async (email: string, password: string): Promise<User> => {
 export const logout = async (): Promise<void> => {
   try {
     const result = await authFB.logout()
-    if (!result.success) throw new ErrorAPI(result.error)
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'cerrar sesión')) }
+    if (!result.success) throw result.error
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'cerrar sesión')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -40,7 +40,7 @@ export const logout = async (): Promise<void> => {
  */
 export const getCurrentUser = (): User | null => {
   try { return authFB.getCurrentUser() }
-  catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener usuario actual')) }
+  catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'obtener usuario actual')) }
 }
 /**
  * Obtiene un nuevo token de autenticación renovado.
@@ -49,11 +49,11 @@ export const getCurrentUser = (): User | null => {
 export const getRefreshToken = async (): Promise<string> => {
   try {
     const result = await authFB.refreshToken()
-    if (!result.success) throw new ErrorAPI(result.error)
+    if (!result.success) throw result.error //is ErrorAPI
     if (!result.data) throw new NotFound({ message: 'refrescar token' })
     localStorage.setItem('token', result.data) // Store new token in localStorage
     return result.data // Return new token to be used on requests (axios interceptor)
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'obtener token renovado')) }
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'obtener token renovado')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -66,8 +66,8 @@ export const getRefreshToken = async (): Promise<string> => {
 export const forgotPassword = async (email: string): Promise<void> => {
   try {
     const result = await authFB.sendEmailResetPassword(email)
-    if (!result.success) throw new ErrorAPI(result.error)
-  } catch (e) { throw new ErrorAPI(normalizeError(e, 'enviar email de restablecimiento de contraseña')) }
+    if (!result.success) throw result.error //is ErrorAPI
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'enviar email de restablecimiento de contraseña')) }
 }
 /**
  * Suscribe una función callback a los cambios de estado de autenticación
@@ -76,6 +76,6 @@ export const forgotPassword = async (email: string): Promise<void> => {
 */
 export const subscribeAuthChanges = (callback: (user: User | null) => void): (() => void) => {
   try { return authFB.subscribeAuthChanges(callback) }
-  catch (e) { throw new ErrorAPI(normalizeError(e, 'suscribir cambios de autenticación')) }
+  catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'suscribir cambios de autenticación')) }
 }
 /*---------------------------------------------------------------------------------------------------------*/

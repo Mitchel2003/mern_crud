@@ -1,6 +1,7 @@
 import { UseMutateAsyncFunction, UseQueryResult } from "@tanstack/react-query"
 import { FormatType, LocationType } from "@/interfaces/context.interface"
 import { QueryOptions } from "@/interfaces/props.interface"
+import { UserFormProps } from "@/schemas/auth/auth.schema"
 import { FileReference } from "@/interfaces/db.interface"
 
 export interface FileMutationProps extends FileReference { }
@@ -15,7 +16,7 @@ export type QueryReact_User = {
   fetchUserByQuery: <T>(query: QueryOptions, enabled?: boolean) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_User = {
-  createUser: UseMutateAsyncFunction<any, Error, object, unknown>
+  createUser: UseMutateAsyncFunction<any, Error, UserFormProps, unknown>
   updateUser: UseMutateAsyncFunction<any, Error, UpdateMutationProps, unknown>
   deleteUser: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   isLoading: boolean
@@ -26,8 +27,8 @@ export type CustomMutation_User = {
 /*useQuery and useMutation*/
 export type QueryReact_Location = {
   fetchAllLocations: <T>(path: LocationType) => UseQueryResult<T[], Error>
-  fetchLocationById: <T>(path: LocationType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchLocationByQuery: <T>(path: LocationType, query: object) => UseQueryResult<T[], Error>
+  fetchLocationById: <T>(path: LocationType, id: string, enabled?: boolean) => UseQueryResult<T | undefined, Error>
+  fetchLocationByQuery: <T>(path: LocationType, query: object, enabled?: boolean) => UseQueryResult<T[], Error>
 }
 export type CustomMutation_Location = {
   createLocation: UseMutateAsyncFunction<any, Error, object, unknown>
@@ -41,8 +42,8 @@ export type CustomMutation_Location = {
 /*useQuery and useMutation*/
 export type QueryReact_Format = {
   fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
-  fetchFormatById: <T>(path: FormatType, id: string) => UseQueryResult<T | undefined, Error>
-  fetchFormatByQuery: <T>(path: FormatType, query: object) => UseQueryResult<T[], Error>
+  fetchFormatById: <T>(path: FormatType, id: string, enabled?: boolean) => UseQueryResult<T | undefined, Error>
+  fetchFormatByQuery: <T>(path: FormatType, query: object, enabled?: boolean) => UseQueryResult<T[], Error>
   fetchAllFiles: <T>(data: FileReference) => UseQueryResult<T[], Error>
   fetchAllQueries: <T>(data: any[]) => {
     data?: { type: string; id: string; data: T[]; error: any }

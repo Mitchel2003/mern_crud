@@ -12,7 +12,7 @@ import ErrorAPI from '@/errors'
  */
 export const handlerService = async <T>(operation: () => Promise<T>, context: string): Promise<Result<T>> => {
   try { return success(await operation()) }
-  catch (e: unknown) { return failure(normalizeError(e, context)) }
+  catch (e) { return failure(normalizeError(e, context)) }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
