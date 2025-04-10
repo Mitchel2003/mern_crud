@@ -3,9 +3,9 @@ import { RoleProps, ThemeContextProps, User } from "@/interfaces/context.interfa
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { Delete, SupervisedUserCircle, Update } from "@mui/icons-material"
 import { convertRole, formatDateTime, toPlural } from "@/utils/format"
-import { PageHeader, Stat } from '#/common/elements/HeaderPage'
+import { PageHeader, Stat } from "#/common/elements/HeaderPage"
+import { useUserTable } from "@/hooks/core/table/useAuthTable"
 import { BarChart2, CalendarClock, Eye } from 'lucide-react'
-import { useUserTable } from "@/hooks/auth/useAuthForm"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 

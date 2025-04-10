@@ -1,3 +1,4 @@
+import { userDefaultValues, clientFlowDefaultValues, groupCollection as groups } from "@/utils/constants"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useAuthQuery"
@@ -6,15 +7,10 @@ import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Metadata } from "@/interfaces/db.interface"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapPinHouseIcon, UserRoundCheck } from "lucide-react"
 import { useAuthContext } from "@/context/AuthContext"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import {
-  userDefaultValues,
-  clientFlowDefaultValues,
-  groupCollection as groups,
-} from "@/utils/constants"
 import {
   userSchema, UserFormProps,
   loginSchema, LoginFormProps,
@@ -22,7 +18,6 @@ import {
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
 
-/*==================================================useForm==================================================*/
 /*--------------------------------------------------login form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de inicio de sesión */
 export const useLoginForm = () => {
@@ -110,24 +105,25 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
             { file: companyLogo, ref: 'logo', exist: imgs.find(img => img.name.includes('logo')) },
             { file: clientImg, ref: 'img', exist: imgs.find(img => img.name.includes('img')) }
           ].filter(f => f.file instanceof File)
-
+          //handle file uploads in your paths
           await Promise.all(files.map(async ({ file, exist, ref }) => {
             const path = `${ref === 'img' ? 'client' : 'company'}/${id}/preview/${ref}`
-            exist && file && await deleteFile({ path }).then(async () => { await createFile({ files: [file], path, unique: true }) })
+            exist && file && await deleteFile({ path }).then(async () => await createFile({ file, path }))
           }))
         })
       ) : (
         createUser(data).then(async (e) => {
           if (!clientImg && !companySignature && !companyLogo) return
-          const files = [// files to upload with those references
+          const files = [ //files to upload with those references
             { file: companySignature, ref: 'signature' },
             { file: companyLogo, ref: 'logo' },
             { file: clientImg, ref: 'img' }
           ].filter(f => f.file instanceof File)
-
+          //handle file uploads in your paths
           await Promise.all(files.map(async ({ file, ref }) => {
-            const path = `${ref !== 'img' ? 'company' : 'client'}/${e._id}/preview/${ref}`
-            file && await createFile({ files: [file], path, unique: true })
+            const base = ref === 'img' ? 'client' : 'company'
+            const path = `${base}/${e._id}/preview/${ref}`
+            file && await createFile({ file, path })
           }))
         })
       )
@@ -141,10 +137,10 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
     isLoading,
     ...handleSubmit,
     options: {
-      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
       companies: credentials?.role === 'admin'
         ? companies?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
-        : company ? [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }] : []
+        : company ? [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }] : [],
+      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
     }
   }
 }
@@ -162,8 +158,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createFile } = useFormatMutation("file")
   const { create: createUser } = useAuthContext()
 
-  const { fetchAllLocations } = useQueryLocation()
-  const { data: cities, isLoading: isLoadingCities } = fetchAllLocations<City>('city')
+  const { data: cities, isLoading: isLoadingCities } = useQueryLocation().fetchAllLocations<City>('city')
 
   const methods = useForm<ClientFlowProps>({
     resolver: zodResolver(clientFlowSchema),
@@ -173,10 +168,11 @@ export const useClientFlow = (onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: ClientFlowProps) => {
-      const user: User = await createUser(data.client as any)
-      const userImg = data.client.photoUrl?.[0]?.file
+      const credentials: any = data.client //ts-ignore
+      const user: User = await createUser(credentials)
+      const file = data.client.photoUrl?.[0]?.file
       const path = `client/${user._id}/preview/img`
-      await Promise.all(//create headquarter and offices in parallel
+      await Promise.all(//complements in parallel
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, user: user._id })
           const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
@@ -192,8 +188,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
             })
           }))
         })
-      )
-      userImg && await createFile({ files: [userImg], path, unique: true })
+      ) //save image reference (storage)
+      file && await createFile({ file, path })
       methods.reset()
     },
     onSuccess
@@ -207,40 +203,4 @@ export const useClientFlow = (onSuccess?: () => void) => {
     options: { headquarter: { cities: cities || [], isLoading: isLoadingCities } }
   }
 }
-/*=========================================================================================================*/
-
-/*==================================================useTable==================================================*/
-/*--------------------------------------------------user table--------------------------------------------------*/
-/** Hook principal que orquesta los sub-hooks de usuarios para la tabla */
-export const useUserTable = (to: RoleProps) => {
-  const [onDelete, setOnDelete] = useState<User | undefined>(undefined)
-  const { deleteFile } = useFormatMutation('file')
-  const { deleteUser: _delete } = useUserMutation()
-  const isProcessing = useRef(false)
-
-  const { data: users } = useQueryUser().fetchUserByQuery<User>({ role: to })
-
-  /**
-   * Función que se ejecuta cuando se elimina un usuario
-   * @param {string} id - ID del usuario a eliminar
-   */
-  const deleteUser = useCallback(async (user: User) => {
-    if (isProcessing.current) return
-    isProcessing.current = true
-    const credential = `${user._id}-${user.uid}`
-    await _delete({ id: credential }).then(async () => {
-      const files = user.role === 'client' ? [{ path: 'client', ref: 'img' }] : [{ path: 'company', ref: 'logo' }, { path: 'company', ref: 'signature' }]
-      await Promise.all(files.map(async ({ path, ref }) => await deleteFile({ path: `${path}/${user._id}/preview/${ref}` })))
-    }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [_delete, deleteFile])
-
-  /** just one useEffect */
-  useEffect(() => { onDelete && deleteUser(onDelete) }, [onDelete, deleteUser])
-
-  return {
-    users: useMemo(() => users, [users]),
-    handleDelete: (user: User) => setOnDelete(user)
-  }
-}
 /*---------------------------------------------------------------------------------------------------------*/
-/*=========================================================================================================*/

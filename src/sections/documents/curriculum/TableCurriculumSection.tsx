@@ -7,7 +7,7 @@ import AlertDialog from "#/common/elements/AlertDialog"
 
 import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useCurriculumTable, useMaintenanceTable } from "@/hooks/auth/useFormatForm"
+import { useCurriculumTable, useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 
 import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
 import { tableTranslations } from "@/utils/constants"
@@ -200,7 +200,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
             isDestructive: true,
             title: 'Eliminar curriculum',
             description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => handleDelete(row.original._id)
+            action: () => handleDelete(row.original)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>

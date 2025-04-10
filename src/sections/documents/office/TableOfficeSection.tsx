@@ -8,7 +8,7 @@ import { formatDateTime } from "@/utils/format"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { ThemeContextProps, Office } from "@/interfaces/context.interface"
-import { useOfficeTable } from "@/hooks/auth/useLocationForm"
+import { useOfficeTable } from "@/hooks/core/table/useLocationTable"
 import { BarChart2, CalendarClock } from "lucide-react"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"

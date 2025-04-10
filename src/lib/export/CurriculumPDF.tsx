@@ -7,18 +7,17 @@ interface CurriculumPDFProps {
   accs?: Accessory[]
   comLogo?: string
   cliLogo?: string
-  cvLogo?: string
   cv: Curriculum
   com: User
 }
 
-const CurriculumPDF = ({ cv, accs, cliLogo, comLogo, cvLogo, com }: CurriculumPDFProps) => (
+const CurriculumPDF = ({ cv, accs, com, cliLogo, comLogo }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
         <HeaderSection cliLogo={cliLogo} />{/* Title Section */}
         <ClientSection cv={cv} />{/* Client Section */}
-        <EquipmentSection cv={cv} cvLogo={cvLogo} accessories={accs} />{/* Equipment Section */}
+        <EquipmentSection cv={cv} accessories={accs} />{/* Equipment Section */}
         <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
         <MaintenanceSection cv={cv} />{/* Mantenimiento */}
         <TechnicalSection cv={cv} />{/* Technical Characteristics */}
@@ -102,7 +101,7 @@ const ClientSection = ({ cv }: { cv: Curriculum }) => (
 )
 
 /** Información del equipo - datos generales y especificaciones */
-const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accessories?: Accessory[], cvLogo?: string }) => (
+const EquipmentSection = ({ cv, accessories }: { cv: Curriculum, accessories?: Accessory[] }) => (
   <>
     <View style={styles.sectionTitle}>
       <Text style={styles.sectionTitleText}>INFORMACIÓN DEL EQUIPO</Text>
@@ -196,8 +195,8 @@ const EquipmentSection = ({ cv, accessories, cvLogo }: { cv: Curriculum, accesso
         ))}
       </View>
 
-      {cvLogo && (
-        <Image src={cvLogo || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} style={styles.equipmentImage} />
+      {cv.photoUrl && (
+        <Image src={cv.photoUrl || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} style={styles.equipmentImage} />
       )}
     </View>
 

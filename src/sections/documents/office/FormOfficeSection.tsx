@@ -1,6 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useOfficeForm } from "@/hooks/core/form/useLocationForm"
 import { groupCollection as groups } from "@/utils/constants"
-import { useOfficeForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"

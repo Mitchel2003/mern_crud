@@ -12,10 +12,9 @@ import { Badge } from "#/ui/badge"
 interface EquipmentPreviewCVProps extends ThemeContextProps {
   accs?: Accessory[]
   cv: Curriculum
-  imgCv: string
 }
 
-const EquipmentPreviewCV = ({ cv, accs, imgCv, theme }: EquipmentPreviewCVProps) => {
+const EquipmentPreviewCV = ({ cv, accs, theme }: EquipmentPreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">
       <div className={cn(
@@ -129,12 +128,12 @@ const EquipmentPreviewCV = ({ cv, accs, imgCv, theme }: EquipmentPreviewCVProps)
               <div className="h-full aspect-square">
                 <img
                   className="w-full h-full object-cover"
-                  src={imgCv || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
+                  src={cv.photoUrl || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
                   alt="Equipo"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <Button variant="outline" className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20" onClick={() => window.open(imgCv, '_blank')}>
+                  <Button variant="outline" className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20" onClick={() => window.open(cv.photoUrl, '_blank')}>
                     <Search className="w-4 h-4 mr-2" />
                     Ver imagen completa
                   </Button>

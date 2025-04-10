@@ -1,5 +1,5 @@
 import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
-import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge } from '@mui/icons-material'
+import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, PendingActions } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -82,6 +82,11 @@ export const links = () => {
           icon: Users,
           href: '/clients',
           label: 'Clientes',
+        },
+        {// solicits
+          icon: PendingActions,
+          href: '/form/solicit',
+          label: 'Solicitudes',
         }
       ]
     }

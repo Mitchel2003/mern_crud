@@ -26,9 +26,8 @@ export interface Metadata {
 }
 export interface FileReference {
   enabled?: boolean
-  unique?: boolean
-  files?: File[]
   path: string
+  file?: File
 }
 /*---------------------------------------------------------------------------------------------------------*/
 

@@ -7,7 +7,7 @@ import AlertDialog from "#/common/elements/AlertDialog"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
-import { useMaintenanceTable } from "@/hooks/auth/useFormatForm"
+import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 
 import { tableTranslations } from "@/utils/constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"

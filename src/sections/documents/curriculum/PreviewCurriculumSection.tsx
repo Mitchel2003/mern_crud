@@ -30,9 +30,8 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
 
   const { data: imgCom = [], isLoading: isLoadingImgCom } = queryFormat.fetchAllFiles<Metadata>({ path: `company/${idCompany}/preview`, enabled: !!idCompany })
   const { data: imgCli = [], isLoading: isLoadingImgCl } = queryFormat.fetchAllFiles<Metadata>({ path: `client/${idClient}/preview`, enabled: !!idClient })
-  const { data: imgCv = [], isLoading: isLoadingImgCv } = queryFormat.fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
   const isLoadingData = isLoadingCv || isLoadingIns || isLoadingAcc || isLoadingCom
-  const isLoadingFile = isLoadingImgCv || isLoadingImgCl || isLoadingImgCom
+  const isLoadingFile = isLoadingImgCl || isLoadingImgCom
 
   if (isLoadingData || isLoadingFile) return <Skeleton theme={theme} />
   return (
@@ -49,7 +48,7 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
             {/*** Info of client ***/}
             <ClientPreviewCV theme={theme} cv={cv} client={imgCli?.[0]?.url} />
             {/*** Basic data, class biomedical and accessories associated ***/}
-            <EquipmentPreviewCV theme={theme} cv={cv} accs={acc} imgCv={imgCv?.[0]?.url} />
+            <EquipmentPreviewCV theme={theme} cv={cv} accs={acc} />
             {/*** Details associated and stakeholders ***/}
             <DetailsPreviewCV theme={theme} cv={cv} />
             {/*** Info of maintenance, inspection and specifications ***/}

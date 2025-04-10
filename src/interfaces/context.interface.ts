@@ -109,6 +109,7 @@ export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Sup
 export type Solicit = BaseMDB & {
   status: 'pendiente' | 'asignado' | 'cerrado'
   curriculum: Curriculum
+  photoUrl?: string
   priority: boolean
   message: string
 }
@@ -132,6 +133,7 @@ export type Curriculum = BaseMDB & {
   codeEquip: string
   modelEquip: string
   healthRecord: string
+  photoUrl?: string
 
   //complements
   characteristics: string
@@ -191,8 +193,8 @@ export type FormatContext = {
   delete: (type: FormatType, id: string) => Promise<any>
   // file operations
   getAllFiles: <T>(data: FileReference) => Promise<T[]>
-  uploadFiles: (data: FileReference) => Promise<void>
-  deleteFile: (data: FileReference) => Promise<void>
+  uploadFile: (data: FileReference) => Promise<any>
+  deleteFile: (data: FileReference) => Promise<any>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -211,8 +213,8 @@ export interface CreateNotificationProps {
   type: string
   url?: string
   //Relationship
-  senderId?: string
-  recipientId: string
+  sender?: string
+  recipient: string
 }
 
 export type NotificationContext = {

@@ -1,5 +1,5 @@
+import { useCurriculumForm } from "@/hooks/core/form/useFormatForm"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCurriculumForm } from "@/hooks/auth/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
 import { FormProvider } from "react-hook-form"
 import { RenderFormat } from "@/utils/format"

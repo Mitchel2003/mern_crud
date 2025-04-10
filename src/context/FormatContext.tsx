@@ -1,4 +1,4 @@
-import { uploadFiles as upload, deleteFile as remove, getFiles } from "@/controllers/storage.controller"
+import { uploadFile as upload, deleteFile as remove, getFiles } from "@/controllers/storage.controller"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
@@ -126,23 +126,21 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * Sube archivos asociados a un formato
    * @param {FileReference} data - Los datos de la referencia del documento
    * @example const data = { path: 'files/123/preview/img', files: [file1, file2] }
+   * @returns {Promise<any>} Los metadatos del archivo subido o undefined.
    */
-  const uploadFiles = async (data: FileReference): Promise<void> => {
-    return handler('Subiendo archivos...', async () => {
-      try { await upload(data).then(() => notifySuccess(txt('upload-files'))) }
-      catch (e) { notifyError(txt('upload-files', e)) }
-    })
+  const uploadFile = async (data: FileReference): Promise<any> => {
+    try { return await upload(data).then((e) => { notifySuccess(txt('upload-files')); return e }) }
+    catch (e) { notifyError(txt('upload-files', e)) }
   }
   /**
    * Elimina un archivo específico
    * @param {FileReference} data - Los datos de la referencia del documento
-   * @example const data = { path: 'files/123/preview/img' }
+   * @example const data = { path: 'files/123/preview/img' } corresponde al path
+   * @returns {Promise<any>} Los metadatos del archivo eliminado o undefined.
    */
-  const deleteFile = async (data: FileReference): Promise<void> => {
-    return handler('Eliminando archivo...', async () => {
-      try { await remove(data.path).then(() => notifySuccess(txt('delete-file'))) }
-      catch (e) { notifyError(txt('delete-file', e)) }
-    })
+  const deleteFile = async (data: FileReference): Promise<any> => {
+    try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-file')); return e }) }
+    catch (e) { notifyError(txt('delete-file', e)) }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 
@@ -156,7 +154,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       update,
       delete: delete_,
       getAllFiles,
-      uploadFiles,
+      uploadFile,
       deleteFile,
     }}>
       {children}

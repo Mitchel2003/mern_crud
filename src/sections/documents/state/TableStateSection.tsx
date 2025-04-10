@@ -2,8 +2,8 @@ import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogCon
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { ThemeContextProps, State } from "@/interfaces/context.interface"
 import { AddLocationAlt, Delete, Update } from "@mui/icons-material"
+import { useStateTable } from "@/hooks/core/table/useLocationTable"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
-import { useStateTable } from "@/hooks/auth/useLocationForm"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 

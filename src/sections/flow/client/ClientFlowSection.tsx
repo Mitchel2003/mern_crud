@@ -2,7 +2,7 @@ import SuccessMessage from "#/ui/step-form/step-form-success-message";
 import { ThemeContextProps } from "@/interfaces/context.interface";
 import SideBar, { Step } from "#/ui/step-form/step-form-sidebar";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
-import { useClientFlow } from "@/hooks/auth/useAuthForm";
+import { useClientFlow } from "@/hooks/core/form/useAuthForm";
 import AlertDialog from "#/common/elements/AlertDialog";
 import { useStepForm } from "@/hooks/core/useStepForm";
 import { AnimatePresence } from "framer-motion";

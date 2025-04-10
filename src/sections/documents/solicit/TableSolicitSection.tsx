@@ -1,99 +1,82 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
-import { BarChart2, BookMarkedIcon, CalendarClock, Eye, FileCogIcon } from 'lucide-react'
-import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { PageHeader, Stat } from '#/common/elements/HeaderPage'
-import { Delete, Download, Update } from "@mui/icons-material"
+import { Box, Button, Chip, ListItemIcon, MenuItem, Paper, Typography } from "@mui/material"
+import { Info as AlertCircle, FileText, BarChart2, Clock, PenTool } from "lucide-react"
+import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import AlertDialog from "#/common/elements/AlertDialog"
-
-import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
-import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { useCurriculumTable, useMaintenanceTable } from "@/hooks/auth/useFormatForm"
-
-import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
+import { Campaign, Delete } from "@mui/icons-material"
 import { tableTranslations } from "@/utils/constants"
+import { formatDateTime } from "@/utils/format"
+
+import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
+import { ThemeContextProps, Solicit } from "@/interfaces/context.interface"
+import { useSolicitTable } from "@/hooks/core/table/useFormatTable"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/format"
 import { useMemo } from "react"
 
-interface TableCurriculumSectionProps extends ThemeContextProps {
+interface TableSolicitSectionProps extends ThemeContextProps {
+  params?: { status?: string, name?: string, modelEquip?: string, createdAt?: string } | null
   onChange: () => void
-  credentials: User
-}
-interface CurriculumChildren extends Curriculum {
-  childRows: (Maintenance & { isPreventive: boolean })[]
-  hasMaintenances: boolean
 }
 
 /**
- * Permite construir un componente de tabla para mostrar los curriculums
+ * Permite construir un componente de tabla para mostrar los consultorios.
  * @param credentials - Credenciales del usuario
  * @param theme - El tema contexto de la aplicación
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con los consultorios, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculumSectionProps) => {
+const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
-  const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip, handleDownloadZipMts } = useCurriculumTable()
-  const isClient = credentials?.role === 'client'
-  const navigate = useNavigate()
+  const { solicits, handleDelete } = useSolicitTable()
   const isMobile = useIsMobile()
+  const navigate = useNavigate()
 
   /** Header stats */
-  const today = new Date().toISOString().split('T')[0];
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    value: cvs?.length || 0,
-    href: '/curriculum/todos',
-    title: 'Total Equipos',
+    href: `/form/solicit`,
+    value: solicits?.length || 0,
+    title: `Total de solicitudes`,
   }, {
-    color: 'success',
-    enabled: !isClient,
-    icon: CalendarClock,
-    title: 'Creados Hoy',
-    href: '/curriculum/hoy',
-    value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
+    color: 'danger',
+    icon: AlertCircle,
+    title: 'Pendientes',
+    value: solicits?.filter(s => s?.status === 'pendiente').length || 0,
+    href: `/form/solicit/${getQueryParams({ data: { status: 'pendiente' } })}`,
   }]
 
   /** Config table columns */
   const columns = useMemo(() => {
-    const array: MRT_ColumnDef<CurriculumChildren>[] = [{
+    const array: MRT_ColumnDef<Solicit>[] = [{
+      size: 200,
+      id: "message",
+      header: "Mensaje",
+      accessorFn: (row) => row.message || 'Sin mensaje'
+    }, {
       size: 150,
-      id: 'name',
-      header: 'Equipo',
-      accessorFn: (row) => row.name,
+      id: "priority",
+      header: "Prioridad",
+      accessorFn: (row) => row.priority ? 'Urgente' : 'Normal'
+    }, {
+      size: 150,
+      id: "status",
+      header: "Estado",
+      accessorFn: (row) => row.status || 'Sin estado'
     }, {
       size: 100,
-      header: "Modelo",
-      id: "modelEquip",
-      accessorFn: (row) => row.modelEquip || 'Sin modelo'
-    }, {
-      size: 150,
-      header: "Sede",
-      id: "office.headquarter.name",
-      accessorFn: (row) => row.office?.headquarter?.name || 'Sin sede'
+      id: "createdAt",
+      header: "Fecha de creación",
+      accessorFn: (row) => formatDateTime(row.createdAt)
     }];
-
-    !isClient && array.push({// to show columns conditional
-      size: 150,
-      header: "Cliente",
-      id: "office.headquarter.user.username",
-      accessorFn: (row) => row.office?.headquarter?.user?.username || 'Sin cliente'
-    }, {
-      size: 90,
-      header: "Riesgo",
-      id: "riskClassification",
-      accessorFn: (row) => row.riskClassification
-    });
     return array
-  }, [isClient])
+  }, [])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
     columns,
-    data: cvs || [],
+    data: solicits || [],
     localization: tableTranslations,
     enableColumnFilterModes: true,
     enableColumnPinning: true,
@@ -105,6 +88,10 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       showGlobalFilter: true,
       showColumnFilters: true,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [
+        ...(params.status ? [{ id: 'status', value: params.status }] : []),
+        ...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])
+      ] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',
@@ -122,7 +109,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       sx: { maxHeight: '100%', maxWidth: '100%', overflow: 'auto' }
     },
     muiTablePaperProps: {//table inside
-      sx: { m: '0', width: '100%', maxWidth: isMobile ? (!isClient ? '140vw' : '100vw') : '100%' }
+      sx: { m: '0', width: '100%', maxWidth: isMobile ? '95vw' : '100%' }
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
@@ -151,63 +138,22 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
 
     /*--------------------------------------------------row action menu--------------------------------------------------*/
     renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
-      const baseItems = [// To show for all users (base)
-        // View curriculum
-        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
-          closeMenu()
-          confirmAction({
-            title: 'Ver Curriculum',
-            description: `¿Deseas ver el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { navigate(`/form/curriculum/preview/${row.original._id}`) }
-          })
-        }}>
-          <ListItemIcon> <Eye /> </ListItemIcon>
-          Visualizar
-        </MenuItem>,
-
-        // Download curriculum
+      const baseItems = [// To show for all users (base)        
+        // Delete solicit
         <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
-            title: 'Descargar curriculum',
-            description: `¿Deseas descargar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { handleDownload(row.original) }
-          })
-        }}>
-          <ListItemIcon> <Download /> </ListItemIcon>
-          Descargar pdf
-        </MenuItem>
-      ];
-
-      const conditionalItems = !isClient ? [// To show only company, engineer and admin (conditional)
-        // Edit curriculum
-        <MenuItem key={2} sx={{ m: 0 }} onClick={() => {
-          closeMenu()
-          confirmAction({
-            title: 'Editar curriculum',
-            description: `¿Deseas editar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { onChange(); navigate(`/form/curriculum/${row.original._id}`) }
-          })
-        }}>
-          <ListItemIcon> <Update /> </ListItemIcon>
-          Actualizar
-        </MenuItem>,
-
-        // Delete curriculum
-        <MenuItem key={3} sx={{ m: 0 }} onClick={() => {
-          closeMenu()
-          confirmAction({
             isDestructive: true,
-            title: 'Eliminar curriculum',
-            description: `¿Deseas eliminar el curriculum "${row.original.name} - ${row.original.modelEquip}"?`,
-            action: () => { handleDelete(row.original._id) }
+            title: 'Eliminar solicitud',
+            description: `¿Deseas eliminar la solicitud "${row.original.message}"?`,
+            action: () => handleDelete(row.original._id)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>
           Eliminar
         </MenuItem>
-      ] : [];
-      return [...baseItems, ...conditionalItems];
+      ];
+      return [...baseItems]
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -217,213 +163,125 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
         {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Typography>
-            {table.getSelectedRowModel().rows.length} currículum(s) seleccionado(s)
+            {table.getSelectedRowModel().rows.length} solicitud(es) seleccionada(s)
           </Typography>
-        </Box>
-        {/** actions rows selected */}
-        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-          {/** Download currículums (ZIP) */}
-          <Button
-            size="small"
-            color="primary"
-            variant="outlined"
-            startIcon={<Download />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.name
-              const otherCount = selectedRows.length - 1
-              confirmAction({
-                title: 'Descargar currículums',
-                description: `¿Deseas descargar los currículums de:
-                ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                action: () => handleDownloadZip(selectedRows.map(row => row.original))
-              })
-            }}
-          >
-            Descargar ZIP
-          </Button>
-
-          {/** Download currículums + mantenimientos (ZIP) */}
-          <Button
-            size="small"
-            color="secondary"
-            variant="outlined"
-            startIcon={<Download />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const firstEquipment = selectedRows[0].original.name
-              const otherCount = selectedRows.length - 1
-              confirmAction({
-                title: 'Descargar currículums + mantenimientos',
-                description: `¿Deseas descargar los currículums de:
-                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                action: () => handleDownloadZipMts(selectedRows.map(row => row.original))
-              })
-            }}
-          >
-            Descargar ZIP + mantenimientos
-          </Button>
-
-          {/** Download QRs (ZIP) */}
-          {!isClient && (
-            <Button
-              size="small"
-              color="info"
-              variant="outlined"
-              startIcon={<Download />}
-              onClick={() => {
-                const selectedRows = table.getSelectedRowModel().flatRows
-                const firstEquipment = selectedRows[0].original.name
-                const otherCount = selectedRows.length - 1
-                confirmAction({
-                  title: 'Descargar QRs',
-                  description: `¿Deseas descargar los QRs de:
-                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                  action: () => generatePDF(selectedRows.map(row => row.original))
-                })
-              }}
-            >
-              Descargar QRs
-            </Button>
-          )}
         </Box>
       </Box>
     ),
     /*---------------------------------------------------------------------------------------------------------*/
 
     /*--------------------------------------------------Row details dropdown--------------------------------------------------*/
-    renderDetailPanel: ({ row }) => (// row details (Dropdown collapsible)
+    renderDetailPanel: ({ row: { original: solicit } }) => (// row details (Dropdown collapsible)
       <Box sx={{ gap: 2, boxShadow: 1, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column' }}>
-        {/** Card details */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider', p: 1 }}>
-          <Typography variant="h6">Historial de Mantenimientos</Typography>
-          {/** View maintenances associated*/}
-          <Button
-            size="small"
-            color="info"
-            variant="outlined"
-            startIcon={<FileCogIcon />}
-            onClick={() => {
-              confirmAction({
-                title: 'Ver mantenimientos',
-                description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
-                action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
-              })
-            }}
-          >
-            Ver mantenimientos
-          </Button>
+        {/* Panel top with details */}
+        <Box sx={{ p: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, bgcolor: 'background.paper' }}>
+          {/* Column left */}
+          <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold">Mensaje de solicitud:</Typography>
+            <Paper sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+              <Typography variant="body2">{solicit.message}</Typography>
+            </Paper>
+            <Typography variant="caption" color="text.secondary">
+              Creado el {formatDateTime(solicit.createdAt)}
+            </Typography>
+          </Box>
 
-          {/** Badge info equipment */}
-          <Typography variant="subtitle1" color="text.secondary">
-            Equipo: {row.original.name}
-          </Typography>
+          {/* Column right */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1, alignItems: { xs: 'flex-start', sm: 'flex-end' } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                size="small"
+                color={solicit.priority ? 'error' : 'default'}
+                label={solicit.priority ? 'URGENTE' : 'NORMAL'}
+                icon={solicit.priority ? <AlertCircle size={14} /> : <Clock size={14} />}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                size="small"
+                label={solicit.status.toUpperCase()}
+                color={solicit.status === 'pendiente' ? 'warning' : (solicit.status === 'asignado' ? 'info' : 'success')}
+              />
+            </Box>
+          </Box>
         </Box>
 
-        {/** Child rows (maintenances) - sorted by date */}
-        {row.original.childRows?.length > 0 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {row.original.childRows.map((maintenance) => (
-              <Box
-                key={maintenance._id}
-                sx={{
-                  p: 1.5, borderLeft: 4, borderRadius: 1,
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  borderLeftColor: maintenance.isPreventive ? 'primary.main' : maintenance.typeMaintenance.includes('reacondicionamiento') ? 'burlywood' : 'grey.400',
-                  bgcolor: !maintenance.isPreventive
-                    ? maintenance.typeMaintenance.includes('reacondicionamiento') ? 'rgba(222, 184, 135, 0.1)' : 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(33, 150, 243, 0.1)',
-                  '&:hover': {
-                    bgcolor: !maintenance.isPreventive
-                      ? maintenance.typeMaintenance.includes('reacondicionamiento') ? 'rgba(222, 184, 135, 0.15)' : 'rgba(255, 255, 255, 0.1)'
-                      : 'rgba(33, 150, 243, 0.15)'
-                  }
-                }}
-              >
-                {/** left content (info) */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant="caption" sx={{ px: 1, py: 0.25, color: 'white', borderRadius: 1, bgcolor: maintenance.isPreventive ? 'primary.main' : maintenance.typeMaintenance === 'correctivo' ? 'grey.500' : 'burlywood' }}>
-                      {maintenance.typeMaintenance}
-                    </Typography>
-                    <Typography variant="caption" sx={{ px: 1, py: 0.25, color: 'white', borderRadius: 1, bgcolor: maintenance.statusEquipment !== 'funcionando' ? (maintenance.statusEquipment === 'en espera de repuestos' ? 'warning.main' : 'error.main') : 'success.main' }}>
-                      {maintenance.statusEquipment}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.primary">
-                    Fecha: {formatDate(maintenance.dateMaintenance)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    Observaciones: {maintenance.observations}
-                  </Typography>
-                </Box>
+        {/* Panel bottom with details */}
+        <Box sx={{ p: 2, bgcolor: 'background.paper' }}>
+          <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+            Detalles del equipo:
+          </Typography>
+          {solicit.curriculum ? (
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
+              {/* Image of the equipment */}
+              <Box sx={{ width: { xs: '100%', sm: 200 }, height: 200, position: 'relative' }}>
+                <img
+                  src={solicit.photoUrl || '/placeholder-image.jpg'}
+                  alt={solicit.curriculum.name || 'Equipo'}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    border: '1px solid #eee'
+                  }}
+                />
+              </Box>
 
-                {/** right content (buttons actions) */}
-                <Box sx={{ display: 'flex', gap: 1 }}>
+              {/* Information of the equipment */}
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="h6">{solicit.curriculum.name}</Typography>
+                <Typography variant="body2">
+                  <strong>Marca:</strong> {solicit.curriculum.brand}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Modelo:</strong> {solicit.curriculum.modelEquip}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Serie:</strong> {solicit.curriculum.serie}
+                </Typography>
+
+                {/* Action buttons */}
+                <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
                   <Button
                     size="small"
-                    color="success"
                     variant="outlined"
-                    startIcon={<Download />}
+                    startIcon={<FileText size={16} />}
                     onClick={() => {
                       confirmAction({
-                        title: 'Descargar mantenimiento',
-                        description: `¿Deseas descargar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                        action: () => handleDownloadMaintenance(maintenance)
+                        title: 'Ver hoja de vida',
+                        description: '¿Deseas ver la hoja de vida de este equipo?',
+                        action: () => navigate(`/form/curriculum/preview/${solicit.curriculum._id}`)
                       })
                     }}
                   >
-                    PDF
+                    Ver hoja de vida
                   </Button>
 
-                  {/** actions with permissions */}
-                  {!isClient && (
-                    <>
-                      {/** edit maintenance */}
-                      <Button
-                        size="small"
-                        color="warning"
-                        variant="outlined"
-                        startIcon={<Update />}
-                        onClick={() => {
-                          confirmAction({
-                            title: 'Editar mantenimiento',
-                            description: `¿Deseas editar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                            action: () => { onChange(); navigate(`/form/maintenance/${maintenance._id}`) }
-                          })
-                        }}
-                      >
-                        Editar
-                      </Button>
-
-                      {/** delete maintenance */}
-                      <Button
-                        size="small"
-                        color="error"
-                        variant="outlined"
-                        startIcon={<Delete />}
-                        onClick={() => {
-                          confirmAction({
-                            isDestructive: true,
-                            title: 'Eliminar mantenimiento',
-                            description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                            action: () => { handleDeleteMaintenance(maintenance._id) }
-                          })
-                        }}
-                      >
-                        Eliminar
-                      </Button>
-                    </>
-                  )}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<PenTool size={16} />}
+                    onClick={() => {
+                      confirmAction({
+                        title: 'Ver mantenimientos',
+                        description: '¿Deseas ver los mantenimientos de este equipo?',
+                        action: () => navigate(`/form/maintenance/${getQueryParams({ data: { name: solicit.curriculum.name, modelEquip: solicit.curriculum.modelEquip } })}`)
+                      })
+                    }}
+                  >
+                    Ver mantenimientos
+                  </Button>
                 </Box>
               </Box>
-            ))}
-          </Box>
-        ) : (
-          <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-            No hay mantenimientos adicionales para mostrar
-          </Typography>
-        )}
+            </Box>
+          ) : (
+            <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>
+              <AlertCircle size={40} style={{ marginBottom: '16px', opacity: 0.5 }} />
+              <Typography>No hay equipo asociado a esta solicitud</Typography>
+            </Box>
+          )}
+        </Box>
       </Box>
     )
   })
@@ -434,9 +292,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
         <PageHeader
           size="lg"
           stats={stats}
+          icon={Campaign}
           variant="gradient"
-          icon={BookMarkedIcon}
-          title={`Equipos ${!isMobile ? 'biomédicos' : ''}`}
+          title="Solicitudes"
           badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />
@@ -457,11 +315,12 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
   )
 }
 
-export default TableCurriculumSection
+export default TableSolicitSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { name: data.name, modelEquip: data.modelEquip }
-  return encodeURIComponent(JSON.stringify(filterParams))// Convert to codify url
+  const params = { status: data.status, createdAt: data.createdAt, name: data.name, modelEquip: data.modelEquip }
+  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined))
+  return encodeURIComponent(JSON.stringify(filteredParams)) //Convert to codify url
 }

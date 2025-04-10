@@ -75,23 +75,16 @@ export const useQueryFormat = (): QueryReact_Format => {
   const fetchAllQueries = <T>(data: any[]) => useQueries({
     queries: (data || []).flatMap((q: any) => [{
       enabled: Boolean(q._id), retry: 1,
-      queryKey: ['files', q._id],
-      queryFn: async () => {
-        const result = await format.getAllFiles<T>({ path: `files/${q._id}/preview` })
-        return { type: 'curriculum', id: q._id, data: result, error: null }
-      }
-    }, {
-      enabled: Boolean(q._id), retry: 1,
       queryKey: ['client', q._id],
       queryFn: async () => {
-        const result = await format.getAllFiles<T>({ path: `client/${q.office?.headquarter?.user?._id}/preview` })
+        const result = await format.getAllFiles<T>({ path: `client/${q.office?.headquarter?.user?._id}/preview`, enabled: q._id!! })
         return { type: 'client', id: q.office?.headquarter?.user?._id, data: result, error: null }
       }
     }, {
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['accessory', q._id],
       queryFn: async () => {
-        const result = await format.getByQuery<T>('accessory', { curriculum: q._id })
+        const result = await format.getByQuery<T>('accessory', { curriculum: q._id }, q._id!!)
         return { type: 'accessory', id: q._id, data: result, error: null }
       }
     }])
@@ -110,7 +103,7 @@ export const useQueryFormat = (): QueryReact_Format => {
 /*--------------------------------------------------useMutation--------------------------------------------------*/
 /** Hook personalizado para gestionar mutaciones de formatos */
 export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
-  const { create, update, delete: deleteFormat, uploadFiles, deleteFile } = useFormatContext()
+  const { create, update, delete: deleteFormat, uploadFile, deleteFile } = useFormatContext()
   const queryClient = useQueryClient()
 
   /**
@@ -156,7 +149,7 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
    * @param {FileMutationProps} props - Propiedades para crear el archivo
    */
   const createFileMutation = useMutation({
-    mutationFn: async (data: FileMutationProps) => await uploadFiles(data),
+    mutationFn: async (data: FileMutationProps) => await uploadFile(data),
     onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 

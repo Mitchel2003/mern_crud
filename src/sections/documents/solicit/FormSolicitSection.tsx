@@ -1,6 +1,6 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useSolicitForm } from "@/hooks/core/form/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
-import { useSolicitForm } from "@/hooks/auth/useFormatForm"
 import { FormProvider } from "react-hook-form"
 import React, { useMemo } from "react"
 
@@ -20,14 +20,13 @@ interface FormSolicitSectionProps extends ThemeContextProps {
   onChange: () => void
 }
 
-const FormSolicitSection = ({ id, theme, onChange, footer: Footer }: FormSolicitSectionProps) => {
-  const { img, open, methods, setOpen, onConfirm, handleSubmit } = useSolicitForm(id, onChange)
+const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionProps) => {
+  const { img, open, methods, setOpen, onConfirm, handleSubmit } = useSolicitForm(id)
 
   const formSections = useMemo(() => [
     <ReferenceSection key="reference" theme={theme} img={img} />,
     <ObservationSection key="observation" theme={theme} />
   ], [theme, img])
-
   return (
     <>
       <FormProvider {...methods}>
@@ -54,8 +53,8 @@ const FormSolicitSection = ({ id, theme, onChange, footer: Footer }: FormSolicit
             <SubmitFooter
               theme={theme}
               to="/form/solicit"
+              onCancel={() => methods.reset()}
               disabled={!methods.formState.isDirty}
-              onCancel={() => { methods.reset(); onChange?.() }}
             />
           ) : (
             <Footer

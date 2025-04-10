@@ -2,7 +2,7 @@
 import { storageService } from "@/services/firebase/storage.service"
 import { FileReference, Metadata } from "@/interfaces/db.interface"
 import { normalizeError } from "@/errors/handler"
-import ErrorAPI from "@/errors"
+import ErrorAPI, { NotFound } from "@/errors"
 
 /**
  * Obtiene los metadatos de los archivos en una ruta específica
@@ -18,17 +18,17 @@ export const getFiles = async (path: string): Promise<Metadata[]> => {
 }
 
 /**
- * Sube múltiples archivos
- * @param data: { path: string, files: File[], unique?: boolean }
- * @example data: { path: string, files: File[], unique?: boolean }
+ * Sube archivos de diferentes tipos (imagen, pdf, etc.)
+ * @param {FileReference} data - Datos del archivo a subir
+ * @returns {string} URL de la imagen subida en firebase storage
+ * @example const data = { path: 'files/123/preview/img', file: file1 }
  */
-export const uploadFiles = async (data: FileReference): Promise<void> => {
+export const uploadFile = async (data: FileReference): Promise<string> => {
   try {
-    if (!data.files) throw new Error('No se proporcionaron archivos válidos');
-    const result = data.unique
-      ? await storageService.uploadFile(data.files[0], data.path)
-      : await storageService.uploadFiles(data.files, data.path)
+    if (!data.file) throw new NotFound({ message: 'Archivo valido' })
+    const result = await storageService.uploadFile(data.file, data.path)
     if (!result.success) throw result.error //is ErrorAPI
+    return result.data //url reference of uploaded file
   } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'subir archivos')) }
 }
 /**

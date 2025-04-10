@@ -1,5 +1,5 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCountryForm } from '@/hooks/auth/useLocationForm'
+import { useCountryForm } from "@/hooks/core/form/useLocationForm"
 import { FormProvider } from "react-hook-form"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"

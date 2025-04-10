@@ -1,16 +1,14 @@
 import axios, { AxiosResponse } from "axios"
-import config from '@/utils/config'
+import { baseUrl } from '@/utils/config'
 
 /**
  * Axios instance configured for the API
  * Includes interceptors to handle authentication tokens and errors
  */
 const instance = axios.create({
-  baseURL: config.nodeEnv === 'production'
-    ? 'https://rest-api-qvo9.onrender.com/api'
-    : 'http://localhost:4000/api',
   withCredentials: true,
-  timeout: 10000, // Timeout of 10 seconds for all requests
+  baseURL: baseUrl,
+  timeout: 10000, //Timeout 10 seconds for all requests
   headers: { 'Content-Type': 'application/json' }
 })
 

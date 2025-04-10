@@ -1,5 +1,5 @@
+import { useMaintenanceForm } from "@/hooks/core/form/useFormatForm"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useMaintenanceForm } from "@/hooks/auth/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
 import { FormProvider } from "react-hook-form"
 import { RenderFormat } from "@/utils/format"

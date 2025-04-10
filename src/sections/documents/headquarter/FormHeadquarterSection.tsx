@@ -1,5 +1,5 @@
+import { useHeadquarterForm } from "@/hooks/core/form/useLocationForm"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useHeadquarterForm } from "@/hooks/auth/useLocationForm"
 import { FormProvider } from "react-hook-form"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
