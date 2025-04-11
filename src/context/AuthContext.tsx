@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
         const res = await loginFB(data.email, data.password)
         const user = await useApi('user').getById(res.uid)
         if (!user?.data) throw new NotFound({ message: 'usuario' })
-        await updateTokenMessaging(user.data._id) //handle messaging
+        await updateTokenMessaging(user.data) //handle messaging
         notifyInfo(txt('login'))
         setAuthStatus(user)
       } catch (e) { notifyError(txt('login', e)); setAuthStatus() }
@@ -183,14 +183,15 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   }
   /**
    * Nos permite guardar el token de Firebase Cloud Messaging (FCM) en el usuario.
-   * @param {string} userId - Corresponde al ID del usuario.
+   * @param {User} user - Corresponde a las creaciones del usuario.
    */
-  const updateTokenMessaging = async (userId: string): Promise<void> => {
+  const updateTokenMessaging = async (user: User): Promise<void> => {
     try {
       const permission = await Notification.requestPermission()
-      if (permission !== "granted") return;// to allow messages
-      const token: string = await getTokenMessaging()// fcm token
-      await useApi('user').update(userId, { fcmToken: token })
+      if (permission !== "granted") return; //to allow messages
+      const token: string = await getTokenMessaging() //fcm token
+      if (token === user.fcmToken) return; //to avoid unnecessary      
+      await useApi('user').update(user._id, { fcmToken: token })
     } catch (e) { notifyError(txt('update-token-messaging', e)) }
   }
   /*---------------------------------------------------------------------------------------------------------*/

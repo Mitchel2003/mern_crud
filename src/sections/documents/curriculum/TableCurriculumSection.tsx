@@ -175,7 +175,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
           })
         }}>
           <ListItemIcon> <Download /> </ListItemIcon>
-          Descargar pdf
+          Descargar
         </MenuItem>
       ];
 

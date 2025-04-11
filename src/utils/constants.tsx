@@ -649,6 +649,7 @@ export const styles = StyleSheet.create({
   },
   // ServiceProvider section
   providerContainer: {
+    width: '100%',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -678,9 +679,11 @@ export const styles = StyleSheet.create({
     fontSize: '10pt',
   },
   providerLogo: {
-    width: '150pt',
-    height: '80pt',
+    right: '0pt',
+    width: '25%',
+    height: '90pt',
     objectFit: 'contain',
+    alignSelf: 'flex-end',
   },
   /* Maintenance - PDF */
   // Observations section

@@ -41,22 +41,37 @@ type PDFFileProps = { pdf: string; fileName: string }
 /** This represent a hook with tools to download a PDF. */
 export const usePDFDownload = () => {
   /**
+   * This function is used to download a PDF.
+   * Is used to download directly from the component with the option to choose save location
+   * @param component The React component to convert to PDF.
+   * @param props The props to pass to the component.
+   */
+  const downloadPDF = async <T extends object>({ component, props }: PDFProps<T>) => {
+    try {
+      const element = createElement(component, props)
+      const blob = await pdf(element).toBlob()
+      const pdfURL = URL.createObjectURL(blob)
+      window.open(pdfURL, '_blank') //Open PDF in a new tab
+      setTimeout(() => { URL.revokeObjectURL(pdfURL) }, 1000)
+    } catch (e: any) { if (e.name !== 'AbortError') console.error('Error al generar el PDF:', e) }
+  }
+
+  /**
    * This function is used to download multiple PDFs as a ZIP file.
    * @param components Array of components to convert to PDFs and include in the ZIP
    * @param zipName Optional custom name for the ZIP file
    */
   const downloadZIP = async <T extends object>({ components, zipName = 'mantenimientos.zip' }: DownloadZipProps<T>) => {
     try {
-      const zip = new JSZip()
-      // Generate all PDFs in parallel
+      const zip = new JSZip() //Generate all PDFs in parallel
       const pdfPromises = components.map(async ({ component, props, fileName }) => {
         const pdf = await pdfToBase64(component, props)
         return { pdf, fileName }
       })
-      const pdfs = await Promise.all(pdfPromises)// Wait for all PDFs to be generated
-      pdfs.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })// Add each PDF to the ZIP file
-      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })// Generate and download the ZIP file
-      saveAs(content, zipName)
+      const pdfs = await Promise.all(pdfPromises) //Wait for all PDFs to be generated
+      pdfs.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) }) //Add each PDF to file
+      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } }) //Generate ZIP
+      saveAs(content, zipName) //Trigger download file that contains all PDFs
     } catch (e) { console.error('Error generating ZIP file:', e); throw e }
   }
 
@@ -70,22 +85,45 @@ export const usePDFDownload = () => {
       const zip = new JSZip()
       pdfFiles.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })
       const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } })
-      saveAs(content, zipName)
+      saveAs(content, zipName) //Trigger download file that contains all PDFs
     } catch (e) { console.error('Error generating ZIP file:', e); throw e }
   }
 
   /**
-   * This function is used to download a PDF.
-   * Is used to download directly from the component with the option to choose save location
+   * This function is used to directly download a PDF without preview.
+   * Works on all devices including mobile. Saves the file to the device.
    * @param component The React component to convert to PDF.
    * @param props The props to pass to the component.
    * @param fileName The name to give to the file.
    */
-  const downloadPDF = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
+  const downloadPDFDirect = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
     try {
       const element = createElement(component, props)
       const blob = await pdf(element).toBlob()
-      // @ts-ignore - FileSystemFileHandle API es experimental
+      // Create a URL blob and trigger download
+      const pdfURL = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = pdfURL; a.download = fileName
+      document.body.appendChild(a)
+      a.click() //Trigger download
+      document.body.removeChild(a)
+      URL.revokeObjectURL(pdfURL)
+    } catch (e: any) { if (e.name !== 'AbortError') { console.error('Error al generar el PDF:', e) } }
+  }
+
+  /**
+   * This function is used to download a PDF with the option to save to a specific location.
+   * Uses the File System Access API which is only supported in some desktop browsers.
+   * Falls back to direct download if the API is not available.
+   * @param component The React component to convert to PDF.
+   * @param props The props to pass to the component.
+   * @param fileName The name to give to the file.
+   */
+  const downloadPDFDialog = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
+    const element = createElement(component, props)
+    const blob = await pdf(element).toBlob()
+    try { //Try to use the File System Access API (desktop browsers only)
+      //@ts-ignore - FileSystemFileHandle API is experimental
       const handle = await window.showSaveFilePicker({
         types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }],
         suggestedName: fileName,
@@ -93,29 +131,21 @@ export const usePDFDownload = () => {
       const writable = await handle.createWritable()
       await writable.write(blob)
       await writable.close()
-    } catch (e: any) { if (e.name === 'AbortError') return; console.error('Error al generar el PDF:', e) }
+    } catch (fsError: any) { //Fallback for browsers without File System Access API support
+      if (fsError.name === 'AbortError') return //Handle user cancellation        
+      if (fsError.name === 'NotFoundError' || fsError.name === 'TypeError') {
+        const pdfURL = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = pdfURL; a.download = fileName
+        document.body.appendChild(a)
+        a.click() //Trigger download
+        document.body.removeChild(a)
+        URL.revokeObjectURL(pdfURL)
+      } else { throw fsError }
+    }
   }
 
-  /**
-   * This function is used to download a PDF.
-   * Is used in the case that we need save in a path
-   * @param blob The PDF file to save.
-   * @param suggestedName The name to give to the file.
-   */
-  const downloadPDFAs = async (blob: Blob, suggestedName: string) => {
-    try {
-      // @ts-ignore - FileSystemFileHandle API es experimental
-      const handle = await window.showSaveFilePicker({
-        types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }],
-        suggestedName,
-      })
-      const writable = await handle.createWritable()
-      await writable.write(blob)
-      await writable.close()
-    } catch (e: any) { if (e.name === 'AbortError') return; console.error('Error al guardar el PDF:', e) }
-  }
-
-  return { downloadPDF, downloadPDFAs, downloadZIP, downloadFilesAsZIP }
+  return { downloadPDF, downloadZIP, downloadFilesAsZIP, downloadPDFDirect, downloadPDFDialog }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
