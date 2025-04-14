@@ -8,14 +8,178 @@ import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Metadata } from '@/interfaces/db.interface'
 
-import { curriculumDefaultValues, maintenanceDefaultValues, solicitDefaultValues } from '@/utils/constants'
+import { curriculumDefaultValues, maintenanceDefaultValues, solicitDefaultValues, activityDefaultValues } from '@/utils/constants'
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
+import { ActivityFormProps, activitySchema } from '@/schemas/format/activity.schema'
 import { solicitSchema, SolicitFormProps } from '@/schemas/format/solicit.schema'
 import { useAuthContext } from '@/context/AuthContext'
+import { UserRoundCheck } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { baseUrl } from '@/utils/config'
 import { useEffect } from 'react'
+
+/*--------------------------------------------------activity form--------------------------------------------------*/
+/** Hook personalizado para manejar el formulario de creación de actividades */
+export const useActivityForm = (onSuccess?: () => void) => {
+  const { createFormat: createActivity } = useFormatMutation('activity')
+  const { updateFormat: updateSolicit } = useFormatMutation('solicit')
+  const { createNotification } = useNotificationContext()
+  const { sendNotification } = useAuthContext()
+  const { notifyError } = useNotification()
+  const { user } = useAuthContext()
+
+  const { data: engineers } = useQueryUser().fetchUserByQuery<User>({ role: 'engineer' })
+
+  const methods = useForm<ActivityFormProps>({
+    resolver: zodResolver(activitySchema),
+    defaultValues: activityDefaultValues,
+    mode: "onChange",
+  })
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const onSubmit = methods.handleSubmit(async (e: ActivityFormProps) => {
+    if (user?.role !== 'company') return notifyError({ message: 'No tienes permiso para crear actividades' })
+    await createActivity({ ...e, status: 'pendiente' }).then(async () => {
+      const title = `Nueva actividad - ${user?.username}`
+      const body = `Revisa tu bandeja de entradas`
+      await sendNotification({ id: e.engineer, title, body }) //messaging
+      await createNotification({ //create notification inbox with redirect
+        title, message: body, type: 'alert', url: `${baseUrl}/dashboard`,
+        recipient: e.engineer, sender: user?._id,
+      }) //Update solicit status to assigned, after creating activity
+      await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
+    })
+    methods.reset()
+    onSuccess?.()
+  })
+
+  return {
+    methods, onSubmit,
+    engineers: engineers?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`, icon: UserRoundCheck })) || [],
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------solicit form--------------------------------------------------*/
+/**
+ * Hook principal que orquesta los sub-hooks de solicitud para el formulario
+ * @param id - ID del currículum asociado a la solicitud, necesaria para la renderización
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
+  const { createNotification } = useNotificationContext()
+  const { observationData } = formatHooks.solicit()
+  const { createFormat } = useFormatMutation("solicit")
+  const { createFile } = useFormatMutation("file")
+  const { sendNotification } = useAuthContext()
+  const { notifyError } = useNotification()
+
+  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
+  const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
+  const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
+  const company = com?.[0]
+
+  const methods = useForm<SolicitFormProps>({
+    resolver: zodResolver(solicitSchema),
+    defaultValues: solicitDefaultValues,
+    mode: "onChange",
+  })
+
+  //to load the form on update mode "id"
+  useEffect(() => { id && cv && methods.reset({ ...observationData.mapValues(cv) }) }, [id, cv, isLoading])
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: SolicitFormProps) => {
+      const data = { ...observationData.submitData(e, id!) }
+      if (!cv) return notifyError({ message: "No tienes acceso a este currículum" })
+      if (id) { //ID correspond to cv associated
+        const file = e.photoUrl?.[0]?.file //blob
+        let photoUrl: string | undefined = undefined
+        file && (photoUrl = await createFile({ file, path: `files/${id}/solicit/img_${Date.now()}` }))
+        createFormat({ ...data, photoUrl }).then(async () => {
+          const client = cv?.office?.headquarter?.user
+          const title = `Nueva solicitud de ${client?.username}`
+          const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
+          company && await sendNotification({ id: company._id, title, body }) //messaging
+          company && await createNotification({ //create notification inbox with redirect
+            recipient: company._id, sender: client?._id, url: `${baseUrl}/form/solicit`,
+            title, message: body, type: data.priority ? 'payment' : 'alert',
+          })
+        })
+      }
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    ...handleSubmit,
+    img: img?.[0]?.url || '',
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------maintenance form--------------------------------------------------*/
+/**
+ * Hook principal que orquesta los sub-hooks de maintenance
+ * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
+  const { referenceData, observationData } = formatHooks.maintenance()
+  const { createFormat, updateFormat } = useFormatMutation("maintenance")
+  const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
+
+  const methods = useForm<MaintenanceFormProps>({
+    resolver: zodResolver(maintenanceSchema),
+    defaultValues: maintenanceDefaultValues,
+    mode: "onChange",
+  })
+
+  //to load the form on update mode "id"
+  useEffect(() => { id && loadData() }, [id, isLoading])
+
+  /** Carga los datos del currículo en el formulario */
+  const loadData = async () => {// implement callback (suggested)
+    mt && methods.reset({
+      ...referenceData.mapValues(mt),
+      ...observationData.mapValues(mt),
+    })
+  }
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: MaintenanceFormProps) => {
+      const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
+      id ? updateFormat({ id, data }) : createFormat(data)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    id,
+    methods,
+    ...handleSubmit,
+    referenceData: referenceData.options,
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------curriculum form--------------------------------------------------*/
 /**
@@ -142,122 +306,6 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     detailsData: detailsData.options,
     locationData: locationData.options,
     inspectionData: inspectionData.options,
-  }
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------maintenance form--------------------------------------------------*/
-/**
- * Hook principal que orquesta los sub-hooks de maintenance
- * @param id - ID del mantenimiento a actualizar, si no se proporciona, la request corresponde a crear
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
-  const { referenceData, observationData } = formatHooks.maintenance()
-  const { createFormat, updateFormat } = useFormatMutation("maintenance")
-  const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
-
-  const methods = useForm<MaintenanceFormProps>({
-    resolver: zodResolver(maintenanceSchema),
-    defaultValues: maintenanceDefaultValues,
-    mode: "onChange",
-  })
-
-  //to load the form on update mode "id"
-  useEffect(() => { id && loadData() }, [id, isLoading])
-
-  /** Carga los datos del currículo en el formulario */
-  const loadData = async () => {// implement callback (suggested)
-    mt && methods.reset({
-      ...referenceData.mapValues(mt),
-      ...observationData.mapValues(mt),
-    })
-  }
-
-  /**
-   * Función que se ejecuta cuando se envía el formulario
-   * nos permite controlar el envío del formulario y la ejecución de la request
-   * @param e - Valores del formulario
-   */
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (e: MaintenanceFormProps) => {
-      const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
-      id ? updateFormat({ id, data }) : createFormat(data)
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    id,
-    methods,
-    ...handleSubmit,
-    referenceData: referenceData.options,
-  }
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------solicit form--------------------------------------------------*/
-/**
- * Hook principal que orquesta los sub-hooks de solicitud para el formulario
- * @param id - ID del currículum asociado a la solicitud, necesaria para la renderización
- * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- */
-export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
-  const { createNotification } = useNotificationContext()
-  const { observationData } = formatHooks.solicit()
-  const { createFormat } = useFormatMutation("solicit")
-  const { createFile } = useFormatMutation("file")
-  const { sendNotification } = useAuthContext()
-  const { notifyError } = useNotification()
-
-  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
-  const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
-  const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
-  const company = com?.[0]
-
-  const methods = useForm<SolicitFormProps>({
-    resolver: zodResolver(solicitSchema),
-    defaultValues: solicitDefaultValues,
-    mode: "onChange",
-  })
-
-  //to load the form on update mode "id"
-  useEffect(() => { id && cv && methods.reset({ ...observationData.mapValues(cv) }) }, [id, cv, isLoading])
-
-  /**
-   * Función que se ejecuta cuando se envía el formulario
-   * nos permite controlar el envío del formulario y la ejecución de la request
-   * @param e - Valores del formulario
-   */
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (e: SolicitFormProps) => {
-      const data = { ...observationData.submitData(e, id!) }
-      if (id && cv) {
-        const file = e.photoUrl?.[0]?.file
-        let photoUrl: string | undefined = undefined
-        file && (photoUrl = await createFile({ file, path: `files/${id}/solicit/img_${Date.now()}` }))
-        createFormat({ ...data, photoUrl }).then(async () => {
-          const client = cv?.office?.headquarter?.user
-          const title = `Nueva solicitud de ${client?.username}`
-          const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
-          company && await sendNotification({ id: company._id, title, body }) //messaging
-          company && await createNotification({ //create notification inbox
-            title, message: body, type: data.priority ? 'payment' : 'alert',
-            recipient: company._id, sender: client?._id,
-            url: `${baseUrl}/form/solicit`,
-          })
-        })
-      } else { notifyError({ message: "No tienes acceso a este currículum" }) }
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
-
-  return {
-    methods,
-    ...handleSubmit,
-    img: img?.[0]?.url || '',
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

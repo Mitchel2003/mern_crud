@@ -86,7 +86,7 @@ export type LocationContext = {
 
 /*--------------------------------------------------FormatContext--------------------------------------------------*/
 export type FormatType =
-  | 'cv' | 'maintenance' | 'solicit' | 'file' //globals
+  | 'cv' | 'maintenance' | 'solicit' | 'activity' | 'file' //globals
 
   //maintenance
   | 'check' | 'checkMaintenance'
@@ -106,12 +106,22 @@ export type RepresentativeHeadquarter = BaseMDB & { headquarter: string, represe
 export type ManufacturerHeadquarter = BaseMDB & { headquarter: string, manufacturer: Manufacturer }
 export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Supplier }
 
+export type Activity = BaseMDB & {
+  status: 'pendiente' | 'en proceso' | 'completado'
+  dateAssignment: Date
+
+  //relationship
+  engineer: User
+  solicit: Solicit
+}
 export type Solicit = BaseMDB & {
   status: 'pendiente' | 'asignado' | 'cerrado'
-  curriculum: Curriculum
   photoUrl?: string
   priority: boolean
   message: string
+
+  //relationship
+  curriculum: Curriculum
 }
 export type Maintenance = BaseMDB & {
   //timestandard

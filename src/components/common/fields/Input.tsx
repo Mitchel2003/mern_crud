@@ -16,6 +16,7 @@ interface InputFieldProps extends HeaderSpanProps, ThemeContextProps {
   placeholder?: string
   readOnly?: boolean
   icon?: LucideIcon
+  hidden?: boolean
   type?: InputType
   value?: string
   label: string
@@ -29,6 +30,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   placeholder,
   icon: Icon,
   readOnly,
+  hidden,
   value,
   theme,
   label,
@@ -39,7 +41,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(({
   const { control, setValue } = useFormContext()
   useMemo(() => readOnly && setValue(name, value), [readOnly, value])
   return (
-    <FormItem>
+    <FormItem hidden={hidden}>
       {/* Header label */}
       <HeaderCustom
         to="input"

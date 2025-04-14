@@ -109,25 +109,6 @@ export type FormItems = {
   name: string
 }
 
-// Dashboard (admin)
-export interface EventMaintenance {
-  importance: 'critical' | 'warning' | 'normal'
-  description: string
-  date: Date
-  id: string
-}
-export interface CardDay {
-  events: EventMaintenance[]
-  date: Date
-}
-export interface Equipment {
-  nextMaintenance: Date
-  imageUrl: string
-  status: string
-  name: string
-  id: string
-}
-
 // Dashboard (client)
 export interface ClientDashboardProps {
   // Estadísticas
@@ -165,4 +146,18 @@ export interface ClientDashboardProps {
     name: string
     id: number
   }>
+}
+
+// Calendar (engineer)
+export interface Event {
+  startTime: string
+  endTime: string
+  title: string
+  color: string
+  id: number
+  date: Date
+  location: string
+  description: string
+  attendees: string[]
+  organizer: string
 }

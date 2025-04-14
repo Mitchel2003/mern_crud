@@ -50,7 +50,7 @@ const SidebarItem = ({ item, isMobile, toggle }: SidebarItemProps) => {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && toggle()}>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && !item.subItems && toggle()}>
       <CollapsibleTrigger asChild>
         <SidebarMenuButton asChild isActive={isActive}>
           <Link
@@ -85,7 +85,7 @@ const SidebarSubItem = ({ item, isMobile, toggle }: SidebarSubItemProps) => {
 
   return (
     <SidebarMenuSubItem>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && toggle()}>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} onClick={() => isMobile && !item.subItems && toggle()}>
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton asChild isActive={isActive}>
             <Link

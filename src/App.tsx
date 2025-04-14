@@ -4,26 +4,27 @@ import { FormatProvider } from "@/context/FormatContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 
-import Curriculum, { PreviewCurriculum } from "@/pages/documents/Curriculum";
-import Client, { ClientFlow } from "@/pages/documents/Client";
-import Maintenance from "@/pages/documents/Maintenance";
-import Engineer from "@/pages/documents/Engineer";
-import Company from "@/pages/documents/Company";
-import Solicit from "@/pages/documents/Solicit";
+import CurriculumPage, { PreviewCurriculumPage } from "@/pages/documents/CurriculumPage";
+import ClientPage, { ClientFlowPage } from "@/pages/documents/ClientPage";
+import MaintenancePage from "@/pages/documents/MaintenancePage";
+import EngineerPage from "@/pages/documents/EngineerPage";
+import CompanyPage from "@/pages/documents/CompanyPage";
+import SolicitPage from "@/pages/documents/SolicitPage";
 
-import Headquarter from "@/pages/documents/Headquarter";
-import Country from "@/pages/documents/Country";
-import Office from "@/pages/documents/Office";
-import State from "@/pages/documents/State";
-import City from "@/pages/documents/City";
+import HeadquarterPage from "@/pages/documents/HeadquarterPage";
+import CountryPage from "@/pages/documents/CountryPage";
+import OfficePage from "@/pages/documents/OfficePage";
+import StatePage from "@/pages/documents/StatePage";
+import CityPage from "@/pages/documents/CityPage";
 
+import { CalendarPage } from "@/pages/dashboard/EngineerDashboardPage";
+import { ScannerHub } from "@/pages/navigation/ScannerHub";
+import DocumentsHub from "@/pages/navigation/DocumentsHub";
 import ProtectedRoute from "@/layouts/ProtectedRoute";
-import { ScannerHub } from "@/pages/hub/ScannerHub";
-import DocumentsHub from "@/pages/hub/DocumentsHub";
-import Dashboard from "@/pages/dashboard/Dashboard";
-import Login from "@/pages/dashboard/Login";
-import Home from "@/pages/dashboard/Home";
+import DashboardPage from "@/pages/dashboard";
+import LoginPage from "@/pages/LoginPage";
 import RootLayout from "@/layouts/Root";
+import HomePage from "@/pages/HomePage";
 
 function App() {
   return (
@@ -36,63 +37,66 @@ function App() {
               <Routes>
                 <Route element={<RootLayout />}>
                   {/* home index */}
-                  <Route path="/" index element={<Home />} />
-                  <Route path="/auth/login" element={<Login />} />
+                  <Route path="/" index element={<HomePage />} />
+                  <Route path="/auth/login" element={<LoginPage />} />
 
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/scanner" element={<ScannerHub />} />
+
+                    {/* engineer routes */}
+                    <Route path="/calendar" element={<CalendarPage />} />
 
                     {/* forms routes */}
                     <Route path="/form" element={<DocumentsHub />} /> {/*list documents*/}
-                    <Route path="/form/curriculum" element={<Curriculum />} />
-                    <Route path="/form/curriculums" element={<Curriculum />} />
-                    <Route path="/form/curriculum/:id" element={<Curriculum />} />
-                    <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculum />} />
+                    <Route path="/form/curriculum" element={<CurriculumPage />} />
+                    <Route path="/form/curriculums" element={<CurriculumPage />} />
+                    <Route path="/form/curriculum/:id" element={<CurriculumPage />} />
+                    <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculumPage />} />
 
-                    <Route path="/form/maintenance" element={<Maintenance />} />
-                    <Route path="/form/maintenances" element={<Maintenance />} />
-                    <Route path="/form/maintenance/:id" element={<Maintenance />} />
+                    <Route path="/form/maintenance" element={<MaintenancePage />} />
+                    <Route path="/form/maintenances" element={<MaintenancePage />} />
+                    <Route path="/form/maintenance/:id" element={<MaintenancePage />} />
 
-                    <Route path="/form/solicit" element={<Solicit />} />
-                    <Route path="/form/solicits" element={<Solicit />} />
-                    <Route path="/form/solicit/:id" element={<Solicit />} />
+                    <Route path="/form/solicit" element={<SolicitPage />} />
+                    <Route path="/form/solicits" element={<SolicitPage />} />
+                    <Route path="/form/solicit/:id" element={<SolicitPage />} />
 
                     {/* user routes */}
-                    <Route path="/engineer" element={<Engineer />} /> {/*new user*/}
-                    <Route path="/engineers" element={<Engineer />} /> {/*list users*/}
-                    <Route path="/engineer/:id" element={<Engineer />} /> {/*edit user*/}
+                    <Route path="/engineer" element={<EngineerPage />} /> {/*new user*/}
+                    <Route path="/engineers" element={<EngineerPage />} /> {/*list users*/}
+                    <Route path="/engineer/:id" element={<EngineerPage />} /> {/*edit user*/}
 
-                    <Route path="/company" element={<Company />} /> {/*new company*/}
-                    <Route path="/companies" element={<Company />} /> {/*list companies*/}
-                    <Route path="/company/:id" element={<Company />} /> {/*edit company*/}
+                    <Route path="/company" element={<CompanyPage />} /> {/*new company*/}
+                    <Route path="/companies" element={<CompanyPage />} /> {/*list companies*/}
+                    <Route path="/company/:id" element={<CompanyPage />} /> {/*edit company*/}
 
-                    <Route path="/newClient" element={<ClientFlow />} /> {/*new client*/}
-                    <Route path="/client" element={<Client />} /> {/*new client*/}
-                    <Route path="/clients" element={<Client />} /> {/*list clients*/}
-                    <Route path="/client/:id" element={<Client />} /> {/*edit client*/}
+                    <Route path="/newClient" element={<ClientFlowPage />} /> {/*new client*/}
+                    <Route path="/client" element={<ClientPage />} /> {/*new client*/}
+                    <Route path="/clients" element={<ClientPage />} /> {/*list clients*/}
+                    <Route path="/client/:id" element={<ClientPage />} /> {/*edit client*/}
 
                     {/* location routes */}
-                    <Route path="/location/office" element={<Office />} /> {/*new office*/}
-                    <Route path="/location/offices" element={<Office />} /> {/*list offices*/}
-                    <Route path="/location/office/:id" element={<Office />} /> {/*edit office*/}
+                    <Route path="/location/office" element={<OfficePage />} /> {/*new office*/}
+                    <Route path="/location/offices" element={<OfficePage />} /> {/*list offices*/}
+                    <Route path="/location/office/:id" element={<OfficePage />} /> {/*edit office*/}
 
-                    <Route path="/location/headquarter" element={<Headquarter />} /> {/*new headquarter*/}
-                    <Route path="/location/headquarters" element={<Headquarter />} /> {/*list headquarter*/}
-                    <Route path="/location/headquarter/:id" element={<Headquarter />} /> {/*edit headquarter*/}
+                    <Route path="/location/headquarter" element={<HeadquarterPage />} /> {/*new headquarter*/}
+                    <Route path="/location/headquarters" element={<HeadquarterPage />} /> {/*list headquarter*/}
+                    <Route path="/location/headquarter/:id" element={<HeadquarterPage />} /> {/*edit headquarter*/}
 
-                    <Route path="/location/city" element={<City />} /> {/*new city*/}
-                    <Route path="/location/cities" element={<City />} /> {/*list cities*/}
-                    <Route path="/location/city/:id" element={<City />} /> {/*edit city*/}
+                    <Route path="/location/city" element={<CityPage />} /> {/*new city*/}
+                    <Route path="/location/cities" element={<CityPage />} /> {/*list cities*/}
+                    <Route path="/location/city/:id" element={<CityPage />} /> {/*edit city*/}
 
-                    <Route path="/location/state" element={<State />} /> {/*new state*/}
-                    <Route path="/location/states" element={<State />} /> {/*list states*/}
-                    <Route path="/location/state/:id" element={<State />} /> {/*edit state*/}
+                    <Route path="/location/state" element={<StatePage />} /> {/*new state*/}
+                    <Route path="/location/states" element={<StatePage />} /> {/*list states*/}
+                    <Route path="/location/state/:id" element={<StatePage />} /> {/*edit state*/}
 
-                    <Route path="/location/country" element={<Country />} /> {/*new country*/}
-                    <Route path="/location/countries" element={<Country />} /> {/*list countries*/}
-                    <Route path="/location/country/:id" element={<Country />} /> {/*edit country*/}
+                    <Route path="/location/country" element={<CountryPage />} /> {/*new country*/}
+                    <Route path="/location/countries" element={<CountryPage />} /> {/*list countries*/}
+                    <Route path="/location/country/:id" element={<CountryPage />} /> {/*edit country*/}
                   </Route>
 
                 </Route>

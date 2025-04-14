@@ -16,9 +16,10 @@ import Footer from '#/layout/Footer'
 import Navbar from '#/layout/Navbar'
 
 const RootLayout = () => {
+  const { user } = useAuthContext()
   const [open, setOpen] = useState(true)
-  const { user: credentials } = useAuthContext()
-  useMemo(() => setOpen(credentials?.role !== 'client'), [credentials])
+  const isExpanded = user?.role === 'company' || user?.role === 'admin'
+  useMemo(() => setOpen(isExpanded), [isExpanded])
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

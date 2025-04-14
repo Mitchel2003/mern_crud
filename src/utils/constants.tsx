@@ -330,6 +330,11 @@ export const solicitDefaultValues = {
   priority: '',
   photoUrl: [],
 }
+export const activityDefaultValues = {
+  dateAssignment: undefined,
+  engineer: '',
+  solicit: '',
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/

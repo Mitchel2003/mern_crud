@@ -39,7 +39,7 @@ const Dialog = ({
     onOpenChange={onOpenChange}
   >
     <DialogContent
-      aria-describedby={description ? 'dialog-description' : undefined}
+      aria-describedby={undefined}
       className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
     >
       {/* Header */}
@@ -54,9 +54,11 @@ const Dialog = ({
             className="text-left"
           />
         </DialogTitle>
-        <DialogDescription id="dialog-description">
-          {description}
-        </DialogDescription>
+        {description && (
+          <DialogDescription id="dialog-description">
+            {description}
+          </DialogDescription>
+        )}
       </DialogHeader>
 
       {/* Form */}
@@ -77,7 +79,7 @@ const Dialog = ({
         </form>
       </FormProvider>
     </DialogContent>
-  </DialogPrimitive>
+  </DialogPrimitive >
 )
 
 export default Dialog

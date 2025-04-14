@@ -67,6 +67,7 @@ const getBase = (type: string): string | undefined => {
     /*-------------------------format-------------------------*/
     case 'cv':
     case 'solicit':
+    case 'activity':
     case 'maintenance': return '/form'
     case 'inspection':
     case 'accessory': return '/form/cv/sub'
