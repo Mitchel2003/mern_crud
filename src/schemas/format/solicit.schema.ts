@@ -5,6 +5,7 @@ export const solicitSchema = z.object({
     name: z.string().optional(),
     brand: z.string().optional(),
     serie: z.string().optional(),
+    preview: z.string().optional(),
     modelEquip: z.string().optional(),
     healthRecord: z.string().optional(),
   }),

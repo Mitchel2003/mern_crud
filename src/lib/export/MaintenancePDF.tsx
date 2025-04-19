@@ -1,12 +1,11 @@
 import { Curriculum, Maintenance, User } from '@/interfaces/context.interface'
 import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { Metadata } from "@/interfaces/db.interface"
 import { formatDate } from "@/utils/format"
 
-interface MaintenancePDFProps { mt: Maintenance, com?: User, imgs?: Metadata[] }
+interface MaintenancePDFProps { mt: Maintenance, com?: User }
 
-const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
+const MaintenancePDF = ({ mt, com }: MaintenancePDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
@@ -17,7 +16,7 @@ const MaintenancePDF = ({ mt, com, imgs }: MaintenancePDFProps) => (
         <TechnicalSection mt={mt} />{/* Technical Characteristics */}
         <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
         <ObservationsSection mt={mt} />{/* Observaciones */}
-        <ServiceProviderSection mt={mt} com={com} imgs={imgs} />{/* ProviderService */}
+        <ServiceProviderSection mt={mt} com={com} />{/* ProviderService */}
       </View>
     </Page>
   </Document>
@@ -277,7 +276,7 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
 }
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: User, imgs?: Metadata[] }) => (
+const ServiceProviderSection = ({ mt, com }: { mt: Maintenance, com?: User }) => (
   <>
     <View style={styles.sectionTitle}>
       <Text style={styles.sectionTitleText}></Text>
@@ -316,10 +315,10 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: User
       <View style={styles.signatureBox}>
         <Text style={styles.signatureLabel}>FIRMA INGENIERO</Text>
         <View style={styles.signatureLine}>
-          {imgs?.some(img => img.name.includes('signature')) && (
+          {com?.metadata?.signature && (
             <Image
-              src={imgs?.find(img => img.name.includes('signature'))?.url || "/placeholder.svg"}
               style={styles.engineerSignature}
+              src={com.metadata.signature || "/placeholder.svg"}
             />
           )}
         </View>
@@ -327,10 +326,10 @@ const ServiceProviderSection = ({ mt, com, imgs }: { mt: Maintenance, com?: User
 
       {/* Logo de la empresa */}
       <View style={styles.providerLogoContainer}>
-        {imgs?.some(img => img.name.includes('logo')) && (
+        {com?.metadata?.logo && (
           <Image
-            src={imgs?.find(img => img.name.includes('logo'))?.url || "/placeholder.svg"}
             style={styles.providerCompanyLogo}
+            src={com.metadata.logo || "/placeholder.svg"}
           />
         )}
       </View>

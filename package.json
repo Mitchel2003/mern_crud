@@ -67,6 +67,7 @@
     "react-lazy-load-image-component": "^1.6.2",
     "react-rough-notation": "^1.0.5",
     "react-router-dom": "^6.25.1",
+    "react-signature-canvas": "^1.1.0-alpha.2",
     "recharts": "^2.15.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.5.5",

@@ -1,22 +1,36 @@
 import { userDefaultValues, clientFlowDefaultValues, groupCollection as groups } from "@/utils/constants"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { useFormatMutation, useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useAuthQuery"
 import { City, RoleProps, User } from "@/interfaces/context.interface"
+import { useFormatMutation } from "@/hooks/query/useFormatQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Metadata } from "@/interfaces/db.interface"
 
-import { MapPinHouseIcon, UserRoundCheck } from "lucide-react"
 import { useAuthContext } from "@/context/AuthContext"
+import { UserRoundCheck } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import {
   userSchema, UserFormProps,
   loginSchema, LoginFormProps,
+  signatureSchema, SignatureProps,
   clientFlowSchema, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
+
+
+/*--------------------------------------------------signature form--------------------------------------------------*/
+/** Hook personalizado para manejar el formulario de firma */
+export const useSignatureForm = () => {
+  const methods = useForm<SignatureProps>({
+    resolver: zodResolver(signatureSchema),
+    defaultValues: { png: '' },
+    mode: 'onSubmit',
+  })
+  const onSubmit = methods.handleSubmit(async (data: SignatureProps) => void (data))
+  return { methods, onSubmit }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------login form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de inicio de sesión */
@@ -57,14 +71,10 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const { createFile, deleteFile } = useFormatMutation('file')
   const { createUser, updateUser } = useUserMutation()
   const { user: credentials } = useAuthContext()
-  const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
 
   const { data: user } = queryUser.fetchUserById<User>(id as string, !!id)
-  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' })
-  const { data: company } = queryUser.fetchUserById<User>(credentials?.uid as string, credentials?.role === 'company') //to company
-  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: credentials?.role === 'admin' }) //to admin
-  const { data: imgs = [], isLoading } = queryFormat.fetchAllFiles<Metadata>({ path: `${to}/${id}/preview`, enabled: !!id && !!to })
+  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' || to === 'engineer' })
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
@@ -85,45 +95,49 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
       role: user.role,
       permissions: user.permissions || [],
       //add previews...
-      previewClientImage: imgs?.find(img => img.name.includes('img'))?.url,
-      previewCompanyLogo: imgs.find(img => img.name.includes('logo'))?.url,
-      previewCompanySignature: imgs.find(img => img.name.includes('signature'))?.url,
+      previewClientImage: user.metadata?.logo,
+      previewCompanyLogo: user.metadata?.logo,
+      previewCompanySignature: user.metadata?.signature,
     })
-  }, [id, user, imgs])
+  }, [id, user])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: UserFormProps) => {
       const companySignature: File | undefined = data.photoSignature?.[0]?.file
       const companyLogo: File | undefined = data.photoLogo?.[0]?.file
       const clientImg: File | undefined = data.photoImage?.[0]?.file
-      id && delete data.email // delete field email for update (fb)
+      id && delete data.email //delete field email for update (fb)
       id ? (
         updateUser({ id, data }).then(async () => {
-          if (!clientImg && !companySignature && !companyLogo) return
-          const files = [// files to upload with those references and existance
-            { file: companySignature, ref: 'signature', exist: imgs.find(img => img.name.includes('signature')) },
-            { file: companyLogo, ref: 'logo', exist: imgs.find(img => img.name.includes('logo')) },
-            { file: clientImg, ref: 'img', exist: imgs.find(img => img.name.includes('img')) }
+          if (!clientImg && !companyLogo && !companySignature) return
+          const files = [ //files to upload with those references and existance
+            { file: companySignature, base: 'company', ref: 'signature', exist: user?.metadata?.signature },
+            { file: companyLogo, base: 'company', ref: 'logo', exist: user?.metadata?.logo },
+            { file: clientImg, base: 'client', ref: 'logo', exist: user?.metadata?.logo }
           ].filter(f => f.file instanceof File)
           //handle file uploads in your paths
-          await Promise.all(files.map(async ({ file, exist, ref }) => {
-            const path = `${ref === 'img' ? 'client' : 'company'}/${id}/preview/${ref}`
-            exist && file && await deleteFile({ path }).then(async () => await createFile({ file, path }))
+          await Promise.all(files.map(async ({ file, exist, ref, base }) => {
+            const path = `${base}/${id}/preview/${ref}`
+            exist && file && await deleteFile({ path }).then(async () => {
+              const photoUrl = await createFile({ file, path })
+              await updateUser({ id, data: { metadata: { [ref]: photoUrl } } })
+            })
           }))
         })
       ) : (
-        createUser(data).then(async (e) => {
+        createUser(data).then(async (e: User) => {
           if (!clientImg && !companySignature && !companyLogo) return
           const files = [ //files to upload with those references
-            { file: companySignature, ref: 'signature' },
-            { file: companyLogo, ref: 'logo' },
-            { file: clientImg, ref: 'img' }
+            { file: companySignature, base: 'company', ref: 'signature' },
+            { file: companyLogo, base: 'company', ref: 'logo' },
+            { file: clientImg, base: 'client', ref: 'logo' }
           ].filter(f => f.file instanceof File)
           //handle file uploads in your paths
-          await Promise.all(files.map(async ({ file, ref }) => {
-            const base = ref === 'img' ? 'client' : 'company'
+          await Promise.all(files.map(async ({ file, ref, base }) => {
+            if (!file) return //if no file found, skip
             const path = `${base}/${e._id}/preview/${ref}`
-            file && await createFile({ file, path })
+            const photoUrl = await createFile({ file, path })
+            await updateUser({ id: e._id, data: { metadata: { [ref]: photoUrl } } })
           }))
         })
       )
@@ -134,13 +148,11 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
 
   return {
     methods,
-    isLoading,
     ...handleSubmit,
     options: {
-      companies: credentials?.role === 'admin'
-        ? companies?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon })) || []
-        : company ? [{ value: company?._id || '', label: `${company?.username || 'Sin nombre'} - ${company?.nit || 'Sin NIT'}`, icon: MapPinHouseIcon }] : [],
-      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit || 'Sin NIT'}`, icon: UserRoundCheck })) || [],
+      clients: credentials?.role !== 'company'
+        ? clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
+        : clients?.filter((e) => credentials?.permissions?.includes(e._id)).map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
     }
   }
 }

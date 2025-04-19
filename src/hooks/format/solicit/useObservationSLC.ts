@@ -9,6 +9,7 @@ const useObservationSLC = () => {
       name: data.name,
       brand: data.brand,
       serie: data.serie,
+      preview: data.photoUrl,
       modelEquip: data.modelEquip,
       healthRecord: data.healthRecord
     }

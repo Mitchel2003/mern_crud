@@ -1,9 +1,9 @@
 import { useThemeContext } from '@/context/ThemeContext'
 import Skeleton from '#/common/skeletons/SkeletonLarge'
 import { useAuthContext } from '@/context/AuthContext'
-import EngineerSection from './EngineerDashboardPage'
-import ClientSection from './ClientDashboardPage'
-import AdminSection from './AdminDashboardPage'
+import EngineerSection from './engineer/EngineerPage'
+import ClientSection from './client/ClientPage'
+import AdminSection from './admin/AdminPage'
 import { Suspense } from 'react'
 
 const DashboardPage = () => {

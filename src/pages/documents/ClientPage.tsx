@@ -1,4 +1,4 @@
-import ClientFlowSection from "@/sections/flow/client/ClientFlowSection"
+import ClientFlowSection from "@/sections/documents/reusables/client/ClientFlowSection"
 import ClientSection from "@/sections/documents/client/ClientSection"
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"

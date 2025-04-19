@@ -1,13 +1,12 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { Search } from "lucide-react"
-
 import HeaderCustom from "#/common/elements/HeaderCustom"
+import ImagePreview from '#/common/fields/ImagePreview'
 import InputField from "#/common/fields/Input"
-import { Button } from "#/ui/button"
+import { cn } from "@/lib/utils"
 
-interface ReferenceProps extends ThemeContextProps { img: string }
+interface ReferenceProps extends ThemeContextProps { id: boolean }
 
-const ReferenceSection = ({ img, theme }: ReferenceProps) => {
+const ReferenceSection = ({ theme, id }: ReferenceProps) => {
   return (
     <div className="space-y-4">
       <HeaderCustom
@@ -68,14 +67,14 @@ const ReferenceSection = ({ img, theme }: ReferenceProps) => {
             iconSpan="info"
             span="Imagen del equipo"
           />
-          <div className="relative group rounded-lg overflow-hidden">
-            <img alt="Equipo" className="w-full max-h-52 object-cover" src={img || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} />
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-              <Button variant="outline" className="w-full bg-white/10 backdrop-blur-sm hover:bg-white/20" onClick={() => window.open(img, '_blank')}>
-                <Search className="w-4 h-4 mr-2" />
-                Ver imagen completa
-              </Button>
+          <div className="md:col-span-5">
+            <div className={cn(!id ? 'hidden' : 'block')}>
+              <ImagePreview
+                theme={theme}
+                alt="imgEquip"
+                name="cv.preview"
+                sizeImage='max-w-full max-h-72'
+              />
             </div>
           </div>
         </div>

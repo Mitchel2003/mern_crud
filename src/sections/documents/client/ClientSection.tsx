@@ -8,8 +8,8 @@ import { useAuthContext } from '@/context/AuthContext'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import TableClientSection from '@/sections/flow/user/TableUserSection'
-import FormClientSection from '@/sections/flow/user/FormUserSection'
+import TableClientSection from '@/sections/documents/reusables/user/TableUserSection'
+import FormClientSection from '@/sections/documents/reusables/user/FormUserSection'
 const route = '/client'
 
 interface ClientSectionProps extends ThemeContextProps { id: string | undefined }

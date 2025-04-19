@@ -16,16 +16,16 @@ import Footer from '#/layout/Footer'
 import Navbar from '#/layout/Navbar'
 
 const RootLayout = () => {
-  const { user } = useAuthContext()
-  const [open, setOpen] = useState(true)
-  const isExpanded = user?.role === 'company' || user?.role === 'admin'
-  useMemo(() => setOpen(isExpanded), [isExpanded])
+  const { user, isAuth } = useAuthContext()
+  const [openSidebar, setOpenSidebar] = useState(true)
+  const isExpanded = !isAuth || (user?.role === 'company' || user?.role === 'admin')
+  useMemo(() => setOpenSidebar(isExpanded), [isExpanded, isAuth])
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <NotificationProvider>
           <ConfirmProvider>
-            <SidebarProvider open={open} onOpenChange={setOpen}>
+            <SidebarProvider open={openSidebar} onOpenChange={setOpenSidebar}>
               {/* Sidebar */}
               <Sidebar />
 

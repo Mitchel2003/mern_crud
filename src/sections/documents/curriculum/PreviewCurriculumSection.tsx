@@ -1,7 +1,6 @@
 import { Curriculum, Inspection, Accessory, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
-import { Metadata } from "@/interfaces/db.interface"
 
 import MaintenancePreviewCV from "#/pages/documents/curriculum/MaintenancePreviewCV"
 import EquipmentPreviewCV from "#/pages/documents/curriculum/EquipmentPreviewCV"
@@ -25,15 +24,11 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
   const { data: com, isLoading: isLoadingCom } = queryUser.fetchUserByQuery<User>({ role: 'company' })
   const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string)
   const { data: acc, isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
-  const idClient = cv?.office?.headquarter?.user?._id
-  const idCompany = com?.[0]?._id
+  const client = cv?.office?.headquarter?.user
+  const company = com?.[0]
 
-  const { data: imgCom = [], isLoading: isLoadingImgCom } = queryFormat.fetchAllFiles<Metadata>({ path: `company/${idCompany}/preview`, enabled: !!idCompany })
-  const { data: imgCli = [], isLoading: isLoadingImgCl } = queryFormat.fetchAllFiles<Metadata>({ path: `client/${idClient}/preview`, enabled: !!idClient })
   const isLoadingData = isLoadingCv || isLoadingIns || isLoadingAcc || isLoadingCom
-  const isLoadingFile = isLoadingImgCl || isLoadingImgCom
-
-  if (isLoadingData || isLoadingFile) return <Skeleton theme={theme} />
+  if (isLoadingData) return <Skeleton theme={theme} />
   return (
     <div className="container p-2">
       {cv && (
@@ -43,10 +38,10 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
             ? 'border-purple-100 from-gray-800 to-gray-900'
             : 'border-purple-100 from-white to-purple-50/30'
         )}>
-          <HeaderPreviewCV theme={theme} client={imgCli?.[0]?.url} isMobile={isMobile} />
+          <HeaderPreviewCV theme={theme} client={client} isMobile={isMobile} />
           <CardContent className="grid gap-6 px-4 sm:px-6">
             {/*** Info of client ***/}
-            <ClientPreviewCV theme={theme} cv={cv} client={imgCli?.[0]?.url} />
+            <ClientPreviewCV theme={theme} cv={cv} client={client} />
             {/*** Basic data, class biomedical and accessories associated ***/}
             <EquipmentPreviewCV theme={theme} cv={cv} accs={acc} />
             {/*** Details associated and stakeholders ***/}
@@ -54,7 +49,7 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
             {/*** Info of maintenance, inspection and specifications ***/}
             <MaintenancePreviewCV theme={theme} cv={cv} ins={ins} />
             {/*** Characteristics and provider service information ***/}
-            <FooterPreviewCV theme={theme} cv={cv} com={com?.[0]} imgCom={imgCom?.[0]?.url} />
+            <FooterPreviewCV theme={theme} cv={cv} com={company} />
           </CardContent>
         </Card>
       )}

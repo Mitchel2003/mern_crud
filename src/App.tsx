@@ -17,9 +17,10 @@ import OfficePage from "@/pages/documents/OfficePage";
 import StatePage from "@/pages/documents/StatePage";
 import CityPage from "@/pages/documents/CityPage";
 
-import { CalendarPage } from "@/pages/dashboard/EngineerDashboardPage";
-import { ScannerHub } from "@/pages/navigation/ScannerHub";
+import CalendarPage from "@/pages/dashboard/engineer/CalendarPage";
 import DocumentsHub from "@/pages/navigation/DocumentsHub";
+import SchedulePage from "@/pages/documents/SchedulePage";
+import ScannerHub from "@/pages/navigation/ScannerHub";
 import ProtectedRoute from "@/layouts/ProtectedRoute";
 import DashboardPage from "@/pages/dashboard";
 import LoginPage from "@/pages/LoginPage";
@@ -62,6 +63,10 @@ function App() {
                     <Route path="/form/solicit" element={<SolicitPage />} />
                     <Route path="/form/solicits" element={<SolicitPage />} />
                     <Route path="/form/solicit/:id" element={<SolicitPage />} />
+
+                    <Route path="/form/schedule" element={<SchedulePage />} />
+                    <Route path="/form/schedules" element={<SchedulePage />} />
+                    <Route path="/form/schedule/:id" element={<SchedulePage />} />
 
                     {/* user routes */}
                     <Route path="/engineer" element={<EngineerPage />} /> {/*new user*/}

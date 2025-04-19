@@ -6,7 +6,7 @@ import { Card, CardContent } from "#/ui/card"
 import { useState, useEffect } from "react"
 import { Button } from "#/ui/button"
 
-export const ScannerHub = () => {
+const ScannerHub = () => {
   const { notifySuccess, notifyError, notifyInfo } = useNotification()
   const [lastScanned, setLastScanned] = useState<string | null>(null)
   const [isRedirecting, setIsRedirecting] = useState(false)
@@ -134,3 +134,5 @@ export const ScannerHub = () => {
     </div>
   )
 }
+
+export default ScannerHub

@@ -11,12 +11,11 @@ import { Badge } from "#/ui/badge"
 import { Label } from "#/ui/label"
 
 interface FooterPreviewCVProps extends ThemeContextProps {
-  imgCom: string
   cv: Curriculum
   com?: User
 }
 
-const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
+const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
   return (
     <>
       <section className="animate-in fade-in-50 duration-500">
@@ -105,9 +104,9 @@ const FooterPreviewCV = ({ cv, com, imgCom }: FooterPreviewCVProps) => {
             <div className="relative group">
               <div className="w-32 h-32 rounded-lg border border-purple-100 overflow-hidden bg-white">
                 <img
-                  className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
-                  src={imgCom || '/placeholder.svg?height=128&width=128'}
                   alt="Logo proveedor"
+                  src={com?.metadata?.logo || '/placeholder.svg?height=128&width=128'}
+                  className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />

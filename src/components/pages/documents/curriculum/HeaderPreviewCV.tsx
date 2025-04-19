@@ -1,11 +1,11 @@
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { ThemeContextProps, User } from "@/interfaces/context.interface"
 import { CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
 interface HeaderPreviewCVProps extends ThemeContextProps {
+  client: User | undefined
   isMobile: boolean
-  client: string
 }
 
 const HeaderPreviewCV = ({ theme, client, isMobile }: HeaderPreviewCVProps) => {
@@ -19,9 +19,9 @@ const HeaderPreviewCV = ({ theme, client, isMobile }: HeaderPreviewCVProps) => {
       {client && (
         <div className="relative max-w-72 max-h-40 transition-transform hover:scale-105">
           <img
-            className="object-contain rounded-lg border border-purple-100 shadow-sm"
-            src={client || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
             alt="Logo Cliente"
+            className="object-contain rounded-lg border border-purple-100 shadow-sm"
+            src={client?.metadata?.logo || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
           />
         </div>
       )}

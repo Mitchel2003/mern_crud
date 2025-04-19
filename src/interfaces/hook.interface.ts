@@ -45,7 +45,8 @@ export type QueryReact_Format = {
   fetchFormatById: <T>(path: FormatType, id: string, enabled?: boolean) => UseQueryResult<T | undefined, Error>
   fetchFormatByQuery: <T>(path: FormatType, query: object, enabled?: boolean) => UseQueryResult<T[], Error>
   fetchAllFiles: <T>(data: FileReference) => UseQueryResult<T[], Error>
-  fetchAllQueries: <T>(data: any[]) => {
+  fetchQueries: <T>(path: string, data: any[], folder: string) => UseQueryResult<T[] | undefined, Error>[],
+  fetchQueriesCV: <T>(data: any[]) => {
     data?: { type: string; id: string; data: T[]; error: any }
     isFetching: boolean
     isLoading: boolean

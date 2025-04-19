@@ -7,12 +7,12 @@ import { Avatar } from "#/ui/avatar"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
 
-import { ThemeContextProps } from "@/interfaces/context.interface"
+import { ThemeContextProps, User } from "@/interfaces/context.interface"
 import { Curriculum } from "@/interfaces/context.interface"
 import { cn, copyToClipboard } from "@/lib/utils"
 
 interface ClientPreviewCVProps extends ThemeContextProps {
-  client: string
+  client: User | undefined
   cv: Curriculum
 }
 
@@ -36,15 +36,15 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
         <div className="space-y-4">
           <div className="flex items-start gap-4">
             <Avatar className="w-16 h-16 border-2 border-purple-100">
-              <AvatarImage src={client} className="object-contain" />
+              <AvatarImage className="object-contain" src={client?.metadata?.logo || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"} />
               <AvatarFallback className="bg-purple-50 text-purple-700">
-                {cv?.office?.headquarter?.user?.username?.charAt(0)}
+                {client?.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
             <div className="space-y-1">
               <h3 className="font-semibold text-lg">
-                {cv?.office?.headquarter?.user?.username}
+                {client?.username}
               </h3>
               <Badge variant="outline" className="bg-purple-50">
                 Cliente registrado ®
@@ -59,15 +59,15 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
               {[{
                 icon: <Mail className="w-4 h-4 text-purple-600" />,
                 label: "Email",
-                value: cv?.office?.headquarter?.user?.email
+                value: client?.email
               }, {
                 icon: <Phone className="w-4 h-4 text-purple-600" />,
                 label: "Teléfono",
-                value: cv?.office?.headquarter?.user?.phone
+                value: client?.phone
               }, {
                 icon: <FileText className="w-4 h-4 text-purple-600" />,
                 label: "NIT",
-                value: cv?.office?.headquarter?.user?.nit
+                value: client?.nit
               }].map((item, index) => (
                 <Tooltip key={index}>
                   <TooltipTrigger asChild>

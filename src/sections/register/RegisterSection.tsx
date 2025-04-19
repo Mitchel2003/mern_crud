@@ -3,7 +3,6 @@ import { useUserForm } from "@/hooks/core/form/useAuthForm"
 import { FormProvider } from "react-hook-form"
 import { cn } from "@/lib/utils"
 
-import Skeleton from "#/common/skeletons/SkeletonShort"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import { Card } from "#/ui/card"
@@ -14,9 +13,7 @@ import FormSection from "./FormSection"
 interface RegisterSectionProps extends ThemeContextProps { id: string | undefined }
 
 const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
-  const { open, isLoading, methods, options, setOpen, onConfirm, handleSubmit } = useUserForm(id)
-
-  if (isLoading) return <Skeleton theme={theme} />
+  const { open, methods, options, setOpen, onConfirm, handleSubmit } = useUserForm(id)
   return (
     <>
       <FormProvider {...methods}>
@@ -36,7 +33,7 @@ const RegisterSection = ({ theme, id }: RegisterSectionProps) => {
               className="bg-transparent/0"
               description="Diligencia la información para registrar un usuario"
             />
-            <FormSection theme={theme} options={options.companies} />
+            <FormSection theme={theme} options={options.clients} />
             <FooterSection theme={theme} />
           </Card>
         </form>

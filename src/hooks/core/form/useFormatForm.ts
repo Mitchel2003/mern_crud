@@ -1,23 +1,99 @@
-import { Accessory, User, Curriculum, Maintenance } from '@/interfaces/context.interface'
+import { curriculumDefaultValues, maintenanceDefaultValues, solicitDefaultValues, activityDefaultValues, scheduleDefaultValues } from '@/utils/constants'
+import { Accessory, User, Curriculum, Maintenance, Office } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useNotificationContext } from '@/context/NotificationContext'
+import { useQueryLocation } from '@/hooks/query/useLocationQuery'
 import { useNotification } from '@/hooks/ui/useNotification'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Metadata } from '@/interfaces/db.interface'
 
-import { curriculumDefaultValues, maintenanceDefaultValues, solicitDefaultValues, activityDefaultValues } from '@/utils/constants'
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
 import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { ActivityFormProps, activitySchema } from '@/schemas/format/activity.schema'
+import { ScheduleFormProps, scheduleSchema } from '@/schemas/format/schedule.schema'
 import { solicitSchema, SolicitFormProps } from '@/schemas/format/solicit.schema'
 import { useAuthContext } from '@/context/AuthContext'
+import TrainingPDF from '@/lib/export/TrainingPDF'
 import { UserRoundCheck } from 'lucide-react'
+import { usePDFDownload } from '@/lib/utils'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { baseUrl } from '@/utils/config'
-import { useEffect } from 'react'
+
+/*--------------------------------------------------schedule form--------------------------------------------------*/
+/**
+ * Hook personalizado para manejar el formulario de creación de cronogramas
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useScheduleForm = (onSuccess?: () => void) => {
+  // const { createFile } = useFormatMutation('file')
+  const { downloadPDFDirect } = usePDFDownload()
+  const { user } = useAuthContext()
+
+  const methods = useForm<ScheduleFormProps>({
+    resolver: zodResolver(scheduleSchema),
+    defaultValues: scheduleDefaultValues,
+    mode: "onChange",
+  })
+
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' }, !!user)
+
+  // Obtain client and offices when client changes
+  const clientId = methods.watch('client')
+  const typeSchedule = methods.watch('typeSchedule')
+  const { data: client } = useQueryUser().fetchUserById<User>(clientId, !!clientId)
+  const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', {}, !!client && typeSchedule === 'capacitación')
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id] }, !!client && typeSchedule === 'capacitación')
+  const company = companies?.[0]
+
+  const areas = useMemo(() => {
+    if (!client || !offices.length) return []
+    const clientOffices = offices.filter(office => office?.headquarter?.user?._id === client._id)
+    const uniqueAreas = Array.from(new Set(clientOffices.map(office => office.group).filter(Boolean))) //With "Set" we get unique values (no duplicates)
+    return uniqueAreas
+  }, [client, offices])
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: ScheduleFormProps) => {
+      if (!client || !company || !areas.length) return
+      const fileName = `${e.typeSchedule}-${e.typeClassification || 'default'}-${Date.now()}.pdf`
+      const path = `client/${e.client}/schedule/${fileName}`
+      if (e.typeSchedule === 'capacitación') {
+        await downloadPDFDirect({
+          fileName, component: TrainingPDF, props: {
+            months: e.monthOperation || [],
+            areas, client, company
+          }
+        })
+
+        // Si obtuvimos el blob, lo guardamos en el servidor
+        // if (blob) {
+        //   await createFile({ file: blob, path })
+        //   notifySuccess({
+        //     title: 'Éxito',
+        //     message: 'Cronograma de capacitación generado correctamente',
+        //   })
+        // }
+      }
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    ...handleSubmit,
+    clients: clients?.filter((e) => user?.permissions?.includes(e._id)).map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || [],
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------activity form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de creación de actividades */
@@ -79,7 +155,6 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
   const { sendNotification } = useAuthContext()
   const { notifyError } = useNotification()
 
-  const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${id}/preview`, enabled: !!id })
   const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
   const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
   const company = com?.[0]
@@ -124,8 +199,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
 
   return {
     methods,
-    ...handleSubmit,
-    img: img?.[0]?.url || '',
+    ...handleSubmit
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -173,7 +247,6 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   }, methods)
 
   return {
-    id,
     methods,
     ...handleSubmit,
     referenceData: referenceData.options,

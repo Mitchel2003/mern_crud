@@ -1,5 +1,4 @@
 import SubmitFooter from "#/common/elements/SubmitFooter"
-import Skeleton from "#/common/skeletons/SkeletonLarge"
 import ImagePreview from "#/common/fields/ImagePreview"
 import CardIterable from "#/common/fields/CardIterable"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -24,8 +23,7 @@ interface FormUserSectionProps extends ThemeContextProps {
 }
 
 const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
-  const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useUserForm(id, to, onChange)
-  if (isLoading) return <Skeleton theme={theme} />
+  const { open, methods, options, setOpen, onConfirm, handleSubmit } = useUserForm(id, to, onChange)
   return (
     <>
       <FormProvider {...methods}>
@@ -99,9 +97,9 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
                   theme={theme}
                   name="permissions"
                   span="Selecciona varios"
-                  options={to === 'engineer' ? options.companies : options.clients}
-                  placeholder={`Selecciona el ${to === 'engineer' ? 'proveedor de servicio' : 'cliente'}`}
-                  label={`Acceso a ${to === 'engineer' ? 'proveedores de servicio' : 'clientes'}`}
+                  options={options.clients}
+                  label={`Acceso a clientes`}
+                  placeholder={`Selecciona los clientes asociados`}
                 />
               )}
             </div>

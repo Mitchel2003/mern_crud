@@ -6,8 +6,8 @@ import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
-import TableEngineerSection from '@/sections/flow/user/TableUserSection'
-import FormEngineerSection from '@/sections/flow/user/FormUserSection'
+import TableEngineerSection from '@/sections/documents/reusables/user/TableUserSection'
+import FormEngineerSection from '@/sections/documents/reusables/user/FormUserSection'
 const route = '/engineer'
 
 interface EngineerSectionProps extends ThemeContextProps { id: string | undefined }

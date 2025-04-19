@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 /*--------------------------------------------------authSchema--------------------------------------------------*/
+export const signatureSchema = z.object({ png: z.string() })
 export const loginSchema = z.object({
   email: z
     .string({ required_error: "El correo electrónico es requerido" })
@@ -171,6 +172,7 @@ export const clientFlowSchema = z.object({
 
 /*--------------------------------------------------types--------------------------------------------------*/
 export type LoginFormProps = z.infer<typeof loginSchema>
+export type SignatureProps = z.infer<typeof signatureSchema>
 export type ForgotPasswordFormProps = z.infer<typeof forgotPasswordSchema>
 
 export type UserFormProps = z.infer<typeof userSchema>

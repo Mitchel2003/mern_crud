@@ -1,5 +1,5 @@
 import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
-import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, PendingActions } from '@mui/icons-material'
+import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { NavItemProps } from '@/interfaces/props.interface'
@@ -52,6 +52,16 @@ export const links = () => {
       icon: AssignmentInd,
       label: 'Usuarios de servicio',
     },
+    {// solicits
+      icon: MoveToInbox,
+      href: '/form/solicit',
+      label: 'Solicitudes',
+    },
+    {// cronogramas
+      icon: WorkHistory,
+      href: '/form/schedule',
+      label: 'Cronogramas',
+    },
     {/** forms **/
       icon: PermMedia,
       label: 'Documentación',
@@ -82,11 +92,6 @@ export const links = () => {
           icon: Users,
           href: '/clients',
           label: 'Clientes',
-        },
-        {// solicits
-          icon: PendingActions,
-          href: '/form/solicit',
-          label: 'Solicitudes',
         }
       ]
     }
@@ -335,6 +340,14 @@ export const activityDefaultValues = {
   engineer: '',
   solicit: '',
 }
+export const scheduleDefaultValues = {
+  client: '',
+  typeSchedule: '',
+  typeClassification: '',
+  monthOperation: undefined,
+  dateAttendance: undefined,
+  newRowsAttendance: []
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default navigation routes--------------------------------------------------*/
@@ -444,6 +457,9 @@ export const typeMaintenanceCollection: Curriculum['typeMaintenance'] = [
 export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
   'servicio', 'componentes', 'usuario', 'despiece'
 ]
+export const typeSchedule: any[] = [
+  'capacitación', 'mantenimiento', 'acta de asistencia'
+]
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default style values--------------------------------------------------*/
@@ -481,7 +497,7 @@ export const tableTranslations = {// to spanish
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------styles PDF--------------------------------------------------*/
-export const styles = StyleSheet.create({
+export const styles = StyleSheet.create({ //styles basics
   page: {
     padding: '15pt',
     fontSize: '9pt',
@@ -842,6 +858,91 @@ export const styles = StyleSheet.create({
   providerCompanyLogo: {
     width: '100%',
     height: '70pt',
+    objectFit: 'contain',
+  }
+})
+
+export const attendanceStyles = StyleSheet.create({ //to attendance PDF
+  tableContainer: {
+    marginTop: '10pt',
+    border: '1pt solid black',
+  },
+  tableHeader: {
+    backgroundColor: '#000000',
+    padding: '5pt',
+  },
+  headerText: {
+    color: '#FFFFFF',
+    fontSize: '10pt',
+    textAlign: 'center',
+    fontFamily: 'Helvetica-Bold',
+  },
+  columnHeaders: {
+    flexDirection: 'row',
+    borderBottom: '1pt solid black',
+  },
+  columnHeader: {
+    padding: '4pt',
+    borderRight: '1pt solid black',
+    backgroundColor: '#FFFFFF',
+  },
+  columnHeaderText: {
+    fontSize: '8pt',
+    textAlign: 'center',
+    fontFamily: 'Helvetica-Bold',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottom: '1pt solid black',
+  },
+  tableCell: {
+    padding: '3pt 5pt',
+    borderRight: '1pt solid black',
+    justifyContent: 'center',
+    fontSize: '8pt',
+  },
+  tableCellText: {
+    textAlign: 'center',
+    fontSize: '8pt',
+  },
+
+  // Estilos para el footer (sin cambios)
+  footerContainer: {
+    marginTop: '10pt',
+    flexDirection: 'row',
+    borderTop: '1pt solid black',
+    justifyContent: 'space-between',
+  },
+  engineerSection: {
+    width: '30%',
+    padding: '10pt',
+  },
+  signatureImage: {
+    width: '120pt',
+    height: '60pt',
+    marginLeft: '15pt',
+    marginBottom: '5pt',
+  },
+  signatureLine: {
+    borderBottom: '1pt solid black',
+    marginBottom: '5pt',
+  },
+  engineerName: {
+    fontSize: '9pt',
+    fontFamily: 'Helvetica-Bold',
+  },
+  engineerDetail: {
+    fontSize: '8pt',
+    marginTop: '2pt',
+  },
+  logoSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderLeft: '1pt solid black',
+  },
+  companyLogo: {
+    width: '180pt',
+    height: '120pt',
     objectFit: 'contain',
   }
 })

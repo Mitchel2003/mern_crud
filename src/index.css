@@ -90,3 +90,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* canvas signature */
+.signature-canvas {
+  touch-action: none;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #fff;
+}

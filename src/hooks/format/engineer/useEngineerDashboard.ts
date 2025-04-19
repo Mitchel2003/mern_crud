@@ -1,53 +1,52 @@
 import { useState, useEffect } from "react"
 
-export interface EngineerDashboardData {
-  // Estadísticas generales
-  totalAssignedEquipments: number
+export interface EngineerDashboardData {// Estadísticas generales
   totalCompletedMaintenances: number
+  totalAssignedEquipments: number
   pendingMaintenances: number
-  
+
   // Datos para gráficos y análisis
   maintenancesByStatus: {
-    pending: number
     inProgress: number
     completed: number
     cancelled: number
+    pending: number
   }
-  
+
   // Actividades recientes
   recentActivities: {
-    id: string
-    type: string
-    title: string
     description: string
-    date: string
     status: string
+    title: string
+    type: string
+    date: string
+    id: string
   }[]
-  
+
   // Próximos mantenimientos
   upcomingMaintenances: {
-    id: string
+    priority: 'low' | 'medium' | 'high'
     equipmentName: string
     clientName: string
-    date: string
-    priority: 'low' | 'medium' | 'high'
     location: string
+    date: string
+    id: string
   }[]
-  
+
   // Rendimiento
   performanceMetrics: {
     averageResolutionTime: string
-    completionRate: number
     clientSatisfaction: number
+    completionRate: number
   }
-  
+
   // Notificaciones
   notifications: {
-    id: string
-    message: string
     type: 'info' | 'warning' | 'urgent'
-    date: string
+    message: string
     read: boolean
+    date: string
+    id: string
   }[]
 }
 
@@ -73,15 +72,11 @@ export function useEngineerDashboard() {
     notifications: []
   })
 
-  useEffect(() => {
-    // Simulación de carga de datos
+  useEffect(() => {// Simulación de carga de datos
     const fetchData = async () => {
-      try {
-        // Aquí iría la llamada a la API real
+      try {// Aquí iría la llamada a la API real
         await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        // Datos de ejemplo para desarrollo
-        setData({
+        setData({// Datos de ejemplo para desarrollo
           totalAssignedEquipments: 24,
           totalCompletedMaintenances: 18,
           pendingMaintenances: 6,

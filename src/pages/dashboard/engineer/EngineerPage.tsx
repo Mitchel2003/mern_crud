@@ -1,24 +1,16 @@
 import { useEngineerDashboard } from "@/hooks/format/engineer/useEngineerDashboard"
-import CalendarSection from "#/pages/dashboard/engineer/Calendar"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
-import { useAuthContext } from "@/context/AuthContext"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-// Importar las secciones del dashboard
 import NotificationsSection from "@/sections/dashboard/engineer/NotificationsSection"
 import NavigateSection from "@/sections/dashboard/engineer/NavigateSection"
 import StatsSection from "@/sections/dashboard/engineer/StatsSection"
 import TasksSection from "@/sections/dashboard/engineer/TasksSection"
 import CTASection from "@/sections/dashboard/engineer/CTASection"
 
-// Importar las secciones del calendario
-import HeaderCalendarSection from "@/sections/dashboard/engineer/calendar/HeaderCalendarSection"
-import UpcomingEventsSection from "@/sections/dashboard/engineer/calendar/UpcomingEventsSection"
-import TeamAvailabilitySection from "@/sections/dashboard/engineer/calendar/TeamAvailabilitySection"
-
-const EngineerDashboardPage = () => {
+const EngineerPage = () => {
   const { theme } = useThemeContext()
   const { data, loading } = useEngineerDashboard()
   if (loading) return <Skeleton theme={theme} />
@@ -49,21 +41,4 @@ const EngineerDashboardPage = () => {
   )
 }
 
-export default EngineerDashboardPage
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-export const CalendarPage = () => {
-  const { theme } = useThemeContext()
-  const { user: credentials } = useAuthContext()
-  return (
-    <main className={cn('mx-auto px-2 lg:px-4 py-4')}>
-      <motion.div className="space-y-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <HeaderCalendarSection theme={theme} credentials={credentials} />{/* Encabezado del Calendario */}
-        <UpcomingEventsSection theme={theme} upcomingEvents={[]} />{/* Sección de Próximos Eventos */}
-        <CalendarSection theme={theme} />{/* Sección Principal del Calendario; Componente externo */}
-        <TeamAvailabilitySection theme={theme} teamMembers={[]} />{/* Sección de users */}
-      </motion.div>
-    </main>
-  )
-}
+export default EngineerPage

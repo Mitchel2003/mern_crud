@@ -94,11 +94,9 @@ interface SubmitButtonProps extends ThemeContextProps {
 const SubmitButton = ({ label, theme }: SubmitButtonProps) => (
   <Button
     type="submit"
-    className={cn(
-      'w-full text-white',
-      theme === 'dark'
-        ? 'bg-purple-600 hover:bg-purple-700'
-        : 'bg-purple-800 hover:bg-purple-900'
+    className={cn('w-full text-white', theme === 'dark'
+      ? 'bg-purple-600 hover:bg-purple-700'
+      : 'bg-purple-800 hover:bg-purple-900'
     )}
   >
     {label}

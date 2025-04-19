@@ -1,32 +1,25 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useSolicitForm } from "@/hooks/core/form/useFormatForm"
+import { useScheduleForm } from "@/hooks/core/form/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
+import { typeSchedule } from "@/utils/constants"
 import { FormProvider } from "react-hook-form"
-import React, { useMemo } from "react"
+import React from "react"
 
+import InputSearchableField from "#/common/fields/InputSearchable"
+import ClassificationSection from "./ClassificationSection"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
-
+import SelectField from "#/common/fields/Select"
 import { CardContent } from "#/ui/card"
 
-import ObservationSection from "./ObservationSection"
-import ReferenceSection from "./ReferenceSection"
-import { RenderFormat } from "@/utils/format"
-
-interface FormSolicitSectionProps extends ThemeContextProps {
+interface FormScheduleSectionProps extends ThemeContextProps {
   footer?: React.ComponentType<FooterFormProps>
-  id: string | undefined
   onChange: () => void
 }
 
-const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionProps) => {
-  const { open, methods, setOpen, onConfirm, handleSubmit } = useSolicitForm(id)
-
-  const formSections = useMemo(() => [
-    <ReferenceSection key="reference" theme={theme} id={!!id} />,
-    <ObservationSection key="observation" theme={theme} />
-  ], [theme])
+const FormScheduleSection = ({ theme, footer: Footer }: FormScheduleSectionProps) => {
+  const { open, methods, clients, setOpen, onConfirm, handleSubmit } = useScheduleForm()
   return (
     <>
       <FormProvider {...methods}>
@@ -34,8 +27,8 @@ const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionPro
           {/* -------------------- Header form -------------------- */}
           <HeaderForm
             theme={theme}
-            title="Solicitud de servicio"
-            description="Diligencia el formulario para registrar una solicitud"
+            title="Creacion de cronograma"
+            description="Diligencia el formulario para registrar un cronograma"
             breadcrumbs={[
               { description: "Codigo: FHV-01" },
               { description: "Vigente desde: 01/08/2019" },
@@ -45,14 +38,29 @@ const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionPro
 
           {/* -------------------- Content form -------------------- */}
           <CardContent className="pt-6 space-y-8">
-            <RenderFormat format={formSections} />
+            <InputSearchableField
+              theme={theme}
+              name="client"
+              label="Cliente"
+              options={clients}
+              placeholder="Seleccione el cliente"
+            />
+            <SelectField
+              theme={theme}
+              name="typeSchedule"
+              label="Tipo de cronograma"
+              placeholder="Seleccione el tipo de cronograma"
+              options={typeSchedule.map(e => ({ label: e, value: e }))}
+            />
+            {/** Iterable classification */}
+            <ClassificationSection theme={theme} />
           </CardContent>
 
           {/* -------------------- Footer -------------------- */}
           {!Footer ? (
             <SubmitFooter
               theme={theme}
-              to="/form/solicit"
+              to="/form/schedule"
               onCancel={() => methods.reset()}
               disabled={!methods.formState.isDirty}
             />
@@ -72,7 +80,7 @@ const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionPro
         theme={theme}
         onConfirm={onConfirm}
         onOpenChange={() => setOpen(false)}
-        description="¿Estás seguro? Se enviará la solicitud."
+        description="¿Estás seguro? Se creara un cronograma."
         confirmLabel="Confirmar"
         cancelLabel="Cancelar"
         title="Confirmación"
@@ -81,4 +89,4 @@ const FormSolicitSection = ({ id, theme, footer: Footer }: FormSolicitSectionPro
   )
 }
 
-export default React.memo(FormSolicitSection)
+export default React.memo(FormScheduleSection)

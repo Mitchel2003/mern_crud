@@ -45,6 +45,7 @@ export type User = BaseMDB & {
   role: RoleProps
   fcmToken?: string
   permissions?: string[]
+  metadata?: Record<string, any>
 }
 
 export type AuthContext = {

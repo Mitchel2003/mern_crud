@@ -68,19 +68,33 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   /**
-   * Obtener recursos para múltiples curriculums (imágenes y accesorios)
-   * @param {any[]} data - Array de curriculums para los que obtener recursos
-   * @returns Array de resultados de consultas para imágenes de curriculums, imágenes de clientes y accesorios
+   * Obtener recursos en base a un path y un array de ids
+   * @param {string} path - Nos ayuda a construir la route
+   * @param {any[]} data - Array de ids para los que obtener recursos
+   * @param {string} folder - Nos ayuda a construir la ruta del archivo
+   * @returns Array de los files encontrados en las múltiples consultas
    */
-  const fetchAllQueries = <T>(data: any[]) => useQueries({
+  const fetchQueries = <T>(path: string, data: any[], folder: string) => useQueries({
     queries: (data || []).flatMap((q: any) => [{
-      enabled: Boolean(q._id), retry: 1,
-      queryKey: ['client', q._id],
-      queryFn: async () => {
-        const result = await format.getAllFiles<T>({ path: `client/${q.office?.headquarter?.user?._id}/preview`, enabled: q._id!! })
-        return { type: 'client', id: q.office?.headquarter?.user?._id, data: result, error: null }
-      }
-    }, {
+      queryKey: [path, q],
+      enabled: Boolean(q), retry: 1,
+      queryFn: async () => await format.getAllFiles<T>({ path: `${path}/${q}/${folder}`, enabled: q!! })
+    }])
+  })
+
+  /**
+   * IMPORTANT! I need reconvert this logic to reusable queries fetch
+   * just see, we can see that this logic is repeated in fetchQueriesCV
+   * we can send a prop like "path" that represent the context of query "accessory";
+   * also we need make a prop query optional to put on de second param {query: { curriculum: q._id }}
+   * this way we can build a reutilizable and customizable fetchQueries funtion to another context, like "maintenance" or "solicit"
+
+   * Obtener recursos para múltiples curriculums (accesorios)
+   * @param {any[]} data - Array de curriculums para los que obtener recursos
+   * @returns Array de resultados de consultas para accesorios
+   */
+  const fetchQueriesCV = <T>(data: any[]) => useQueries({
+    queries: (data || []).flatMap((q: any) => [{
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['accessory', q._id],
       queryFn: async () => {
@@ -94,8 +108,9 @@ export const useQueryFormat = (): QueryReact_Format => {
     fetchAllFormats,
     fetchFormatById,
     fetchFormatByQuery,
-    fetchAllQueries,
+    fetchQueriesCV,
     fetchAllFiles,
+    fetchQueries,
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

@@ -5,17 +5,16 @@ import { formatDateTime } from "@/utils/format"
 
 interface CurriculumPDFProps {
   accs?: Accessory[]
-  comLogo?: string
-  cliLogo?: string
   cv: Curriculum
-  com: User
+  company: User
+  client: User
 }
 
-const CurriculumPDF = ({ cv, accs, com, cliLogo, comLogo }: CurriculumPDFProps) => (
+const CurriculumPDF = ({ cv, accs, company, client }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
-        <HeaderSection cliLogo={cliLogo} />{/* Title Section */}
+        <HeaderSection client={client} />{/* Title Section */}
         <ClientSection cv={cv} />{/* Client Section */}
         <EquipmentSection cv={cv} accessories={accs} />{/* Equipment Section */}
         <BioClassificationSection cv={cv} />{/* Biomedical Classification */}
@@ -23,7 +22,7 @@ const CurriculumPDF = ({ cv, accs, com, cliLogo, comLogo }: CurriculumPDFProps) 
         <TechnicalSection cv={cv} />{/* Technical Characteristics */}
         <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
         <CharacteristicsSection cv={cv} />{/* Características */}
-        <ServiceProviderSection company={com} companyLogo={comLogo} />{/* ProviderService */}
+        <ServiceProviderSection company={company} />{/* ProviderService */}
       </View>
     </Page>
   </Document>
@@ -34,11 +33,11 @@ export default CurriculumPDF
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /** Encabezado */
-const HeaderSection = ({ cliLogo }: { cliLogo?: string }) => (
+const HeaderSection = ({ client }: { client: User }) => (
   <>
     <View style={styles.headerContainer}>
       <View style={styles.logoContainer}>
-        <Image src={cliLogo || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} style={styles.logo} />
+        <Image src={client?.metadata?.logo || "https://placehold.co/200x200/e2e2e2/666666?text=Sin+imagen"} style={styles.logo} />
       </View>
       <View style={[styles.titleContainer, { borderLeft: '1pt solid black' }]}>
         <View style={styles.mainTitle}>
@@ -440,7 +439,7 @@ const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
 )
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ company, companyLogo }: { company: User, companyLogo?: string }) => (
+const ServiceProviderSection = ({ company }: { company: User }) => (
   <>
     <View style={[styles.sectionTitle, { marginBottom: '0pt' }]}>
       <Text style={styles.sectionTitleText}>PROVEEDOR DEL SERVICIO</Text>
@@ -465,10 +464,10 @@ const ServiceProviderSection = ({ company, companyLogo }: { company: User, compa
       </View>
 
       {/* Logo de la empresa */}
-      {companyLogo && (
+      {company?.metadata && (
         <Image
-          src={companyLogo || "https://placehold.co/100x100/e2e2e2/666666?text=Sin+imagen"}
           style={styles.providerLogo}
+          src={company?.metadata?.logo || "https://placehold.co/100x100/e2e2e2/666666?text=Sin+imagen"}
         />
       )}
     </View>

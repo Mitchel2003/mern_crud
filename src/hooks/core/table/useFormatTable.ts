@@ -4,11 +4,192 @@ import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { Metadata } from '@/interfaces/db.interface'
+import TrainingPDF from '@/lib/export/TrainingPDF'
 import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { pdfToBase64 } from '@/lib/utils'
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { useAuthContext } from '@/context/AuthContext'
+
+/*--------------------------------------------------schedule table--------------------------------------------------*/
+interface ScheduleMap { schedules: any[] }
+/** Hook principal que orquesta los sub-hooks de cronogramas para la tabla */
+export const useScheduleTable = () => {
+  const [onDownload, setOnDownload] = useState<any | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFile } = useFormatMutation('file')
+  const { downloadPDF } = usePDFDownload()
+  const queryFormat = useQueryFormat()
+  const queryUser = useQueryUser()
+  const isProcessing = useRef(false)
+  const { user } = useAuthContext()
+
+  const scheduleQueries = queryFormat.fetchQueries<any>('client', user?.permissions || [], 'schedule')
+  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company' })
+  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client' })
+  const company = companies?.[0]
+  const client = clients?.[0]
+
+  // useEffect(() => { if (!client) return; setOnDownload({}) }, [client])
+
+  /** Helps us group the results by curriculum */
+  const _zipMap = useMemo(() => {
+    if (!onDownload?.length) return new Map<string, ScheduleMap>()
+    const isLoading = scheduleQueries.some(q => q.isLoading || q.isFetching)
+    const resourceMap = new Map<string, ScheduleMap>()
+    if (isLoading) return resourceMap
+    const schedules = onDownload || [] //Use the available elements
+    schedules.forEach((s: any) => { //Mapping all schedules with their resources
+      resourceMap.set(s._id, { schedules: scheduleQueries.find(q => q.data?.includes(s._id))?.data || [] } as ScheduleMap)
+    })
+    return resourceMap
+  }, [onDownload, scheduleQueries])
+
+  /**
+   * Función que se ejecuta cuando se descarga un cronograma
+   * @param {any} data - Cronograma a descargar
+   */
+  const downloadFile = useCallback(async (_data: any) => {
+    if (!client || !company) return //await for this
+    if (isProcessing.current) return
+    isProcessing.current = true
+    const fileName = `name.pdf`
+    await downloadPDF({ fileName, component: TrainingPDF, props: { client, company, months: [], areas: [] } })
+      .finally(() => { setOnDownload(undefined); isProcessing.current = false })
+  }, [downloadPDF, client, company])
+
+  /**
+   * Función que se ejecuta cuando se elimina un cronograma
+   * @param {string} id - ID del cronograma a eliminar
+   */
+  const deleteSchedule = useCallback(async (id: string) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    await deleteFile({ path: `client/${id}/schedule/${id}` }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteFile])
+
+  /** just one useEffect */
+  useEffect(() => {
+    onDelete && deleteSchedule(onDelete)
+    onDownload && downloadFile(onDownload)
+  }, [deleteSchedule, downloadFile, onDelete, onDownload])
+
+  return {
+    handleDelete: (id: string) => setOnDelete(id),
+    handleDownload: (data: any) => setOnDownload(data),
+    schedules: useMemo(() => scheduleQueries.map(q => Array.isArray(q.data) ? q.data : []).flat(), [scheduleQueries]),
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------solicit table--------------------------------------------------*/
+/** Hook principal que orquesta los sub-hooks de solicitudes para la tabla */
+export const useSolicitTable = () => {
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFormat } = useFormatMutation("solicit")
+  const queryFormat = useQueryFormat()
+  const isProcessing = useRef(false)
+
+  const { data: solicits = [] } = queryFormat.fetchAllFormats<Solicit>('solicit')
+
+  /**
+   * Función que se ejecuta cuando se elimina una solicitud
+   * @param {string} id - ID de la solicitud a eliminar
+   */
+  const deleteSolicit = useCallback(async (id: string) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    await deleteFormat({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteFormat])
+
+  /** just one useEffect */
+  useEffect(() => { onDelete && deleteSolicit(onDelete) }, [onDelete, deleteSolicit])
+
+  return {
+    handleDelete: (id: string) => setOnDelete(id),
+    solicits: useMemo(() => solicits, [solicits])
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------maintenance table--------------------------------------------------*/
+/** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
+export const useMaintenanceTable = () => {
+  const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
+  const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
+  const { downloadPDF, downloadZIP } = usePDFDownload()
+  const isProcessing = useRef(false)
+
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
+  const { data: mts = [] } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
+  const com = companies?.[0]
+
+  /**
+   * Función que se ejecuta cuando se descarga mantenimientos multiple
+   * @param {Maintenance[]} mts - Mantenimientos a descargar
+   */
+  const downloadFileZip = useCallback(async (mts: Maintenance[]) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    //Grouping by equipment
+    const groupedByEquipment = mts.reduce((acc, mt) => {
+      const curriculumId = mt.curriculum?._id
+      if (!curriculumId) return acc
+      if (!acc.has(curriculumId)) acc.set(curriculumId, [])
+      acc.get(curriculumId)?.push(mt)
+      return acc
+    }, new Map<string, Maintenance[]>())
+    //Prepare components for the ZIP
+    const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
+      equipmentMts.map(mt => ({
+        props: { mt, com }, component: MaintenancePDF,
+        fileName: `${mt.curriculum?.name} - ${mt.curriculum?.modelEquip}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
+      }))
+    ) //Generate zip name based on date and number of equipments
+    const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
+    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })
+  }, [downloadZIP, com])
+
+  /**
+   * Función que se ejecuta cuando se descarga un mantenimiento
+   * @param {Maintenance} mt - Mantenimiento a descargar
+   */
+  const downloadFile = useCallback(async (mt: Maintenance) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    const fileName = `mantenimiento-${mt.curriculum?.name}-${mt.curriculum?.modelEquip} (${formatDateTime(mt.dateMaintenance)}).pdf`
+    await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com } })
+      .finally(() => { setOnDownload(undefined); isProcessing.current = false })
+  }, [downloadPDF, com])
+
+  /**
+   * Función que se ejecuta cuando se elimina un mantenimiento
+   * @param {string} id - ID del mantenimiento a eliminar
+   */
+  const deleteMaintenance = useCallback(async (id: string) => {
+    if (isProcessing.current) return
+    isProcessing.current = true
+    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteMT])
+
+  /** just one useEffect */
+  useEffect(() => {
+    onDelete && deleteMaintenance(onDelete)
+    onDownload && downloadFile(onDownload)
+    onDownloadZip && downloadFileZip(onDownloadZip)
+  }, [downloadFile, deleteMaintenance, downloadFileZip, onDelete, onDownload, onDownloadZip])
+
+  return {
+    maintenances: useMemo(() => mts, [mts]),
+    handleDelete: (id: string) => setOnDelete(id),
+    handleDownload: (mt: Maintenance) => setOnDownload(mt),
+    handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------curriculum table--------------------------------------------------*/
 interface CurriculumChildren extends Curriculum { childRows: (Maintenance & { isPreventive: boolean })[]; hasMaintenances: boolean }
@@ -36,16 +217,11 @@ export const useCurriculumTable = () => {
   const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company' })
   const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
   const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
-  const client = onDownload?.office?.headquarter?.user //this user is client
-  const company = companies?.[0]
+  const company = companies?.[0] //mean while we can work with one company
 
-  const { data: imgCli, isLoading: isLoadingCli } = queryFormat.fetchAllFiles<Metadata>({ path: `client/${client?._id}/preview`, enabled: !!client })
-  const { data: imgCom, isLoading: isLoadingCom } = queryFormat.fetchAllFiles<Metadata>({ path: `company/${company?._id}/preview`, enabled: !!company })
   const { data: accs } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete?._id || onDownload?._id, enabled: !!onDelete || !!onDownload })
-  const zipFiles = queryFormat.fetchAllQueries((onDownloadZip || onDownloadZipMts || [])) //fetch all queries for zip
-  const isLoading = zipFiles.some(q => q.isLoading || q.isFetching) || isLoadingCom || isLoadingCli
-  const imgCompany = imgCom?.[0]?.url
-  const imgClient = imgCli?.[0]?.url
+  const zipFiles = queryFormat.fetchQueriesCV((onDownloadZip || onDownloadZipMts || [])) //fetch all queries for zip
+  const isLoading = zipFiles.some(q => q.isLoading || q.isFetching)
 
   /** Verify all queries state on zipFiles (either successfully or with an error) */
   const zipFinished = useMemo(() => {
@@ -61,9 +237,8 @@ export const useCurriculumTable = () => {
     if (isLoading) return resourceMap
     const curriculums = onDownloadZip || onDownloadZipMts || [] //Use the available elements
     curriculums.forEach((cv: Curriculum) => { //Mapping all curriculums with their resources
-      const clientImages = zipFiles.find(q => q.data?.type === 'client' && q.data?.id === cv.office?.headquarter?.user?._id)?.data?.data as Metadata[] || []
       const curriculumAccs = zipFiles.find(q => q.data?.type === 'accessory' && q.data?.id === cv._id)?.data?.data as Accessory[] || []
-      resourceMap.set(cv._id, { clientImages, curriculumAccs } as ResourceMap)
+      resourceMap.set(cv._id, { curriculumAccs } as ResourceMap)
     })
     return resourceMap
   }, [onDownloadZip, onDownloadZipMts, zipFiles])
@@ -120,17 +295,11 @@ export const useCurriculumTable = () => {
     if (isProcessing.current) return
     isProcessing.current = true
     const pdfComponents = cvs.map(cv => { //Prepare each cv with its resources from map
-      const resources = zipMap.get(cv._id) || { clientImages: [], curriculumAccs: [] }
-      const curriculumAccs = resources.curriculumAccs || []
-      const clientImage = resources.clientImages?.[0]?.url
-      return {
-        fileName: `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`,
-        component: CurriculumPDF, props: {
-          cv, com: company!, accs: curriculumAccs,
-          cliLogo: clientImage,
-          comLogo: imgCompany,
-        }
-      }
+      const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
+      const curriculumAccs = resources.curriculumAccs || [] //accs
+      const client = cv?.office?.headquarter?.user //client context
+      const fileName = `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
+      return { fileName, component: CurriculumPDF, props: { cv, company: company!, client: client!, accs: curriculumAccs } }
     })
     //Generate zip name based on date and number of equipments
     const zipName = `hojas-de-vida-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
@@ -146,20 +315,16 @@ export const useCurriculumTable = () => {
     if (isProcessing.current) return
     isProcessing.current = true
     const curriculumPromises = cvs.map(async (cv) => { //Prepare promises for generating curriculum PDFs
-      const resources = zipMap.get(cv._id) || { clientImages: [], curriculumAccs: [] }
-      const curriculumAccs = resources.curriculumAccs || []
-      const clientImage = resources.clientImages?.[0]?.url
-      const pdf = await pdfToBase64(CurriculumPDF, {
-        cv, com: company!, accs: curriculumAccs,
-        cliLogo: clientImage,
-        comLogo: imgCompany,
-      })
+      const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
+      const curriculumAccs = resources.curriculumAccs || [] //accs
+      const client = cv?.office?.headquarter?.user //client context
+      const pdf = await pdfToBase64(CurriculumPDF, { cv, company: company!, client: client, accs: curriculumAccs })
       return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Hoja de vida.pdf` }
     }) //Prepare promises for generating maintenance PDFs
     const maintenancePromises = cvs.flatMap((cv) =>
       cv.hasMaintenances && cv.childRows?.length > 0
         ? cv.childRows.map(async (mt) => {
-          const pdf = await pdfToBase64(MaintenancePDF, { mt, com: company!, imgs: imgCom })
+          const pdf = await pdfToBase64(MaintenancePDF, { mt, com: company! })
           return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Mantenimientos/${mt.typeMaintenance}-${mt.dateMaintenance.toISOString().split('T')[0]}.pdf` }
         }) : []
     )
@@ -175,16 +340,13 @@ export const useCurriculumTable = () => {
    * @param {Curriculum} cv - Currículo a descargar
    */
   const downloadFile = useCallback(async (cv: Curriculum) => {
-    if (!imgClient || !imgCompany || !accs) return
+    if (!accs) return //await for this
     if (isProcessing.current) return
     isProcessing.current = true
-    const fileName = `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`
-    await downloadPDF({
-      fileName, component: CurriculumPDF, props: {
-        cv, accs, com: company!,
-        comLogo: imgCompany,
-        cliLogo: imgClient,
-      }
+    const client = cv?.office?.headquarter?.user
+    await downloadPDF({ //Download curriculum PDF
+      fileName: `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`,
+      component: CurriculumPDF, props: { cv, accs, company: company!, client: client }
     }).finally(() => { setOnDownload(undefined); isProcessing.current = false })
   }, [downloadPDF, company, accs])
 
@@ -215,7 +377,7 @@ export const useCurriculumTable = () => {
   }, [
     deleteCurriculum, downloadFile, downloadFileZip, downloadFileZipMts,
     onDelete, onDownload, onDownloadZip, onDownloadZipMts,
-    imgCli, imgCom, isLoading, companies, accs, mts
+    isLoading, companies, accs, mts
   ])
 
   return {
@@ -224,121 +386,6 @@ export const useCurriculumTable = () => {
     handleDownloadZip: (cvs: Curriculum[]) => setOnDownloadZip(cvs),
     handleDownloadZipMts: (cvs: CurriculumChildren[]) => setOnDownloadZipMts(cvs),
     curriculums: useMemo(() => formatTableData(cvs, mts), [cvs, mts, formatTableData])
-  }
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------maintenance table--------------------------------------------------*/
-/** Hook principal que orquesta los sub-hooks de mantenimiento para la tabla */
-export const useMaintenanceTable = () => {
-  const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
-  const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
-  const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
-  const { fetchAllFormats, fetchAllFiles } = useQueryFormat()
-  const { downloadPDF, downloadZIP } = usePDFDownload()
-  const isProcessing = useRef(false)
-
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
-  const { data: mts = [] } = fetchAllFormats<Maintenance>('maintenance')
-  const com = companies?.[0]
-  /** Get company images */
-  const { data: imgs } = fetchAllFiles<Metadata>({
-    path: `company/${com?._id}/preview`,
-    enabled: !!com
-  })
-
-  /**
-   * Función que se ejecuta cuando se descarga mantenimientos multiple
-   * @param {Maintenance[]} mts - Mantenimientos a descargar
-   */
-  const downloadFileZip = useCallback(async (mts: Maintenance[]) => {
-    if (isProcessing.current) return
-    isProcessing.current = true
-    //Grouping by equipment
-    const groupedByEquipment = mts.reduce((acc, mt) => {
-      const curriculumId = mt.curriculum?._id
-      if (!curriculumId) return acc
-      if (!acc.has(curriculumId)) acc.set(curriculumId, [])
-      acc.get(curriculumId)?.push(mt)
-      return acc
-    }, new Map<string, Maintenance[]>())
-    //Prepare components for the ZIP
-    const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
-      equipmentMts.map(mt => ({
-        props: { mt, com, imgs },
-        component: MaintenancePDF,
-        fileName: `${mt.curriculum?.name} - ${mt.curriculum?.modelEquip}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
-      }))
-    ) //Generate zip name based on date and number of equipments
-    const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
-    await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })
-  }, [downloadZIP, imgs, com])
-
-  /**
-   * Función que se ejecuta cuando se descarga un mantenimiento
-   * @param {Maintenance} mt - Mantenimiento a descargar
-   */
-  const downloadFile = useCallback(async (mt: Maintenance) => {
-    if (isProcessing.current) return
-    isProcessing.current = true
-    const fileName = `mantenimiento-${mt.curriculum?.name}-${mt.curriculum?.modelEquip} (${formatDateTime(mt.dateMaintenance)}).pdf`
-    await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com, imgs } })
-      .finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF, imgs, com])
-
-  /**
-   * Función que se ejecuta cuando se elimina un mantenimiento
-   * @param {string} id - ID del mantenimiento a eliminar
-   */
-  const deleteMaintenance = useCallback(async (id: string) => {
-    if (isProcessing.current) return
-    isProcessing.current = true
-    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [deleteMT])
-
-  /** just one useEffect */
-  useEffect(() => {
-    onDelete && deleteMaintenance(onDelete)
-    onDownload && downloadFile(onDownload)
-    onDownloadZip && downloadFileZip(onDownloadZip)
-  }, [downloadFile, deleteMaintenance, downloadFileZip, onDelete, onDownload, onDownloadZip])
-
-  return {
-    maintenances: useMemo(() => mts, [mts]),
-    handleDelete: (id: string) => setOnDelete(id),
-    handleDownload: (mt: Maintenance) => setOnDownload(mt),
-    handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
-  }
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------solicit table--------------------------------------------------*/
-/** Hook principal que orquesta los sub-hooks de solicitudes para la tabla */
-export const useSolicitTable = () => {
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
-  const { deleteFormat } = useFormatMutation("solicit")
-  const queryFormat = useQueryFormat()
-  const isProcessing = useRef(false)
-
-  const { data: solicits = [] } = queryFormat.fetchAllFormats<Solicit>('solicit')
-
-  /**
-   * Función que se ejecuta cuando se elimina una solicitud
-   * @param {string} id - ID de la solicitud a eliminar
-   */
-  const deleteSolicit = useCallback(async (id: string) => {
-    if (isProcessing.current) return
-    isProcessing.current = true
-    await deleteFormat({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [deleteFormat])
-
-  /** just one useEffect */
-  useEffect(() => { onDelete && deleteSolicit(onDelete) }, [onDelete, deleteSolicit])
-
-  return {
-    handleDelete: (id: string) => setOnDelete(id),
-    solicits: useMemo(() => solicits, [solicits])
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
