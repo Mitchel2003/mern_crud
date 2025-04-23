@@ -37,7 +37,7 @@ const FormScheduleSection = ({ theme, footer: Footer }: FormScheduleSectionProps
           />
 
           {/* -------------------- Content form -------------------- */}
-          <CardContent className="pt-6 space-y-8">
+          <CardContent className="pt-6 space-y-6">
             <InputSearchableField
               theme={theme}
               name="client"

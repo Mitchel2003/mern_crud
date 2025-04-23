@@ -25,6 +25,8 @@ const ClassificationSection = ({ theme }: ThemeContextProps) => {
             theme={theme}
             toYear={2030}
             fromYear={1950}
+            iconSpan="alert"
+            span="Importante"
             name="dateAttendance"
             label="Fecha acta de asistencia"
             placeholder="Seleccione la fecha"
@@ -33,7 +35,13 @@ const ClassificationSection = ({ theme }: ThemeContextProps) => {
             theme={theme}
             name="subject"
             label="Asunto"
-            placeholder="Indique el asunto"
+            placeholder="Indique los temas a tratar"
+          />
+          <AreaField
+            theme={theme}
+            name="message"
+            label="Personal a capacitar"
+            placeholder="Indique el personal a capacitar"
           />
           <IterableCard
             limit={20}

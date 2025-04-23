@@ -1,29 +1,45 @@
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { attendanceStyles, styles } from "@/utils/constants"
 import { User } from "@/interfaces/context.interface"
+import { chunkTable } from "@/lib/utils"
+import dayjs from "dayjs"
+import "dayjs/locale/es"
+dayjs.locale("es")
 
+interface AttendanceRow { name: string; position: string; document: string; signature: string }
 interface AttendancePDFProps {
+  newRowAttendance: Array<AttendanceRow>
+  dateAttendance: Date
+  subject: string
+  message: string
+  company: User
   client: User
 }
 
-const AttendancePDF = ({ client }: AttendancePDFProps) => (
-  <Document>
-    <Page size="A4" orientation='landscape' style={styles.page}>
-      <View style={styles.container}>
-        <HeaderSection client={client} />
-        <AttendanceTable attendees={[]} />
-        <FooterSection />
-      </View>
-    </Page>
-  </Document>
-)
+/** Acta de asistencia */
+const AttendancePDF = ({ client, company, newRowAttendance = [], dateAttendance, subject, message }: AttendancePDFProps) => {
+  const attendeesChunks = chunkTable(newRowAttendance as any, 17)
+  return (
+    <Document>
+      {attendeesChunks.map((chunk, pageIndex) => (
+        <Page key={`page-${pageIndex}`} size="A4" style={styles.page}>
+          <View style={styles.container}>
+            <HeaderSection client={client} dateAttendance={dateAttendance} subject={subject} message={message} />
+            <AttendanceTable attendees={chunk as unknown as AttendanceRow[]} pageIndex={pageIndex} totalPages={attendeesChunks.length} />
+            <FooterSection company={company} />
+          </View>
+        </Page>
+      ))}
+    </Document>
+  )
+}
 
 export default AttendancePDF
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 /** Encabezado */
-const HeaderSection = ({ client }: { client: User }) => (
+const HeaderSection = ({ client, dateAttendance, subject, message }: { client: User, dateAttendance: Date, subject: string, message: string }) => (
   <>
     <View style={[styles.headerContainer, { borderBottom: '1pt solid black' }]}>
       {/* Logo - Columna izquierda */}
@@ -95,27 +111,26 @@ const HeaderSection = ({ client }: { client: User }) => (
       <View style={[styles.sectionTitle, { marginBottom: 0 }]}>
         <View style={[styles.infoRow, { justifyContent: 'space-between' }]}>
           <Text style={[styles.sectionTitleText, { fontSize: '9pt' }]}>TEMAS A TRATAR:</Text>
-          <Text style={[styles.sectionTitleText, { fontSize: '9pt' }]}>FECHA DE CAPACITACIÓN: 10 de octubre del 2024</Text>
+          <Text style={[styles.sectionTitleText, { fontSize: '9pt' }]}>
+            FECHA DE CAPACITACIÓN: {dayjs(dateAttendance).format("DD [de] MMMM [del] YYYY")}
+          </Text>
         </View>
       </View>
       <View style={{ padding: '5pt' }}>
         <Text style={{ fontSize: '10pt' }}>
-          En esta capacitación se tratarán los siguientes temas:
-        </Text>
-        <Text style={{ fontSize: '10pt' }}>
-          Uso correcto de Equipos Biomedicos en el área deOdontología.
+          {subject}
         </Text>
       </View>
     </View>
 
-    {/* Sexta fila: Personal a capacitar */}
+    {/* Personal a capacitar */}
     <View>
       <View style={[styles.sectionTitle, { marginBottom: 0 }]}>
         <Text style={[styles.sectionTitleText, { fontSize: '9pt' }]}>PERSONAL A CAPACITAR:</Text>
       </View>
       <View style={{ padding: '5pt' }}>
         <Text style={{ fontSize: '10pt' }}>
-          Todo el personal asistencial del consultorio odontológico DR.CARLOS MARIO QUITERO PEREZ
+          {message}
         </Text>
       </View>
     </View>
@@ -123,56 +138,58 @@ const HeaderSection = ({ client }: { client: User }) => (
 )
 
 /** Tabla de Asistentes */
-const AttendanceTable = ({ attendees = [] }) => {
-  const minRows = 10; //Minimum number of rows
-  const emptyRowsCount = Math.max(0, minRows - attendees.length);
-  const emptyRows = Array(emptyRowsCount).fill(null);
+const AttendanceTable = ({ attendees = [], pageIndex = 0, totalPages = 1 }: { attendees: AttendanceRow[], pageIndex?: number, totalPages?: number }) => {
+  const rowsPerPage = 17 //Static number of rows per page
+  const emptyRowsCount = Math.max(0, rowsPerPage - attendees.length)
+  const emptyRows = Array(emptyRowsCount).fill(null)
   return (
-    <View style={attendanceStyles.tableContainer}>
+    <View style={[attendanceStyles.tableContainer, { marginTop: '0pt' }]}>
       {/* Encabezado de la tabla */}
       <View style={attendanceStyles.tableHeader}>
-        <Text style={attendanceStyles.headerText}>ASISTENTES</Text>
+        <Text style={attendanceStyles.headerText}>
+          ASISTENTES {totalPages > 1 ? `- PÁGINA ${pageIndex + 1} DE ${totalPages}` : ''}
+        </Text>
       </View>
 
       {/* Encabezados de columnas */}
       <View style={attendanceStyles.columnHeaders}>
-        <View style={[attendanceStyles.columnHeader, { width: '35%' }]}>
+        <View style={[attendanceStyles.columnHeader, { width: '30%' }]}>
           <Text style={attendanceStyles.columnHeaderText}>NOMBRES COMPLETOS</Text>
         </View>
         <View style={[attendanceStyles.columnHeader, { width: '20%' }]}>
           <Text style={attendanceStyles.columnHeaderText}>CARGO</Text>
         </View>
-        <View style={[attendanceStyles.columnHeader, { width: '25%' }]}>
+        <View style={[attendanceStyles.columnHeader, { width: '20%' }]}>
           <Text style={attendanceStyles.columnHeaderText}>NUMERO DE IDENTIFICACIÓN</Text>
         </View>
-        <View style={[attendanceStyles.columnHeader, { width: '20%', borderRight: 'none' }]}>
+        <View style={[attendanceStyles.columnHeader, { width: '30%', borderRight: 'none' }]}>
           <Text style={attendanceStyles.columnHeaderText}>FIRMA</Text>
         </View>
       </View>
 
       {/* Filas de datos */}
-      {attendees.map((attendee: any, index: number) => (
-        <View
-          key={`attendee-${index}`}
-          style={[
-            attendanceStyles.tableRow,
-            {
-              backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F3F4F6',
-              minHeight: '25pt'
-            }
-          ]}
-        >
-          <View style={[attendanceStyles.tableCell, { width: '35%' }]}>
-            <Text>{attendee?.name || ''}</Text>
+      {attendees.map((attendee: AttendanceRow, index: number) => (
+        <View key={`attendee-${index}`} style={[attendanceStyles.tableRow, { backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F3F4F6', minHeight: '35pt' }]}>
+          <View style={[attendanceStyles.tableCell, { width: '30%' }]}>
+            <Text style={[attendanceStyles.tableCellText, { fontSize: '10pt' }]}>
+              {attendee?.name || ''}
+            </Text>
           </View>
           <View style={[attendanceStyles.tableCell, { width: '20%' }]}>
-            <Text>{attendee?.position || ''}</Text>
+            <Text style={[attendanceStyles.tableCellText, { fontSize: '10pt' }]}>
+              {attendee?.position || ''}
+            </Text>
           </View>
-          <View style={[attendanceStyles.tableCell, { width: '25%' }]}>
-            <Text>{attendee?.identification || ''}</Text>
+          <View style={[attendanceStyles.tableCell, { width: '20%' }]}>
+            <Text style={[attendanceStyles.tableCellText, { fontSize: '10pt' }]}>
+              {attendee?.document || ''}
+            </Text>
           </View>
-          <View style={[attendanceStyles.tableCell, { width: '20%', borderRight: 'none' }]}>
-            {/* Espacio para firma */}
+          <View style={[attendanceStyles.tableCell, { width: '30%', padding: '0pt', borderRight: 'none', alignItems: 'center', justifyContent: 'center' }]}>
+            <Image
+              src={attendee.signature || "/placeholder.svg"}
+              style={{ width: '80%', height: '40pt', objectPosition: 'center' }}
+            />
           </View>
         </View>
       ))}
@@ -181,20 +198,17 @@ const AttendanceTable = ({ attendees = [] }) => {
       {emptyRows.map((_, index) => {
         const rowIndex = attendees.length + index;
         return (
-          <View
-            key={`empty-${index}`}
-            style={[attendanceStyles.tableRow, { backgroundColor: rowIndex % 2 === 0 ? '#FFFFFF' : '#ecedeb', minHeight: '18pt' }]}
-          >
-            <View style={[attendanceStyles.tableCell, { width: '35%' }]}>
+          <View key={`empty-${index}`} style={[attendanceStyles.tableRow, { backgroundColor: rowIndex % 2 === 0 ? '#FFFFFF' : '#ecedeb', minHeight: '25pt' }]}>
+            <View style={[attendanceStyles.tableCell, { width: '30%' }]}>
               <Text></Text>
             </View>
             <View style={[attendanceStyles.tableCell, { width: '20%' }]}>
               <Text></Text>
             </View>
-            <View style={[attendanceStyles.tableCell, { width: '25%' }]}>
+            <View style={[attendanceStyles.tableCell, { width: '20%' }]}>
               <Text></Text>
             </View>
-            <View style={[attendanceStyles.tableCell, { width: '20%', borderRight: 'none' }]}>
+            <View style={[attendanceStyles.tableCell, { width: '30%', borderRight: 'none' }]}>
               <Text></Text>
             </View>
           </View>
@@ -205,32 +219,23 @@ const AttendanceTable = ({ attendees = [] }) => {
 }
 
 /** Footer con firma e información del proveedor */
-const FooterSection = ({
-  engineer = {
-    name: "RICARDO ANDRÉS LEMUS PORTILLO",
-    title: "INGENIERO ELECTRÓNICO",
-    identification: "CC 88253376 de Cúcuta",
-    invima: "RH-201609-473"
-  },
-  signature = "/placeholder.svg",
-  companyLogo = "https://firebasestorage.googleapis.com/v0/b/gestionsalud-2003.appspot.com/o/gestions%2Fcompany%2F67e33a2e97bf8af09bc989ca%2Fpreview%2Flogo?alt=media&token=4a650f26-c3d4-4565-adec-2a6fa5c23f9f"
-}) => (
-  <View style={attendanceStyles.footerContainer}>
+const FooterSection = ({ company }: { company: User }) => (
+  <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
     {/* Sección izquierda - Firma e información del ingeniero */}
-    <View style={attendanceStyles.engineerSection}>
-      <Image src={signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
+    <View style={[attendanceStyles.engineerSection, { width: '40%' }]}>
+      <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
       <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
 
       {/* Información del ingeniero */}
-      <Text style={attendanceStyles.engineerName}>{engineer.name}</Text>
-      <Text style={attendanceStyles.engineerDetail}>{engineer.title}</Text>
-      <Text style={attendanceStyles.engineerDetail}>{engineer.identification}</Text>
-      <Text style={attendanceStyles.engineerDetail}>REG. INVIMA: {engineer.invima}</Text>
+      <Text style={attendanceStyles.engineerName}>{company?.username.toUpperCase()}</Text>
+      <Text style={attendanceStyles.engineerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
+      <Text style={attendanceStyles.engineerDetail}>CC. {company?.nit} de Cúcuta</Text>
+      <Text style={attendanceStyles.engineerDetail}>REG. INVIMA: {company?.invima}</Text>
     </View>
 
     {/* Sección derecha - Logo de la empresa */}
     <View style={attendanceStyles.logoSection}>
-      <Image src={companyLogo || "/placeholder.svg"} style={attendanceStyles.companyLogo} />
+      <Image src={company?.metadata?.logo || "/placeholder.svg"} style={[{ width: '170pt', height: '100pt' }]} />
     </View>
   </View>
 )

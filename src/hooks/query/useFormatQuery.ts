@@ -68,21 +68,6 @@ export const useQueryFormat = (): QueryReact_Format => {
   })
 
   /**
-   * Obtener recursos en base a un path y un array de ids
-   * @param {string} path - Nos ayuda a construir la route
-   * @param {any[]} data - Array de ids para los que obtener recursos
-   * @param {string} folder - Nos ayuda a construir la ruta del archivo
-   * @returns Array de los files encontrados en las múltiples consultas
-   */
-  const fetchQueries = <T>(path: string, data: any[], folder: string) => useQueries({
-    queries: (data || []).flatMap((q: any) => [{
-      queryKey: [path, q],
-      enabled: Boolean(q), retry: 1,
-      queryFn: async () => await format.getAllFiles<T>({ path: `${path}/${q}/${folder}`, enabled: q!! })
-    }])
-  })
-
-  /**
    * IMPORTANT! I need reconvert this logic to reusable queries fetch
    * just see, we can see that this logic is repeated in fetchQueriesCV
    * we can send a prop like "path" that represent the context of query "accessory";
@@ -109,8 +94,7 @@ export const useQueryFormat = (): QueryReact_Format => {
     fetchFormatById,
     fetchFormatByQuery,
     fetchQueriesCV,
-    fetchAllFiles,
-    fetchQueries,
+    fetchAllFiles
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

@@ -34,8 +34,9 @@ export const processFile = (data: File): Promise<string> => {
 
 /*--------------------------------------------------handler download PDF--------------------------------------------------*/
 /** Type for PDF generation props */
-type DownloadZipProps<T extends object> = { components: PDFProps<T>[]; zipName?: string }
 type PDFProps<T extends object> = { component: FC<T>; fileName: string; props: T }
+type ZipProps<T extends object> = { components: PDFProps<T>[]; zipName?: string }
+type FileZipProps = { pdfFiles: PDFFileProps[]; zipName: string }
 type PDFFileProps = { pdf: string; fileName: string }
 
 /** This represent a hook with tools to download a PDF. */
@@ -46,7 +47,7 @@ export const usePDFDownload = () => {
    * @param component The React component to convert to PDF.
    * @param props The props to pass to the component.
    */
-  const downloadPDF = async <T extends object>({ component, props }: PDFProps<T>) => {
+  const downloadPDF = async <T extends object>({ component, props }: PDFProps<T>): Promise<void> => {
     try {
       const element = createElement(component, props)
       const blob = await pdf(element).toBlob()
@@ -61,7 +62,7 @@ export const usePDFDownload = () => {
    * @param components Array of components to convert to PDFs and include in the ZIP
    * @param zipName Optional custom name for the ZIP file
    */
-  const downloadZIP = async <T extends object>({ components, zipName = 'mantenimientos.zip' }: DownloadZipProps<T>) => {
+  const downloadZIP = async <T extends object>({ components, zipName = 'mantenimientos.zip' }: ZipProps<T>) => {
     try {
       const zip = new JSZip() //Generate all PDFs in parallel
       const pdfPromises = components.map(async ({ component, props, fileName }) => {
@@ -80,7 +81,7 @@ export const usePDFDownload = () => {
    * @param pdfFiles Array of PDF files with their file names
    * @param zipName Name for the ZIP file
    */
-  const downloadFilesAsZIP = async ({ pdfFiles, zipName = 'archivos.zip' }: { pdfFiles: PDFFileProps[]; zipName: string }) => {
+  const downloadFilesAsZIP = async ({ pdfFiles, zipName = 'archivos.zip' }: FileZipProps): Promise<void> => {
     try {
       const zip = new JSZip()
       pdfFiles.forEach(({ pdf, fileName }) => { zip.file(fileName, pdf.split('base64,')[1], { base64: true }) })
@@ -96,7 +97,7 @@ export const usePDFDownload = () => {
    * @param props The props to pass to the component.
    * @param fileName The name to give to the file.
    */
-  const downloadPDFDirect = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
+  const downloadPDFDirect = async <T extends object>({ component, props, fileName }: PDFProps<T>): Promise<File | null> => {
     try {
       const element = createElement(component, props)
       const blob = await pdf(element).toBlob()
@@ -108,7 +109,8 @@ export const usePDFDownload = () => {
       a.click() //Trigger download
       document.body.removeChild(a)
       URL.revokeObjectURL(pdfURL)
-    } catch (e: any) { if (e.name !== 'AbortError') { console.error('Error al generar el PDF:', e) } }
+      return new File([blob], fileName, { type: 'application/pdf' })
+    } catch (e: any) { if (e.name !== 'AbortError') { console.error('Error al generar el PDF:', e) } return null }
   }
 
   /**
@@ -119,7 +121,7 @@ export const usePDFDownload = () => {
    * @param props The props to pass to the component.
    * @param fileName The name to give to the file.
    */
-  const downloadPDFDialog = async <T extends object>({ component, props, fileName }: PDFProps<T>) => {
+  const downloadPDFDialog = async <T extends object>({ component, props, fileName }: PDFProps<T>): Promise<void> => {
     const element = createElement(component, props)
     const blob = await pdf(element).toBlob()
     try { //Try to use the File System Access API (desktop browsers only)
@@ -161,4 +163,18 @@ export const pdfToBase64 = async <T extends object>(Component: FC<T>, props: T):
       reader.readAsDataURL(blob)
     })
   } catch (e) { console.error('Error converting PDF to base64:', e); throw e }
+}
+
+/** 
+ * This function is used to divide an array into smaller chunks of a specified size.
+ * Usually used to divide rows of a table into chunks to fit into a PDF page.
+ * @param items The array to be chunked.
+ * @param size The size of each chunk.
+ * @returns An array of chunks.
+ */
+export const chunkTable = (items: string[], size: number) => {
+  const chunks = [] //Array to store the chunks
+  for (let i = 0; i < items.length; i += size) chunks.push(items.slice(i, i + size))
+  if (chunks.length === 0) chunks.push([])
+  return chunks
 }

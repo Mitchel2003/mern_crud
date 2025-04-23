@@ -1,84 +1,61 @@
-import { Accessory, Curriculum, Maintenance, Solicit, User } from '@/interfaces/context.interface'
+import { Accessory, Curriculum, Maintenance, Solicit, User, Schedule } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { Metadata } from '@/interfaces/db.interface'
-import TrainingPDF from '@/lib/export/TrainingPDF'
 import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { pdfToBase64 } from '@/lib/utils'
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
-import { useAuthContext } from '@/context/AuthContext'
 
 /*--------------------------------------------------schedule table--------------------------------------------------*/
-interface ScheduleMap { schedules: any[] }
 /** Hook principal que orquesta los sub-hooks de cronogramas para la tabla */
 export const useScheduleTable = () => {
-  const [onDownload, setOnDownload] = useState<any | undefined>(undefined)
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const [onDownload, setOnDownload] = useState<Schedule | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<Schedule | undefined>(undefined)
+  const { deleteFormat: deleteSch } = useFormatMutation('schedule')
   const { deleteFile } = useFormatMutation('file')
-  const { downloadPDF } = usePDFDownload()
   const queryFormat = useQueryFormat()
-  const queryUser = useQueryUser()
   const isProcessing = useRef(false)
-  const { user } = useAuthContext()
 
-  const scheduleQueries = queryFormat.fetchQueries<any>('client', user?.permissions || [], 'schedule')
-  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company' })
-  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client' })
-  const company = companies?.[0]
-  const client = clients?.[0]
-
-  // useEffect(() => { if (!client) return; setOnDownload({}) }, [client])
-
-  /** Helps us group the results by curriculum */
-  const _zipMap = useMemo(() => {
-    if (!onDownload?.length) return new Map<string, ScheduleMap>()
-    const isLoading = scheduleQueries.some(q => q.isLoading || q.isFetching)
-    const resourceMap = new Map<string, ScheduleMap>()
-    if (isLoading) return resourceMap
-    const schedules = onDownload || [] //Use the available elements
-    schedules.forEach((s: any) => { //Mapping all schedules with their resources
-      resourceMap.set(s._id, { schedules: scheduleQueries.find(q => q.data?.includes(s._id))?.data || [] } as ScheduleMap)
-    })
-    return resourceMap
-  }, [onDownload, scheduleQueries])
+  const { data: schedules = [] } = queryFormat.fetchAllFormats<Schedule>('schedule')
 
   /**
    * Función que se ejecuta cuando se descarga un cronograma
-   * @param {any} data - Cronograma a descargar
+   * @param {Schedule} schedule - Cronograma a descargar
    */
-  const downloadFile = useCallback(async (_data: any) => {
-    if (!client || !company) return //await for this
+  const downloadSchedule = useCallback((schedule: Schedule) => {
     if (isProcessing.current) return
     isProcessing.current = true
-    const fileName = `name.pdf`
-    await downloadPDF({ fileName, component: TrainingPDF, props: { client, company, months: [], areas: [] } })
-      .finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF, client, company])
+    window.open(schedule.url, '_blank')
+    isProcessing.current = false
+    setOnDownload(undefined)
+  }, [])
 
   /**
    * Función que se ejecuta cuando se elimina un cronograma
-   * @param {string} id - ID del cronograma a eliminar
+   * @param {Schedule} schedule - Cronograma a eliminar
    */
-  const deleteSchedule = useCallback(async (id: string) => {
+  const deleteSchedule = useCallback(async (schedule: Schedule) => {
     if (isProcessing.current) return
     isProcessing.current = true
-    await deleteFile({ path: `client/${id}/schedule/${id}` }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [deleteFile])
+    const path = `client/${schedule.client?._id}/schedule/${schedule.name}`
+    await deleteFile({ path }).then(() => deleteSch({ id: schedule._id }))
+      .finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteFile, deleteSch])
 
   /** just one useEffect */
   useEffect(() => {
     onDelete && deleteSchedule(onDelete)
-    onDownload && downloadFile(onDownload)
-  }, [deleteSchedule, downloadFile, onDelete, onDownload])
+    onDownload && downloadSchedule(onDownload)
+  }, [deleteSchedule, downloadSchedule, onDelete, onDownload])
 
   return {
-    handleDelete: (id: string) => setOnDelete(id),
-    handleDownload: (data: any) => setOnDownload(data),
-    schedules: useMemo(() => scheduleQueries.map(q => Array.isArray(q.data) ? q.data : []).flat(), [scheduleQueries]),
+    schedules: schedules,
+    handleDelete: (schedule: Schedule) => setOnDelete(schedule),
+    handleDownload: (schedule: Schedule) => setOnDownload(schedule)
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -104,7 +81,7 @@ export const useSolicitTable = () => {
   }, [deleteFormat])
 
   /** just one useEffect */
-  useEffect(() => { onDelete && deleteSolicit(onDelete) }, [onDelete, deleteSolicit])
+  useEffect(() => { onDelete && deleteSolicit(onDelete) }, [deleteSolicit, onDelete])
 
   return {
     handleDelete: (id: string) => setOnDelete(id),

@@ -5,12 +5,12 @@ import { CalendarMonth, Delete } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { tableTranslations } from "@/utils/constants"
 import { formatDateTime } from "@/utils/format"
-import { BarChart2, Eye, } from "lucide-react"
+import { BarChart2, Eye } from "lucide-react"
 import { useMemo } from "react"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
+import { Schedule, ThemeContextProps } from "@/interfaces/context.interface"
 import { useScheduleTable } from "@/hooks/core/table/useFormatTable"
-import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 
 interface TableScheduleSectionProps extends ThemeContextProps {
@@ -37,27 +37,60 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
     href: `/form/schedule`,
     value: schedules?.length || 0,
     title: `Total de cronogramas`,
+  }, {
+    color: 'success',
+    icon: CalendarMonth as any,
+    value: schedules?.filter(s => s.type === 'mantenimiento').length || 0,
+    title: `Cronogramas de mantenimiento`,
+  }, {
+    color: 'primary',
+    icon: CalendarMonth as any,
+    value: schedules?.filter(s => s.type === 'capacitación').length || 0,
+    title: `Cronogramas de capacitación`,
   }]
 
   /** Config table columns */
   const columns = useMemo(() => {
-    const array: MRT_ColumnDef<any>[] = [{
+    const array: MRT_ColumnDef<Schedule>[] = [{
       size: 200,
-      id: "message",
-      header: "Mensaje",
-      accessorFn: (row) => row.message || 'Sin mensaje'
+      id: "type",
+      filterVariant: 'select',
+      header: "Tipo de cronograma",
+      accessorFn: (row) => row.type,
+      filterSelectOptions: ['mantenimiento', 'capacitación', 'acta de asistencia'],
+      Cell: ({ row }) => (
+        <Box sx={{
+          gap: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          color: row.original.type === 'mantenimiento' ? 'primary.main' : row.original.type === 'capacitación' ? 'success.main' : 'info.main'
+        }}>
+          {row.original.type === 'mantenimiento' ? '🔧' : row.original.type === 'capacitación' ? '📚' : '📋'}
+          {row.original.type}
+        </Box>
+      )
+    }, {
+      size: 200,
+      id: "client",
+      header: "Cliente",
+      accessorFn: (row) => row.client?.username || 'Sin cliente'
     }, {
       size: 150,
-      id: "priority",
-      header: "Prioridad",
-      accessorFn: (row) => row.priority ? 'Urgente' : 'Normal'
+      header: "Clasificación",
+      id: "typeClassification",
+      accessorFn: (row) => row.typeClassification,
+      Cell: ({ row }) => (
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          color: row.original.typeClassification === 'biomédico' ? 'primary.main' : row.original.typeClassification === 'red de frio' ? 'success.main' : 'info.main'
+        }}>
+          {row.original.typeClassification === 'biomédico' ? '🔴' : row.original.typeClassification === 'red de frio' ? '🟢' : '⚪'}
+          {row.original.typeClassification}
+        </Box>
+      )
     }, {
       size: 150,
-      id: "status",
-      header: "Estado",
-      accessorFn: (row) => row.status || 'Sin estado'
-    }, {
-      size: 100,
       id: "createdAt",
       header: "Fecha de creación",
       accessorFn: (row) => formatDateTime(row.createdAt)
@@ -131,14 +164,14 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
 
     /*--------------------------------------------------row action menu--------------------------------------------------*/
     renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
-      const baseItems = [// To show for all users (base)
+      return [
         // Preview schedule
-        <MenuItem key={1} sx={{ m: 0 }} onClick={() => {
+        <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
             title: 'Ver cronograma',
-            description: `¿Deseas ver el cronograma "${row.original.message}"?`,
-            action: () => handleDownload(row.original._id)
+            description: `¿Deseas ver el cronograma de ${row.original.type} (${row.original.typeClassification}) del cliente ${row.original.client?.username || 'Sin cliente'}?`,
+            action: () => handleDownload(row.original)
           })
         }}>
           <ListItemIcon> <Eye /> </ListItemIcon>
@@ -151,15 +184,14 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
           confirmAction({
             isDestructive: true,
             title: 'Eliminar cronograma',
-            description: `¿Deseas eliminar el cronograma "${row.original.message}"?`,
-            action: () => handleDelete(row.original._id)
+            description: `¿Deseas eliminar el cronograma de ${row.original.type} (${row.original.typeClassification}) del cliente ${row.original.client?.username || 'Sin cliente'}?`,
+            action: () => handleDelete(row.original)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>
           Eliminar
         </MenuItem>
-      ];
-      return [...baseItems]
+      ]
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -169,7 +201,7 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
         {/** info selected rows */}
         <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Typography>
-            {table.getSelectedRowModel().rows.length} solicitud(es) seleccionada(s)
+            {table.getSelectedRowModel().rows.length} cronograma(s) seleccionado(s)
           </Typography>
         </Box>
       </Box>

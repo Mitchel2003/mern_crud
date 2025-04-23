@@ -1,3 +1,4 @@
+import InputSearchableField from '#/common/fields/InputSearchable'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import CardIterable from '#/common/fields/CardIterable'
 import AlertDialog from '#/common/elements/AlertDialog'
@@ -96,13 +97,12 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* -------------------- Manufacturer -------------------- */}
           <div className="flex flex-col gap-2">
-            <SelectField
+            <InputSearchableField
               theme={theme}
-              name="manufacturer"
               label="Fabricante"
-              className='text-2xl font-light'
-              placeholder="Seleccionar fabricante"
+              name="manufacturer"
               options={options.manufacturers}
+              placeholder="Seleccionar fabricante"
             />
             <CardIterable
               theme={theme}
@@ -122,13 +122,12 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
 
           {/* -------------------- Supplier -------------------- */}
           <div className="flex flex-col gap-2">
-            <SelectField
+            <InputSearchableField
               theme={theme}
               name="supplier"
               label="Proveedor"
-              className='text-2xl font-light'
-              placeholder="Seleccionar proveedor"
               options={options.suppliers}
+              placeholder="Seleccionar proveedor"
             />
             <CardIterable
               theme={theme}
@@ -148,13 +147,12 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
 
           {/* -------------------- Representative -------------------- */}
           <div className="flex flex-col gap-2">
-            <SelectField
+            <InputSearchableField
               theme={theme}
               name="representative"
               label="Representante"
-              className='text-2xl font-light'
-              placeholder="Seleccionar representante"
               options={options.representatives}
+              placeholder="Seleccionar representante"
             />
             <CardIterable
               theme={theme}

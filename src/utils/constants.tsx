@@ -2,8 +2,8 @@ import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, Us
 import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
+import { Curriculum, Schedule } from '@/interfaces/context.interface'
 import { NavItemProps } from '@/interfaces/props.interface'
-import { Curriculum } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
 import { StyleSheet } from '@react-pdf/renderer'
 
@@ -341,12 +341,14 @@ export const activityDefaultValues = {
   solicit: '',
 }
 export const scheduleDefaultValues = {
-  client: '',
   typeSchedule: '',
+  client: '',
+  subject: '',
+  message: '',
   typeClassification: '',
   monthOperation: undefined,
   dateAttendance: undefined,
-  newRowsAttendance: []
+  newRowsAttendance: [],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -457,7 +459,7 @@ export const typeMaintenanceCollection: Curriculum['typeMaintenance'] = [
 export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
   'servicio', 'componentes', 'usuario', 'despiece'
 ]
-export const typeSchedule: any[] = [
+export const typeSchedule: Schedule['type'][] = [
   'capacitación', 'mantenimiento', 'acta de asistencia'
 ]
 /*---------------------------------------------------------------------------------------------------------*/
@@ -941,8 +943,8 @@ export const attendanceStyles = StyleSheet.create({ //to attendance PDF
     borderLeft: '1pt solid black',
   },
   companyLogo: {
-    width: '180pt',
-    height: '120pt',
-    objectFit: 'contain',
+    width: '200pt',
+    height: '130pt',
+    // objectFit: 'contain',
   }
 })

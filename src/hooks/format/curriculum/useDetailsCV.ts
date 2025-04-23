@@ -1,10 +1,10 @@
-import { Curriculum, RepresentativeHeadquarter, Headquarter, Representative, User, SupplierHeadquarter, Supplier, Manufacturer, ManufacturerHeadquarter } from "@/interfaces/context.interface"
+import { Curriculum, Headquarter, Representative, Supplier, Manufacturer } from "@/interfaces/context.interface"
 import { useQueryFormat, useFormatMutation } from "@/hooks/query/useFormatQuery"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
 import { defaultWarranty as warranties } from "@/utils/constants"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
-import { SelectOptionProps } from "@/interfaces/props.interface"
 import { useAuthContext } from "@/context/AuthContext"
+import { useMemo } from "react"
 
 /** This hook is used to get the data of the details section of the curriculum form */
 class DetailsCV {
@@ -17,7 +17,10 @@ class DetailsCV {
 
   /*------------- render -------------*/
   render() {
-    const { user } = useAuthContext()
+    const { data: representatives } = useQueryFormat().fetchAllFormats<Representative>('representative')
+    const { data: manufacturers } = useQueryFormat().fetchAllFormats<Manufacturer>('manufacturer')
+    const { data: suppliers } = useQueryFormat().fetchAllFormats<Supplier>('supplier')
+
     const mapValues = (data: Curriculum) => ({
       datePurchase: data.datePurchase ? new Date(data.datePurchase) : null,
       dateInstallation: data.dateInstallation ? new Date(data.dateInstallation) : null,
@@ -53,9 +56,9 @@ class DetailsCV {
       mapAutocomplete,
       submitData,
       options: {
-        suppliers: supplierFields(user as User),
-        manufacturers: manufacturerFields(user as User),
-        representatives: representativeFields(user as User)
+        suppliers: useMemo(() => suppliers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || [], [suppliers]),
+        manufacturers: useMemo(() => manufacturers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.country ?? 'Sin pais'}` })) || [], [manufacturers]),
+        representatives: useMemo(() => representatives?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || [], [representatives])
       }
     }
   }
@@ -111,63 +114,5 @@ class DetailsCV {
     return { onSubmit }
   }
 }
+
 export default DetailsCV.getInstance()
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * This function is used to get the options for the representative field
- * @param {User} user - The user object, contains the role and permissions
- * @returns {SelectOptionProps[]} The options for the representative field
- */
-const representativeFields = (user: User): SelectOptionProps[] => {
-  const { data: representativeHeadquarters } = useQueryFormat().fetchAllFormats<RepresentativeHeadquarter>('representativeHeadquarter')
-  const { data: representatives } = useQueryFormat().fetchAllFormats<Representative>('representative')
-
-  return user?.role === 'admin'
-    ? representatives?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || []
-    : representativeHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
-      ?.reduce((unique, rep) => {
-        const exists = unique.some(item => item.value === rep.representative?._id)
-        if (!exists && rep.representative?._id) { unique.push({ value: rep.representative._id, label: `${rep.representative.name ?? 'Sin nombre'} - ${rep.representative.phone ?? 'Sin telefono'} - ${rep.representative.city ?? 'Sin ciudad'}` }) }
-        return unique
-      }, [] as SelectOptionProps[]) || []
-}
-
-/**
- * This function is used to get the options for the supplier field
- * @param {User} user - The user object, contains the role and permissions
- * @returns {SelectOptionProps[]} The options for the supplier field
- */
-const supplierFields = (user: User): SelectOptionProps[] => {
-  const { data: supplierHeadquarters } = useQueryFormat().fetchAllFormats<SupplierHeadquarter>('supplierHeadquarter')
-  const { data: suppliers } = useQueryFormat().fetchAllFormats<Supplier>('supplier')
-
-  return user?.role === 'admin'
-    ? suppliers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.city ?? 'Sin ciudad'}` })) || []
-    : supplierHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
-      ?.reduce((unique, rep) => {
-        const exists = unique.some(item => item.value === rep.supplier?._id)
-        if (!exists && rep.supplier?._id) { unique.push({ value: rep.supplier._id, label: `${rep.supplier.name ?? 'Sin nombre'} - ${rep.supplier?.phone ?? 'Sin telefono'} - ${rep.supplier.city ?? 'Sin ciudad'}` }) }
-        return unique
-      }, [] as SelectOptionProps[]) || []
-}
-
-/**
- * This function is used to get the options for the manufacturer field
- * @param {User} user - The user object, contains the role and permissions
- * @returns {SelectOptionProps[]} The options for the manufacturer field
- */
-const manufacturerFields = (user: User): SelectOptionProps[] => {
-  const { data: manufacturerHeadquarters } = useQueryFormat().fetchAllFormats<ManufacturerHeadquarter>('manufacturerHeadquarter')
-  const { data: manufacturers } = useQueryFormat().fetchAllFormats<Manufacturer>('manufacturer')
-
-  return user?.role === 'admin'
-    ? manufacturers?.map(e => ({ value: e._id, label: `${e.name ?? 'Sin nombre'} - ${e.phone ?? 'Sin telefono'} - ${e.country ?? 'Sin pais'}` })) || []
-    : manufacturerHeadquarters?.filter(rh => user?.permissions?.includes(rh.headquarter))
-      ?.reduce((unique, rep) => {
-        const exists = unique.some(item => item.value === rep.manufacturer?._id)
-        if (!exists && rep.manufacturer?._id) { unique.push({ value: rep.manufacturer._id, label: `${rep.manufacturer.name ?? 'Sin nombre'} - ${rep.manufacturer.phone ?? 'Sin telefono'} - ${rep.manufacturer.country ?? 'Sin pais'}` }) }
-        return unique
-      }, [] as SelectOptionProps[]) || []
-}

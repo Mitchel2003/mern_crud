@@ -1,28 +1,35 @@
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { attendanceStyles, styles } from "@/utils/constants"
 import { User } from "@/interfaces/context.interface"
+import { chunkTable } from '@/lib/utils'
 import dayjs from "dayjs"
 import "dayjs/locale/es"
 dayjs.locale("es")
 
 interface TrainingPDFProps {
-  months: string[]
+  monthOperation: string[]
   areas: string[]
   company: User
   client: User
 }
 
-const TrainingPDF = ({ client, company, areas, months }: TrainingPDFProps) => (
-  <Document>
-    <Page size="A4" orientation='landscape' style={styles.page}>
-      <View style={styles.container}>
-        <HeaderSection client={client} />
-        <TrainingTable areas={areas} months={months} />
-        <FooterSection company={company} />
-      </View>
-    </Page>
-  </Document>
-)
+/** Cronograma de capacitación */
+const TrainingPDF = ({ client, company, areas, monthOperation }: TrainingPDFProps) => {
+  const areaChunks = chunkTable(areas, 10)
+  return (
+    <Document>
+      {areaChunks.map((chunk, pageIndex) => (
+        <Page key={`page-${pageIndex}`} size="A4" orientation='landscape' style={styles.page} wrap={false}>
+          <View style={styles.container}>
+            <HeaderSection client={client} />
+            <TrainingTable areas={chunk} months={monthOperation} />
+            <FooterSection company={company} />
+          </View>
+        </Page>
+      ))}
+    </Document>
+  )
+}
 
 export default TrainingPDF
 /*---------------------------------------------------------------------------------------------------------*/
@@ -95,12 +102,12 @@ const HeaderSection = ({ client }: { client: User }) => (
 
 /** Tabla de capacitación */
 const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: string[] }) => {
-  const minRows = 10 //Minimum number of rows
+  const rowsPerPage = 10 //Static number of rows per page
   const selectedMonths = months.map(month => month.toLowerCase())
-  const emptyRowsCount = Math.max(0, minRows - areas.length)
+  const emptyRowsCount = Math.max(0, rowsPerPage - areas.length)
   const emptyRows = Array(emptyRowsCount).fill(null)
   return (
-    <View style={attendanceStyles.tableContainer}>
+    <View style={[attendanceStyles.tableContainer, { marginTop: '0pt' }]}>
       {/* Encabezado de la tabla */}
       <View style={attendanceStyles.tableHeader}>
         <Text style={attendanceStyles.headerText}>CAPACITACIONES</Text>
@@ -108,7 +115,7 @@ const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: s
 
       {/* Encabezados de columnas */}
       <View style={attendanceStyles.columnHeaders}>
-        <View style={[attendanceStyles.columnHeader, { width: '40%' }]}>
+        <View style={[attendanceStyles.columnHeader, { width: '40%', backgroundColor: '#b8b8b8' }]}>
           <Text style={attendanceStyles.columnHeaderText}>
             AREAS
           </Text>
@@ -116,7 +123,7 @@ const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: s
         {Array.from({ length: 12 }, (_, i) => {
           const monthName = dayjs().month(i).format("MMMM")
           return (
-            <View key={`header-${i}`} style={[attendanceStyles.columnHeader, { width: '5%' }]}>
+            <View key={`header-${i}`} style={[attendanceStyles.columnHeader, { width: '5%', backgroundColor: '#b8b8b8' }]}>
               <Text style={attendanceStyles.columnHeaderText}>
                 {monthName.toUpperCase().slice(0, 3)}
               </Text>
@@ -129,7 +136,7 @@ const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: s
       {areas.map((area: string, index: number) => (
         <View key={`cv-${index}`} style={[attendanceStyles.tableRow, { backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#ecedeb', minHeight: '15pt' }]}>
           <View style={[attendanceStyles.tableCell, { width: '40%' }]}>
-            <Text style={[attendanceStyles.tableCellText, {fontSize: '10pt'}]}>
+            <Text style={[attendanceStyles.tableCellText, { fontSize: '10pt' }]}>
               {area}
             </Text>
           </View>
@@ -169,7 +176,7 @@ const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: s
 
 /** Footer con firma e información del proveedor */
 const FooterSection = ({ company }: { company: User }) => (
-  <View style={attendanceStyles.footerContainer}>
+  <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
     {/* Sección izquierda - Firma e información del ingeniero */}
     <View style={attendanceStyles.engineerSection}>
       <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
@@ -177,7 +184,7 @@ const FooterSection = ({ company }: { company: User }) => (
 
       {/* Información del ingeniero */}
       <Text style={attendanceStyles.engineerName}>{company?.username.toUpperCase()}</Text>
-      <Text style={attendanceStyles.engineerDetail}>{company?.metadata?.title || 'Ingeniero Electronico'}</Text>
+      <Text style={attendanceStyles.engineerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
       <Text style={attendanceStyles.engineerDetail}>CC. {company?.nit} de Cúcuta</Text>
       <Text style={attendanceStyles.engineerDetail}>REG. INVIMA: {company?.invima}</Text>
     </View>

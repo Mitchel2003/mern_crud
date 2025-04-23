@@ -14,11 +14,13 @@ import { curriculumSchema, CurriculumFormProps } from '@/schemas/format/curricul
 import { ActivityFormProps, activitySchema } from '@/schemas/format/activity.schema'
 import { ScheduleFormProps, scheduleSchema } from '@/schemas/format/schedule.schema'
 import { solicitSchema, SolicitFormProps } from '@/schemas/format/solicit.schema'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import MaintenancePDF from '@/lib/export/schedule/MaintenanceSchedulePDF'
+import AttendancePDF from '@/lib/export/schedule/AttendanceSchedulePDF'
+import TrainingPDF from '@/lib/export/schedule/TrainingSchedulePDF'
 import { useAuthContext } from '@/context/AuthContext'
-import TrainingPDF from '@/lib/export/TrainingPDF'
 import { UserRoundCheck } from 'lucide-react'
 import { usePDFDownload } from '@/lib/utils'
-import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { baseUrl } from '@/utils/config'
 
@@ -28,8 +30,12 @@ import { baseUrl } from '@/utils/config'
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useScheduleForm = (onSuccess?: () => void) => {
-  // const { createFile } = useFormatMutation('file')
+  const [onSubmit, setOnSubmit] = useState<ScheduleFormProps | null>(null)
+  const { createFormat: createSchedule } = useFormatMutation('schedule')
+  const { createFile } = useFormatMutation('file')
   const { downloadPDFDirect } = usePDFDownload()
+  const { notifyError } = useNotification()
+  const isProcessing = useRef(false)
   const { user } = useAuthContext()
 
   const methods = useForm<ScheduleFormProps>({
@@ -38,54 +44,58 @@ export const useScheduleForm = (onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' }, !!user)
-
-  // Obtain client and offices when client changes
+  // Obtain client and company onchange
   const clientId = methods.watch('client')
   const typeSchedule = methods.watch('typeSchedule')
   const { data: client } = useQueryUser().fetchUserById<User>(clientId, !!clientId)
-  const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', {}, !!client && typeSchedule === 'capacitación')
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id] }, !!client && typeSchedule === 'capacitación')
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' }, !!user) //get clients to show in select
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id] }, !!client)
   const company = companies?.[0]
 
+  /*--------------------------------------------------complements--------------------------------------------------*/
+  const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', {}, !!clientId && typeSchedule === 'mantenimiento') //get cvs to maintenance
+  const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', {}, !!client && typeSchedule === 'capacitación') //get offices (areas) to training
+  /*---------------------------------------------------------------------------------------------------------*/
   const areas = useMemo(() => {
-    if (!client || !offices.length) return []
+    if (!client || !offices.length || typeSchedule !== 'capacitación') return []
     const clientOffices = offices.filter(office => office?.headquarter?.user?._id === client._id)
-    const uniqueAreas = Array.from(new Set(clientOffices.map(office => office.group).filter(Boolean))) //With "Set" we get unique values (no duplicates)
+    const uniqueAreas = Array.from(new Set(clientOffices.map(office => office.group).filter(Boolean)))
     return uniqueAreas
   }, [client, offices])
+
+  /**
+   * Función que contiene la lógica para crear el cronograma
+   * @param e - Valores del formulario
+   */
+  const submit = useCallback(async (e: ScheduleFormProps) => {
+    if ((e.typeSchedule === 'mantenimiento' && !cvs.length) || (e.typeSchedule === 'capacitación' && !areas.length)) return
+    if (!client || !company || isProcessing.current) return
+    isProcessing.current = true
+    try { //build path fileName and upload pdf
+      const typeClassification = e.typeClassification || 'estándar'
+      const fileName = `${e.typeSchedule}-${typeClassification}-${Date.now()}.pdf`
+      const path = `client/${e.client}/schedule/${fileName}`
+
+      const type = e.typeSchedule
+      const adds = type === 'capacitación' ? { areas } : (type === 'mantenimiento' ? { cvs } : {})
+      const PDF = type === 'capacitación' ? TrainingPDF : (type === 'mantenimiento' ? MaintenancePDF : AttendancePDF)
+      const blob = await downloadPDFDirect({ fileName, component: PDF as any, props: { ...e, client, company, ...adds } })
+      if (!blob) return notifyError({ message: 'No se pudo crear el cronograma' }) //if dont download pdf, return error
+      const schedule = { name: fileName, client: e.client, typeClassification, type } //build schedule element to create
+      await createFile({ file: blob, path }).then(async (url) => await createSchedule({ ...schedule, url }))
+    } finally { setOnSubmit(null); isProcessing.current = false }
+    methods.reset()
+  }, [createFile, downloadPDFDirect, areas, cvs])
 
   /**
    * Función que se ejecuta cuando se envía el formulario
    * nos permite controlar el envío del formulario y la ejecución de la request
    * @param e - Valores del formulario
    */
-  const handleSubmit = useFormSubmit({
-    onSubmit: async (e: ScheduleFormProps) => {
-      if (!client || !company || !areas.length) return
-      const fileName = `${e.typeSchedule}-${e.typeClassification || 'default'}-${Date.now()}.pdf`
-      const path = `client/${e.client}/schedule/${fileName}`
-      if (e.typeSchedule === 'capacitación') {
-        await downloadPDFDirect({
-          fileName, component: TrainingPDF, props: {
-            months: e.monthOperation || [],
-            areas, client, company
-          }
-        })
+  const handleSubmit = useFormSubmit({ onSubmit: async (e: ScheduleFormProps) => setOnSubmit(e), onSuccess }, methods)
 
-        // Si obtuvimos el blob, lo guardamos en el servidor
-        // if (blob) {
-        //   await createFile({ file: blob, path })
-        //   notifySuccess({
-        //     title: 'Éxito',
-        //     message: 'Cronograma de capacitación generado correctamente',
-        //   })
-        // }
-      }
-      methods.reset()
-    },
-    onSuccess
-  }, methods)
+  /** just one useEffect */
+  useEffect(() => { onSubmit && submit(onSubmit) }, [submit, onSubmit])
 
   return {
     methods,
