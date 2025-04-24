@@ -147,6 +147,7 @@ export type Curriculum = BaseMDB & {
   modelEquip: string
   healthRecord: string
   photoUrl?: string
+  metadata?: Record<string, any>
 
   //complements
   characteristics: string

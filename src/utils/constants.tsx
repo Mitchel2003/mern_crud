@@ -1,5 +1,5 @@
 import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
-import { AssignmentInd, Description, Handyman, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox } from '@mui/icons-material'
+import { AssignmentInd, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox, Devices, HomeRepairService } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { Curriculum, Schedule } from '@/interfaces/context.interface'
@@ -62,21 +62,15 @@ export const links = () => {
       href: '/form/schedule',
       label: 'Cronogramas',
     },
-    {/** forms **/
-      icon: PermMedia,
-      label: 'Documentación',
-      subItems: [
-        {// cvs
-          icon: Description,
-          href: '/form/curriculums',
-          label: 'Currículums',
-        },
-        {// maintenances
-          icon: Handyman,
-          href: '/form/maintenances',
-          label: 'Mantenimientos',
-        }
-      ]
+    {// curriculums
+      icon: Devices,
+      href: '/form/curriculums',
+      label: 'Equipos',
+    },
+    {// maintenances
+      icon: HomeRepairService,
+      href: '/form/maintenances',
+      label: 'Mantenimientos',
     },
     {/** institution **/
       label: 'Gestion de clientes',
@@ -218,6 +212,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   healthRecord: '', //basicData
   photoUrl: [], //basicData (create after that cv)
 
+  newAnnexes: [], //characteristics
   characteristics: '', //characteristics
   recommendationsManufacturer: '', //characteristics
 

@@ -39,8 +39,8 @@ const FormCurriculumSection = ({ id, theme, onChange, footer: Footer }: FormCurr
     /** maintenance and complementaries */
     <MaintenanceSection key="maintenance" theme={theme} />,
     <InspectionSection key="inspection" theme={theme} options={inspectionData} />,
-    <AccessoriesSection key="accessory" theme={theme} />,
-    <CharacteristicsSection key="characteristics" theme={theme} />
+    <AccessoriesSection key="accessory" theme={theme} />, //accessories equipment
+    <CharacteristicsSection key="characteristics" theme={theme} id={!!id} />
   ], [locationData, basicData, detailsData, inspectionData])
 
   return (

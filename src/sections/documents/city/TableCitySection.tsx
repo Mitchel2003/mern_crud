@@ -88,7 +88,7 @@ const TableCitySection = ({ theme, params, onChange }: TableCitySectionProps) =>
     initialState: {
       density: 'compact',
       showGlobalFilter: true,
-      showColumnFilters: true,
+      showColumnFilters: !!params,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
       columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
     },

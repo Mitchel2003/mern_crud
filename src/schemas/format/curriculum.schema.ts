@@ -207,6 +207,14 @@ export const curriculumSchema = z.object({
         .string()
         .min(1, "Debes seleccionar un modelo"),
     })
+  ).optional().default([]),
+
+  newAnnexes: z.array(
+    z.object({
+      file: z.instanceof(File, { message: "Debe seleccionar un archivo" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "El archivo no debe exceder 5MB")
+        .refine(file => ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(file.type), "El archivo debe ser PDF, DOC, DOCX, XLS o XLSX")
+    })
   ).optional().default([])
 }).refine((data) => {
   if (data.equipClassification === 'biomédico') return data.biomedicalClassification || data.riskClassification !== null

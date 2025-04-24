@@ -13,10 +13,11 @@ import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
 import { tableTranslations } from "@/utils/constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "@/utils/format"
+import { formatDate, formatDateTime } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
+  params?: { createdAt?: string } | null
   onChange: () => void
   credentials: User
 }
@@ -32,7 +33,7 @@ interface CurriculumChildren extends Curriculum {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los curriculums, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculumSectionProps) => {
+const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableCurriculumSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { handleDownload: handleDownloadMaintenance, handleDelete: handleDeleteMaintenance } = useMaintenanceTable()
   const { curriculums: cvs, handleDelete, handleDownload, handleDownloadZip, handleDownloadZipMts } = useCurriculumTable()
@@ -53,7 +54,7 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: '/form/curriculum',
+    href: `/form/curriculum/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -86,6 +87,11 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
       header: "Riesgo",
       id: "riskClassification",
       accessorFn: (row) => row.riskClassification
+    }, {
+      size: 100,
+      id: "createdAt",
+      header: "Fecha de creación",
+      accessorFn: (row) => formatDateTime(row.createdAt)
     });
     return array
   }, [isClient])
@@ -103,8 +109,9 @@ const TableCurriculumSection = ({ theme, credentials, onChange }: TableCurriculu
     initialState: {
       density: 'compact',
       showGlobalFilter: true,
-      showColumnFilters: true,
+      showColumnFilters: !!params,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
+      columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',
@@ -462,6 +469,6 @@ export default TableCurriculumSection
 
 /*--------------------------------------------------tools--------------------------------------------------*/
 const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { name: data.name, modelEquip: data.modelEquip }
+  const filterParams = { createdAt: data.createdAt }
   return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
 }

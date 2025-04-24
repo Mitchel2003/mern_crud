@@ -7,31 +7,35 @@ import { HeaderSpanProps } from '@/interfaces/props.interface'
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
-import { Camera, X } from 'lucide-react'
+import { FileText, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface ImageFieldProps extends HeaderSpanProps, ThemeContextProps {
-  sizeImage?: string
+interface DocumentFieldProps extends HeaderSpanProps, ThemeContextProps {
   label: string
   name: string
 }
 
-const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
+const DocumentField = React.forwardRef<HTMLInputElement, DocumentFieldProps>(({
   iconSpan = 'none',
-  sizeImage,
   label,
   theme,
   span,
   name
 }, ref) => {
   const [preview, setPreview] = useState<string | null>(null)
+  const [fileName, setFileName] = useState<string | null>(null)
   const { control } = useFormContext()
 
   const processFile = useCallback((file: File | null) => {
-    if (!file) return setPreview(null)
-    const reader = new FileReader()
-    reader.onloadend = () => setPreview(reader.result as string)
-    reader.readAsDataURL(file)
+    if (!file) { setPreview(null); setFileName(null); return }
+    setFileName(file.name)
+
+    // Si es una imagen, mostrar vista previa
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onloadend = () => setPreview(reader.result as string)
+      reader.readAsDataURL(file)
+    } else { setPreview(null) }
   }, [])
 
   return (
@@ -46,7 +50,7 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
         className='ml-auto'
       />
 
-      {/* Image */}
+      {/* Document */}
       <Controller
         name={name}
         control={control}
@@ -56,17 +60,17 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
             <>
               <div className={cn(
                 'flex px-auto justify-center rounded-lg border border-dashed',
-                preview ? 'py-[2vh]' : 'py-[6vh]',
+                fileName ? 'py-[2vh]' : 'py-[6vh]',
                 error && 'border-red-500',
                 theme === 'dark'
                   ? 'bg-zinc-800 border-zinc-600'
                   : 'bg-purple-50/20 border-gray-900/25',
               )}>
-                {preview ? (
-                  <PreviewImage
+                {fileName ? (
+                  <PreviewDocument
                     theme={theme}
-                    size={sizeImage}
                     preview={preview}
+                    fileName={fileName}
                     onRemove={() => onChange(null)}
                   />
                 ) : (
@@ -93,26 +97,49 @@ const ImageField = React.forwardRef<HTMLInputElement, ImageFieldProps>(({
   )
 })
 
-ImageField.displayName = 'ImageField'
+DocumentField.displayName = 'DocumentField'
 
-export default ImageField
+export default DocumentField
 
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-interface PreviewImageProps extends ThemeContextProps {
+interface PreviewDocumentProps extends ThemeContextProps {
   onRemove: () => void
-  preview: string
+  preview: string | null
+  fileName: string
   size?: string
 }
 
-const PreviewImage = ({ preview, size, theme, onRemove }: PreviewImageProps) => (
-  <div className="relative">
-    <img
-      src={preview}
-      alt="Vista previa"
-      className={cn(size ?? 'w-40 h-40', 'object-cover rounded-md')}
-    />
+const PreviewDocument = ({ preview, fileName, size, theme, onRemove }: PreviewDocumentProps) => (
+  <div className="relative flex flex-col items-center">
+    {preview ? (
+      // Si hay una vista previa (para imágenes)
+      <img
+        src={preview}
+        alt="Vista previa"
+        className={cn(size ?? 'w-40 h-40', 'object-cover rounded-md')}
+      />
+    ) : (
+      // Para documentos sin vista previa (PDF, DOC, etc.)
+      <div className={cn(
+        'flex flex-col items-center justify-center',
+        size ?? 'w-40 h-40',
+        'rounded-md bg-gray-100',
+        theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-100'
+      )}>
+        <FileText className={cn('w-16 h-16', theme === 'dark' ? 'text-zinc-300' : 'text-gray-500')} />
+      </div>
+    )}
+
+    {/* Nombre del archivo */}
+    <p className={cn(
+      'mt-2 text-sm truncate max-w-[150px]',
+      theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'
+    )}>
+      {fileName}
+    </p>
+
     <Button
       size="icon"
       type="button"
@@ -139,7 +166,7 @@ const UploadPrompt = React.forwardRef<HTMLInputElement, UploadPromptProps>(({
   onChange
 }, ref) => (
   <div className="text-center">
-    <Camera className="mx-auto h-10 w-10 text-gray-300" aria-hidden="true" />
+    <FileText className="mx-auto h-10 w-10 text-gray-300" aria-hidden="true" />
     <div className="flex w-full mt-4 text-sm justify-center leading-6">
       <label
         htmlFor={`${name}-file`}
@@ -151,14 +178,14 @@ const UploadPrompt = React.forwardRef<HTMLInputElement, UploadPromptProps>(({
         <span className={cn(
           theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'
         )}>
-          Subir imagen
+          Subir documento
         </span>
         <input
           ref={ref}
           id={`${name}-file`}
           name={name}
           type="file"
-          accept="image/*"
+          accept=".pdf,.doc,.docx,.xls,.xlsx"
           className="sr-only"
           onChange={(e) => {
             const file = e.target.files?.[0] || null
@@ -171,7 +198,7 @@ const UploadPrompt = React.forwardRef<HTMLInputElement, UploadPromptProps>(({
       'text-xs leading-5',
       theme === 'dark' ? 'text-zinc-300' : 'text-gray-700'
     )}>
-      PNG, JPG, JPEG hasta 5MB
+      PDF, DOC, DOCX, XLS, XLSX hasta 5MB
     </p>
   </div>
 ))

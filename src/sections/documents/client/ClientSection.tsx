@@ -58,7 +58,7 @@ const ClientSection = ({ id, theme }: ClientSectionProps) => {
             <TabsTrigger
               value="form"
               className={cn(
-                'flex px-6 gap-2 items-center',
+                'flex px-6 gap-2 items-center hidden',
                 'duration-200 hover:scale-105 hover:bg-accent/50'
               )}
             >

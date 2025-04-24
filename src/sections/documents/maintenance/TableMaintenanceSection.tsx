@@ -1,6 +1,6 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
-import { BarChart2, Clock, AlertTriangle, Wrench } from "lucide-react"
+import { BarChart2, Clock, AlertTriangle, Wrench, Eye } from "lucide-react"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import { Update, Delete, Download } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
@@ -166,13 +166,13 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
         <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
           closeMenu()
           confirmAction({
-            title: 'Descargar mantenimiento',
-            description: `¿Deseas descargar el mantenimiento "${row.original.curriculum.name}"?`,
+            title: 'Ver mantenimiento',
+            description: `¿Deseas ver el mantenimiento "${row.original.curriculum.name}"?`,
             action: () => handleDownload(row.original)
           })
         }}>
-          <ListItemIcon> <Download /> </ListItemIcon>
-          Descargar pdf
+          <ListItemIcon> <Eye /> </ListItemIcon>
+          Ver
         </MenuItem>
       ];
 

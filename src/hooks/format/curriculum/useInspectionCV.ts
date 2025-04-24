@@ -4,12 +4,12 @@ import { Curriculum, Inspection } from "@/interfaces/context.interface"
 import { SelectOptionProps } from "@/interfaces/props.interface"
 
 /** This hook is used to get the data of the details section of the curriculum form */
-class DetailsCV {
-  private static instance: DetailsCV
+class InspectionCV {
+  private static instance: InspectionCV
 
-  public static getInstance(): DetailsCV {
-    if (!DetailsCV.instance) { DetailsCV.instance = new DetailsCV() }
-    return DetailsCV.instance
+  public static getInstance(): InspectionCV {
+    if (!InspectionCV.instance) { InspectionCV.instance = new InspectionCV() }
+    return InspectionCV.instance
   }
 
   /*------------- render -------------*/
@@ -26,7 +26,7 @@ class DetailsCV {
   }
 }
 
-export default DetailsCV.getInstance()
+export default InspectionCV.getInstance()
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/

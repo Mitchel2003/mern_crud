@@ -1,14 +1,17 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import CardIterable from "@/components/common/fields/CardIterable"
+import DocumentField from "@/components/common/fields/Document"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import AreaField from "#/common/fields/Area"
+import { cn } from "@/lib/utils"
 
-interface CharacteristicsProps extends ThemeContextProps { }
+interface CharacteristicsProps extends ThemeContextProps { id: boolean }
 
-const CharacteristicsSection = ({ theme }: CharacteristicsProps) => (
+const CharacteristicsSection = ({ id, theme }: CharacteristicsProps) => (
   <div className="space-y-6">
     <HeaderCustom
-      to="component"
       theme={theme}
+      to="component"
       iconSpan="warn"
       title="Características"
       span="Campos opcionales"
@@ -29,7 +32,18 @@ const CharacteristicsSection = ({ theme }: CharacteristicsProps) => (
         placeholder="Ingrese las recomendaciones del fabricante"
       />
     </div>
+    <CardIterable
+      limit={3}
+      theme={theme}
+      name="newAnnexes"
+      titleButton={cn(!id ? 'Anexar documento' : 'Cambiar documento')}
+      fields={fields.map(field => ({ name: field.name, component: <DocumentField {...field} theme={theme} /> }))}
+    />
   </div>
 )
 
 export default CharacteristicsSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+const fields = [{ name: "newAnnexes.file", label: "Documentos del equipo" }]

@@ -13,7 +13,8 @@ const route = '/form/curriculum'
 interface CurriculumSectionProps extends ThemeContextProps { id: string | undefined }
 
 const CurriculumSection = ({ id, theme }: CurriculumSectionProps) => {
-  const { tab, handle } = useTabs({ id, to: route })
+  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
+  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const { user } = useAuthContext()
   return (
     <main className="container p-2 sm:p-4">
@@ -46,7 +47,7 @@ const CurriculumSection = ({ id, theme }: CurriculumSectionProps) => {
 
         {/* tabs content */}
         <TabsContent value="table">
-          <TableCurriculumSection theme={theme} onChange={() => handle('form')} credentials={user!} />
+          <TableCurriculumSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} />
         </TabsContent>
         <TabsContent value="form">
           <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
