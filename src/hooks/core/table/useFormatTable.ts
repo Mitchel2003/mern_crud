@@ -1,10 +1,10 @@
 import { Accessory, Curriculum, Maintenance, Solicit, User, Schedule } from '@/interfaces/context.interface'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
+import { extractMetadataUrl, formatDateTime } from '@/utils/format'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { Metadata } from '@/interfaces/db.interface'
-import { formatDateTime } from '@/utils/format'
 import { usePDFDownload } from '@/lib/utils'
 import { pdfToBase64 } from '@/lib/utils'
 
@@ -63,8 +63,9 @@ export const useScheduleTable = () => {
 /*--------------------------------------------------solicit table--------------------------------------------------*/
 /** Hook principal que orquesta los sub-hooks de solicitudes para la tabla */
 export const useSolicitTable = () => {
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
-  const { deleteFormat } = useFormatMutation("solicit")
+  const [onDelete, setOnDelete] = useState<Solicit | undefined>(undefined)
+  const { deleteFormat } = useFormatMutation('solicit')
+  const { deleteFile } = useFormatMutation('file')
   const queryFormat = useQueryFormat()
   const isProcessing = useRef(false)
 
@@ -72,20 +73,26 @@ export const useSolicitTable = () => {
 
   /**
    * Función que se ejecuta cuando se elimina una solicitud
-   * @param {string} id - ID de la solicitud a eliminar
+   * @param {Solicit} solicit - Solicitud a eliminar
    */
-  const deleteSolicit = useCallback(async (id: string) => {
+  const deleteSolicit = useCallback(async (solicit: Solicit) => {
     if (isProcessing.current) return
     isProcessing.current = true
-    await deleteFormat({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [deleteFormat])
+    await deleteFormat({ id: solicit._id }).then(async () => {
+      if (!solicit.photoUrl) return //if there is no photo, skip
+      const fileName = extractMetadataUrl([solicit.photoUrl])
+      const curriculumId = solicit.curriculum?._id //reference
+      const path = `files/${curriculumId}/solicit/${fileName?.[0]}`
+      await deleteFile({ path }) //delete photo from storage (file)
+    }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteFormat, deleteFile])
 
   /** just one useEffect */
   useEffect(() => { onDelete && deleteSolicit(onDelete) }, [deleteSolicit, onDelete])
 
   return {
-    handleDelete: (id: string) => setOnDelete(id),
-    solicits: useMemo(() => solicits, [solicits])
+    solicits: useMemo(() => solicits, [solicits]),
+    handleDelete: (solicit: Solicit) => setOnDelete(solicit)
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

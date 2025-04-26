@@ -19,6 +19,7 @@ import MaintenancePDF from '@/lib/export/schedule/MaintenanceSchedulePDF'
 import AttendancePDF from '@/lib/export/schedule/AttendanceSchedulePDF'
 import TrainingPDF from '@/lib/export/schedule/TrainingSchedulePDF'
 import { useAuthContext } from '@/context/AuthContext'
+import { extractMetadataUrl } from '@/utils/format'
 import { UserRoundCheck } from 'lucide-react'
 import { usePDFDownload } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
@@ -333,9 +334,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
     onSubmit: async (e: CurriculumFormProps) => {
       const data = {
         ...characteristicsData.submitData(e),
-        ...accessoryData.submitData(e),
-        ...inspectionData.submitData(e),
         ...maintenanceData.submitData(e),
+        ...inspectionData.submitData(e),
         ...technicalData.submitData(e),
         ...equipmentData.submitData(e),
         ...locationData.submitData(e),
@@ -344,10 +344,11 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       }
       id ? (
         updateCV({ id, data }).then(async () => {
+          /** Check if there are changes in the accessories */
           const hasChangesAccessories = (() => {
-            if (data.newAccessories?.length !== acc.length) return true
+            if (e.newAccessories?.length !== acc.length) return true
             return acc.some((existingAcc) => { //match each existing accessory with the new
-              const matchingNew = data.newAccessories?.find((newAcc) =>
+              const matchingNew = e.newAccessories?.find((newAcc) =>
                 //if dont find match, it means there were changes
                 newAcc.modelEquip === existingAcc.modelEquip
                 && newAcc.serie === existingAcc.serie
@@ -357,74 +358,42 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
             })
           })()
 
+          /** Check if there are changes in the metadata (annexes) */
           const hasChangesMetadata = (() => {
-            if (data.metadata?.length !== cv?.metadata?.files?.length) return true
-            return data.metadata?.some((newFile: any) => { //match each existing file with the new
-              if (newFile.file instanceof File) return true
-              //if dont find match, it means there were changes
-              const matchingOld = cv?.metadata?.files?.find((oldFile: any) => {
-                //We assume that oldFile can have a different structure
-                const oldName = typeof oldFile === 'string' ? oldFile.split('/').pop() : oldFile.name
-                const newName = typeof newFile === 'string' ? newFile : newFile.name
-                return oldName === newName
-              }); return !matchingOld
-            })
+            if (e.newAnnexes?.some(item => item.file)) return true
+            if (e.annexesPreview?.length !== cv?.metadata?.files?.length) return true
+            return !e.annexesPreview?.every(url => cv?.metadata?.files?.includes(url))
           })()
 
-          if (hasChangesAccessories) {
+          if (hasChangesAccessories) { //to update accessories
             await Promise.all(acc.map(async (acc) => await deleteAcc({ id: acc._id })))
-            await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })))
+            await Promise.all(e.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: id })))
           }
-          if (hasChangesMetadata) {
-            const newAnnexes = e.newAnnexes || []
-            const existingFiles = cv?.metadata?.files || []
-            if (newAnnexes.length > 0 || existingFiles.length > 0) {
-              // 1. Identificar archivos a mantener, eliminar y añadir
-              const existingFileNames = existingFiles.map(file =>
-                typeof file === 'string' ? file.split('/').pop() : file.name
-              )
 
-              const newFileNames = newAnnexes.map(annex => annex.file.name)
-
-              // Archivos a eliminar (existen en el servidor pero no en los nuevos)
-              const filesToDelete = existingFiles.filter(file => {
-                const fileName = typeof file === 'string' ? file.split('/').pop() : file.name
-                return !newFileNames.includes(fileName)
-              })
-
-              // Archivos a añadir (están en los nuevos pero no en el servidor)
-              const filesToAdd = newAnnexes.filter(annex =>
-                !existingFileNames.includes(annex.file.name)
-              )
-
-              // 2. Eliminar solo los archivos que ya no se necesitan
-              await Promise.all(filesToDelete.map(async (fileUrl) => {
-                const fileName = typeof fileUrl === 'string' ? fileUrl.split('/').pop() : fileUrl.name
-                const path = `files/${id}/annexes/${fileName}`
-                return await deleteFile({ path })
-              }))
-
-              // 3. Subir solo los archivos nuevos
-              const newFileUrls = await Promise.all(filesToAdd.map(async (annex) => {
-                const path = `files/${id}/annexes/${annex.file.name}`
-                return await createFile({ file: annex.file, path })
-              }))
-
-              // 4. Construir el nuevo array de metadata combinando los archivos mantenidos y los nuevos
-              const keptFiles = existingFiles.filter(file => {
-                const fileName = typeof file === 'string' ? file.split('/').pop() : file.name
-                return newFileNames.includes(fileName)
-              })
-
-              const updatedMetadataFiles = [...keptFiles, ...newFileUrls]
-
-              // 5. Actualizar el curriculum con el nuevo metadata
-              if (filesToDelete.length > 0 || filesToAdd.length > 0) {
-                await updateCV({ id, data: { metadata: { files: updatedMetadataFiles } } })
-              }
+          if (hasChangesMetadata) { //to update metadata (annexes)
+            const keptUrls = e.annexesPreview || [] //get existing URLs
+            const toAdd = e.newAnnexes?.map(item => item.file) || [] //get new files to upload
+            if (keptUrls.length === 0 && toAdd.length === 0 && (cv?.metadata?.files?.length || 0) === 0) return
+            /** Determine which files have been deleted by comparing the original URLs with the kept ones */
+            const toDeleteUrls = cv?.metadata?.files?.filter((url: any) => !keptUrls.includes(url)) || []
+            const toDelete = extractMetadataUrl(toDeleteUrls) || [] //extract file names from URLs to delete
+            await Promise.all(toDelete.map(async name => await deleteFile({ path: `files/${id}/annexes/${name}` })))
+            /** Upload new annexes if exist */
+            let newUrls: string[] = []
+            if (toAdd.length > 0) { //Upload new files to storage
+              newUrls = (await Promise.all(toAdd.map(async (file) => {
+                const path = `files/${id}/annexes/${file.name}`
+                const url = await createFile({ file, path })
+                return url ?? undefined //Avoid undefined values
+              }))).filter((url): url is string => url !== undefined)
+            }
+            /** Build new metadata and update curriculum */
+            const urlsUpdated = [...keptUrls, ...newUrls]
+            if (toDelete.length > 0 || toAdd.length > 0 || keptUrls.length !== (cv?.metadata?.files?.length || 0)) {
+              await updateCV({ id, data: { metadata: { ...(cv?.metadata || {}), files: urlsUpdated } } })
             }
           }
-
+          /** Upload new photo if exists */
           const file = e.photoUrl?.[0]?.file
           const path = `files/${id}/preview/img`
           file && await deleteFile({ path }).then(async () => {
@@ -435,15 +404,21 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       ) : (
         createCV(data).then(async (cv) => {
           const file = e.photoUrl?.[0]?.file
-          const annexes = e.newAnnexes?.map((d) => d.file)
-          const path = `files/${cv._id}/preview/img` //path to upload preview image
-          await Promise.all(data.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: cv._id })))
+          const path = `files/${cv._id}/preview/img`
+          const annexes = e.newAnnexes?.map(item => item.file) || []
+          /** Create new accessories and save with reference respectitvely */
+          await Promise.all(e.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: cv._id })))
+          /** Upload preview image (photo) to storage and update curriculum with photo URL reference */
           file && await createFile({ file, path }).then(async (photoUrl) => await updateCV({ id: cv._id, data: { photoUrl } }))
-          annexes && await Promise.all(annexes.map(async (file) => {
+          /** Upload annexes to storage and update metadata curriculum */
+          if (annexes.length === 0) return //if we dont have some annexe
+          const urls = (await Promise.all(annexes.map(async (file) => {
             const path = `files/${cv._id}/annexes/${file.name}`
             const url = await createFile({ file, path })
-            return { name: file.name, url }
-          })).then(async (data) => await updateCV({ id: cv._id, data: { metadata: { files: data } } }))
+            return url ?? undefined //expected string
+          }))).filter((url): url is string => url !== undefined)
+          /** Update metadata references with annexes URLs, if have some */
+          urls.length > 0 && await updateCV({ id: cv._id, data: { metadata: { files: urls } } })
         })
       )
       methods.reset()

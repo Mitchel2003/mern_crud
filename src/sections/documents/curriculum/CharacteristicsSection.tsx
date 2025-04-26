@@ -1,3 +1,4 @@
+import DocumentPreview from "@/components/common/fields/DocumentPreview"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import CardIterable from "@/components/common/fields/CardIterable"
 import DocumentField from "@/components/common/fields/Document"
@@ -32,13 +33,23 @@ const CharacteristicsSection = ({ id, theme }: CharacteristicsProps) => (
         placeholder="Ingrese las recomendaciones del fabricante"
       />
     </div>
-    <CardIterable
-      limit={3}
-      theme={theme}
-      name="newAnnexes"
-      titleButton={cn(!id ? 'Anexar documento' : 'Cambiar documento')}
-      fields={fields.map(field => ({ name: field.name, component: <DocumentField {...field} theme={theme} /> }))}
-    />
+
+    <div className="md:col-span-5 space-y-2">
+      <div className={cn(!id ? 'hidden' : 'block')}>
+        <DocumentPreview
+          theme={theme}
+          name="annexesPreview"
+          label="Documentos anexos existentes"
+        />
+      </div>
+      <CardIterable
+        limit={3}
+        theme={theme}
+        name="newAnnexes"
+        titleButton={cn(!id ? 'Anexar documento' : 'Añadir nuevo documento')}
+        fields={fields.map(field => ({ name: field.name, component: <DocumentField {...field} theme={theme} /> }))}
+      />
+    </div>
   </div>
 )
 

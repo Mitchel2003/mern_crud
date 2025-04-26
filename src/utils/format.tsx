@@ -35,6 +35,23 @@ export const RenderFormat = ({ format }: { format: ReactElement[] }) => {
     </Fragment>
   ))
 }
+/**
+ * Extracts the metadata from a Firebase Storage URL
+ * @param url The full Firebase Storage file URL
+ * @returns The extracted metadata, or null if not found
+ */
+export function extractMetadataUrl(urls: string[]): string[] | null {
+  if (!urls || urls.length === 0) return null
+  return urls.map((url) => {
+    const decodedUrl = decodeURIComponent(url)
+    const match = decodedUrl.match(/\/o\/(.+?)\?/)
+    if (!match || !match[1]) return null
+    //extract metadata (last segment of url)
+    const fullPath = match[1] //select metadata
+    const segments = fullPath.split('/')
+    return segments[segments.length - 1]
+  }).filter(Boolean) as string[]
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------format pdf--------------------------------------------------*/

@@ -5,14 +5,13 @@ import { Curriculum } from "@/interfaces/context.interface"
 const useCharacteristicsCV = () => {
   const mapValues = (data: Curriculum) => ({
     characteristics: data.characteristics,
-    recommendationsManufacturer: data.recommendationsManufacturer,
-    newAnnexes: data.metadata?.files ?? []
+    annexesPreview: data.metadata?.files || [],
+    recommendationsManufacturer: data.recommendationsManufacturer
   })
 
   const submitData = (data: CurriculumFormProps) => ({
     characteristics: data?.characteristics ?? 'N/R',
-    recommendationsManufacturer: data?.recommendationsManufacturer ?? 'N/R',
-    metadata: data?.newAnnexes ?? []
+    recommendationsManufacturer: data?.recommendationsManufacturer ?? 'N/R'
   })
 
   const mapAutocomplete = (data: Curriculum) => ({

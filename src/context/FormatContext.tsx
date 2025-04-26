@@ -130,7 +130,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    */
   const uploadFile = async (data: FileReference): Promise<any> => {
     try { return await upload(data).then((e) => { notifySuccess(txt('upload-files')); return e }) }
-    catch (e) { notifyError(txt('upload-files', e)) }
+    catch (e) { notifyError(txt('upload-files', e)); return undefined }
   }
   /**
    * Elimina un archivo específico
@@ -140,7 +140,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    */
   const deleteFile = async (data: FileReference): Promise<any> => {
     try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-file')); return e }) }
-    catch (e) { notifyError(txt('delete-file', e)) }
+    catch (e) { notifyError(txt('delete-file', e)); return undefined }
   }
   /*---------------------------------------------------------------------------------------------------------*/
 

@@ -155,7 +155,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
             isDestructive: true,
             title: 'Eliminar solicitud',
             description: `¿Deseas eliminar la solicitud "${row.original.message}"?`,
-            action: () => handleDelete(row.original._id)
+            action: () => handleDelete(row.original)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>

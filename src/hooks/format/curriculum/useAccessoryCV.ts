@@ -1,4 +1,3 @@
-import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
 import { Accessory } from "@/interfaces/context.interface"
 
 /** This hook is used to get the data of the location section of the curriculum form */
@@ -7,14 +6,7 @@ const useAccessoryCV = () => {
     newAccessories: acc ?? []
   })
 
-  const submitData = (data: CurriculumFormProps) => ({
-    newAccessories: data.newAccessories ?? []
-  })
-
-  return {
-    mapValues,
-    submitData
-  }
+  return { mapValues }
 }
 
 export default useAccessoryCV

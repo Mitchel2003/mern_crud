@@ -46,6 +46,7 @@ export const curriculumSchema = z.object({
   ).optional().default([]),
 
   //characteristics
+  annexesPreview: z.array(z.string()).optional().default([]),
   characteristics: z
     .string({ required_error: "Características son requeridas" })
     .optional(),
