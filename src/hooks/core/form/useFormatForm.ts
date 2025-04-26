@@ -23,7 +23,7 @@ import { extractMetadataUrl } from '@/utils/format'
 import { UserRoundCheck } from 'lucide-react'
 import { usePDFDownload } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
-import { baseUrl } from '@/utils/config'
+import config from '@/utils/config'
 
 /*--------------------------------------------------schedule form--------------------------------------------------*/
 /**
@@ -136,8 +136,9 @@ export const useActivityForm = (onSuccess?: () => void) => {
       const body = `Revisa tu bandeja de entradas`
       await sendNotification({ id: e.engineer, title, body }) //messaging
       await createNotification({ //create notification inbox with redirect
-        title, message: body, type: 'alert', url: `${baseUrl}/dashboard`,
         recipient: e.engineer, sender: user?._id,
+        url: `${config.frontendUrl}/dashboard`,
+        title, message: body, type: 'alert',
       }) //Update solicit status to assigned, after creating activity
       await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
     })
@@ -198,8 +199,9 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
           const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
           company && await sendNotification({ id: company._id, title, body }) //messaging
           company && await createNotification({ //create notification inbox with redirect
-            recipient: company._id, sender: client?._id, url: `${baseUrl}/form/solicit`,
             title, message: body, type: data.priority ? 'payment' : 'alert',
+            recipient: company._id, sender: client?._id,
+            url: `${config.frontendUrl}/form/solicit`,
           })
         })
       }
