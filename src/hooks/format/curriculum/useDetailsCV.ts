@@ -1,7 +1,7 @@
 import { Curriculum, Headquarter, Representative, Supplier, Manufacturer } from "@/interfaces/context.interface"
 import { useQueryFormat, useFormatMutation } from "@/hooks/query/useFormatQuery"
+import { defaultWarranty as warranties } from "@/constants/values.constants"
 import { CurriculumFormProps } from "@/schemas/format/curriculum.schema"
-import { defaultWarranty as warranties } from "@/utils/constants"
 import { useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useAuthContext } from "@/context/AuthContext"
 import { useMemo } from "react"

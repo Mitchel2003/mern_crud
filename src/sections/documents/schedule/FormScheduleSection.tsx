@@ -1,7 +1,7 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useScheduleForm } from "@/hooks/core/form/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
-import { typeSchedule } from "@/utils/constants"
+import { typeSchedule } from "@/constants/values.constants"
 import { FormProvider } from "react-hook-form"
 import React from "react"
 

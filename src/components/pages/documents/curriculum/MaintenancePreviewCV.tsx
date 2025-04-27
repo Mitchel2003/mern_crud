@@ -1,4 +1,4 @@
-import { ArrowUpDown, Battery, CheckCircle, ChevronDown, Clipboard, ClipboardX, Droplet, FileText, Gauge, Info, InfoIcon, RefreshCw, Scale, Settings2, Shield, Thermometer, Wind, WrenchIcon, Zap } from 'lucide-react'
+import { ArrowUpDown, Battery, CheckCircle, ChevronDown, Clipboard, ClipboardX, Droplet, ExternalLink, FileText, Gauge, Info, InfoIcon, RefreshCw, Scale, Settings2, Shield, Thermometer, Wind, WrenchIcon, Zap } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '#/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '#/ui/collapsible'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '#/ui/hover-card'
@@ -9,9 +9,9 @@ import { Button } from '#/ui/button'
 import { Badge } from '#/ui/badge'
 import { cn } from '@/lib/utils'
 
+import { extractMetadataUrl, getInspectionTags, getFileType } from '@/constants/format.constants'
 import { Curriculum, Inspection, ThemeContextProps } from '@/interfaces/context.interface'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-import { getInspectionTags } from '@/utils/format'
 
 interface MaintenancePreviewCVProps extends ThemeContextProps {
   ins?: Inspection
@@ -19,6 +19,9 @@ interface MaintenancePreviewCVProps extends ThemeContextProps {
 }
 
 const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => {
+  const fileNames = extractMetadataUrl(cv?.metadata?.files || [])
+  const maintenanceDays = getMaintenanceDays(cv)
+  const circleValue = calculateCircleValue(cv)
   return (
     <section className="animate-in fade-in-50 duration-500">
       <div className={cn(
@@ -37,7 +40,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
         <Card className="bg-white/50">
           <CardContent className="p-6">
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-6">
+              <div className="grid md:grid-cols-1">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Tipo de Mantenimiento</h3>
                   <HoverCard>
@@ -62,66 +65,149 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                     </Badge>
                   ))}
                 </div>
-
-                <Separator className="my-4" />
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Frecuencia de Mantenimiento</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="w-20 h-20">
-                      <CircularProgressbar
-                        value={75}
-                        text={`${cv?.frequencyMaintenance || '?'}`}
-                        styles={buildStyles({
-                          textSize: '22px',
-                          pathColor: `rgba(147, 51, 234, ${75 / 100})`,
-                          textColor: '#6b21a8',
-                          trailColor: '#e9d5ff',
-                        })}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Próximo mantenimiento en</p>
-                      <p className="text-2xl font-bold text-purple-700">45 días</p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Manual Disponible</h3>
-                  <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                    <FileText className="w-8 h-8 text-purple-600" />
-                    <div>
-                      <p className="font-medium">
-                        {typeof cv?.manualsMaintenance === 'string'
-                          ? cv?.manualsMaintenance
-                          : cv?.manualsMaintenance?.map((manual, i) => (i === cv.manualsMaintenance.length - 1 ? manual : `${manual}, `)).join('') || 'N/R'
-                        }
-                      </p>
-                      <p className="text-sm text-muted-foreground">Tipo de manual no disponible</p>
-                    </div>
-                  </div>
+              <div className="grid md:grid-cols-1">
+                <div className="flex items-center justify-between mt-5">
+                  <h3 className="text-lg font-semibold mb-3">Frecuencia de Mantenimiento</h3>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <InfoIcon className="h-4 w-4" />
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <p>La frecuencia de mantenimiento indica el intervalo de tiempo entre los mantenimientos.</p>
+                    </HoverCardContent>
+                  </HoverCard>
                 </div>
 
-                <Separator className="my-4" />
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Estado Actual</h3>
-                  <div className="relative h-2 bg-purple-100 rounded-full overflow-hidden">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-500 ease-in-out"
-                      style={{ width: '80%' }}
+                <div className="flex flex-wrap gap-2">
+                  <div className="w-20 h-20">
+                    <CircularProgressbar
+                      value={circleValue}
+                      text={cv?.frequencyMaintenance ? cv.frequencyMaintenance.replace(/\s+/g, '') : '?'}
+                      styles={buildStyles({
+                        pathColor: `rgba(147, 51, 234, ${circleValue / 100})`,
+                        textSize: '16px', textColor: '#6b21a8', trailColor: '#e9d5ff',
+                      })}
                     />
                   </div>
-                  <div className="mt-2 flex justify-between text-sm">
-                    <span className="text-purple-700 font-medium">80% Operativo</span>
-                    <span className="text-muted-foreground">Último chequeo: 15 días atrás</span>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Próximo mantenimiento en</p>
+                    <p className="text-2xl font-bold text-purple-700">{maintenanceDays} días</p>
+                    <p className="text-xs text-muted-foreground mt-1">Basado en {cv?.employmentMaintenance || 'uso estándar'}</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            <Separator className="my-6" />
+
+            <div className="space-y-6">
+              <div className="h-full">
+                <h3 className="text-lg font-semibold mb-3">Manuales Disponibles</h3>
+                <div className="h-auto flex flex-col bg-purple-50 rounded-lg border border-purple-100 overflow-hidden">
+                  {/* Encabezado con icono y título */}
+                  <div className="flex items-center gap-3 p-4 border-b border-purple-100 bg-purple-100/50">
+                    <div className="p-2 bg-white rounded-full">
+                      <FileText className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Documentación técnica</h4>
+                      <p className="text-xs text-muted-foreground">Manuales y guías para este equipo</p>
+                    </div>
+                  </div>
+
+                  {/* Contenido principal */}
+                  <div className="p-4 flex-1 flex flex-col">
+                    {/* Tipos de manuales disponibles */}
+                    <div className="mb-4">
+                      <p className="text-sm font-medium text-muted-foreground mb-2">Tipos de manuales:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {Array.isArray(cv?.manualsMaintenance) && cv.manualsMaintenance.length > 0 ? (
+                          cv.manualsMaintenance.map((manual, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50"
+                            >
+                              <FileText className="w-3.5 h-3.5 mr-1.5" />
+                              {manual}
+                            </Badge>
+                          ))
+                        ) : (
+                          <span className="text-sm text-muted-foreground italic">
+                            {typeof cv?.manualsMaintenance === 'string' ? cv?.manualsMaintenance : 'No especificado'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Línea separadora */}
+                    <Separator className="my-3" />
+
+                    {/* Archivos adjuntos */}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-purple-700">Documentos disponibles</p>
+                        <Badge variant="outline" className="text-xs bg-purple-50">
+                          {fileNames?.length || 0} archivos
+                        </Badge>
+                      </div>
+
+                      {fileNames && fileNames.length > 0 ? (
+                        <div className="space-y-2 mt-3 max-h-[240px] overflow-y-auto pr-1">
+                          {fileNames.map((fileName, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between bg-white p-2.5 rounded-md border border-purple-100 hover:border-purple-200 hover:shadow-sm transition-all duration-200"
+                            >
+                              <div className="flex items-center gap-2.5 truncate">
+                                <div className="p-1.5 bg-purple-50 rounded">
+                                  <FileText className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium truncate">{fileName}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {getFileType(fileName)}
+                                  </p>
+                                </div>
+                              </div>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="h-8 px-2 text-purple-700 hover:text-purple-900 hover:bg-purple-50"
+                                      onClick={() => window.open(cv?.metadata?.files?.[index], '_blank')}
+                                    >
+                                      <ExternalLink className="h-4 w-4 mr-1" />
+                                      Ver
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left">
+                                    <p className="text-xs">Abrir documento en nueva pestaña</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-lg border border-dashed border-purple-200">
+                          <FileText className="w-10 h-10 text-purple-200 mb-2" />
+                          <p className="text-sm font-medium text-muted-foreground">No hay documentos adjuntos</p>
+                          <p className="text-xs text-muted-foreground mt-1">Los manuales aparecerán aquí cuando estén disponibles</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </CardContent>
         </Card>
       </div>
@@ -395,3 +481,33 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
 }
 
 export default MaintenancePreviewCV
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * Calcular días hasta el próximo mantenimiento basado en la frecuencia
+ * Extraer el número de la frecuencia (asumiendo formato como '12 meses', '6 meses', etc.)
+ * @param {Curriculum} cv - Objeto del currículum
+ * @returns {string} Cantidad de días
+ */
+const getMaintenanceDays = (cv: Curriculum): string => {
+  if (!cv?.frequencyMaintenance) return '?';
+  const frequencyMatch = cv.frequencyMaintenance.match(/\d+/)
+  if (!frequencyMatch) return '?'
+  const months = parseInt(frequencyMatch[0], 10)
+  return String(Math.round(months * 30))
+}
+
+/**
+ * Calcular el valor para el gráfico circular (porcentaje completado del ciclo de mantenimiento)
+ * Simular un valor basado en la frecuencia (en un caso real, esto vendría de la fecha del último mantenimiento)
+ * Para este ejemplo, usamos un valor aleatorio entre 25 y 90
+ * @param {Curriculum} cv - Objeto del currículum
+ * @returns {number} Porcentaje
+ */
+const calculateCircleValue = (cv: Curriculum): number => {
+  if (!cv?.frequencyMaintenance) return 75
+  const frequencyMatch = cv.frequencyMaintenance.match(/\d+/)
+  if (!frequencyMatch) return 75
+  return Math.floor(Math.random() * (90 - 25 + 1)) + 25
+}

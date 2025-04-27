@@ -1,8 +1,8 @@
 import { NotificationContext, NotificationType, CreateNotificationProps } from '@/interfaces/context.interface'
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNotification } from '@/hooks/ui/useNotification'
+import { formatError } from '@/constants/format.constants'
 import { Props } from '@/interfaces/props.interface'
-import { formatError } from '@/utils/format'
 import { useApi } from '@/api/handler'
 
 import { createContext, useContext } from "react"
@@ -121,6 +121,17 @@ export const NotificationProvider = ({ children }: Props): JSX.Element => {
     markAsRead(id) //Mark as read
     if (url) window.open(url, '_blank')
   }, [markAsRead])
+
+  /**
+   * Obtain the number of unread notifications that match a URL pattern
+   * @param {string} path - The URL pattern to search (e.g: 'solicit', 'curriculum')
+   * @returns {number} - The number of unread notifications that match the pattern
+   */
+  const getNotificationCount = useCallback((path: string): number => {
+    if (!notifications || notifications.length === 0) return 0
+    return notifications.filter(notification => !notification.isRead && notification?.url?.includes(path)).length
+  }, [notifications])
+
   /**
    * Fetch notifications
    * @param {boolean} showLoading - Whether to show loading state
@@ -139,7 +150,9 @@ export const NotificationProvider = ({ children }: Props): JSX.Element => {
   /*--------------------------------------------------returns--------------------------------------------------*/
   return (
     <Notification.Provider value={{
+      getNotificationCount,
       fetchNotifications,
+      fetchUnreadCount,
       notifications,
       unreadCount,
       loading,

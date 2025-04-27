@@ -1,4 +1,4 @@
-import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/utils/constants"
+import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/constants/values.constants"
 import { City, Country, State, Headquarter, Office, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"

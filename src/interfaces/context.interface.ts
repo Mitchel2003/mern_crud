@@ -241,6 +241,8 @@ export type NotificationContext = {
   notifications: NotificationType[]
   unreadCount: number
   loading: boolean
+  fetchUnreadCount: () => Promise<void>
   fetchNotifications: () => Promise<void>
+  getNotificationCount: (path: string) => number
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/

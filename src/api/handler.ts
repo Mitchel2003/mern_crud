@@ -1,5 +1,5 @@
 import { EndpointParams } from "@/interfaces/props.interface"
-import { toPlural } from "@/utils/format"
+import { toPlural } from "@/constants/format.constants"
 import axios from "./axios"
 
 export const getRequest = async (endpoint: string, params?: Record<string, any>) => axios.get(endpoint, { params, paramsSerializer: { indexes: null /* serializar correctamente los arrays */ } })

@@ -1,7 +1,7 @@
+import { formatDateTime, toLabel_technicalSpecification } from "@/constants/format.constants"
 import { Curriculum, Accessory, User } from "@/interfaces/context.interface"
-import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { formatDateTime } from "@/utils/format"
+import { styles } from "@/constants/values.constants"
 
 interface CurriculumPDFProps {
   accs?: Accessory[]

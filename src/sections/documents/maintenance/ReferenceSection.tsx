@@ -1,8 +1,8 @@
 import { Curriculum, Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
+import { getInspectionTags } from "@/constants/format.constants"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { Metadata } from "@/interfaces/db.interface"
 import { CheckCircle, Search } from "lucide-react"
-import { getInspectionTags } from "@/utils/format"
 import { useFormContext } from "react-hook-form"
 
 import HeaderCustom from "#/common/elements/HeaderCustom"
@@ -180,11 +180,7 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
                     <h4 className="font-medium mb-1">{inspection}</h4>
                     <div className="flex flex-wrap gap-2">
                       {getInspectionTags(inspection).map((tag, i) => (
-                        <Badge
-                          key={i}
-                          variant="secondary"
-                          className="bg-purple-50 text-xs"
-                        >
+                        <Badge key={i} variant="secondary" className="bg-purple-50 text-xs">
                           {tag}
                         </Badge>
                       ))}

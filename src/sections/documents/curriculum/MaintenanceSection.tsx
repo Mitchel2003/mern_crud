@@ -1,4 +1,4 @@
-import { typeMaintenanceCollection as typesMaintenance, manualsMaintenanceCollection as manualsMaintenance } from "@/utils/constants"
+import { typeMaintenanceCollection as typesMaintenance, manualsMaintenanceCollection as manualsMaintenance } from "@/constants/values.constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import CheckboxField from "#/common/fields/Checkbox"

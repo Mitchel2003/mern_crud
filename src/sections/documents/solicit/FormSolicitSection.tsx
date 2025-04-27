@@ -1,18 +1,17 @@
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useSolicitForm } from "@/hooks/core/form/useFormatForm"
 import { FooterFormProps } from "@/interfaces/props.interface"
+import { RenderFormat } from "@/constants/format.constants"
 import { FormProvider } from "react-hook-form"
 import React, { useMemo } from "react"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
-
 import { CardContent } from "#/ui/card"
 
 import ObservationSection from "./ObservationSection"
 import ReferenceSection from "./ReferenceSection"
-import { RenderFormat } from "@/utils/format"
 
 interface FormSolicitSectionProps extends ThemeContextProps {
   footer?: React.ComponentType<FooterFormProps>

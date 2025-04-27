@@ -2,29 +2,28 @@ import { Bell, X, Loader2, Info, AlertTriangle, CreditCard, TrendingUp, Gift, Fi
 import { useNotificationContext } from "@/context/NotificationContext"
 import { Card, CardContent, CardHeader, CardTitle } from "#/ui/card"
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { formatDate } from '@/constants/format.constants'
+import { useState, useRef, useEffect } from "react"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { ScrollArea } from "#/ui/scroll-area"
-import { formatDate } from '@/utils/format'
-import { useState, useRef } from "react"
 import { Button } from "#/ui/button"
 import { MouseEvent } from 'react'
 import { cn } from "@/lib/utils"
 
 export function Notifications({ theme }: ThemeContextProps) {
-  const { notifications, unreadCount, loading, markAsRead, markAllAsRead, deleteNotification, handleNotificationClick, fetchNotifications } = useNotificationContext()
+  const { notifications, unreadCount, loading, markAsRead, markAllAsRead, deleteNotification, handleNotificationClick, fetchNotifications, fetchUnreadCount } = useNotificationContext()
   const [isOpen, setIsOpen] = useState(false)
   const hasLoadedRef = useRef(false)
   const isMobile = useIsMobile()
+  //load unread count and notifications on mount
+  useEffect(() => { if (!hasLoadedRef.current) { fetchUnreadCount(); fetchNotifications(); hasLoadedRef.current = true } }, [fetchUnreadCount, fetchNotifications])
   return (
     <div className="relative">
       <Button
         size="icon"
         variant="ghost"
         aria-label="Notifications"
-        onClick={() => {
-          setIsOpen(!isOpen); //Only load notifications the first time it opens
-          if (!isOpen && !hasLoadedRef.current) { fetchNotifications(); hasLoadedRef.current = true }
-        }}
+        onClick={() => { !isOpen && fetchNotifications(); setIsOpen(!isOpen) }}
         className={cn('relative rounded-full transition-colors duration-300', theme === 'dark'
           ? 'bg-zinc-700/40 text-yellow-700 hover:bg-zinc-600'
           : 'bg-gray-100 text-yellow-600 hover:bg-gray-200'
@@ -39,10 +38,7 @@ export function Notifications({ theme }: ThemeContextProps) {
       </Button>
       {isOpen && (
         <Card className={cn('absolute mt-2 w-96 z-50', isMobile ? 'right-[-50px]' : 'right-0')}>
-          <CardHeader className={cn("flex flex-row pb-2",
-            "space-y-0 items-center justify-between",
-            isMobile ? 'p-2' : 'p-4'
-          )}>
+          <CardHeader className={cn("flex flex-row pb-2", "space-y-0 items-center justify-between", isMobile ? 'p-2' : 'p-4')}>
             <div className="flex items-center justify-between w-full">
               <CardTitle className="text-sm font-medium">Notificaciones</CardTitle>
               <div className="flex space-x-2">
@@ -128,16 +124,15 @@ const NotificationItem = ({
   const IconComponent = iconMap[type as keyof typeof iconMap] || iconMap.default
   const color = colorMap[type as keyof typeof colorMap] || colorMap.default
   const handleClick = () => { if (onClick) onClick(id, url) }
-  const handleMarkAsRead = (e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); if (onMarkAsRead) onMarkAsRead(id) }
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); if (onDelete) onDelete(id) }
+  const handleMarkAsRead = (e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); if (onMarkAsRead) onMarkAsRead(id) }
   return (
     <Card
-      className={cn(
-        "mb-4 last:mb-0 border shadow-sm transition-all duration-200 cursor-pointer hover:shadow-md",
+      onClick={handleClick}
+      className={cn("mb-4 last:mb-0 border shadow-sm transition-all duration-200 cursor-pointer hover:shadow-md",
         isRead ? "" : `border-l-${color.split('-')[1]}-500`,
         isRead ? "opacity-70" : "border-l-4"
       )}
-      onClick={handleClick}
     >
       <CardContent className="p-3">
         <div className="flex items-start space-x-4">
@@ -150,8 +145,8 @@ const NotificationItem = ({
               <div className="flex space-x-1">
                 {!isRead && onMarkAsRead && (
                   <Button
-                    variant="ghost"
                     size="icon"
+                    variant="ghost"
                     className="h-6 w-6"
                     onClick={handleMarkAsRead}
                     title="Marcar como leída"
@@ -161,11 +156,11 @@ const NotificationItem = ({
                 )}
                 {onDelete && (
                   <Button
-                    variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-red-500 hover:text-red-700"
-                    onClick={handleDelete}
+                    variant="ghost"
                     title="Eliminar"
+                    onClick={handleDelete}
+                    className="h-6 w-6 text-red-500 hover:text-red-700"
                   >
                     <X className="h-4 w-4" />
                   </Button>

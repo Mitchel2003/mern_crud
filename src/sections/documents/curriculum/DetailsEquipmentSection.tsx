@@ -10,8 +10,8 @@ import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogCon
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { SelectOptionProps } from '@/interfaces/props.interface'
 import DetailsCV from '@/hooks/format/curriculum/useDetailsCV'
+import { defaultWarranty } from '@/constants/values.constants'
 import { useFormUtils } from '@/hooks/core/useFormUtils'
-import { defaultWarranty } from '@/utils/constants'
 
 interface DetailsEquipmentProps extends ThemeContextProps {
   options: { suppliers: SelectOptionProps[], representatives: SelectOptionProps[], manufacturers: SelectOptionProps[] }

@@ -1,5 +1,5 @@
 import { Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
-import { groupCollection as groups } from "@/utils/constants"
+import { groupCollection as groups } from "@/constants/values.constants"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"

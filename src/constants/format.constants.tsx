@@ -2,6 +2,7 @@ import { Fragment, ReactElement, cloneElement } from "react"
 import { isAxiosResponse } from "@/interfaces/db.interface"
 import { RoleProps } from "@/interfaces/context.interface"
 import { useThemeContext } from "@/context/ThemeContext"
+
 import { Separator } from "#/ui/separator"
 import ErrorAPI from "@/errors"
 
@@ -15,25 +16,19 @@ export const formatDateTime = (date: Date | string | undefined, separator: strin
 export const formatDate = (date: Date | string | undefined): string => date ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date)) : 'N/A'
 /** To convert on plural */
 export const toPlural = (str: string) => str.slice(-1) === 'y' ? str.slice(0, -1) + 'ies' : str + 's'
-/** To convert context to spanish */
-export const convertRole = (str: RoleProps) => {
-  switch (str) {
-    case "client": return "cliente"
-    case "company": return "proveedor de servicios"
-    case "engineer": return "ingeniero"
-    case "admin": return "administrador"
-    default: return str
-  }
-}
-/** To render format components dynamically */
-export const RenderFormat = ({ format }: { format: ReactElement[] }) => {
-  const { theme } = useThemeContext()
-  return format.map((e, i) => (
-    <Fragment key={i}>
-      {cloneElement(e)}
-      <Separator className={`my-8 ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`} />
-    </Fragment>
-  ))
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------document formats--------------------------------------------------*/
+/**
+ * Determina el tipo de archivo basado en su extensión
+ * @param {string} fileName - Nombre del archivo
+ * @returns {string} Tipo de archivo en formato legible
+ */
+export const getFileType = (fileName: string): string => {
+  if (!fileName) return 'Documento'
+  const extension = fileName.split('.').pop()?.toLowerCase()
+  const fileTypes: Record<string, string> = { pdf: 'Documento PDF', doc: 'Documento Word', docx: 'Documento Word', xls: 'Hoja de cálculo Excel', xlsx: 'Hoja de cálculo Excel' }
+  return extension ? (fileTypes[extension] || `Archivo ${extension.toUpperCase()}`) : 'Documento'
 }
 /**
  * Extracts the metadata from a Firebase Storage URL
@@ -54,21 +49,7 @@ export function extractMetadataUrl(urls: string[]): string[] | null {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------format pdf--------------------------------------------------*/
-/* Función auxiliar para generar tags basados en el tipo de inspección */
-export const getInspectionTags = (inspection: string) => {
-  const tags = []
-  if (inspection.toLowerCase().includes('físic')) tags.push('Física')
-  if (inspection.toLowerCase().includes('mecánic')) tags.push('Mecánica')
-  if (inspection.toLowerCase().includes('eléctric')) tags.push('Eléctrica')
-  if (inspection.toLowerCase().includes('seguridad')) tags.push('Seguridad')
-  if (inspection.toLowerCase().includes('prueba')) tags.push('Prueba')
-  if (tags.length === 0) tags.push('General')
-  return tags
-}
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------format alerts--------------------------------------------------*/
+/*--------------------------------------------------alerts format--------------------------------------------------*/
 type Context =
   // AuthContext
   | 'login' | 'logout'
@@ -141,9 +122,6 @@ export const txt = (context: Context, e?: any): AlertContext => {
     default: return { title: !e ? 'Acción completada' : 'Error en la acción', message: !e ? 'La acción se ha completado correctamente' : errorMessage }
   }
 }
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------format errors--------------------------------------------------*/
 /**
  * Formatea un error para obtener un mensaje legible para el usuario
  * Maneja diferentes tipos de errores: Axios, ErrorAPI (incluyendo Firebase normalizado), Error estándar, etc.
@@ -169,4 +147,65 @@ export const formatError = (e: unknown): string => {
   }
   if (e instanceof Error) return e.message || 'Error desconocido'
   return typeof e === 'string' ? e : 'Error desconocido'
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------helpers format--------------------------------------------------*/
+/** To render format components dynamically */
+export const RenderFormat = ({ format }: { format: ReactElement[] }) => {
+  const { theme } = useThemeContext()
+  return format.map((e, i) => (
+    <Fragment key={i}>
+      {cloneElement(e)}
+      <Separator className={`my-8 ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`} />
+    </Fragment>
+  ))
+}
+/** To generate tags based on the type of inspection (pdf) */
+export const getInspectionTags = (inspection: string) => {
+  const tags = []
+  if (inspection.toLowerCase().includes('físic')) tags.push('Física')
+  if (inspection.toLowerCase().includes('mecánic')) tags.push('Mecánica')
+  if (inspection.toLowerCase().includes('eléctric')) tags.push('Eléctrica')
+  if (inspection.toLowerCase().includes('seguridad')) tags.push('Seguridad')
+  if (inspection.toLowerCase().includes('prueba')) tags.push('Prueba')
+  if (tags.length === 0) tags.push('General')
+  return tags
+}
+/** To convert context to spanish */
+export const convertRole = (str: RoleProps) => {
+  switch (str) {
+    case "client": return "cliente"
+    case "company": return "proveedor de servicios"
+    case "engineer": return "ingeniero"
+    case "admin": return "administrador"
+    default: return str
+  }
+}
+/** To convert technical specification to spanish */
+export const toLabel_technicalSpecification = (key: string) => {
+  switch (key) {
+    case 'voltage':
+      return 'VOLTAJE (V)'
+    case 'amperage':
+      return 'CORRIENTE (A)'
+    case 'power':
+      return 'POTENCIA'
+    case 'frequency':
+      return 'FRECUENCIA (Hz)'
+    case 'capacity':
+      return 'CAPACIDAD'
+    case 'pressure':
+      return 'PRESION (PSI)'
+    case 'speed':
+      return 'VELOCIDAD (RPM)'
+    case 'humidity':
+      return 'HUMEDAD (%)'
+    case 'temperature':
+      return 'TEMPERATURA (°C)'
+    case 'weight':
+      return 'PESO (Kg)'
+    default:
+      return key.toUpperCase()
+  }
 }

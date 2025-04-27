@@ -1,4 +1,4 @@
-import { userDefaultValues, clientFlowDefaultValues, groupCollection as groups } from "@/utils/constants"
+import { userDefaultValues, clientFlowDefaultValues, groupCollection as groups } from "@/constants/values.constants"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useAuthQuery"
 import { City, RoleProps, User } from "@/interfaces/context.interface"

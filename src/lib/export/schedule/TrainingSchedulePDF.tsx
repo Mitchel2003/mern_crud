@@ -1,5 +1,5 @@
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { attendanceStyles, styles } from "@/utils/constants"
+import { attendanceStyles, styles } from "@/constants/values.constants"
+import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
 import { User } from "@/interfaces/context.interface"
 import { chunkTable } from '@/lib/utils'
 import dayjs from "dayjs"

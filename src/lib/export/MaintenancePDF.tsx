@@ -1,7 +1,7 @@
+import { formatDate, toLabel_technicalSpecification } from "@/constants/format.constants"
 import { Curriculum, Maintenance, User } from '@/interfaces/context.interface'
-import { styles, toLabel_technicalSpecification } from "@/utils/constants"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { formatDate } from "@/utils/format"
+import { styles } from "@/constants/values.constants"
 
 interface MaintenancePDFProps { mt: Maintenance, com?: User }
 

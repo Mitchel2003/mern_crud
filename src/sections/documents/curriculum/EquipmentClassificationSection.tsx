@@ -12,7 +12,7 @@ import {
   useClassCollection as useClassification,
   powerSupplyCollection as powerSupply,
   riskCollection as risks
-} from '@/utils/constants'
+} from '@/constants/values.constants'
 import { cn } from "@/lib/utils"
 
 interface EquipmentClassProps extends ThemeContextProps { }

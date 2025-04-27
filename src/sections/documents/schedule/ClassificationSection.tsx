@@ -1,4 +1,4 @@
-import { typeClassCollection as typeClassification } from "@/utils/constants"
+import { typeClassCollection as typeClassification } from "@/constants/values.constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useFormContext } from "react-hook-form"
 import { CalendarIcon } from "lucide-react"

@@ -1,15 +1,15 @@
-import HeaderCustom from "#/common/elements/HeaderCustom"
-import StatusCheck from "#/common/fields/StatusCheck"
-import CalendarField from "#/common/fields/Calendar"
-import SelectField from "#/common/fields/Select"
-import AreaField from "#/common/fields/Area"
-
-import { typeMaintenanceCollection as typesMaintenance } from "@/utils/constants"
+import { typeMaintenanceCollection as typesMaintenance } from "@/constants/values.constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { CheckProps } from "@/interfaces/props.interface"
 import { useFormContext } from "react-hook-form"
 import { Check, X, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import StatusCheck from "#/common/fields/StatusCheck"
+import CalendarField from "#/common/fields/Calendar"
+import SelectField from "#/common/fields/Select"
+import AreaField from "#/common/fields/Area"
 
 interface ObservationSectionProps extends ThemeContextProps { }
 const ObservationSection = ({ theme }: ObservationSectionProps) => {

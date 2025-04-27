@@ -2,10 +2,10 @@ import { ThemeContextProps } from '@/interfaces/context.interface'
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 import { FormItem, FormMessage } from '#/ui/form'
 
+import { extractMetadataUrl } from '@/constants/format.constants'
 import { useFormContext, Controller } from 'react-hook-form'
 import HeaderCustom from '#/common/elements/HeaderCustom'
 import { FileText, ExternalLink, X } from 'lucide-react'
-import { extractMetadataUrl } from '@/utils/format'
 import { Button } from '#/ui/button'
 import { cn } from '@/lib/utils'
 import React from 'react'
@@ -99,7 +99,7 @@ const DocumentPreview = React.forwardRef<HTMLDivElement, DocumentPreviewProps>((
                             <ExternalLink className="w-4 h-4" />
                             <span>Abrir</span>
                           </Button>
-                          
+
                           <Button
                             type="button"
                             variant="destructive"

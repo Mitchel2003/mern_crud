@@ -1,195 +1,29 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, Building2, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, BriefcaseBusiness, Users, UserSquare, UserCircle2 } from 'lucide-react'
-import { AssignmentInd, PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox, Devices, HomeRepairService } from '@mui/icons-material'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
 import { Curriculum, Schedule } from '@/interfaces/context.interface'
-import { NavItemProps } from '@/interfaces/props.interface'
-import { useAuthContext } from '@/context/AuthContext'
+import { Building2, BriefcaseBusiness, Users } from 'lucide-react'
 import { StyleSheet } from '@react-pdf/renderer'
 
-export const links = () => {
-  const { isAuth, user } = useAuthContext()
-  /*--------------------------------------------------guest--------------------------------------------------*/
-  const navGuestItems: NavItemProps[] = [
-    {/** home **/
-      href: '/',
-      label: 'Home',
-      icon: Home
-    },
-    {/** login **/
-      href: '/auth/login',
-      label: 'Iniciar sesión',
-      icon: LogIn
-    },
-    {/** about **/
-      href: '/about',
-      label: 'Acerca de nosotros',
-      icon: Info
-    }
-  ]
-  /*--------------------------------------------------client--------------------------------------------------*/
-  const navClientItems: NavItemProps[] = [
-    {/** dashboard **/
-      label: 'Panel',
-      href: '/dashboard',
-      icon: TerminalSquare
-    },
-    {// documents
-      href: '/form',
-      icon: PermMedia,
-      label: 'Documentación'
-    }
-  ]
-  /*--------------------------------------------------company--------------------------------------------------*/
-  const navCompanyItems: NavItemProps[] = [
-    {/** dashboard **/
-      icon: Dashboard,
-      href: '/dashboard',
-      label: 'Panel del usuario',
-    },
-    {// users
-      href: '/engineer',
-      icon: AssignmentInd,
-      label: 'Usuarios de servicio',
-    },
-    {// solicits
-      icon: MoveToInbox,
-      href: '/form/solicit',
-      label: 'Solicitudes',
-    },
-    {// cronogramas
-      icon: WorkHistory,
-      href: '/form/schedule',
-      label: 'Cronogramas',
-    },
-    {// curriculums
-      icon: Devices,
-      href: '/form/curriculums',
-      label: 'Equipos',
-    },
-    {// maintenances
-      icon: HomeRepairService,
-      href: '/form/maintenances',
-      label: 'Mantenimientos',
-    },
-    {/** institution **/
-      label: 'Gestion de clientes',
-      icon: SwitchAccount,
-      href: '/clients',
-      subItems: [
-        {// new client
-          icon: UserPlus,
-          href: '/newClient',
-          label: 'Nuevo',
-        },
-        {// management clients
-          icon: Users,
-          href: '/clients',
-          label: 'Clientes',
-        }
-      ]
-    }
-  ]
-  /*--------------------------------------------------engineer--------------------------------------------------*/
-  const navEngineerItems: NavItemProps[] = [
-    {/** dashboard **/
-      href: '/dashboard',
-      label: 'Panel del usuario',
-      icon: TerminalSquare
-    }
-  ]
-  /*--------------------------------------------------admin--------------------------------------------------*/
-  const navAdminItems: NavItemProps[] = [
-    {/** dashboard **/
-      href: '/dashboard',
-      icon: TerminalSquare,
-      label: 'Panel del usuario',
-    },
-    {// users
-      label: 'Usuarios',
-      icon: UserCircle2,
-      subItems: [
-        {// proveedor of service
-          icon: Badge,
-          label: 'Proveedores',
-          href: '/companies',
-        },
-        {// engineer
-          icon: SupervisorAccount,
-          label: 'Ingenieros',
-          href: '/engineer',
-        },
-      ]
-    },
-    {/** forms **/
-      icon: FilesIcon,
-      label: 'Formularios',
-      subItems: [
-        {// cvs
-          icon: FileTextIcon,
-          href: '/form/curriculums',
-          label: 'Currículums',
-        },
-        {// maintenances
-          icon: WrenchIcon,
-          href: '/form/maintenances',
-          label: 'Mantenimientos',
-        }
-      ]
-    },
-    {/** institution **/
-      label: 'Gestion de clientes',
-      icon: UserSquare,
-      href: '/clients',
-      subItems: [
-        {// new client
-          icon: UserPlus,
-          href: '/newClient',
-          label: 'Nuevo',
-        },
-        {// management clients
-          icon: Users,
-          href: '/clients',
-          label: 'Clientes',
-        }
-      ]
-    },
-    {// complementaries
-      label: 'Complementarios',
-      icon: GitPullRequestArrowIcon,
-      subItems: [
-        {/** locations **/
-          label: 'Ubicaciones',
-          icon: LucideMap,
-          subItems: [
-            {// cities
-              label: 'Ciudades',
-              icon: LocateFixedIcon,
-              href: '/location/cities',
-            },
-            {// departments
-              icon: MapPin,
-              label: 'Departamentos',
-              href: '/location/states',
-            },
-            {// countries
-              icon: Flag,
-              label: 'Países',
-              href: '/location/countries',
-            }
-          ]
-        }
-      ]
-    }
-  ]
-
-  return !isAuth ? navGuestItems : (
-    user?.role === 'engineer' ? navEngineerItems
-      : (user?.role === 'client' ? navClientItems
-        : (user?.role === 'company' ? navCompanyItems
-          : navAdminItems))
-  )
-}
+/*--------------------------------------------------default navigation routes--------------------------------------------------*/
+export const navigationTabs = [{
+  value: 'clients',
+  label: 'Clientes',
+  icon: <Users className='h-4 w-4' />,
+  paths: ['/clients', '/client', '/client/'],
+  baseRoute: '/clients'
+}, {
+  label: 'Sedes',
+  value: 'headquarters',
+  icon: <Building2 className='h-4 w-4' />,
+  paths: ['/location/headquarters', '/location/headquarter', '/location/headquarter/'],
+  baseRoute: '/location/headquarters'
+}, {
+  value: 'offices',
+  label: 'Consultorios',
+  icon: <BriefcaseBusiness className='h-4 w-4' />,
+  paths: ['/location/offices', '/location/office', '/location/office/'],
+  baseRoute: '/location/offices'
+}]
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default format values--------------------------------------------------*/
@@ -213,6 +47,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   photoUrl: [], //basicData (create after that cv)
 
   newAnnexes: [], //characteristics
+  annexesPreview: [], //characteristics
   characteristics: '', //characteristics
   recommendationsManufacturer: '', //characteristics
 
@@ -347,55 +182,7 @@ export const scheduleDefaultValues = {
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------default navigation routes--------------------------------------------------*/
-export const navigationTabs = [{
-  value: 'clients',
-  label: 'Clientes',
-  icon: <Users className='h-4 w-4' />,
-  paths: ['/clients', '/client', '/client/'],
-  baseRoute: '/clients'
-}, {
-  label: 'Sedes',
-  value: 'headquarters',
-  icon: <Building2 className='h-4 w-4' />,
-  paths: ['/location/headquarters', '/location/headquarter', '/location/headquarter/'],
-  baseRoute: '/location/headquarters'
-}, {
-  value: 'offices',
-  label: 'Consultorios',
-  icon: <BriefcaseBusiness className='h-4 w-4' />,
-  paths: ['/location/offices', '/location/office', '/location/office/'],
-  baseRoute: '/location/offices'
-}]
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------Statics--------------------------------------------------*/
-export const toLabel_technicalSpecification = (key: string) => {
-  switch (key) {
-    case 'voltage':
-      return 'VOLTAJE (V)'
-    case 'amperage':
-      return 'CORRIENTE (A)'
-    case 'power':
-      return 'POTENCIA'
-    case 'frequency':
-      return 'FRECUENCIA (Hz)'
-    case 'capacity':
-      return 'CAPACIDAD'
-    case 'pressure':
-      return 'PRESION (PSI)'
-    case 'speed':
-      return 'VELOCIDAD (RPM)'
-    case 'humidity':
-      return 'HUMEDAD (%)'
-    case 'temperature':
-      return 'TEMPERATURA (°C)'
-    case 'weight':
-      return 'PESO (Kg)'
-    default:
-      return key.toUpperCase()
-  }
-}
+/*--------------------------------------------------default static--------------------------------------------------*/
 export const defaultWarranty = [
   { label: "Ninguna", value: "N/A" },
   { label: "6 meses", value: "6 meses" },
@@ -459,7 +246,7 @@ export const typeSchedule: Schedule['type'][] = [
 ]
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------default style values--------------------------------------------------*/
+/*--------------------------------------------------default table values--------------------------------------------------*/
 export const defaultStyles = 'px-8 flex items-center gap-2 hover:bg-accent/50 transition-all duration-200 relative group'
 export const activeStyles = 'bg-white text-black shadow-sm after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-primary'
 export const tableTranslations = {// to spanish
@@ -493,7 +280,7 @@ export const tableTranslations = {// to spanish
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
-/*--------------------------------------------------styles PDF--------------------------------------------------*/
+/*--------------------------------------------------default styles values (pdf)--------------------------------------------------*/
 export const styles = StyleSheet.create({ //styles basics
   page: {
     padding: '15pt',

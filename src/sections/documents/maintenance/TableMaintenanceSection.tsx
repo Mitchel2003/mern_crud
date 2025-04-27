@@ -9,9 +9,9 @@ import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogCon
 import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 
-import { tableTranslations } from "@/utils/constants"
+import { tableTranslations } from "@/constants/values.constants"
+import { formatDateTime } from "@/constants/format.constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
-import { formatDateTime } from "@/utils/format"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 

@@ -3,14 +3,14 @@ import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import { CalendarMonth, Delete } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
-import { tableTranslations } from "@/utils/constants"
-import { formatDateTime } from "@/utils/format"
 import { BarChart2, Eye } from "lucide-react"
 import { useMemo } from "react"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { Schedule, ThemeContextProps } from "@/interfaces/context.interface"
 import { useScheduleTable } from "@/hooks/core/table/useFormatTable"
+import { tableTranslations } from "@/constants/values.constants"
+import { formatDateTime } from "@/constants/format.constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 
 interface TableScheduleSectionProps extends ThemeContextProps {

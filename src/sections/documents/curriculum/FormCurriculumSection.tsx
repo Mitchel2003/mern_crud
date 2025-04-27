@@ -1,8 +1,8 @@
 import { useCurriculumForm } from "@/hooks/core/form/useFormatForm"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { FooterFormProps } from "@/interfaces/props.interface"
+import { RenderFormat } from "@/constants/format.constants"
 import { FormProvider } from "react-hook-form"
-import { RenderFormat } from "@/utils/format"
 import React, { useMemo } from "react"
 
 import SubmitFooter from "#/common/elements/SubmitFooter"

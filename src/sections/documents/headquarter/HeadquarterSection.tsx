@@ -1,4 +1,4 @@
-import { defaultStyles, activeStyles, navigationTabs } from '@/utils/constants'
+import { defaultStyles, activeStyles, navigationTabs } from '@/constants/values.constants'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { useTabs, useTabNavigator } from '@/hooks/core/useTabs'

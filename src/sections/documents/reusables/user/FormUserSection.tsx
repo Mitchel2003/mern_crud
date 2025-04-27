@@ -1,3 +1,10 @@
+import { RoleProps, ThemeContextProps } from "@/interfaces/context.interface"
+import { convertRole, toPlural } from "@/constants/format.constants"
+import { useUserForm } from "@/hooks/core/form/useAuthForm"
+import { FormProvider } from "react-hook-form"
+import { Mail, Lock } from "lucide-react"
+import { cn } from "@/lib/utils"
+
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import ImagePreview from "#/common/fields/ImagePreview"
 import CardIterable from "#/common/fields/CardIterable"
@@ -8,13 +15,6 @@ import ImageField from "#/common/fields/Image"
 import InputField from "#/common/fields/Input"
 import { Separator } from "#/ui/separator"
 import { CardContent } from "#/ui/card"
-
-import { RoleProps, ThemeContextProps } from "@/interfaces/context.interface"
-import { useUserForm } from "@/hooks/core/form/useAuthForm"
-import { convertRole, toPlural } from "@/utils/format"
-import { FormProvider } from "react-hook-form"
-import { Mail, Lock } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 interface FormUserSectionProps extends ThemeContextProps {
   id: string | undefined

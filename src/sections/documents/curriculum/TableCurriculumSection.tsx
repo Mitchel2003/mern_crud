@@ -9,11 +9,11 @@ import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/c
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { useCurriculumTable, useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 
+import { formatDate, formatDateTime } from "@/constants/format.constants"
+import { tableTranslations } from "@/constants/values.constants"
 import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
-import { tableTranslations } from "@/utils/constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { useNavigate } from "react-router-dom"
-import { formatDate, formatDateTime } from "@/utils/format"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
