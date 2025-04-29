@@ -50,7 +50,7 @@ const PreviewCurriculumSection = ({ id, theme, isMobile }: PreviewCurriculumSect
       {cv && (
         <>
           <Card className={cn('max-w-5xl mx-auto bg-gradient-to-br', theme === 'dark'
-            ? 'border-purple-100 from-gray-800 to-gray-900'
+            ? 'border-zinc-800 from-zinc-900 to-zinc-800 shadow-md'
             : 'border-purple-100 from-white to-purple-50/30'
           )}>
             <HeaderPreviewCV theme={theme} client={client} isMobile={isMobile} />
@@ -95,10 +95,7 @@ const MaintenanceHistory = ({ theme, mt, company }: MaintenanceHistoryProps): JS
   }, [downloadPDF, company])
   return (
     <>
-      <Card className={cn('max-w-5xl mx-auto bg-gradient-to-br', theme === 'dark'
-        ? 'border-purple-100 from-gray-800 to-gray-900'
-        : 'border-purple-100 from-white to-purple-50/30'
-      )}>
+      <Card className={cn('max-w-5xl mx-auto bg-gradient-to-br border', theme === 'dark' ? 'border-zinc-700 from-zinc-800 to-zinc-900' : 'border-purple-100 from-white to-purple-50/30')}>
         <CardHeader className="px-4 sm:px-6 pt-6 pb-0">
           <CardTitle className="text-xl font-semibold">
             Historial de Mantenimientos
@@ -112,9 +109,7 @@ const MaintenanceHistory = ({ theme, mt, company }: MaintenanceHistoryProps): JS
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow className={cn(
-                    theme === 'dark' ? 'bg-gray-800/50' : 'bg-purple-50/50'
-                  )}>
+                  <TableRow className={cn(theme === 'dark' ? 'bg-zinc-800/50' : 'bg-purple-50/50')}>
                     <TableHead className="w-[180px]">Fecha</TableHead>
                     <TableHead>Tipo</TableHead>
                     <TableHead>Estado del Equipo</TableHead>
@@ -123,10 +118,7 @@ const MaintenanceHistory = ({ theme, mt, company }: MaintenanceHistoryProps): JS
                 </TableHeader>
                 <TableBody>
                   {mt.map((maintenance) => (
-                    <TableRow key={maintenance._id} className={cn(
-                      'transition-colors hover:bg-muted/50',
-                      theme === 'dark' ? 'hover:bg-gray-800/30' : 'hover:bg-purple-50/30'
-                    )}>
+                    <TableRow key={maintenance._id} className={cn('transition-colors hover:bg-muted/50', theme === 'dark' ? 'hover:bg-zinc-800/30' : 'hover:bg-purple-50/30')}>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           <CalendarIcon className="h-4 w-4 text-muted-foreground" />
@@ -170,10 +162,7 @@ const MaintenanceHistory = ({ theme, mt, company }: MaintenanceHistoryProps): JS
               </Table>
             </div>
           ) : (
-            <div className={cn(
-              'flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center',
-              theme === 'dark' ? 'border-gray-700' : 'border-gray-300'
-            )}>
+            <div className={cn('flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center', theme === 'dark' ? 'border-zinc-700' : 'border-zinc-300')}>
               <h3 className="mt-2 text-sm font-semibold">No hay mantenimientos registrados</h3>
               <p className="mt-1 text-sm text-muted-foreground">
                 Este equipo aún no tiene registros de mantenimiento en el sistema.

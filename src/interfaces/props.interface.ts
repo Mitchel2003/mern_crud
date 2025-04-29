@@ -111,7 +111,6 @@ export interface ClientDashboardProps {
   pendingMaintenances: number
   totalMaintenances: number
   totalCurriculums: number
-  totalSolicits: number
   activeAlerts: number
 
   // Actividad reciente

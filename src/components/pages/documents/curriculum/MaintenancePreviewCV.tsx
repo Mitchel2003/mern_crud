@@ -24,20 +24,18 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
   const circleValue = calculateCircleValue(cv)
   return (
     <section className="animate-in fade-in-50 duration-500">
-      <div className={cn(
-        '-mx-6 px-6 py-4 border-y bg-gradient-to-r',
-        theme === 'dark'
-          ? 'from-purple-50 to-purple-100/50 border-purple-100'
-          : 'from-purple-50 to-purple-100/50 border-purple-100'
+      <div className={cn('-mx-6 px-6 py-4 border-y bg-gradient-to-r', theme === 'dark'
+        ? 'from-zinc-800 to-zinc-700 border-zinc-700 text-zinc-100'
+        : 'from-purple-50 to-purple-100/50 border-purple-100'
       )}>
         <div className="flex items-center gap-2">
-          <WrenchIcon className="w-5 h-5 text-purple-600" />
+          <WrenchIcon className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
           <h2 className="text-xl font-semibold">Mantenimiento</h2>
         </div>
       </div>
 
       <div className="mt-6">
-        <Card className="bg-white/50">
+        <Card className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-purple-50')}>
           <CardContent className="p-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="grid md:grid-cols-1">
@@ -45,8 +43,8 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                   <h3 className="text-lg font-semibold">Tipo de Mantenimiento</h3>
                   <HoverCard>
                     <HoverCardTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <InfoIcon className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" className={cn(theme === 'dark' ? 'hover:bg-zinc-700' : '')}>
+                        <InfoIcon className={cn("h-4 w-4", theme === 'dark' ? 'text-purple-300' : '')} />
                       </Button>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-80">
@@ -59,7 +57,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="px-3 py-1 text-sm bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+                      className={cn("px-3 py-1 text-sm transition-colors", theme === 'dark' ? 'bg-zinc-700 text-zinc-100 hover:bg-zinc-600' : 'bg-purple-100 text-purple-700 hover:bg-purple-200')}
                     >
                       {type}
                     </Badge>
@@ -72,8 +70,8 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                   <h3 className="text-lg font-semibold mb-3">Frecuencia de Mantenimiento</h3>
                   <HoverCard>
                     <HoverCardTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <InfoIcon className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" className={cn(theme === 'dark' ? 'hover:bg-zinc-700' : '')}>
+                        <InfoIcon className={cn("h-4 w-4", theme === 'dark' ? 'text-purple-300' : '')} />
                       </Button>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-80">
@@ -86,7 +84,6 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                   <div className="w-20 h-20">
                     <CircularProgressbar
                       value={circleValue}
-                      text={cv?.frequencyMaintenance ? cv.frequencyMaintenance.replace(/\s+/g, '') : '?'}
                       styles={buildStyles({
                         pathColor: `rgba(147, 51, 234, ${circleValue / 100})`,
                         textSize: '16px', textColor: '#6b21a8', trailColor: '#e9d5ff',
@@ -94,9 +91,9 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                     />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Próximo mantenimiento en</p>
-                    <p className="text-2xl font-bold text-purple-700">{maintenanceDays} días</p>
-                    <p className="text-xs text-muted-foreground mt-1">Basado en {cv?.employmentMaintenance || 'uso estándar'}</p>
+                    <p className={cn("text-sm text-muted-foreground", theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>Próximo mantenimiento en</p>
+                    <p className={cn("text-2xl font-bold", theme === 'dark' ? 'text-purple-300' : 'text-purple-700')}>{maintenanceDays} días</p>
+                    <p className={cn("text-xs text-muted-foreground", theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>Basado en {cv?.employmentMaintenance || 'uso estándar'}</p>
                   </div>
                 </div>
               </div>
@@ -107,37 +104,34 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
             <div className="space-y-6">
               <div className="h-full">
                 <h3 className="text-lg font-semibold mb-3">Manuales Disponibles</h3>
-                <div className="h-auto flex flex-col bg-purple-50 rounded-lg border border-purple-100 overflow-hidden">
+                <div className={cn("h-auto flex flex-col rounded-lg border overflow-hidden", theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700' : 'bg-purple-50 border-purple-100')}>
                   {/* Encabezado con icono y título */}
-                  <div className="flex items-center gap-3 p-4 border-b border-purple-100 bg-purple-100/50">
-                    <div className="p-2 bg-white rounded-full">
-                      <FileText className="w-5 h-5 text-purple-600" />
+                  <div className={cn("flex items-center gap-3 p-4 border-b", theme === 'dark' ? 'border-zinc-700 bg-zinc-800' : 'border-purple-100 bg-purple-100/50')}>
+
+                    <div className={cn("p-2 rounded-full", theme === 'dark' ? 'bg-zinc-700' : 'bg-white')}>
+                      <FileText className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                     </div>
                     <div>
-                      <h4 className="font-medium">Documentación técnica</h4>
-                      <p className="text-xs text-muted-foreground">Manuales y guías para este equipo</p>
+                      <h4 className={cn("font-medium", theme === 'dark' ? 'text-white' : 'text-gray-800')}>Documentación técnica</h4>
+                      <p className={cn("text-xs text-muted-foreground", theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>Manuales y guías para este equipo</p>
                     </div>
                   </div>
 
                   {/* Contenido principal */}
-                  <div className="p-4 flex-1 flex flex-col">
+                  <div className={cn("p-4 flex-1 flex flex-col", theme === 'dark' ? 'bg-zinc-800/80' : 'bg-purple-50')}>
                     {/* Tipos de manuales disponibles */}
                     <div className="mb-4">
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Tipos de manuales:</p>
+                      <p className={cn("text-sm font-medium text-muted-foreground mb-2", theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>Tipos de manuales:</p>
                       <div className="flex flex-wrap gap-2">
                         {Array.isArray(cv?.manualsMaintenance) && cv.manualsMaintenance.length > 0 ? (
                           cv.manualsMaintenance.map((manual, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="bg-white border-purple-200 text-purple-700 hover:bg-purple-50"
-                            >
+                            <Badge key={index} variant="outline" className={cn("px-3 py-1 text-sm transition-colors", theme === 'dark' ? 'bg-zinc-700 text-zinc-100 hover:bg-zinc-600' : 'bg-purple-100 text-purple-700 hover:bg-purple-200')}>
                               <FileText className="w-3.5 h-3.5 mr-1.5" />
                               {manual}
                             </Badge>
                           ))
                         ) : (
-                          <span className="text-sm text-muted-foreground italic">
+                          <span className="text-sm text-muted-foreground italic ">
                             {typeof cv?.manualsMaintenance === 'string' ? cv?.manualsMaintenance : 'No especificado'}
                           </span>
                         )}
@@ -145,13 +139,13 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                     </div>
 
                     {/* Línea separadora */}
-                    <Separator className="my-3" />
+                    <Separator className={cn("my-3", theme === 'dark' ? 'bg-zinc-700' : '')} />
 
                     {/* Archivos adjuntos */}
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium text-purple-700">Documentos disponibles</p>
-                        <Badge variant="outline" className="text-xs bg-purple-50">
+                        <p className={cn("text-sm font-medium", theme === 'dark' ? 'text-purple-300' : 'text-purple-700')}>Documentos disponibles</p>
+                        <Badge variant="outline" className={cn("text-xs", theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-purple-50')}>
                           {fileNames?.length || 0} archivos
                         </Badge>
                       </div>
@@ -161,11 +155,11 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                           {fileNames.map((fileName, index) => (
                             <div
                               key={index}
-                              className="flex items-center justify-between bg-white p-2.5 rounded-md border border-purple-100 hover:border-purple-200 hover:shadow-sm transition-all duration-200"
+                              className={cn("flex items-center justify-between p-2.5 rounded-md border transition-all duration-200", theme === 'dark' ? 'bg-zinc-800 border-zinc-700 hover:border-zinc-600 hover:bg-zinc-700/80' : 'bg-white border-purple-100 hover:border-purple-200 hover:shadow-sm')}
                             >
                               <div className="flex items-center gap-2.5 truncate">
-                                <div className="p-1.5 bg-purple-50 rounded">
-                                  <FileText className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                                <div className={cn("p-1.5 rounded", theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-50')}>
+                                  <FileText className={cn("h-4 w-4 flex-shrink-0", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                                 </div>
                                 <div className="min-w-0">
                                   <p className="text-sm font-medium truncate">{fileName}</p>
@@ -180,14 +174,14 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      className="h-8 px-2 text-purple-700 hover:text-purple-900 hover:bg-purple-50"
+                                      className={cn("h-8 px-2", theme === 'dark' ? 'text-purple-300 hover:text-purple-200 hover:bg-zinc-700' : 'text-purple-700 hover:text-purple-900 hover:bg-purple-50')}
                                       onClick={() => window.open(cv?.metadata?.files?.[index], '_blank')}
                                     >
-                                      <ExternalLink className="h-4 w-4 mr-1" />
+                                      <ExternalLink className={cn("h-4 w-4 mr-1", theme === 'dark' ? 'text-purple-300' : '')} />
                                       Ver
                                     </Button>
                                   </TooltipTrigger>
-                                  <TooltipContent side="left">
+                                  <TooltipContent side="left" className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : '')}>
                                     <p className="text-xs">Abrir documento en nueva pestaña</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -196,10 +190,10 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                           ))}
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-lg border border-dashed border-purple-200">
-                          <FileText className="w-10 h-10 text-purple-200 mb-2" />
-                          <p className="text-sm font-medium text-muted-foreground">No hay documentos adjuntos</p>
-                          <p className="text-xs text-muted-foreground mt-1">Los manuales aparecerán aquí cuando estén disponibles</p>
+                        <div className={cn("flex flex-col items-center justify-center py-8 text-center rounded-lg border border-dashed", theme === 'dark' ? 'bg-zinc-800/50 border-zinc-700' : 'bg-white border-purple-200')}>
+                          <FileText className={cn("w-10 h-10 mb-2", theme === 'dark' ? 'text-zinc-600' : 'text-purple-200')} />
+                          <p className={cn("text-sm font-medium", theme === 'dark' ? 'text-zinc-400' : 'text-muted-foreground')}>No hay documentos adjuntos</p>
+                          <p className={cn("text-xs mt-1", theme === 'dark' ? 'text-zinc-500' : 'text-muted-foreground')}>Los manuales aparecerán aquí cuando estén disponibles</p>
                         </div>
                       )}
                     </div>
@@ -214,7 +208,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
 
       {/* Inspecciones */}
       <div className="mt-6">
-        <Card className="bg-white/50">
+        <Card className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-purple-50')}>
           <CardHeader className="border-b border-purple-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -241,9 +235,9 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
           <CardContent className="p-6">
             <div className="space-y-6">
               {/* Nombre de la configuración */}
-              <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                <div className="p-2 bg-white rounded-full">
-                  <Settings2 className="w-5 h-5 text-purple-600" />
+              <div className={cn("flex items-start gap-4 p-4 rounded-lg border", theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700' : 'bg-purple-50 border-purple-100')}>
+                <div className={cn("p-2 rounded-full", theme === 'dark' ? 'bg-zinc-700' : 'bg-white')}>
+                  <Settings2 className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                 </div>
                 <div>
                   <h3 className="font-medium mb-1">Configuración Actual</h3>
@@ -255,22 +249,22 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium">Lista de Actividades</h3>
-                  <Badge variant="outline" className="bg-purple-50">
+                  <Badge variant="outline" className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-purple-50')}>
                     {ins?.typeInspection?.length || 0} puntos de actividad
                   </Badge>
                 </div>
 
-                <ScrollArea className="h-[250px] rounded-lg border border-purple-100 p-4">
+                <ScrollArea className={cn("h-[250px] rounded-lg border p-4", theme === 'dark' ? 'border-zinc-700 bg-zinc-800/50' : 'border-purple-100')}>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {ins?.typeInspection?.map((inspection, index) => (
                       <div
                         key={index}
-                        className="group relative bg-white p-4 rounded-lg border border-purple-100 hover:shadow-md transition-all duration-300"
+                        className={cn("group relative p-4 rounded-lg border hover:shadow-md transition-all duration-300", theme === 'dark' ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700/80' : 'bg-white border-purple-100')}
                       >
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-purple-50 rounded-bl-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className={cn("absolute top-0 right-0 w-16 h-16 rounded-bl-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity", theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-50')} />
 
                         <div className="flex items-start gap-4">
-                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-medium text-sm">
+                          <div className={cn("flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm", theme === 'dark' ? 'bg-zinc-700 text-purple-300' : 'bg-purple-100 text-purple-600')}>
                             {String(index + 1).padStart(2, '0')}
                           </div>
                           <div className="flex-1">
@@ -280,7 +274,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                                 <Badge
                                   key={i}
                                   variant="secondary"
-                                  className="bg-purple-50 text-xs"
+                                  className={cn("text-xs", theme === 'dark' ? 'bg-zinc-700 hover:bg-zinc-600' : 'bg-purple-50')}
                                 >
                                   {tag}
                                 </Badge>
@@ -317,81 +311,71 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
 
       {/* Especificaciones Técnicas */}
       <div className="mt-6">
-        <Card className="bg-white/50">
+        <Card className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-purple-50')}>
           <CardContent className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                {
-                  icon: <Zap className="w-4 h-4" />,
-                  label: 'Voltaje',
-                  value: cv?.technicalCharacteristics.voltage,
-                  unit: 'V',
-                  color: 'bg-yellow-100 text-yellow-600'
-                },
-                {
-                  icon: <Gauge className="w-4 h-4" />,
-                  label: 'Corriente',
-                  value: cv?.technicalCharacteristics.amperage,
-                  unit: 'A',
-                  color: 'bg-blue-100 text-blue-600'
-                },
-                {
-                  icon: <Battery className="w-4 h-4" />,
-                  label: 'Potencia',
-                  value: cv?.technicalCharacteristics.power,
-                  unit: 'W',
-                  color: 'bg-green-100 text-green-600'
-                },
-                {
-                  icon: <RefreshCw className="w-4 h-4" />,
-                  label: 'Frecuencia',
-                  value: cv?.technicalCharacteristics.frequency,
-                  unit: 'Hz',
-                  color: 'bg-purple-100 text-purple-600'
-                },
-                {
-                  icon: <Thermometer className="w-4 h-4" />,
-                  label: 'Temperatura',
-                  value: cv?.technicalCharacteristics.temperature,
-                  unit: '°C',
-                  color: 'bg-red-100 text-red-600'
-                },
-                {
-                  icon: <Droplet className="w-4 h-4" />,
-                  label: 'Humedad',
-                  value: cv?.technicalCharacteristics.humidity,
-                  unit: '%',
-                  color: 'bg-cyan-100 text-cyan-600'
-                },
-                {
-                  icon: <ArrowUpDown className="w-4 h-4" />,
-                  label: 'Presión',
-                  value: cv?.technicalCharacteristics.pressure,
-                  unit: 'Pa',
-                  color: 'bg-orange-100 text-orange-600'
-                },
-                {
-                  icon: <Wind className="w-4 h-4" />,
-                  label: 'Velocidad',
-                  value: cv?.technicalCharacteristics.speed,
-                  unit: 'm/s',
-                  color: 'bg-teal-100 text-teal-600'
-                },
-                {
-                  icon: <Scale className="w-4 h-4" />,
-                  label: 'Peso',
-                  value: cv?.technicalCharacteristics.weight,
-                  unit: 'kg',
-                  color: 'bg-indigo-100 text-indigo-600'
-                },
-              ].map((spec, index) => (
+              {[{
+                unit: 'V',
+                label: 'Voltaje',
+                icon: <Zap className="w-4 h-4" />,
+                color: 'bg-yellow-100 text-yellow-600',
+                value: cv?.technicalCharacteristics.voltage,
+              }, {
+                unit: 'A',
+                label: 'Corriente',
+                color: 'bg-blue-100 text-blue-600',
+                icon: <Gauge className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.amperage,
+              }, {
+                unit: 'W',
+                label: 'Potencia',
+                color: 'bg-green-100 text-green-600',
+                icon: <Battery className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.power,
+              }, {
+                unit: 'Hz',
+                label: 'Frecuencia',
+                color: 'bg-purple-100 text-purple-600',
+                icon: <RefreshCw className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.frequency,
+              }, {
+                unit: '°C',
+                label: 'Temperatura',
+                color: 'bg-red-100 text-red-600',
+                icon: <Thermometer className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.temperature,
+              }, {
+                unit: '%',
+                label: 'Humedad',
+                color: 'bg-cyan-100 text-cyan-600',
+                icon: <Droplet className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.humidity,
+              }, {
+                unit: 'Pa',
+                label: 'Presión',
+                color: 'bg-orange-100 text-orange-600',
+                icon: <ArrowUpDown className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.pressure,
+              }, {
+                unit: 'm/s',
+                label: 'Velocidad',
+                color: 'bg-teal-100 text-teal-600',
+                icon: <Wind className="w-4 h-4" />,
+                value: cv?.technicalCharacteristics.speed,
+              }, {
+                unit: 'kg',
+                label: 'Peso',
+                icon: <Scale className="w-4 h-4" />,
+                color: 'bg-indigo-100 text-indigo-600',
+                value: cv?.technicalCharacteristics.weight,
+              }].map((spec, index) => (
                 <TooltipProvider key={index}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="group cursor-pointer">
-                        <div className="relative overflow-hidden rounded-lg border border-gray-100 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105">
+                        <div className={cn("relative overflow-hidden p-3 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105", theme === 'dark' ? 'bg-zinc-800/50 border-zinc-700' : 'bg-white')}>
                           <div className="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 rounded-full opacity-20 transition-opacity group-hover:opacity-100" style={{ background: spec.color }} />
-                          <div className="flex items-center gap-3">
+                          <div className={cn("flex items-center gap-3", theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
                             <div className={cn("p-2 rounded-lg", spec.color)}>
                               {spec.icon}
                             </div>
@@ -420,23 +404,24 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
               ))}
             </div>
 
-            <Separator className="my-6" />
+            <Separator className={cn("my-6", theme === 'dark' ? 'bg-zinc-700' : '')} />
 
             <Collapsible>
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between w-full cursor-pointer group">
                   <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-muted-foreground" />
+                    <Info className={cn("w-4 h-4", theme === 'dark' ? 'text-zinc-400' : 'text-muted-foreground')} />
                     <h3 className="text-sm font-medium">Detalles Adicionales</h3>
                   </div>
                   <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="mt-4">
-                <div className="grid md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg">
+                <div className={cn("grid md:grid-cols-2 gap-6 p-4 rounded-lg", theme === 'dark' ? 'bg-zinc-800/80 border border-zinc-700' : 'bg-gray-50')}>
+
                   <div className="space-y-4">
                     <h4 className="text-sm font-medium flex items-center gap-2">
-                      <Settings2 className="w-4 h-4 text-purple-600" />
+                      <Settings2 className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                       Condiciones de Operación
                     </h4>
                     <div className="space-y-2">
@@ -447,7 +432,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                       ].map((item, index) => (
                         <div key={index} className="flex items-center justify-between text-sm">
                           <span className="text-muted-foreground">{item.label}</span>
-                          <Badge variant="outline">{item.value}</Badge>
+                          <Badge variant="outline" className={cn(theme === 'dark' ? 'border-zinc-700 bg-zinc-800/80' : '')}>{item.value}</Badge>
                         </div>
                       ))}
                     </div>
@@ -455,7 +440,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
 
                   <div className="space-y-4">
                     <h4 className="text-sm font-medium flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-purple-600" />
+                      <Shield className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                       Certificaciones
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -463,7 +448,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
                         <Badge
                           key={index}
                           variant="secondary"
-                          className="bg-purple-50 hover:bg-purple-100 transition-colors"
+                          className={cn("transition-colors", theme === 'dark' ? 'bg-zinc-700 hover:bg-zinc-600' : 'bg-purple-50 hover:bg-purple-100')}
                         >
                           {cert}
                         </Badge>

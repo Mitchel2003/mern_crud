@@ -9,32 +9,33 @@ import { Link } from "react-router-dom"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
 import { Label } from "#/ui/label"
+import { cn } from "@/lib/utils"
 
 interface FooterPreviewCVProps extends ThemeContextProps {
   cv: Curriculum
   com?: User
 }
 
-const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
+const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
   return (
     <>
       <section className="animate-in fade-in-50 duration-500">
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100/50 -mx-6 px-6 py-4 border-y border-purple-100">
+        <div className={cn("bg-gradient-to-r -mx-6 px-6 py-4 border-y", theme === 'dark' ? 'from-zinc-800 to-zinc-700 border-zinc-700 text-zinc-100' : 'from-purple-50 to-purple-100/50 border-purple-100')}>
           <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-purple-600" />
+            <FileText className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
             <h2 className="text-xl font-semibold">Características</h2>
           </div>
         </div>
 
         <div className="mt-6">
-          <Card className="bg-white/50">
+          <Card className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-white/50')}>
             <CardContent className="p-6">
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Características del equipo */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <PenTool className="w-4 h-4 text-purple-600" />
+                    <div className={cn("p-2 rounded-lg", theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-100')}>
+                      <PenTool className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                     </div>
                     <h3 className="font-medium">Características del equipo</h3>
                   </div>
@@ -53,8 +54,8 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
                 {/* Recomendaciones del fabricante */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <ListChecks className="w-4 h-4 text-purple-600" />
+                    <div className={cn("p-2 rounded-lg", theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-100')}>
+                      <ListChecks className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                     </div>
                     <h3 className="font-medium">Recomendaciones del fabricante</h3>
                   </div>
@@ -90,9 +91,9 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
 
       {/* Proveedor del servicio */}
       <section className="animate-in fade-in-50 duration-500">
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100/50 -mx-6 px-6 py-4 border-y border-purple-100">
+        <div className={cn("bg-gradient-to-r -mx-6 px-6 py-4 border-y", theme === 'dark' ? 'from-zinc-800 to-zinc-700 border-zinc-700 text-zinc-100' : 'from-purple-50 to-purple-100/50 border-purple-100')}>
           <div className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-purple-600" />
+            <Building2 className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
             <h2 className="text-xl font-semibold">Proveedor del servicio</h2>
           </div>
         </div>
@@ -102,7 +103,7 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
           <div className="flex flex-col md:flex-row gap-6">
             {/* Logo del proveedor */}
             <div className="relative group">
-              <div className="w-32 h-32 rounded-lg border border-purple-100 overflow-hidden bg-white">
+              <div className={cn("w-32 h-32 rounded-lg border overflow-hidden", theme === 'dark' ? 'border-zinc-700 bg-zinc-800' : 'border-purple-100 bg-white')}>
                 <img
                   alt="Logo proveedor"
                   src={com?.metadata?.logo || '/placeholder.svg?height=128&width=128'}
@@ -117,7 +118,7 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <Building className="w-4 h-4 text-purple-600" />
+                    <Building className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                     <h3 className="font-medium">Información General</h3>
                   </div>
                   <div className="space-y-3">
@@ -134,7 +135,7 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <FileCheck className="w-4 h-4 text-purple-600" />
+                    <FileCheck className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
                     <h3 className="font-medium">Certificaciones</h3>
                   </div>
                   <div className="space-y-3">
@@ -193,20 +194,20 @@ const FooterPreviewCV = ({ cv, com }: FooterPreviewCVProps) => {
                 </div>
               </div>
 
-              <Separator className="bg-purple-100" />
+              <Separator className={cn(theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-100')} />
 
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <Link to='https://wa.me/573178631535?text=Hola, quisiera saber más sobre tus servicios' target='_blank' rel='noopener noreferrer'>
-                  <Button variant="outline" className="gap-2">
-                    <Mail className="w-4 h-4" />
+                  <Button variant="outline" className={cn("gap-2", theme === 'dark' ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700' : '')}>
+                    <Mail className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : '')} />
                     Contactar
                   </Button>
                 </Link>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-purple-50">
+                  <Badge variant="outline" className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-purple-50')}>
                     Proveedor Verificado
                   </Badge>
-                  <Badge variant="outline" className="bg-purple-50">
+                  <Badge variant="outline" className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : 'bg-purple-50')}>
                     Servicio Activo
                   </Badge>
                 </div>

@@ -106,7 +106,7 @@ interface RegulationContentProps extends ThemeContextProps {
   title: string
 }
 
-interface RegulationSection { title: string, content: string }
+interface RegulationSection { content: string }
 const RegulationContent = ({ theme, title, subtitle, icon: Icon, color, content }: RegulationContentProps) => {
   const colorClass = colorClasses(theme)
   return (
@@ -128,15 +128,9 @@ const RegulationContent = ({ theme, title, subtitle, icon: Icon, color, content 
       </CardHeader>
       <CardContent className="pt-6">
         {content.map((section, index) => (
-          <Accordion type="single" defaultValue={section.title} className="w-full" collapsible>
-            <AccordionItem key={index} value={section.title} className={cn("mb-2 border rounded-lg", colorClass[color].accordion)}>
-              <AccordionTrigger className="px-4 hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <span className={cn("text-sm font-medium", theme === "dark" ? "text-white" : "text-gray-800")}>
-                    {section.title}
-                  </span>
-                </div>
-              </AccordionTrigger>
+          <Accordion key={index} type="single" defaultValue={' '} className="w-full" collapsible>
+            <AccordionItem value={' '} className={cn("mb-2 border rounded-lg", colorClass[color].accordion)}>
+              <AccordionTrigger className="px-4 hover:no-underline" />
               <AccordionContent className="px-4 pb-4">
                 <p className={cn("text-sm whitespace-pre-line", theme === "dark" ? "text-gray-300" : "text-gray-600")}>
                   {section.content}
@@ -154,22 +148,10 @@ export default RegulationsDrawer
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const isoContent: RegulationSection[] = [{
-  title: "¿Qué beneficios ofrece la ISO 9001?",
-  content: "Establece los requisitos para implementar un Sistema de Gestión de la Calidad (SGC), enfocado en la mejora continua, la satisfacción del usuario y el control eficiente de los procesos. Para los prestadores de servicios de salud, su aplicación permite estructurar de forma organizada las actividades, mejorar la calidad de la atención y fortalecer la toma de decisiones. \n\n La gestión documental es fundamental para mantener trazabilidad, evidenciar conformidad y garantizar el control de la información."
-}]
-const decretoContent: RegulationSection[] = [{
-  title: "Responsabilidades de las IPS",
-  content: "Define los estándares que deben cumplir los prestadores de servicios de salud para obtener y mantener la habilitación. Establece criterios relacionados con la infraestructura, el talento humano, los procesos asistenciales y la gestión de los equipos. Su adecuada aplicación garantiza la calidad y seguridad en la prestación del servicio. \n\n La gestión documental es clave para evidenciar el cumplimiento de cada estándar exigido y facilitar auditorías o procesos de inspección."
-}]
-const resolucionContent: RegulationSection[] = [{
-  title: "¿Que indica el Decreto 4725 de 2005?",
-  content: "Regula todo el ciclo de vida de los dispositivos médicos en Colombia, desde su fabricación hasta su disposición final. \n\n Obliga a los prestadores de servicios de salud a llevar un control riguroso de los equipos, sus mantenimientos, condiciones de uso y estado técnico. La gestión documental es esencial para cumplir con esta regulación, permitiendo demostrar la seguridad, funcionalidad y trazabilidad de los dispositivos en beneficio de la atención segura al paciente."
-}]
-const habilitacionContent: RegulationSection[] = [{
-  title: "Verificación y Control",
-  content: "Este manual, emitido por el Ministerio de Salud, orienta a los prestadores sobre los pasos y requisitos para inscribirse en el Registro Especial de Prestadores de Servicios de Salud (REPS) y habilitar los servicios ofrecidos. Detalla la documentación requerida, los criterios a cumplir y los procedimientos para reportar información. \n\n Realizar una gestión documental adecuada permite asegurar que toda la información esté disponible, actualizada y organizada, facilitando los procesos de inscripción, renovación y auditoría."
-}]
+const isoContent: RegulationSection[] = [{ content: "Establece los requisitos para implementar un Sistema de Gestión de la Calidad (SGC), enfocado en la mejora continua, la satisfacción del usuario y el control eficiente de los procesos. Para los prestadores de servicios de salud, su aplicación permite estructurar de forma organizada las actividades, mejorar la calidad de la atención y fortalecer la toma de decisiones. \n\n La gestión documental es fundamental para mantener trazabilidad, evidenciar conformidad y garantizar el control de la información." }]
+const decretoContent: RegulationSection[] = [{ content: "Define los estándares que deben cumplir los prestadores de servicios de salud para obtener y mantener la habilitación. Establece criterios relacionados con la infraestructura, el talento humano, los procesos asistenciales y la gestión de los equipos. Su adecuada aplicación garantiza la calidad y seguridad en la prestación del servicio. \n\n La gestión documental es clave para evidenciar el cumplimiento de cada estándar exigido y facilitar auditorías o procesos de inspección." }]
+const resolucionContent: RegulationSection[] = [{ content: "Regula todo el ciclo de vida de los dispositivos médicos en Colombia, desde su fabricación hasta su disposición final. \n\n Obliga a los prestadores de servicios de salud a llevar un control riguroso de los equipos, sus mantenimientos, condiciones de uso y estado técnico. La gestión documental es esencial para cumplir con esta regulación, permitiendo demostrar la seguridad, funcionalidad y trazabilidad de los dispositivos en beneficio de la atención segura al paciente." }]
+const habilitacionContent: RegulationSection[] = [{ content: "Este manual, emitido por el Ministerio de Salud, orienta a los prestadores sobre los pasos y requisitos para inscribirse en el Registro Especial de Prestadores de Servicios de Salud (REPS) y habilitar los servicios ofrecidos. Detalla la documentación requerida, los criterios a cumplir y los procedimientos para reportar información. \n\n Realizar una gestión documental adecuada permite asegurar que toda la información esté disponible, actualizada y organizada, facilitando los procesos de inscripción, renovación y auditoría." }]
 
 const colorClasses = (theme: string) => ({
   blue: {

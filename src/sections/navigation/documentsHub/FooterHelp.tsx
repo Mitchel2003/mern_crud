@@ -1,5 +1,6 @@
 import { ArrowRight, BookOpen, CheckCircle, Clock, FileText, LifeBuoy, MessageSquare, Phone, Shield, Users } from "lucide-react"
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
@@ -10,18 +11,19 @@ import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
 
 const FooterHelp = ({ theme }: ThemeContextProps) => {
+  const isMobile = useIsMobile()
   return (
     <motion.div
+      className="mb-8"
       animate={{ opacity: 1, y: 0 }}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: 0.5, duration: 0.5 }}
-      className="mb-8"
     >
       <Card className={cn("overflow-hidden border-0 shadow-lg", theme === "dark" ? "bg-gradient-to-br from-zinc-900 to-zinc-950" : "bg-white")}>
         <CardHeader className={cn("pb-4", theme === "dark" ? "bg-zinc-900/50 border-b border-zinc-800" : "bg-blue-50/50 border-b border-blue-100/50")}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn("p-2 rounded-lg", theme === "dark" ? "bg-blue-900/30 text-blue-300" : "bg-blue-100 text-blue-600")}>
+              <div className={cn("hidden sm:block p-2 rounded-lg", theme === "dark" ? "bg-blue-900/30 text-blue-300" : "bg-blue-100 text-blue-600")}>
                 <Shield className="h-5 w-5" />
               </div>
               <div>
@@ -33,7 +35,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                 </CardDescription>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Badge variant="outline" className={cn(theme === "dark" ? "bg-blue-900/20 text-blue-300 border-blue-800" : "bg-blue-50 text-blue-700 border-blue-200")}>
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Certificado
@@ -55,7 +57,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                   theme === "dark" ? "text-gray-400 data-[state=active]:text-white" : "text-gray-600 data-[state=active]:text-blue-600"
                 )}
               >
-                <FileText className="h-4 w-4 mr-2" />
+                {!isMobile && <FileText className="h-4 w-4 mr-2" />}
                 Características
               </TabsTrigger>
               <TabsTrigger
@@ -64,7 +66,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                   theme === "dark" ? "text-gray-400 data-[state=active]:text-white" : "text-gray-600 data-[state=active]:text-blue-600"
                 )}
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
+                {!isMobile && <CheckCircle className="h-4 w-4 mr-2" />}
                 Beneficios
               </TabsTrigger>
               <TabsTrigger
@@ -73,30 +75,26 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                   theme === "dark" ? "text-gray-400 data-[state=active]:text-white" : "text-gray-600 data-[state=active]:text-blue-600"
                 )}
               >
-                <LifeBuoy className="h-4 w-4 mr-2" />
+                {!isMobile && <LifeBuoy className="h-4 w-4 mr-2" />}
                 Soporte
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="features" className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    icon: <FileText className="h-5 w-5" />,
-                    title: "Gestión Documental",
-                    description: "Mantenga toda la documentación técnica de sus equipos organizada y accesible desde cualquier dispositivo."
-                  },
-                  {
-                    icon: <Clock className="h-5 w-5" />,
-                    title: "Mantenimientos Programados",
-                    description: "Planifique y controle los mantenimientos preventivos y correctivos con alertas automáticas."
-                  },
-                  {
-                    icon: <Users className="h-5 w-5" />,
-                    title: "Control de Usuarios",
-                    description: "Asigne roles y permisos específicos para cada miembro de su equipo técnico y administrativo."
-                  }
-                ].map((feature, index) => (
+                {[{
+                  icon: <FileText className="h-5 w-5" />,
+                  title: "Gestión Documental",
+                  description: "Mantenga toda la documentación técnica de sus equipos organizada y accesible desde cualquier dispositivo."
+                }, {
+                  icon: <Clock className="h-5 w-5" />,
+                  title: "Mantenimientos Programados",
+                  description: "Planifique y controle los mantenimientos preventivos y correctivos con alertas automáticas."
+                }, {
+                  icon: <Users className="h-5 w-5" />,
+                  title: "Control de Usuarios",
+                  description: "Asigne roles y permisos específicos para cada miembro de su equipo técnico y administrativo."
+                }].map((feature, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}

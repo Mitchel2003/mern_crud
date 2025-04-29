@@ -46,27 +46,7 @@ export const links = () => {
     {// users
       href: '/engineer',
       icon: AssignmentInd,
-      label: 'Usuarios de servicio',
-    },
-    {// solicits
-      icon: MoveToInbox,
-      href: '/form/solicit',
-      label: 'Solicitudes',
-    },
-    {// cronogramas
-      icon: WorkHistory,
-      href: '/form/schedule',
-      label: 'Cronogramas',
-    },
-    {// curriculums
-      icon: Devices,
-      href: '/form/curriculums',
-      label: 'Equipos',
-    },
-    {// maintenances
-      icon: HomeRepairService,
-      href: '/form/maintenances',
-      label: 'Mantenimientos',
+      label: 'Personal interno',
     },
     {/** institution **/
       label: 'Gestion de clientes',
@@ -84,6 +64,26 @@ export const links = () => {
           label: 'Clientes',
         }
       ]
+    },
+    {// solicits
+      icon: MoveToInbox,
+      href: '/form/solicit',
+      label: 'Solicitudes',
+    },
+    {// curriculums
+      icon: Devices,
+      href: '/form/curriculums',
+      label: 'Equipos',
+    },
+    {// maintenances
+      icon: HomeRepairService,
+      href: '/form/maintenances',
+      label: 'Mantenimientos',
+    },
+    {// cronogramas
+      icon: WorkHistory,
+      href: '/form/schedule',
+      label: 'Cronogramas',
     }
   ]
   /*--------------------------------------------------engineer--------------------------------------------------*/

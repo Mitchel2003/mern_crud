@@ -7,25 +7,16 @@ const FooterSection = () => {
   const { theme } = useThemeContext()
   return (
     <footer
-      className={cn(
-        'p-6 border-t mt-auto z-10',
-        'flex flex-col sm:flex-row',
-        'justify-between items-center gap-4',
+      className={cn('p-6 border-t mt-auto z-10', 'flex flex-col sm:flex-row', 'justify-between items-center gap-4',
         theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-gray-50 border-gray-200'
       )}
     >
       <div className="flex flex-col">
-        <h3 className={cn(
-          'text-lg font-semibold',
-          theme === 'dark' ? 'text-zinc-100' : 'text-gray-900'
-        )}>
-          Gestion salud
+        <h3 className={cn('text-lg font-semibold', theme === 'dark' ? 'text-zinc-100' : 'text-gray-900')}>
+          Gest.ing
         </h3>
-        <p className={cn(
-          'text-sm',
-          theme === 'dark' ? 'text-zinc-400' : 'text-gray-600'
-        )}>
-          2024. Todos los derechos reservados.
+        <p className={cn('text-sm', theme === 'dark' ? 'text-zinc-400' : 'text-gray-600')}>
+          2025. Todos los derechos reservados.
         </p>
       </div>
       <div className="flex flex-wrap justify-center gap-4">

@@ -1,6 +1,6 @@
-import { Shield, Activity, CheckCircle, Clock } from "lucide-react"
 import { ClientDashboardProps } from "@/interfaces/props.interface"
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { Shield, Activity, Clock } from "lucide-react"
 import { Separator } from "#/ui/separator"
 import { cn } from "@/lib/utils"
 
@@ -14,7 +14,7 @@ const StatsSection = ({ theme, data }: StatsSectionProps) => {
       ? 'bg-zinc-950 border-zinc-700'
       : 'bg-white border-gray-100'
     )}>
-      <div className="grid md:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         <StatCard
           title="Total de Equipos"
           value={data.totalCurriculums.toString()}
@@ -37,14 +37,6 @@ const StatsSection = ({ theme, data }: StatsSectionProps) => {
           icon={<Clock className="h-5 w-5 text-amber-600" />}
           change={data.pendingSolicitsCount === 0 ? "Sin solicitudes pendientes" : `${data.pendingSolicitsCount} en espera`}
           trend={data.pendingSolicitsCount === 0 ? "up" : "neutral"}
-        />
-        <Separator orientation="horizontal" className="block sm:hidden" />
-        <StatCard
-          title="Solicitudes Completadas"
-          value={`${data.totalSolicits}`}
-          icon={<CheckCircle className="h-5 w-5 text-green-600" />}
-          change={data.totalSolicits > 0 ? `${data.totalSolicits} solicitudes atendidas` : "Ninguna solicitud completada"}
-          trend={data.totalSolicits > 0 ? "up" : "neutral"}
         />
       </div>
     </section >

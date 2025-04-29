@@ -47,6 +47,7 @@ const ScheduleDrawer = ({ theme, isOpen, onClose }: CronogramasDrawerProps) => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.05 }}
+            onClick={() => navigate("/form/schedule")}
             className={cn("text-xs px-3 py-1 rounded-full", theme === "dark"
               ? "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300",

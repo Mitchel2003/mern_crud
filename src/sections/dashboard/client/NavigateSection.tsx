@@ -5,9 +5,8 @@ import { motion } from "framer-motion"
 import { Card } from "#/ui/card"
 import { cn } from "@/lib/utils"
 
-interface NavigateSectionProps extends ThemeContextProps { totalDocuments: number }
-
-const NavigateSection = ({ theme, totalDocuments }: NavigateSectionProps) => {
+interface NavigateSectionProps extends ThemeContextProps { }
+const NavigateSection = ({ theme }: NavigateSectionProps) => {
   const navigate = useNavigate()
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -43,14 +42,6 @@ const NavigateSection = ({ theme, totalDocuments }: NavigateSectionProps) => {
           <div className="absolute right-4 bottom-4 h-32 w-32 opacity-20 group-hover:opacity-30 transition-opacity">
             <FileText className="h-full w-full" />
           </div>
-          <motion.div
-            className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs font-medium"
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            {totalDocuments} documento{totalDocuments !== 1 ? 's' : ''}
-          </motion.div>
         </Card>
       </motion.div>
 

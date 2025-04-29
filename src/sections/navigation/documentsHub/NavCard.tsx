@@ -103,7 +103,7 @@ const NavCard = ({ theme, setOpen }: NavCardProps) => {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
             >
-              {card.stats}
+              {card.alert}
             </motion.div>
           </Card>
         </motion.div>
@@ -122,23 +122,23 @@ const cardData = (theme: ThemeContextProps["theme"]) => [{
   icon: Laptop,
   title: "Equipos",
   path: "/form/curriculum",
-  stats: "32 equipos registrados",
-  description: "Gestione y consulte información detallada sobre sus equipos médicos",
+  alert: "Equipos de computo, biomedicos etc",
+  description: "Gestione y consulte información detallada sobre sus equipos",
   gradient: theme === "dark" ? "from-purple-600 to-indigo-700" : "from-purple-500 to-indigo-600",
 }, {
   icon: Wrench,
   id: "mantenimientos",
   title: "Mantenimientos",
   path: "/form/maintenance",
-  stats: "8 mantenimientos pendientes",
-  description: "Consulte el historial y programe nuevos mantenimientos para sus equipos",
+  alert: "Preventivos y correctivos",
+  description: "Consulte el historial y maneje los mantenimientos de los equipos",
   gradient: theme === "dark" ? "from-amber-600 to-orange-700" : "from-amber-500 to-orange-600",
 }, {
   icon: Calendar,
   id: "cronogramas",
   title: "Cronogramas",
   path: "/form/schedule",
-  stats: "Próximo: 12 de mayo",
-  description: "Visualice y organice los cronogramas de mantenimiento preventivo",
+  alert: "Mantenimiento, capacitaciones y asistencias",
+  description: "Visualice y organice los diferentes cronogramas disponibles para usted",
   gradient: theme === "dark" ? "from-teal-600 to-emerald-700" : "from-teal-500 to-emerald-600",
 }]

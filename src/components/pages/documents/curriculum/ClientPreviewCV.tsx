@@ -19,15 +19,12 @@ interface ClientPreviewCVProps extends ThemeContextProps {
 const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">
-      <div className={cn(
-        '-mx-6 px-6 py-4 border-y bg-gradient-to-r',
-        theme === 'dark'
-          ? 'from-purple-50 to-purple-100/50  border-purple-100'
-          : 'from-purple-50 to-purple-100/50  border-purple-100'
-      )}
-      >
+      <div className={cn('-mx-6 px-6 py-4 border-y bg-gradient-to-r', theme === 'dark'
+        ? 'from-zinc-800 to-zinc-700 border-zinc-700 text-zinc-100'
+        : 'from-purple-50 to-purple-100/50 border-purple-100'
+      )}>
         <div className="flex items-center gap-2">
-          <Users2 className="w-5 h-5 text-purple-600" />
+          <Users2 className={cn("w-5 h-5", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
           <h2 className="text-xl font-semibold">Cliente Principal</h2>
         </div>
       </div>
@@ -35,9 +32,9 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
       <div className="grid md:grid-cols-2 gap-6 mt-6">
         <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <Avatar className="w-16 h-16 border-2 border-purple-100">
+            <Avatar className={cn("w-16 h-16 border-2", theme === 'dark' ? 'border-zinc-700' : 'border-purple-100')}>
               <AvatarImage className="object-contain" src={client?.metadata?.logo || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"} />
-              <AvatarFallback className="bg-purple-50 text-purple-700">
+              <AvatarFallback className={cn(theme === 'dark' ? 'bg-zinc-800 text-zinc-200' : 'bg-purple-50 text-purple-700')}>
                 {client?.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -46,35 +43,35 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
               <h3 className="font-semibold text-lg">
                 {client?.username}
               </h3>
-              <Badge variant="outline" className="bg-purple-50">
+              <Badge variant="outline" className={cn(theme === 'dark' ? 'bg-zinc-800 border-zinc-700 text-zinc-200' : 'bg-purple-50')}>
                 Cliente registrado ®
               </Badge>
             </div>
           </div>
 
-          <Separator className="bg-purple-100" />
+          <Separator className={cn(theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-100')} />
 
           <div className="grid gap-4">
             <TooltipProvider>
               {[{
-                icon: <Mail className="w-4 h-4 text-purple-600" />,
                 label: "Email",
-                value: client?.email
+                value: client?.email,
+                icon: <Mail className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />,
               }, {
-                icon: <Phone className="w-4 h-4 text-purple-600" />,
                 label: "Teléfono",
-                value: client?.phone
+                value: client?.phone,
+                icon: <Phone className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />,
               }, {
-                icon: <FileText className="w-4 h-4 text-purple-600" />,
                 label: "NIT",
-                value: client?.nit
+                value: client?.nit,
+                icon: <FileText className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />,
               }].map((item, index) => (
                 <Tooltip key={index}>
                   <TooltipTrigger asChild>
-                    <div
-                      className="flex items-center gap-3 p-3 rounded-lg border border-purple-100 bg-white hover:bg-purple-50 transition-colors cursor-pointer group"
-                      onClick={() => copyToClipboard(item.value || '')}
-                    >
+                    <div onClick={() => copyToClipboard(item.value || '')} className={cn("flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer group", theme === 'dark'
+                      ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700'
+                      : 'border-purple-100 bg-white hover:bg-purple-50'
+                    )}>
                       {item.icon}
                       <div className="flex-1">
                         <p className="text-sm text-muted-foreground">{item.label}</p>
@@ -93,9 +90,12 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
         </div>
 
         <div className="space-y-4">
-          <div className="p-4 rounded-lg border border-purple-100 bg-purple-50/50">
+          <div className={cn("p-4 rounded-lg border", theme === 'dark'
+            ? 'border-zinc-700 bg-zinc-800/50'
+            : 'border-purple-100 bg-purple-50/50'
+          )}>
             <h4 className="font-medium mb-2 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-purple-600" />
+              <Building2 className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
               Información del consultorio
             </h4>
             <div className="grid gap-3">
@@ -116,8 +116,8 @@ const ClientPreviewCV = ({ cv, client, theme }: ClientPreviewCVProps) => {
 
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Button variant="outline" className="w-full justify-start">
-                <Info className="w-4 h-4 mr-2" />
+              <Button variant="ghost" className={cn("w-full justify-start", theme === 'dark' ? 'border-zinc-700 hover:bg-zinc-700/50' : '')}>
+                <Info className={cn("w-4 h-4 mr-2", theme === 'dark' ? 'text-purple-300' : '')} />
                 Ver más información
               </Button>
             </HoverCardTrigger>

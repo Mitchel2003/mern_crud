@@ -28,11 +28,8 @@ export const useClientDashboard = () => {
   const processData = () => {
     const now = new Date()
 
-    // Clasificación de solicitudes por estado
-    const completedSolicits = solicits.filter(s => s.status === 'cerrado')
+    // Clasificación por fecha y estado
     const pendingSolicits = solicits.filter(s => s.status === 'pendiente' || s.status === 'asignado')
-
-    // Clasificación de mantenimientos por fecha y estado
     const pendingMaintenancesArray = mts.filter(m => m.dateNextMaintenance && new Date(m.dateNextMaintenance) > now)
     const completedMaintenancesArray = mts.filter(m => m.statusEquipment === 'funcionando')
     const maintenancesWithAlerts = mts.filter(m => m.dateNextMaintenance && new Date(m.dateNextMaintenance) < now)
@@ -40,7 +37,6 @@ export const useClientDashboard = () => {
     // Cálculo de estadísticas principales
     const totalCurriculums = cvs.length
     const totalMaintenances = mts.length
-    const totalSolicits = completedSolicits.length
     const pendingSolicitsCount = pendingSolicits.length
     const pendingMaintenances = pendingMaintenancesArray.length
     const completedMaintenances = completedMaintenancesArray.length
@@ -140,7 +136,6 @@ export const useClientDashboard = () => {
     // Actualizar el estado con todos los datos procesados
     setData({
       // Estadísticas generales
-      totalSolicits,
       totalCurriculums,
       totalMaintenances,
       completedMaintenances,
@@ -188,7 +183,6 @@ function getTimeAgo(date: Date): string {
  */
 const valueDefault: ClientDashboardProps = {
   // Estadísticas generales
-  totalSolicits: 0,
   totalCurriculums: 0,
   totalMaintenances: 0,
   completedMaintenances: 0,

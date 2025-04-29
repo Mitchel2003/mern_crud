@@ -33,7 +33,7 @@ const ClientDashboardPage = () => {
         </header>
 
         <StatsSection theme={theme} data={data} />{/* Sección de Estadísticas */}
-        <NavigateSection theme={theme} totalDocuments={data.totalCurriculums + data.totalMaintenances} />{/* Sección de Navegación */}
+        <NavigateSection theme={theme} />{/* Sección de Navegación (contiene cards) */}
         <InfoSection theme={theme} equipmentStatus={data.equipmentStatus} recentActivities={data.recentActivities} upcomingMaintenances={data.upcomingMaintenances} />{/* Sección de Información */}
       </motion.div>
     </main>
