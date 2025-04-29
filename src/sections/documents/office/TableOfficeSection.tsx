@@ -11,6 +11,7 @@ import { ThemeContextProps, Office } from "@/interfaces/context.interface"
 import { useOfficeTable } from "@/hooks/core/table/useLocationTable"
 import { BarChart2, CalendarClock } from "lucide-react"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -44,7 +45,7 @@ const TableOfficeSection = ({ theme, params, onChange }: TableOfficeSectionProps
     color: 'success',
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/location/office/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    href: `/location/office/${encodeQueryParams({ createdAt: formatDateTime(new Date(Date.now())) })}`,
     value: offices?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -116,7 +117,8 @@ const TableOfficeSection = ({ theme, params, onChange }: TableOfficeSectionProps
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -216,10 +218,3 @@ const TableOfficeSection = ({ theme, params, onChange }: TableOfficeSectionProps
 }
 
 export default TableOfficeSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { createdAt: data.createdAt }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

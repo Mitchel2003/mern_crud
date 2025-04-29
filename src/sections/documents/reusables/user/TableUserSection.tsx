@@ -11,6 +11,7 @@ import { useIsMobile } from "@/hooks/ui/use-mobile"
 
 import { convertRole, formatDateTime, toPlural } from "@/constants/format.constants"
 import { tableTranslations } from "@/constants/values.constants"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -48,7 +49,7 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
     enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/${to}/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    href: `/${to}/${encodeQueryParams({ createdAt: formatDateTime(new Date(Date.now())) })}`,
     value: users?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -136,7 +137,8 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -251,10 +253,3 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
 }
 
 export default TableUserSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { createdAt: data.createdAt }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

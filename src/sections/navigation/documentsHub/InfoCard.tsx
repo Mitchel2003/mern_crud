@@ -2,7 +2,8 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-const InfoCard = ({ theme }: ThemeContextProps) => (
+interface InfoCardProps extends ThemeContextProps { setOpen: (open: string | undefined) => void }
+const InfoCard = ({ theme, setOpen }: InfoCardProps) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -19,28 +20,37 @@ const InfoCard = ({ theme }: ThemeContextProps) => (
         </h3>
         <p className={cn("max-w-xl", theme === "dark" ? "text-gray-300" : "text-gray-600")}>
           Nuestro sistema le permite mantener un control completo sobre sus equipos, desde su creación hasta la
-          gestión de mantenimientos preventivo y correctivo, garantizando el cumplimiento de normativas y la
-          disponibilidad óptima de sus recursos.
+          gestión de mantenimientos, garantizando el cumplimiento de normativa vigente.
         </p>
 
-        <div className="flex mt-4 space-x-2">
+        <div className="flex flex-col md:flex-row mt-4 gap-2 cursor-pointer">
           <motion.span
             whileHover={{ scale: 1.05 }}
-            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xs font-medium", theme === "dark" ? "bg-blue-900/50 text-blue-200" : "bg-blue-100 text-blue-800")}
+            onClick={() => setOpen("iso")}
+            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xl sm:text-xs font-medium", theme === "dark" ? "bg-blue-900/50 text-blue-200" : "bg-blue-100 text-blue-800")}
           >
-            ISO 13485
+            ISO 9001 de 2015
           </motion.span>
           <motion.span
             whileHover={{ scale: 1.05 }}
-            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xs font-medium", theme === "dark" ? "bg-indigo-900/50 text-indigo-200" : "bg-indigo-100 text-indigo-800")}
+            onClick={() => setOpen("decreto")}
+            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xl sm:text-xs font-medium", theme === "dark" ? "bg-indigo-900/50 text-indigo-200" : "bg-indigo-100 text-indigo-800")}
           >
-            Trazabilidad
+            Decreto 4725 de 2005
           </motion.span>
           <motion.span
             whileHover={{ scale: 1.05 }}
-            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xs font-medium", theme === "dark" ? "bg-purple-900/50 text-purple-200" : "bg-purple-100 text-purple-800")}
+            onClick={() => setOpen("resolucion")}
+            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xl sm:text-xs font-medium", theme === "dark" ? "bg-purple-900/50 text-purple-200" : "bg-purple-100 text-purple-800")}
           >
-            Reportes Avanzados
+            Resolución 2100 de 2019
+          </motion.span>
+          <motion.span
+            whileHover={{ scale: 1.05 }}
+            onClick={() => setOpen("habilitacion")}
+            className={cn("inline-flex items-center px-3 py-1 rounded-full text-xl sm:text-xs font-medium", theme === "dark" ? "bg-amber-900/50 text-amber-200" : "bg-amber-100 text-amber-800")}
+          >
+            Manual de Inscripción de Prestadores y Habilitación de Servicios de Salud
           </motion.span>
         </div>
       </div>
@@ -76,7 +86,7 @@ const InfoCard = ({ theme }: ThemeContextProps) => (
         <div className={cn("absolute bottom-0 left-0 right-0 h-px", theme === "dark" ? "bg-gray-700" : "bg-gray-300")} />
       </div>
     </div>
-  </motion.div >
+  </motion.div>
 )
 
 export default InfoCard

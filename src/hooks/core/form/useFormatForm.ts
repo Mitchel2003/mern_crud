@@ -48,14 +48,14 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   // Obtain client and company onchange
   const clientId = methods.watch('client')
   const typeSchedule = methods.watch('typeSchedule')
-  const { data: client } = useQueryUser().fetchUserById<User>(clientId, !!clientId)
-  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client' }, !!user) //get clients to show in select
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id] }, !!client)
+  const { data: client } = useQueryUser().fetchUserById<User>(clientId, { enabled: !!clientId })
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client', enabled: !!user }) //get clients to show in select
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id], enabled: !!client })
   const company = companies?.[0]
 
   /*--------------------------------------------------complements--------------------------------------------------*/
-  const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', {}, !!clientId && typeSchedule === 'mantenimiento') //get cvs to maintenance
-  const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', {}, !!client && typeSchedule === 'capacitación') //get offices (areas) to training
+  const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', { enabled: !!clientId && typeSchedule === 'mantenimiento' }) //get cvs to maintenance
+  const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', { enabled: !!client && typeSchedule === 'capacitación' }) //get offices (areas) to training
   /*---------------------------------------------------------------------------------------------------------*/
   const areas = useMemo(() => {
     if (!client || !offices.length || typeSchedule !== 'capacitación') return []

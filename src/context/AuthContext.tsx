@@ -1,9 +1,10 @@
 import { login as loginFB, logout as logoutFB, forgotPassword, getCurrentUser, subscribeAuthChanges } from "@/controllers/auth.controller"
 import { getTokenMessaging, listenMessages } from "@/controllers/messaging.controller"
 import { LoginFormProps, UserFormProps } from "@/schemas/auth/auth.schema"
-import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { AuthContext, User } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
+import { QueryOptions } from "@/interfaces/hook.interface"
+import { Props } from "@/interfaces/props.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { txt } from "@/constants/format.constants"
 import { useApi } from "@/api/handler"
@@ -101,8 +102,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID del usuario.
    * @returns {Promise<any | undefined>} Los datos del usuario o undefined.
    */
-  const getById = async (id: string, enabled?: boolean): Promise<any | undefined> => {
-    try { return enabled ? (await useApi('user').getById(id)).data : undefined }
+  const getById = async (id: string): Promise<any | undefined> => {
+    try { return (await useApi('user').getById(id)).data }
     catch (e) { notifyError(txt('getUserById', e)); return undefined }
   }
   /**
@@ -110,11 +111,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {QueryOptions} query - Corresponde a la consulta, alucivo a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todos los usuarios o un array vacío.
    */
-  const getByQuery = async (query: QueryOptions, enabled?: boolean): Promise<any[]> => {
-    try {
-      if (('enabled' in query && query.enabled === false) || !enabled) return []
-      return (await useApi('user').getByQuery({ ...query, enabled: undefined })).data
-    } catch (e) { notifyError(txt('getUserByQuery', e)); return [] }
+  const getByQuery = async (query: QueryOptions): Promise<any[]> => {
+    try { return (await useApi('user').getByQuery(query)).data }
+    catch (e) { notifyError(txt('getUserByQuery', e)); return [] }
   }
   /**
    * Registra un nuevo usuario (auth) con los datos proporcionados.

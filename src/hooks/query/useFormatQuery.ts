@@ -1,4 +1,4 @@
-import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps } from "@/interfaces/hook.interface"
+import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps, QueryOptions, QueryConfig } from "@/interfaces/hook.interface"
 import { useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
@@ -9,7 +9,7 @@ const QUERY_KEYS = {
   formats: (path: FormatType) => ['formats', path],
   files: (data: FileReference) => ['files', data.path],
   format: (path: FormatType, id: string) => ['format', path, id],
-  search: (path: FormatType, query: object) => ['formats', 'search', path, query],
+  search: (path: FormatType, query: QueryOptions) => ['formats', 'search', path, query],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -26,33 +26,32 @@ export const useQueryFormat = (): QueryReact_Format => {
     queryKey: QUERY_KEYS.formats(path),
     queryFn: () => format.getAll<T>(path),
     select: (data) => data || [],
-    initialData: []
+    initialData: [],
   })
 
   /**
    * Obtener formato por ID
    * @param {FormatType} path - Nos ayuda a construir la route
    * @param {string} id - Corresponde al id del formato a consultar
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryConfig} config - Contiene la configuración de la consulta
    */
-  const fetchFormatById = <T>(path: FormatType, id: string, enabled: boolean = true) => useQuery({
-    queryKey: QUERY_KEYS.format(path, id),
-    queryFn: () => format.getById<T>(path, id, enabled),
+  const fetchFormatById = <T>(path: FormatType, id: string, config: QueryConfig = { enabled: true }) => useQuery({
     select: (data) => data || undefined,
-    enabled: Boolean(id) && enabled
+    queryKey: QUERY_KEYS.format(path, id),
+    queryFn: () => format.getById<T>(path, id),
+    enabled: Boolean(id) && (config.enabled ?? true),
   })
 
   /**
    * Buscar formato por término
    * @param {FormatType} path - Nos ayuda a construir la route
-   * @param {object} query - Elementos de query, corresponde al parámetro de búsqueda
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryOptions} query - Elementos de busqueda y configuración de la consulta
    */
-  const fetchFormatByQuery = <T>(path: FormatType, query: object, enabled: boolean = true) => useQuery({
+  const fetchFormatByQuery = <T>(path: FormatType, query: QueryOptions = { enabled: true }) => useQuery({
+    select: (data) => data || [] as T[],
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => format.getByQuery<T>(path, query, enabled),
-    enabled: Boolean(query) && enabled,
-    select: (data) => data || []
+    enabled: Boolean(query) && (query.enabled ?? true),
+    queryFn: () => format.getByQuery<T>(path, { ...query, enabled: undefined }),
   })
 
   /**
@@ -83,7 +82,7 @@ export const useQueryFormat = (): QueryReact_Format => {
       enabled: Boolean(q._id), retry: 1,
       queryKey: ['accessory', q._id],
       queryFn: async () => {
-        const result = await format.getByQuery<T>('accessory', { curriculum: q._id }, q._id!!)
+        const result = await format.getByQuery<T>('accessory', { curriculum: q._id })
         return { type: 'accessory', id: q._id, data: result, error: null }
       }
     }])

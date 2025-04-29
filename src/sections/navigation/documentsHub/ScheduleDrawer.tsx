@@ -1,6 +1,7 @@
 import { ArrowRight, BookOpen, Calendar, Users, Clock } from "lucide-react"
 import { CronogramaOption, CustomDrawer } from "#/common/elements/Drawer"
 import { ThemeContextProps } from "@/interfaces/context.interface"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useState } from "react"
@@ -134,7 +135,7 @@ const options = ({ theme }: ThemeContextProps): CronogramaOption[] => [{
   title: "Mantenimiento",
   description: "Cronogramas de mantenimiento preventivo y correctivo para equipos",
   icon: Calendar,
-  path: "/form/schedule/maintenance",
+  path: `/form/schedule/${encodeQueryParams({ type: 'mantenimiento' })}`,
   gradient: theme === "dark" ? "from-teal-600 to-emerald-700" : "from-teal-500 to-emerald-600",
   stats: "12 programados",
 }, {
@@ -142,7 +143,7 @@ const options = ({ theme }: ThemeContextProps): CronogramaOption[] => [{
   title: "Capacitaciones",
   description: "Planificación de capacitaciones técnicas y formaciones",
   icon: BookOpen,
-  path: "/form/schedule/training",
+  path: `/form/schedule/${encodeQueryParams({ type: 'capacitación' })}`,
   gradient: theme === "dark" ? "from-blue-600 to-indigo-700" : "from-blue-500 to-indigo-600",
   stats: "4 pendientes",
 }, {
@@ -150,7 +151,7 @@ const options = ({ theme }: ThemeContextProps): CronogramaOption[] => [{
   title: "Asistencia",
   description: "Registro y control de asistencia a mantenimientos y capacitaciones",
   icon: Users,
-  path: "/form/schedule/assistance",
+  path: `/form/schedule/${encodeQueryParams({ type: 'acta de asistencia' })}`,
   gradient: theme === "dark" ? "from-purple-600 to-violet-700" : "from-purple-500 to-violet-600",
   stats: "8 registros",
 }]

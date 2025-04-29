@@ -1,6 +1,6 @@
 import { LoginFormProps, UserFormProps } from "@/schemas/auth/auth.schema"
 import { BaseMDB, FileReference } from "@/interfaces/db.interface"
-import { QueryOptions } from "@/interfaces/props.interface"
+import { QueryOptions } from "@/interfaces/hook.interface"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
 
@@ -58,8 +58,8 @@ export type AuthContext = {
   sendNotification: (data: object) => Promise<void>
   //user handlers
   getAll: <T>() => Promise<T[]>
-  getById: <T>(id: string, enabled?: boolean) => Promise<T | undefined>
-  getByQuery: <T>(query: QueryOptions, enabled?: boolean) => Promise<T[]>
+  getById: <T>(id: string) => Promise<T | undefined>
+  getByQuery: <T>(query: QueryOptions) => Promise<T[]>
   create: (data: UserFormProps) => Promise<any>
   update: (id: string, data: object) => Promise<any>
   delete: (id: string) => Promise<any>
@@ -77,8 +77,8 @@ export type Office = BaseMDB & { name: string; group: string; services: string[]
 
 export type LocationContext = {
   getAll: <T>(type: LocationType) => Promise<T[]>
-  getById: <T>(type: LocationType, id: string, enabled?: boolean) => Promise<T | undefined>
-  getByQuery: <T>(type: LocationType, query: object, enabled?: boolean) => Promise<T[]>
+  getById: <T>(type: LocationType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: LocationType, query: QueryOptions) => Promise<T[]>
   create: (type: LocationType, data: object) => Promise<any>
   update: (type: LocationType, id: string, data: object) => Promise<any>
   delete: (type: LocationType, id: string) => Promise<any>
@@ -200,8 +200,8 @@ export type Curriculum = BaseMDB & {
 
 export type FormatContext = {
   getAll: <T>(type: FormatType) => Promise<T[]>
-  getById: <T>(type: FormatType, id: string, enabled?: boolean) => Promise<T | undefined>
-  getByQuery: <T>(type: FormatType, query: object, enabled?: boolean) => Promise<T[]>
+  getById: <T>(type: FormatType, id: string) => Promise<T | undefined>
+  getByQuery: <T>(type: FormatType, query: QueryOptions) => Promise<T[]>
   create: (type: FormatType, data: object) => Promise<any>
   update: (type: FormatType, id: string, data: object) => Promise<any>
   delete: (type: FormatType, id: string) => Promise<any>

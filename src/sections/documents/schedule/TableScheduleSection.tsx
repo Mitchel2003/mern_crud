@@ -1,8 +1,9 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
+import { CalendarMonth, Delete, Handshake, CoPresent } from "@mui/icons-material"
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
-import { CalendarMonth, Delete } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
+import { encodeQueryParams } from "@/lib/query"
 import { BarChart2, Eye } from "lucide-react"
 import { useMemo } from "react"
 
@@ -14,7 +15,7 @@ import { formatDateTime } from "@/constants/format.constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 
 interface TableScheduleSectionProps extends ThemeContextProps {
-  params?: { status?: string, name?: string, modelEquip?: string, createdAt?: string } | null
+  params?: { type?: string, createdAt?: string } | null
   onChange: () => void
 }
 
@@ -40,13 +41,21 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
   }, {
     color: 'success',
     icon: CalendarMonth as any,
-    value: schedules?.filter(s => s.type === 'mantenimiento').length || 0,
     title: `Cronogramas de mantenimiento`,
+    value: schedules?.filter(s => s.type === 'mantenimiento').length || 0,
+    href: `/form/schedule/${encodeQueryParams({ type: 'mantenimiento' })}`,
+  }, {
+    color: 'warning',
+    icon: CoPresent as any,
+    title: `Cronogramas de capacitación`,
+    value: schedules?.filter(s => s.type === 'capacitación').length || 0,
+    href: `/form/schedule/${encodeQueryParams({ type: 'capacitación' })}`,
   }, {
     color: 'primary',
-    icon: CalendarMonth as any,
-    value: schedules?.filter(s => s.type === 'capacitación').length || 0,
-    title: `Cronogramas de capacitación`,
+    icon: Handshake as any,
+    title: `Cronogramas de acta de asistencia`,
+    value: schedules?.filter(s => s.type === 'acta de asistencia').length || 0,
+    href: `/form/schedule/${encodeQueryParams({ type: 'acta de asistencia' })}`,
   }]
 
   /** Config table columns */
@@ -115,7 +124,7 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
       showColumnFilters: !!params,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
       columnFilters: params ? [
-        ...(params.status ? [{ id: 'status', value: params.status }] : []),
+        ...(params.type ? [{ id: 'type', value: params.type }] : []),
         ...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])
       ] : []
     },
@@ -139,7 +148,8 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 

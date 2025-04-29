@@ -12,6 +12,7 @@ import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 import { tableTranslations } from "@/constants/values.constants"
 import { formatDateTime } from "@/constants/format.constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -47,13 +48,13 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
     color: 'warning',
     title: 'En Espera de Repuestos',
     value: maintenances?.filter(m => m.statusEquipment === 'en espera de repuestos').length || 0,
-    href: `/form/maintenance/${getQueryParams({ data: { statusEquipment: 'en espera de repuestos' } })}`,
+    href: `/form/maintenance/${encodeQueryParams({ statusEquipment: 'en espera de repuestos' })}`,
   }, {
     color: 'danger',
     icon: AlertTriangle,
     title: 'Fuera de Servicio',
     value: maintenances?.filter(m => m.statusEquipment === 'fuera de servicio').length || 0,
-    href: `/form/maintenance/${getQueryParams({ data: { statusEquipment: 'fuera de servicio' } })}`,
+    href: `/form/maintenance/${encodeQueryParams({ statusEquipment: 'fuera de servicio' })}`,
   }]
 
   /** Config table columns */
@@ -136,7 +137,8 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -297,10 +299,3 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
 }
 
 export default TableMaintenanceSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { statusEquipment: data.statusEquipment }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

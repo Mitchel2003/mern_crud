@@ -1,6 +1,5 @@
-import { CustomMutation_User, DeleteMutationProps, QueryReact_User, UpdateMutationProps } from '@/interfaces/hook.interface'
+import { CustomMutation_User, DeleteMutationProps, QueryReact_User, UpdateMutationProps, QueryOptions, QueryConfig } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { QueryOptions } from '@/interfaces/props.interface'
 import { UserFormProps } from '@/schemas/auth/auth.schema'
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -22,31 +21,30 @@ export const useQueryUser = (): QueryReact_User => {
     queryKey: QUERY_KEYS.users(),
     queryFn: () => user.getAll<T>(),
     select: (data) => data || [],
-    initialData: []
+    initialData: [],
   })
 
   /**
    * Obtener usuario por ID
    * @param {string} id - Corresponde al id del usuario
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryConfig} config - Contiene la configuración de la consulta
    */
-  const fetchUserById = <T>(id: string, enabled: boolean = true) => useQuery({
+  const fetchUserById = <T>(id: string, config: QueryConfig = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.user(id),
-    queryFn: () => user.getById<T>(id, enabled),
+    queryFn: () => user.getById<T>(id),
     select: (data) => data || undefined,
-    enabled: Boolean(id) && enabled
+    enabled: Boolean(id) && (config.enabled ?? true),
   })
 
   /**
    * Buscar usuario por término
-   * @param {object} query - Elementos de busqueda
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryOptions} query - Elementos de busqueda y configuración de la consulta
    */
-  const fetchUserByQuery = <T>(query: QueryOptions, enabled: boolean = true) => useQuery({
+  const fetchUserByQuery = <T>(query: QueryOptions = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.search(query),
-    queryFn: () => user.getByQuery<T>(query, enabled),
-    enabled: Boolean(query) && enabled,
-    select: (data) => data || [],
+    select: (data) => data || [] as T[],
+    enabled: Boolean(query) && (query.enabled ?? true),
+    queryFn: () => user.getByQuery<T>({ ...query, enabled: undefined }),
   })
 
   return {

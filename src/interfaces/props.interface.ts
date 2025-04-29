@@ -13,12 +13,6 @@ export interface ActionProps {
   label: string
 }
 
-// options query
-export interface QueryOptions {
-  [key: string]: any
-  enabled?: boolean
-}
-
 // Footer form
 export interface FooterFormProps {
   isSubmitting: boolean
@@ -113,12 +107,12 @@ export type FormItems = {
 export interface ClientDashboardProps {
   // Estadísticas
   completedMaintenances: number
+  pendingSolicitsCount: number
   pendingMaintenances: number
   totalMaintenances: number
   totalCurriculums: number
+  totalSolicits: number
   activeAlerts: number
-  // Documentos
-  totalDocuments: number
 
   // Actividad reciente
   recentActivities: Array<{

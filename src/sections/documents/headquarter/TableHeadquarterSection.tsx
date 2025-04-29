@@ -11,6 +11,7 @@ import { ThemeContextProps, Headquarter } from "@/interfaces/context.interface"
 import { useHeadquarterTable } from "@/hooks/core/table/useLocationTable"
 import { BarChart2, CalendarClock } from "lucide-react"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -44,7 +45,7 @@ const TableHeadquarterSection = ({ theme, params, onChange }: TableHeadquarterSe
     color: 'success',
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/location/headquarter/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    href: `/location/headquarter/${encodeQueryParams({ createdAt: formatDateTime(new Date(Date.now())) })}`,
     value: headquarters?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -111,7 +112,8 @@ const TableHeadquarterSection = ({ theme, params, onChange }: TableHeadquarterSe
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -211,10 +213,3 @@ const TableHeadquarterSection = ({ theme, params, onChange }: TableHeadquarterSe
 }
 
 export default TableHeadquarterSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { createdAt: data.createdAt }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

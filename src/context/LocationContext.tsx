@@ -1,6 +1,7 @@
 import { LocationContext, LocationType } from "@/interfaces/context.interface"
-import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
+import { QueryOptions } from "@/interfaces/hook.interface"
+import { Props } from "@/interfaces/props.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { txt } from "@/constants/format.constants"
 import { useApi } from "@/api/handler"
@@ -44,8 +45,8 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID de la ubicación.
    * @returns {Promise<any>} Los datos de la ubicación o undefined.
    */
-  const getById = async (type: LocationType, id: string, enabled?: boolean): Promise<any | undefined> => {
-    try { return enabled ? (await useApi(type).getById(id)).data : undefined }
+  const getById = async (type: LocationType, id: string): Promise<any | undefined> => {
+    try { return (await useApi(type).getById(id)).data }
     catch (e) { notifyError(txt('getLocationById', e)); return undefined }
   }
   /**
@@ -54,11 +55,9 @@ export const LocationProvider = ({ children }: Props): JSX.Element => {
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos de todas las ubicaciones o un array vacío.
    */
-  const getByQuery = async (type: LocationType, query: QueryOptions, enabled?: boolean): Promise<any[]> => {
-    try {
-      if (('enabled' in query && query.enabled === false) || !enabled) return []
-      return (await useApi(type).getByQuery({ ...query, enabled: undefined })).data
-    } catch (e) { notifyError(txt('getLocationByQuery', e)); return [] }
+  const getByQuery = async (type: LocationType, query: QueryOptions): Promise<any[]> => {
+    try { return (await useApi(type).getByQuery(query)).data }
+    catch (e) { notifyError(txt('getLocationByQuery', e)); return [] }
   }
   /**
    * Crea una nueva ubicación

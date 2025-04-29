@@ -1,8 +1,9 @@
 import { uploadFile as upload, deleteFile as remove, getFiles } from "@/controllers/storage.controller"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
-import { Props, QueryOptions } from "@/interfaces/props.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
+import { QueryOptions } from "@/interfaces/hook.interface"
 import { FileReference } from "@/interfaces/db.interface"
+import { Props } from "@/interfaces/props.interface"
 import { useLoading } from "@/hooks/ui/useLoading"
 import { txt } from "@/constants/format.constants"
 import { useApi } from "@/api/handler"
@@ -46,8 +47,8 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {string} id - El ID del formato.
    * @returns {Promise<any>} Los datos del formato o undefined.
    */
-  const getById = async (type: FormatType, id: string, enabled?: boolean): Promise<any | undefined> => {
-    try { return enabled ? (await useApi(type).getById(id)).data : undefined }
+  const getById = async (type: FormatType, id: string): Promise<any | undefined> => {
+    try { return (await useApi(type).getById(id)).data }
     catch (e) { notifyError(txt('getFormatById', e)); return undefined }
   }
   /**
@@ -56,11 +57,9 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @param {QueryOptions} query - La consulta, corresponde a un criterio de busqueda.
    * @returns {Promise<any[]>} Un array con los datos o un array vacío.
    */
-  const getByQuery = async (type: FormatType, query: QueryOptions, enabled?: boolean): Promise<any[]> => {
-    try {
-      if (('enabled' in query && query.enabled === false) || !enabled) return []
-      return (await useApi(type).getByQuery({ ...query, enabled: undefined })).data
-    } catch (e) { notifyError(txt('getFormatByQuery', e)); return [] }
+  const getByQuery = async (type: FormatType, query: QueryOptions): Promise<any[]> => {
+    try { return (await useApi(type).getByQuery(query)).data }
+    catch (e) { notifyError(txt('getFormatByQuery', e)); return [] }
   }
   /**
    * Crea un nuevo formato

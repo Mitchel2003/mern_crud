@@ -16,11 +16,12 @@ import { useActivityForm } from "@/hooks/core/form/useFormatForm"
 import { tableTranslations } from "@/constants/values.constants"
 import { formatDateTime } from "@/constants/format.constants"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo, useState } from "react"
 
 interface TableSolicitSectionProps extends ThemeContextProps {
-  params?: { status?: string, name?: string, modelEquip?: string, createdAt?: string } | null
+  params?: { status?: string, createdAt?: string } | null
   onChange: () => void
 }
 
@@ -52,7 +53,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
     icon: AlertCircle,
     title: 'Pendientes',
     value: solicits?.filter(s => s?.status === 'pendiente').length || 0,
-    href: `/form/solicit/${getQueryParams({ data: { status: 'pendiente' } })}`,
+    href: `/form/solicit/${encodeQueryParams({ status: 'pendiente' })}`,
   }]
 
   /** Config table columns */
@@ -122,7 +123,8 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -271,7 +273,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
                         confirmAction({
                           title: 'Ver mantenimientos',
                           description: '¿Deseas ver los mantenimientos de este equipo?',
-                          action: () => navigate(`/form/maintenance/${getQueryParams({ data: { name: solicit.curriculum.name, modelEquip: solicit.curriculum.modelEquip } })}`)
+                          action: () => navigate(`/form/maintenance/${encodeQueryParams({ name: solicit.curriculum.name, modelEquip: solicit.curriculum.modelEquip })}`)
                         })
                       }}
                     >
@@ -462,11 +464,3 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
 }
 
 export default TableSolicitSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const params = { status: data.status, createdAt: data.createdAt, name: data.name, modelEquip: data.modelEquip }
-  const filteredParams = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined))
-  return encodeURIComponent(JSON.stringify(filteredParams)) //Convert to codify url
-}

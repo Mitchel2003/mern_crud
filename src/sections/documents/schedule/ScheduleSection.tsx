@@ -1,5 +1,5 @@
-import { ThemeContextProps, User } from '@/interfaces/context.interface'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
+import { ThemeContextProps } from '@/interfaces/context.interface'
 import { PlusCircle, TableProperties } from 'lucide-react'
 import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
@@ -9,10 +9,10 @@ import TableScheduleSection from './TableScheduleSection'
 import FormScheduleSection from './FormScheduleSection'
 const route = '/form/schedule'
 
-interface ScheduleSectionProps extends ThemeContextProps { id: string | undefined, credentials: User }
+interface ScheduleSectionProps extends ThemeContextProps { id: string | undefined }
 
-const ScheduleSection = ({ id, theme, credentials }: ScheduleSectionProps) => {
-  const { tab, isQuery, handle } = useTabs({ id, to: route, startOn: credentials?.role === 'client' ? 'form' : 'table' })
+const ScheduleSection = ({ id, theme }: ScheduleSectionProps) => {
+  const { tab, isQuery, handle } = useTabs({ id, to: route })
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   return (
     <main className="container p-2 sm:p-4">
@@ -21,7 +21,6 @@ const ScheduleSection = ({ id, theme, credentials }: ScheduleSectionProps) => {
         <TabsList className={cn(
           "bg-muted/60 backdrop-blur transition-all",
           "supports-[backdrop-filter]:bg-background/60",
-          credentials?.role === 'client' && 'hidden'
         )}>
           <TabsTrigger
             value="table"

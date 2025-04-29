@@ -11,6 +11,7 @@ import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { tableTranslations } from "@/constants/values.constants"
 import { formatDateTime } from "@/constants/format.constants"
 import { BarChart2, CalendarClock } from "lucide-react"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -44,7 +45,7 @@ const TableStateSection = ({ theme, params, onChange }: TableStateSectionProps) 
     color: 'success',
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/location/state/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    href: `/location/state/${encodeQueryParams({ createdAt: formatDateTime(new Date(Date.now())) })}`,
     value: states?.filter(s => s?.createdAt ? new Date(s.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -106,7 +107,8 @@ const TableStateSection = ({ theme, params, onChange }: TableStateSectionProps) 
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -206,10 +208,3 @@ const TableStateSection = ({ theme, params, onChange }: TableStateSectionProps) 
 }
 
 export default TableStateSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { createdAt: data.createdAt }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

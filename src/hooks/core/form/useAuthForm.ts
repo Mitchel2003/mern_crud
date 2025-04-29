@@ -73,7 +73,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const { user: credentials } = useAuthContext()
   const queryUser = useQueryUser()
 
-  const { data: user } = queryUser.fetchUserById<User>(id as string, !!id)
+  const { data: user } = queryUser.fetchUserById<User>(id as string, { enabled: !!id })
   const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' || to === 'engineer' })
 
   const methods = useForm<UserFormProps>({

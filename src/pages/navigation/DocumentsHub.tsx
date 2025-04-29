@@ -3,12 +3,14 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 
+import RegulationsDrawer from "@/sections/navigation/documentsHub/RegulationsDrawer"
 import ScheduleDrawer from "@/sections/navigation/documentsHub/ScheduleDrawer"
 import InformationCard from "@/sections/navigation/documentsHub/InfoCard"
 import FooterHelp from "@/sections/navigation/documentsHub/FooterHelp"
 import NavCard from "@/sections/navigation/documentsHub/NavCard"
 
 const DocumentsHub = () => {
+  const [regulationsDrawerOpen, setRegulationsDrawerOpen] = useState<string | undefined>(undefined)
   const [scheduleDrawerOpen, setScheduleDrawerOpen] = useState(false)
   const { theme } = useThemeContext()
   return (
@@ -22,10 +24,11 @@ const DocumentsHub = () => {
         </p>
       </motion.div>
 
-      <InformationCard theme={theme} />{/** Information Card */}
+      <InformationCard theme={theme} setOpen={setRegulationsDrawerOpen} />{/** Information Card */}
       <NavCard theme={theme} setOpen={setScheduleDrawerOpen} />{/** Nav Card */}
       <FooterHelp theme={theme} />{/** Footer Help, contain contact information */}
       <ScheduleDrawer theme={theme} isOpen={scheduleDrawerOpen} onClose={() => setScheduleDrawerOpen(false)} />{/* Drawer de cronogramas */}
+      <RegulationsDrawer theme={theme} tabOpen={regulationsDrawerOpen} setOpen={setRegulationsDrawerOpen} />{/* Drawer de regulaciones */}
     </main>
   )
 }

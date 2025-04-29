@@ -13,6 +13,7 @@ import { formatDate, formatDateTime } from "@/constants/format.constants"
 import { tableTranslations } from "@/constants/values.constants"
 import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
@@ -54,7 +55,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
     enabled: !isClient,
     icon: CalendarClock,
     title: 'Creados Hoy',
-    href: `/form/curriculum/${getQueryParams({ data: { createdAt: formatDateTime(new Date(Date.now())) } })}`,
+    href: `/form/curriculum/${encodeQueryParams({ createdAt: formatDateTime(new Date(Date.now())) })}`,
     value: cvs?.filter(c => c?.createdAt ? new Date(c.createdAt).toISOString().split('T')[0] === today : false).length || 0,
   }]
 
@@ -133,7 +134,8 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
     },
     displayColumnDefOptions: {//table column size (columns table default)
       'mrt-row-expand': { size: 40, maxSize: 50, minSize: 30 },
-      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 }
+      'mrt-row-select': { size: 40, maxSize: 50, minSize: 30 },
+      'mrt-row-actions': { size: 60, maxSize: 70, minSize: 50 }
     },
     /*---------------------------------------------------------------------------------------------------------*/
 
@@ -247,7 +249,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
               })
             }}
           >
-            Descargar ZIP
+            Descargar
           </Button>
 
           {/** Download currículums + mantenimientos (ZIP) */}
@@ -268,7 +270,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
               })
             }}
           >
-            Descargar ZIP + mantenimientos
+            Descargar + mantenimientos
           </Button>
 
           {/** Download QRs (ZIP) */}
@@ -314,7 +316,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
               confirmAction({
                 title: 'Ver mantenimientos',
                 description: `¿Deseas ver los mantenimientos de ${row.original.name} - ${row.original.modelEquip}?`,
-                action: () => navigate(`/form/maintenance/${getQueryParams({ data: row.original })}`)
+                action: () => navigate(`/form/maintenance/${encodeQueryParams({ name: row.original.name, modelEquip: row.original.modelEquip })}`)
               })
             }}
           >
@@ -465,10 +467,3 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
 }
 
 export default TableCurriculumSection
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-const getQueryParams = ({ data }: { [x: string]: any }) => {
-  const filterParams = { createdAt: data.createdAt }
-  return encodeURIComponent(JSON.stringify(filterParams)) //Convert to codify url
-}

@@ -1,4 +1,4 @@
-import { CustomMutation_Location, QueryReact_Location, UpdateMutationProps, DeleteMutationProps } from '@/interfaces/hook.interface'
+import { CustomMutation_Location, QueryReact_Location, UpdateMutationProps, DeleteMutationProps, QueryOptions, QueryConfig, } from '@/interfaces/hook.interface'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { useLocationContext } from '@/context/LocationContext'
 import { LocationType } from '@/interfaces/context.interface'
@@ -7,7 +7,7 @@ import { LocationType } from '@/interfaces/context.interface'
 const QUERY_KEYS = {
   locations: (path: LocationType) => ['locations', path],
   location: (path: LocationType, id: string) => ['location', path, id],
-  search: (path: LocationType, query: object) => ['locations', 'search', path, query]
+  search: (path: LocationType, query: QueryOptions) => ['locations', 'search', path, query]
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -23,33 +23,32 @@ export const useQueryLocation = (): QueryReact_Location => {
     queryKey: QUERY_KEYS.locations(path),
     queryFn: () => location.getAll<T>(path),
     select: (data) => data || [],
-    initialData: []
+    initialData: [],
   })
 
   /**
    * Obtener ubicación por ID
    * @param {LocationType} path - Nos ayuda a construir la route
    * @param {string} id - Corresponde al id de la ubicación a consultar
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryConfig} config - Contiene la configuración de la consulta
    */
-  const fetchLocationById = <T>(path: LocationType, id: string, enabled: boolean = true) => useQuery({
-    queryKey: QUERY_KEYS.location(path, id),
-    queryFn: () => location.getById<T>(path, id, enabled),
+  const fetchLocationById = <T>(path: LocationType, id: string, config: QueryConfig = { enabled: true }) => useQuery({
     select: (data) => data || undefined,
-    enabled: Boolean(id) && enabled
+    queryKey: QUERY_KEYS.location(path, id),
+    queryFn: () => location.getById<T>(path, id),
+    enabled: Boolean(id) && (config.enabled ?? true),
   })
 
   /**
    * Buscar ubicación por término
    * @param {LocationType} path - Nos ayuda a construir la route
-   * @param {object} query - Elementos de query, corresponde al parámetro de búsqueda
-   * @param {boolean} enabled - Indica si la consulta debe ejecutarse
+   * @param {QueryOptions} query - Elementos de busqueda y configuración de la consulta
    */
-  const fetchLocationByQuery = <T>(path: LocationType, query: object, enabled: boolean = true) => useQuery({
+  const fetchLocationByQuery = <T>(path: LocationType, query: QueryOptions = { enabled: true }) => useQuery({
+    select: (data) => data || [] as T[],
     queryKey: QUERY_KEYS.search(path, query),
-    queryFn: () => location.getByQuery<T>(path, query, enabled),
-    enabled: Boolean(query) && enabled,
-    select: (data) => data || []
+    enabled: Boolean(query) && (query.enabled ?? true),
+    queryFn: () => location.getByQuery<T>(path, { ...query, enabled: undefined }),
   })
 
   return {
