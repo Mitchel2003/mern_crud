@@ -1,5 +1,5 @@
-import SignatureDialog from "#/pages/documents/schedule/SignatureDialog"
 import { ThemeContextProps } from '@/interfaces/context.interface'
+import SignatureDialog from "#/common/reusables/SignatureDialog"
 import { HeaderSpanProps } from '@/interfaces/props.interface'
 import { useFormContext, Controller } from 'react-hook-form'
 import { Download, Trash2, Pen, Edit3 } from 'lucide-react'

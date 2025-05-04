@@ -1,31 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LocationProvider } from "@/context/LocationContext";
-import { FormatProvider } from "@/context/FormatContext";
-import { ThemeProvider } from "@/context/ThemeContext";
-import { AuthProvider } from "@/context/AuthContext";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { LocationProvider } from "@/context/LocationContext"
+import { FormatProvider } from "@/context/FormatContext"
+import { ThemeProvider } from "@/context/ThemeContext"
+import { AuthProvider } from "@/context/AuthContext"
 
-import CurriculumPage, { PreviewCurriculumPage } from "@/pages/documents/CurriculumPage";
-import ClientPage, { ClientFlowPage } from "@/pages/documents/ClientPage";
-import MaintenancePage from "@/pages/documents/MaintenancePage";
-import EngineerPage from "@/pages/documents/EngineerPage";
-import CompanyPage from "@/pages/documents/CompanyPage";
-import SolicitPage from "@/pages/documents/SolicitPage";
-
-import HeadquarterPage from "@/pages/documents/HeadquarterPage";
-import CountryPage from "@/pages/documents/CountryPage";
-import OfficePage from "@/pages/documents/OfficePage";
-import StatePage from "@/pages/documents/StatePage";
-import CityPage from "@/pages/documents/CityPage";
-
-import CalendarPage from "@/pages/dashboard/engineer/CalendarPage";
-import DocumentsHub from "@/pages/navigation/DocumentsHub";
-import SchedulePage from "@/pages/documents/SchedulePage";
-import ScannerHub from "@/pages/navigation/ScannerHub";
-import ProtectedRoute from "@/layouts/ProtectedRoute";
-import DashboardPage from "@/pages/dashboard";
-import LoginPage from "@/pages/LoginPage";
-import RootLayout from "@/layouts/Root";
-import HomePage from "@/pages/HomePage";
+/** Layout globals and renders */
+import ProtectedRoute from "@/layouts/ProtectedRoute"
+import RootLayout from "@/layouts/Root"
+import Render from "@/features/Render"
 
 function App() {
   return (
@@ -38,70 +20,70 @@ function App() {
               <Routes>
                 <Route element={<RootLayout />}>
                   {/* home index */}
-                  <Route path="/" index element={<HomePage />} />
-                  <Route path="/auth/login" element={<LoginPage />} />
+                  <Route path="/" index element={<Render.HomePage />} />
+                  <Route path="/auth/login" element={<Render.LoginPage />} />
 
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/scanner" element={<ScannerHub />} />
+                    <Route path="/dashboard" element={<Render.DashboardPage />} />
+                    <Route path="/scanner" element={<Render.ScannerPage />} />
 
-                    {/* engineer routes */}
-                    <Route path="/calendar" element={<CalendarPage />} />
+                    {/* collaborator routes */}
+                    <Route path="/calendar" element={<Render.CalendarPage />} />
 
                     {/* forms routes */}
-                    <Route path="/form" element={<DocumentsHub />} /> {/*list documents*/}
-                    <Route path="/form/curriculum" element={<CurriculumPage />} />
-                    <Route path="/form/curriculums" element={<CurriculumPage />} />
-                    <Route path="/form/curriculum/:id" element={<CurriculumPage />} />
-                    <Route path="/form/curriculum/preview/:id" element={<PreviewCurriculumPage />} />
+                    <Route path="/form" element={<Render.DocumentsHub />} /> {/*list documents*/}
+                    <Route path="/form/curriculum" element={<Render.CurriculumPage />} />
+                    <Route path="/form/curriculums" element={<Render.CurriculumPage />} />
+                    <Route path="/form/curriculum/:id" element={<Render.CurriculumPage />} />
+                    <Route path="/form/curriculum/preview/:id" element={<Render.PreviewCurriculumPage />} />
 
-                    <Route path="/form/maintenance" element={<MaintenancePage />} />
-                    <Route path="/form/maintenances" element={<MaintenancePage />} />
-                    <Route path="/form/maintenance/:id" element={<MaintenancePage />} />
+                    <Route path="/form/maintenance" element={<Render.MaintenancePage />} />
+                    <Route path="/form/maintenances" element={<Render.MaintenancePage />} />
+                    <Route path="/form/maintenance/:id" element={<Render.MaintenancePage />} />
 
-                    <Route path="/form/solicit" element={<SolicitPage />} />
-                    <Route path="/form/solicits" element={<SolicitPage />} />
-                    <Route path="/form/solicit/:id" element={<SolicitPage />} />
+                    <Route path="/form/solicit" element={<Render.SolicitPage />} />
+                    <Route path="/form/solicits" element={<Render.SolicitPage />} />
+                    <Route path="/form/solicit/:id" element={<Render.SolicitPage />} />
 
-                    <Route path="/form/schedule" element={<SchedulePage />} />
-                    <Route path="/form/schedules" element={<SchedulePage />} />
-                    <Route path="/form/schedule/:id" element={<SchedulePage />} />
+                    <Route path="/form/schedule" element={<Render.SchedulePage />} />
+                    <Route path="/form/schedules" element={<Render.SchedulePage />} />
+                    <Route path="/form/schedule/:id" element={<Render.SchedulePage />} />
 
                     {/* user routes */}
-                    <Route path="/engineer" element={<EngineerPage />} /> {/*new user*/}
-                    <Route path="/engineers" element={<EngineerPage />} /> {/*list users*/}
-                    <Route path="/engineer/:id" element={<EngineerPage />} /> {/*edit user*/}
+                    <Route path="/collaborator" element={<Render.CollaboratorPage />} /> {/*new user*/}
+                    <Route path="/collaborators" element={<Render.CollaboratorPage />} /> {/*list users*/}
+                    <Route path="/collaborator/:id" element={<Render.CollaboratorPage />} /> {/*edit user*/}
 
-                    <Route path="/company" element={<CompanyPage />} /> {/*new company*/}
-                    <Route path="/companies" element={<CompanyPage />} /> {/*list companies*/}
-                    <Route path="/company/:id" element={<CompanyPage />} /> {/*edit company*/}
+                    <Route path="/company" element={<Render.CompanyPage />} /> {/*new company*/}
+                    <Route path="/companies" element={<Render.CompanyPage />} /> {/*list companies*/}
+                    <Route path="/company/:id" element={<Render.CompanyPage />} /> {/*edit company*/}
 
-                    <Route path="/newClient" element={<ClientFlowPage />} /> {/*new client*/}
-                    <Route path="/client" element={<ClientPage />} /> {/*new client*/}
-                    <Route path="/clients" element={<ClientPage />} /> {/*list clients*/}
-                    <Route path="/client/:id" element={<ClientPage />} /> {/*edit client*/}
+                    <Route path="/newClient" element={<Render.ClientFlowPage />} /> {/*new client*/}
+                    <Route path="/client" element={<Render.ClientPage />} /> {/*new client*/}
+                    <Route path="/clients" element={<Render.ClientPage />} /> {/*list clients*/}
+                    <Route path="/client/:id" element={<Render.ClientPage />} /> {/*edit client*/}
 
                     {/* location routes */}
-                    <Route path="/location/office" element={<OfficePage />} /> {/*new office*/}
-                    <Route path="/location/offices" element={<OfficePage />} /> {/*list offices*/}
-                    <Route path="/location/office/:id" element={<OfficePage />} /> {/*edit office*/}
+                    <Route path="/location/office" element={<Render.OfficePage />} /> {/*new office*/}
+                    <Route path="/location/offices" element={<Render.OfficePage />} /> {/*list offices*/}
+                    <Route path="/location/office/:id" element={<Render.OfficePage />} /> {/*edit office*/}
 
-                    <Route path="/location/headquarter" element={<HeadquarterPage />} /> {/*new headquarter*/}
-                    <Route path="/location/headquarters" element={<HeadquarterPage />} /> {/*list headquarter*/}
-                    <Route path="/location/headquarter/:id" element={<HeadquarterPage />} /> {/*edit headquarter*/}
+                    <Route path="/location/headquarter" element={<Render.HeadquarterPage />} /> {/*new headquarter*/}
+                    <Route path="/location/headquarters" element={<Render.HeadquarterPage />} /> {/*list headquarter*/}
+                    <Route path="/location/headquarter/:id" element={<Render.HeadquarterPage />} /> {/*edit headquarter*/}
 
-                    <Route path="/location/city" element={<CityPage />} /> {/*new city*/}
-                    <Route path="/location/cities" element={<CityPage />} /> {/*list cities*/}
-                    <Route path="/location/city/:id" element={<CityPage />} /> {/*edit city*/}
+                    <Route path="/location/city" element={<Render.CityPage />} /> {/*new city*/}
+                    <Route path="/location/cities" element={<Render.CityPage />} /> {/*list cities*/}
+                    <Route path="/location/city/:id" element={<Render.CityPage />} /> {/*edit city*/}
 
-                    <Route path="/location/state" element={<StatePage />} /> {/*new state*/}
-                    <Route path="/location/states" element={<StatePage />} /> {/*list states*/}
-                    <Route path="/location/state/:id" element={<StatePage />} /> {/*edit state*/}
+                    <Route path="/location/state" element={<Render.StatePage />} /> {/*new state*/}
+                    <Route path="/location/states" element={<Render.StatePage />} /> {/*list states*/}
+                    <Route path="/location/state/:id" element={<Render.StatePage />} /> {/*edit state*/}
 
-                    <Route path="/location/country" element={<CountryPage />} /> {/*new country*/}
-                    <Route path="/location/countries" element={<CountryPage />} /> {/*list countries*/}
-                    <Route path="/location/country/:id" element={<CountryPage />} /> {/*edit country*/}
+                    <Route path="/location/country" element={<Render.CountryPage />} /> {/*new country*/}
+                    <Route path="/location/countries" element={<Render.CountryPage />} /> {/*list countries*/}
+                    <Route path="/location/country/:id" element={<Render.CountryPage />} /> {/*edit country*/}
                   </Route>
 
                 </Route>

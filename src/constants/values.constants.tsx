@@ -1,5 +1,11 @@
+import { CountryFormProps, HeadquarterFormProps, OfficeFormProps, StateFormProps, CityFormProps } from '@/schemas/location/location.schema'
+import { ClientFlowProps, UserFormProps } from '@/schemas/auth/auth.schema'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
+import { ScheduleFormProps } from '@/schemas/format/schedule.schema'
+import { ActivityFormProps } from '@/schemas/format/activity.schema'
+import { SolicitFormProps } from '@/schemas/format/solicit.schema'
+
 import { Curriculum, Schedule } from '@/interfaces/context.interface'
 import { Building2, BriefcaseBusiness, Users } from 'lucide-react'
 import { StyleSheet } from '@react-pdf/renderer'
@@ -93,7 +99,6 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   manufacturer: '', //datailsEquipment
   representative: '', //datailsEquipment
 
-  /*---------------------------------------------------------------------------------------------------------*/
   //helpers fields not has been sent to database "curriculum"
   newSupplier: [],
   newManufacturer: [],
@@ -103,7 +108,7 @@ export const curriculumDefaultValues: CurriculumFormProps = {
   newInspection: [],
   newAccessories: []
 }
-/*---------------------------------------------------------------------------------------------------------*/
+
 /**
  * Valores predeterminados para el formulario de mantenimiento
  * @type {MaintenanceFormProps}
@@ -127,15 +132,15 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default location values--------------------------------------------------*/
-export const countryDefaultValues = { name: '' }
-export const stateDefaultValues = { name: '', country: '' }
-export const cityDefaultValues = { name: '', state: '' }
-export const headquarterDefaultValues = { name: '', address: '', user: '', city: '', state: '', country: '' }
-export const officeDefaultValues = { name: '', group: '', headquarter: '', services: [] }
+export const countryDefaultValues: CountryFormProps = { name: '' }
+export const stateDefaultValues: StateFormProps = { name: '', country: '' }
+export const cityDefaultValues: CityFormProps = { name: '', state: '' }
+export const headquarterDefaultValues: HeadquarterFormProps = { name: '', address: '', client: '', city: '', state: '', country: '' }
+export const officeDefaultValues: OfficeFormProps = { name: '', group: '', headquarter: '', services: [] }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/
-export const userDefaultValues = {
+export const userDefaultValues: UserFormProps = {
   previewCompanySignature: '',
   previewCompanyLogo: '',
   previewClientImage: '',
@@ -154,23 +159,26 @@ export const userDefaultValues = {
   role: '',
   permissions: []
 }
-export const clientFlowDefaultValues = {
+export const clientFlowDefaultValues: ClientFlowProps = {
   client: { email: '', password: '', username: '', phone: '', nit: '', role: 'client', photoUrl: [] },
   headquarter: [{ name: '', address: '', city: '' }],
   office: [{ headquarter: '', services: [], name: '' }]
 }
-export const solicitDefaultValues = {
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------default format values--------------------------------------------------*/
+export const solicitDefaultValues: SolicitFormProps = {
   cv: { name: '', brand: '', serie: '', modelEquip: '', healthRecord: '' },
   message: '',
   priority: '',
   photoUrl: [],
 }
-export const activityDefaultValues = {
+export const activityDefaultValues: ActivityFormProps = {
   dateAssignment: undefined,
-  engineer: '',
+  collaborator: '',
   solicit: '',
 }
-export const scheduleDefaultValues = {
+export const scheduleDefaultValues: ScheduleFormProps = {
   typeSchedule: '',
   client: '',
   subject: '',
@@ -178,7 +186,7 @@ export const scheduleDefaultValues = {
   typeClassification: '',
   monthOperation: undefined,
   dateAttendance: undefined,
-  newRowsAttendance: [],
+  newRowAttendance: [],
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -600,15 +608,15 @@ export const styles = StyleSheet.create({ //styles basics
     alignItems: 'flex-start',
     backgroundColor: '#f8f8f8',
   },
-  engineerInfoContainer: {
+  providerInfoContainer: {
     width: '25%',
   },
-  engineerTitle: {
+  providerTitle: {
     fontSize: '10pt',
     marginBottom: '10pt',
     fontFamily: 'Helvetica-Bold',
   },
-  engineerDetails: {
+  providerDetails: {
     fontSize: '9pt',
     marginBottom: '4pt',
   },
@@ -627,7 +635,7 @@ export const styles = StyleSheet.create({ //styles basics
     border: '1pt solid black',
     backgroundColor: '#ffffff',
   },
-  engineerSignature: {
+  providerSignature: {
     width: '100%',
     height: '70pt',
     objectFit: 'contain',
@@ -697,7 +705,7 @@ export const attendanceStyles = StyleSheet.create({ //to attendance PDF
     borderTop: '1pt solid black',
     justifyContent: 'space-between',
   },
-  engineerSection: {
+  providerSection: {
     width: '30%',
     padding: '10pt',
   },
@@ -711,11 +719,11 @@ export const attendanceStyles = StyleSheet.create({ //to attendance PDF
     borderBottom: '1pt solid black',
     marginBottom: '5pt',
   },
-  engineerName: {
+  providerName: {
     fontSize: '9pt',
     fontFamily: 'Helvetica-Bold',
   },
-  engineerDetail: {
+  providerDetail: {
     fontSize: '8pt',
     marginTop: '2pt',
   },

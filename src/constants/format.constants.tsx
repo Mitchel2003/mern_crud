@@ -177,7 +177,7 @@ export const convertRole = (str: RoleProps) => {
   switch (str) {
     case "client": return "cliente"
     case "company": return "proveedor de servicios"
-    case "engineer": return "ingeniero"
+    case "collaborator": return "colaborador"
     case "admin": return "administrador"
     default: return str
   }

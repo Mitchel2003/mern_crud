@@ -141,7 +141,7 @@ export interface ClientDashboardProps {
   }>
 }
 
-// Calendar (engineer)
+// Calendar (collaborator)
 export interface Event {
   startTime: string
   endTime: string

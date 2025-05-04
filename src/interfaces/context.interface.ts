@@ -32,7 +32,7 @@ export type DialogConfirmContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
-export type RoleProps = 'client' | 'company' | 'engineer' | 'admin'
+export type RoleProps = 'admin' | 'company' | 'collaborator' | 'client'
 export type User = BaseMDB & {
   uid: string
   email: string
@@ -72,7 +72,7 @@ export type LocationType = 'country' | 'state' | 'city' | 'headquarter' | 'offic
 export type Country = BaseMDB & { name: string }
 export type State = BaseMDB & { name: string; country: Country }
 export type City = BaseMDB & { name: string; state: State }
-export type Headquarter = BaseMDB & { name: string; address: string; user: User; city: City }
+export type Headquarter = BaseMDB & { name: string; address: string; client: User; city: City }
 export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
 
 export type LocationContext = {
@@ -116,8 +116,8 @@ export type Schedule = BaseMDB & {
 export type Activity = BaseMDB & {
   status: 'pendiente' | 'en proceso' | 'completado'
   dateAssignment: Date
+  collaborator: User
   solicit: Solicit
-  engineer: User
 }
 export type Solicit = BaseMDB & {
   status: 'pendiente' | 'asignado' | 'cerrado'

@@ -281,7 +281,7 @@ export const useCurriculumTable = () => {
     const pdfComponents = cvs.map(cv => { //Prepare each cv with its resources from map
       const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
       const curriculumAccs = resources.curriculumAccs || [] //accs
-      const client = cv?.office?.headquarter?.user //client context
+      const client = cv?.office?.headquarter?.client //client context
       const fileName = `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
       return { fileName, component: CurriculumPDF, props: { cv, company: company!, client: client!, accs: curriculumAccs } }
     })
@@ -301,7 +301,7 @@ export const useCurriculumTable = () => {
     const curriculumPromises = cvs.map(async (cv) => { //Prepare promises for generating curriculum PDFs
       const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
       const curriculumAccs = resources.curriculumAccs || [] //accs
-      const client = cv?.office?.headquarter?.user //client context
+      const client = cv?.office?.headquarter?.client //client context
       const pdf = await pdfToBase64(CurriculumPDF, { cv, company: company!, client: client, accs: curriculumAccs })
       return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Hoja de vida.pdf` }
     }) //Prepare promises for generating maintenance PDFs
@@ -327,7 +327,7 @@ export const useCurriculumTable = () => {
     if (!accs) return //await for this
     if (isProcessing.current) return
     isProcessing.current = true
-    const client = cv?.office?.headquarter?.user
+    const client = cv?.office?.headquarter?.client
     await downloadPDF({ //Download curriculum PDF
       fileName: `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`,
       component: CurriculumPDF, props: { cv, accs, company: company!, client: client }

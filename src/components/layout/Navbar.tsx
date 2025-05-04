@@ -1,8 +1,8 @@
 import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
 import { Notifications } from "#/layout/Notifications"
-import UserMenu from '#/pages/dashboard/UserMenu'
 import { SidebarTrigger } from '#/ui/sidebar'
+import OptionsMenu from '#/layout/Options'
 import ThemeToggle from '#/layout/Theme'
 import { motion } from "framer-motion"
 
@@ -41,7 +41,7 @@ const Navbar = () => {
           {isAuth && user && (
             <>
               <Notifications theme={theme} />
-              <UserMenu theme={theme} />
+              <OptionsMenu theme={theme} />
             </>
           )}
         </div>

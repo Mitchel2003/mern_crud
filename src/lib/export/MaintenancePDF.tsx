@@ -52,11 +52,11 @@ const ClientSection = ({ mt }: { mt: Maintenance }) => (
     <View style={styles.infoRow}>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>NOMBRE:</Text>
-        <Text>{mt.curriculum.office.headquarter.user?.username || 'N/A'}</Text>
+        <Text>{mt.curriculum.office.headquarter.client?.username || 'N/A'}</Text>
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>TELÉFONO:</Text>
-        <Text>{mt.curriculum.office.headquarter.user?.phone || 'N/A'}</Text>
+        <Text>{mt.curriculum.office.headquarter.client?.phone || 'N/A'}</Text>
       </View>
     </View>
     <View style={styles.infoRow}>
@@ -66,7 +66,7 @@ const ClientSection = ({ mt }: { mt: Maintenance }) => (
       </View>
       <View style={[styles.infoCol, styles.col2]}>
         <Text style={styles.label}>EMAIL:</Text>
-        <Text>{mt.curriculum.office.headquarter.user?.email || 'N/A'}</Text>
+        <Text>{mt.curriculum.office.headquarter.client?.email || 'N/A'}</Text>
       </View>
     </View>
   </>
@@ -297,12 +297,12 @@ const ServiceProviderSection = ({ mt, com }: { mt: Maintenance, com?: User }) =>
     </View>
 
     <View style={styles.mainContainer}>
-      {/* Información del ingeniero */}
-      <View style={styles.engineerInfoContainer}>
-        <Text style={styles.engineerTitle}>INGENIERO DE SERVICIO</Text>
-        <Text style={styles.engineerDetails}>{com?.username}</Text>
-        <Text style={styles.engineerDetails}>REG. INVIMA: {com?.invima}</Text>
-        <Text style={styles.engineerDetails}>MP: {com?.profesionalLicense}</Text>
+      {/* Información del proveedor */}
+      <View style={styles.providerInfoContainer}>
+        <Text style={styles.providerTitle}>INGENIERO DE SERVICIO</Text>
+        <Text style={styles.providerDetails}>{com?.username}</Text>
+        <Text style={styles.providerDetails}>REG. INVIMA: {com?.invima}</Text>
+        <Text style={styles.providerDetails}>MP: {com?.profesionalLicense}</Text>
       </View>
 
       {/* Recibido a satisfacción */}
@@ -311,13 +311,13 @@ const ServiceProviderSection = ({ mt, com }: { mt: Maintenance, com?: User }) =>
         <View style={styles.signatureLine} />
       </View>
 
-      {/* Firma del ingeniero */}
+      {/* Firma del proveedor */}
       <View style={styles.signatureBox}>
         <Text style={styles.signatureLabel}>FIRMA INGENIERO</Text>
         <View style={styles.signatureLine}>
           {com?.metadata?.signature && (
             <Image
-              style={styles.engineerSignature}
+              style={styles.providerSignature}
               src={com.metadata.signature || "/placeholder.svg"}
             />
           )}

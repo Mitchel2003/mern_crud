@@ -44,9 +44,9 @@ export const links = () => {
       label: 'Panel del usuario',
     },
     {// users
-      href: '/engineer',
       icon: AssignmentInd,
-      label: 'Personal interno',
+      href: '/collaborators',
+      label: 'Colaboradores',
     },
     {/** institution **/
       label: 'Gestion de clientes',
@@ -86,8 +86,8 @@ export const links = () => {
       label: 'Cronogramas',
     }
   ]
-  /*--------------------------------------------------engineer--------------------------------------------------*/
-  const navEngineerItems: NavItemProps[] = [
+  /*--------------------------------------------------collaborator--------------------------------------------------*/
+  const navCollaboratorItems: NavItemProps[] = [
     {/** dashboard **/
       href: '/dashboard',
       label: 'Panel del usuario',
@@ -110,10 +110,10 @@ export const links = () => {
           label: 'Proveedores',
           href: '/companies',
         },
-        {// engineer
+        {// collaborator
           icon: SupervisorAccount,
-          label: 'Ingenieros',
-          href: '/engineer',
+          label: 'Colaboradores',
+          href: '/collaborators',
         },
       ]
     },
@@ -180,7 +180,7 @@ export const links = () => {
   ]
 
   return !isAuth ? navGuestItems : (
-    user?.role === 'engineer' ? navEngineerItems
+    user?.role === 'collaborator' ? navCollaboratorItems
       : (user?.role === 'client' ? navClientItems
         : (user?.role === 'company' ? navCompanyItems
           : navAdminItems))

@@ -84,7 +84,7 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
       name: headquarter.name,
       address: headquarter.address,
       city: headquarter.city?._id || '',
-      user: headquarter.user?._id || '',
+      client: headquarter.client?._id || '',
       state: headquarter.city.state?._id || '',
       country: headquarter.city.state.country?._id || ''
     })
@@ -92,8 +92,8 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: HeadquarterFormProps) => {
-      const { name, city, user, address } = data
-      const format = { name, city, user, address }
+      const { name, city, client, address } = data
+      const format = { name, city, client, address }
       id ? updateLocation({ id, data: format }) : createLocation(format)
       methods.reset()
     },

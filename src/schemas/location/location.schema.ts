@@ -25,9 +25,9 @@ export const headquarterSchema = z.object({
     .string({ required_error: "La dirección es requerida" })
     .min(3, "La dirección debe tener al menos 3 caracteres")
     .max(100, "La dirección debe tener menos de 100 caracteres"),
-  user: z
-    .string({ required_error: "El usuario rol cliente es requerido" })
-    .min(1, "Debes seleccionar un usuario rol cliente"),
+  client: z
+    .string({ required_error: "El cliente es requerido" })
+    .min(1, "Debes seleccionar un cliente"),
   city: z
     .string({ required_error: "La ciudad es requerida" })
     .min(1, "Debes seleccionar una ciudad"),

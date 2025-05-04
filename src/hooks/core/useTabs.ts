@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom"
+import { toPlural } from "@/constants/format.constants"
 import { useState } from "react"
 import { cn } from '@/lib/utils'
 
@@ -17,14 +18,13 @@ interface UseTabsProps { id?: string; to: string, startOn?: string }
  * if(value === 'form' && id is query) '/location/country/%7B%22param%22%3A%22value%22%7D';
  */
 export const useTabs = ({ id, to, startOn }: UseTabsProps) => {
-  const toPlural = to.slice(-1) === 'y' ? to.slice(0, -1) + 'ies' : to + 's'
   const isQuery = id ? id.startsWith('%7B') || id.startsWith('{') : false
   const [tab, setTab] = useState(id && !isQuery ? 'form' : startOn || 'table')
   const navigate = useNavigate()
 
   const handle = (value: string) => {
     const filter = isQuery ? `?filter=${id}` : ''
-    if (value === 'table') navigate(`${toPlural}${filter}`)
+    if (value === 'table') navigate(`${toPlural(to)}${filter}`)
     if (value === 'form') navigate(`${to}${id ? `/${id}` : ''}`)
     setTab(value)
   }

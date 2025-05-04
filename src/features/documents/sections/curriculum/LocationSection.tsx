@@ -1,0 +1,72 @@
+import { Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
+import { groupCollection as groups } from "@/constants/values.constants"
+import HeaderCustom from "#/common/elements/HeaderCustom"
+import SelectField from "#/common/fields/Select"
+import { useFormContext } from "react-hook-form"
+
+interface LocationSectionProps extends ThemeContextProps {
+  options: { headquarters: Headquarter[], offices: Office[], clients: User[] }
+  id: boolean
+}
+
+const LocationSection = ({ id, theme, options }: LocationSectionProps) => {
+  const { watch } = useFormContext()
+  const hqId = watch('headquarter')
+  const clientId = watch('client')
+  const officeId = watch('office')
+
+  const headquarters = id ? options.headquarters : options.headquarters?.filter((head) => head.client?._id === clientId)
+  const offices = id ? options.offices : options.offices?.filter((office) => office.headquarter?._id === hqId)
+  const services = groups.flatMap(group => group.services).filter(service => {
+    const office = offices?.find(office => office._id === officeId)
+    return !id ? office?.services.includes(service) : true
+  })
+
+  return (
+    <div className="space-y-6">
+      {/* -------------------- Header -------------------- */}
+      <HeaderCustom
+        to="component"
+        theme={theme}
+        iconSpan="warn"
+        title="Referencia del equipo"
+        className="text-2xl font-light"
+        span="Propocione la referencia de ubicacion"
+      />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+
+        {/* -------------------- Selects -------------------- */}
+        <SelectField
+          label="Cliente"
+          theme={theme}
+          name="client"
+          options={options.clients?.map((c) => ({ label: c.username, value: c._id })) || []}
+          placeholder="Seleccionar cliente"
+        />
+        <SelectField
+          label="Sede"
+          theme={theme}
+          name="headquarter"
+          options={headquarters?.map((h) => ({ label: `${h.name} - ${h.address}`, value: h._id })) || []}
+          placeholder="Seleccionar sede"
+        />
+        <SelectField
+          theme={theme}
+          name="office"
+          label="Consultorio"
+          options={offices?.map((o) => ({ label: o.name, value: o._id })) || []}
+          placeholder="Seleccionar consultorio"
+        />
+        <SelectField
+          theme={theme}
+          name="service"
+          label="Servicio"
+          options={services?.map((s) => ({ label: s, value: s })) || []}
+          placeholder="Seleccionar servicio"
+        />
+      </div>
+    </div>
+  )
+}
+
+export default LocationSection

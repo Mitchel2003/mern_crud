@@ -3,10 +3,10 @@ import { Accessory, User, Curriculum, Maintenance, Office } from '@/interfaces/c
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useNotificationContext } from '@/context/NotificationContext'
 import { useQueryLocation } from '@/hooks/query/useLocationQuery'
+import { formatHooks } from '@/hooks/form-handlers/useFormat'
 import { useNotification } from '@/hooks/ui/useNotification'
 import { useFormSubmit } from '@/hooks/core/useFormSubmit'
 import { useQueryUser } from '@/hooks/query/useAuthQuery'
-import { formatHooks } from '@/hooks/format/useFormat'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { MaintenanceFormProps, maintenanceSchema } from '@/schemas/format/maintenance.schema'
@@ -59,7 +59,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   /*---------------------------------------------------------------------------------------------------------*/
   const areas = useMemo(() => {
     if (!client || !offices.length || typeSchedule !== 'capacitación') return []
-    const clientOffices = offices.filter(office => office?.headquarter?.user?._id === client._id)
+    const clientOffices = offices.filter(office => office?.headquarter?.client?._id === client._id)
     const uniqueAreas = Array.from(new Set(clientOffices.map(office => office.group).filter(Boolean)))
     return uniqueAreas
   }, [client, offices])
@@ -116,7 +116,7 @@ export const useActivityForm = (onSuccess?: () => void) => {
   const { notifyError } = useNotification()
   const { user } = useAuthContext()
 
-  const { data: engineers } = useQueryUser().fetchUserByQuery<User>({ role: 'engineer' })
+  const { data: collaborators } = useQueryUser().fetchUserByQuery<User>({ role: 'collaborator' })
 
   const methods = useForm<ActivityFormProps>({
     resolver: zodResolver(activitySchema),
@@ -134,9 +134,9 @@ export const useActivityForm = (onSuccess?: () => void) => {
     await createActivity({ ...e, status: 'pendiente' }).then(async () => {
       const title = `Nueva actividad - ${user?.username}`
       const body = `Revisa tu bandeja de entradas`
-      await sendNotification({ id: e.engineer, title, body }) //messaging
+      await sendNotification({ id: e.collaborator, title, body }) //messaging
       await createNotification({ //create notification inbox with redirect
-        recipient: e.engineer, sender: user?._id,
+        recipient: e.collaborator, sender: user?._id,
         url: `${config.frontendUrl}/dashboard`,
         title, message: body, type: 'alert',
       }) //Update solicit status to assigned, after creating activity
@@ -148,7 +148,7 @@ export const useActivityForm = (onSuccess?: () => void) => {
 
   return {
     methods, onSubmit,
-    engineers: engineers?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`, icon: UserRoundCheck })) || [],
+    collaborators: collaborators?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`, icon: UserRoundCheck })) || [],
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -194,7 +194,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
         let photoUrl: string | undefined = undefined
         file && (photoUrl = await createFile({ file, path: `files/${id}/solicit/img_${Date.now()}` }))
         createFormat({ ...data, photoUrl }).then(async () => {
-          const client = cv?.office?.headquarter?.user
+          const client = cv?.office?.headquarter?.client
           const title = `Nueva solicitud de ${client?.username}`
           const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
           company && await sendNotification({ id: company._id, title, body }) //messaging

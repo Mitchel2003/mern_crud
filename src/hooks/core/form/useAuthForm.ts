@@ -64,7 +64,7 @@ export const useForgotPasswordForm = () => {
 /**
  * Hook personalizado para manejar el formulario de creación o actualización de usuarios
  * @param id - ID del usuario a actualizar, si no se proporciona, la request corresponde a crear
- * @param to - Contexto del formulario usuario, actualmente manejados: company, client, engineer, admin
+ * @param to - Contexto del formulario usuario, actualmente manejados: admin, company, client, collaborator
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
  */
 export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void) => {
@@ -74,7 +74,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const queryUser = useQueryUser()
 
   const { data: user } = queryUser.fetchUserById<User>(id as string, { enabled: !!id })
-  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' || to === 'engineer' })
+  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' || to === 'collaborator' })
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
@@ -186,7 +186,7 @@ export const useClientFlow = (onSuccess?: () => void) => {
       const path = `client/${user._id}/preview/img`
       await Promise.all(//complements in parallel
         data.headquarter.map(async (hq: any) => {
-          const headquarter = await createHeadquarter({ ...hq, user: user._id })
+          const headquarter = await createHeadquarter({ ...hq, client: user._id })
           const offices = data.office.filter((office: any) => office.headquarter === `${hq.name}-${hq.address}`)
           if (!offices.length) return
           //create offices associated to headquarter

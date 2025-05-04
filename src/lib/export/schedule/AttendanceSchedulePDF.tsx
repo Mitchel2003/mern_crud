@@ -222,15 +222,15 @@ const AttendanceTable = ({ attendees = [], pageIndex = 0, totalPages = 1 }: { at
 const FooterSection = ({ company }: { company: User }) => (
   <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
     {/* Sección izquierda - Firma e información del ingeniero */}
-    <View style={[attendanceStyles.engineerSection, { width: '40%' }]}>
+    <View style={[attendanceStyles.providerSection, { width: '40%' }]}>
       <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
       <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
 
       {/* Información del ingeniero */}
-      <Text style={attendanceStyles.engineerName}>{company?.username.toUpperCase()}</Text>
-      <Text style={attendanceStyles.engineerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
-      <Text style={attendanceStyles.engineerDetail}>CC. {company?.nit} de Cúcuta</Text>
-      <Text style={attendanceStyles.engineerDetail}>REG. INVIMA: {company?.invima}</Text>
+      <Text style={attendanceStyles.providerName}>{company?.username.toUpperCase()}</Text>
+      <Text style={attendanceStyles.providerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
+      <Text style={attendanceStyles.providerDetail}>CC. {company?.nit} de Cúcuta</Text>
+      <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {company?.invima}</Text>
     </View>
 
     {/* Sección derecha - Logo de la empresa */}
