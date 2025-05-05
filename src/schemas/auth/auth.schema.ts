@@ -35,7 +35,7 @@ export const userSchema = z.object({
   username: z
     .string({ required_error: "El nombre de usuario es requerido" })
     .min(5, "El nombre de usuario debe tener al menos 5 caracteres")
-    .max(50, "El nombre de usuario debe tener menos de 50 caracteres"),
+    .max(75, "El nombre de usuario debe tener menos de 75 caracteres"),
   phone: z
     .string({ required_error: "El teléfono es requerido" })
     .min(6, "El teléfono debe tener al menos 6 caracteres")
