@@ -149,8 +149,35 @@ export interface Event {
   color: string
   id: number
   date: Date
+  client: string
   location: string
-  description: string
   attendees: string[]
+  description: string
   organizer: string
+  // Metadatos para acciones contextuales
+  metadata?: {
+    activityId: string        // ID original de la actividad
+    activityType?: string     // Tipo de actividad (mantenimiento, capacitación, etc.)
+    activityStatus: string    // Estado actual (pendiente, en proceso, completado)
+    solicitId: string         // ID de la solicitud
+    solicitStatus: string     // Estado de la solicitud
+    curriculumId?: string     // ID del equipo/curriculum
+    priority: boolean         // Si es prioritario
+  }
+}
+
+export interface WeekDay {
+  date: Date
+  dayName: string
+  dayNumber: number
+}
+
+export interface MiniCalendarInfo {
+  days: (number | null)[]
+  firstDayOffset: number
+}
+
+export interface MonthDay {
+  date: Date
+  currentMonth: boolean
 }

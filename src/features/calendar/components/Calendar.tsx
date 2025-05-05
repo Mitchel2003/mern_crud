@@ -1,16 +1,14 @@
-import { ChevronLeft, ChevronRight, Clock, MapPin, Users, Calendar, X, MenuIcon } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, MapPin, Users, Calendar, X, MenuIcon, User } from "lucide-react"
+import CalendarEventActions from '@/features/calendar/components/CalendarEventActions'
+import { useCalendar } from "@/features/calendar/hooks/useCalendar"
 import { ThemeContextProps } from "@/interfaces/context.interface"
-import { useCalendar, Event } from "@/hooks/ui/useCalendar"
+import { Separator } from "@/components/ui/separator"
+import { Event } from '@/interfaces/props.interface'
 import { useState } from "react"
 
-interface CalendarProps extends ThemeContextProps {
-  onEventClick?: (event: Event) => void
-  isLoading?: boolean
-  events: Event[]
-}
-
-const CalendarUI = ({ theme, events, onEventClick, isLoading = false }: CalendarProps) => {
-  const handleEventClick = (event: Event) => { onEventClick ? onEventClick(event) : setSelectedEvent(event) }
+interface CalendarProps extends ThemeContextProps { isLoading: boolean; events: Event[] }
+const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
+  const handleEventClick = (event: Event) => { setSelectedEvent(event) }
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const {
@@ -403,47 +401,49 @@ const CalendarUI = ({ theme, events, onEventClick, isLoading = false }: Calendar
         {/* Modal de detalles del evento */}
         {selectedEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className={`${selectedEvent.color} p-6 rounded-lg shadow-xl max-w-md w-full mx-4`}>
+            <div className={`${selectedEvent.color} dark:bg-inherit p-6 rounded-lg shadow-xl max-w-md w-full mx-4`}>
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl font-bold text-white">{selectedEvent.title}</h3>
                 <button
-                  className="text-white hover:bg-white/20 rounded-full p-1"
                   onClick={() => setSelectedEvent(null)}
+                  className="text-white hover:bg-white/20 rounded-full p-1"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
               <div className="space-y-3 text-white">
-                <p className="flex items-center">
-                  <Clock className="mr-2 h-5 w-5" />
-                  {`${selectedEvent.startTime} - ${selectedEvent.endTime}`}
-                </p>
-                <p className="flex items-center">
-                  <MapPin className="mr-2 h-5 w-5" />
-                  {selectedEvent.location}
-                </p>
-                <p className="flex items-center">
-                  <Calendar className="mr-2 h-5 w-5" />
-                  {new Intl.DateTimeFormat("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  }).format(selectedEvent.date)}
-                </p>
+                {/* Personal asignado */}
                 <p className="flex items-start">
-                  <Users className="mr-2 h-5 w-5 mt-1" />
-                  <span>
-                    <strong>Attendees:</strong>
-                    <br />
-                    {selectedEvent.attendees.join(", ") || "No attendees"}
-                  </span>
+                  <Users className="mr-2 h-5 w-5 md:h-7 md:w-7 mt-1" />
+                  <span><strong>Asignada a:</strong>{' ' + selectedEvent.attendees.join(", ") || "No attendees"}</span>
                 </p>
-                <p>
-                  <strong>Organizer:</strong> {selectedEvent.organizer}
+                {/* Cliente */}
+                <p className="flex items-center">
+                  <User className="mr-2 h-5 w-5 md:h-7 md:w-7" />
+                  <span><strong>Cliente:</strong>{' ' + selectedEvent.client}</span>
                 </p>
-                <p>
-                  <strong>Description:</strong> {selectedEvent.description}
+                {/* Horario */}
+                <p className="flex items-center">
+                  <Clock className="mr-2 h-5 w-5 md:h-7 md:w-7" />
+                  <span><strong>Horario:</strong>{' ' + selectedEvent.startTime + ' - ' + selectedEvent.endTime}</span>
                 </p>
+                {/* Ubicación */}
+                <p className="flex items-center">
+                  <MapPin className="mr-2 h-5 w-5 md:h-7 md:w-7" />
+                  <span><strong>Ubicación:</strong>{' ' + selectedEvent.location}</span>
+                </p>
+                {/* Fecha */}
+                <p className="flex items-center">
+                  <Calendar className="mr-2 h-5 w-5 md:h-7 md:w-7" />
+                  <span><strong>Fecha:</strong>{' ' + new Intl.DateTimeFormat("es-ES", { weekday: "long", month: "long", day: "numeric" }).format(selectedEvent.date)}</span>
+                </p>
+
+                <Separator />
+                <p><strong>Organizador:</strong> {selectedEvent.organizer}</p>
+                <p><strong>Descripción:</strong> {selectedEvent.description}</p>
+
+                {/* Acciones contextuales */}
+                {selectedEvent.metadata && <CalendarEventActions event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
               </div>
             </div>
           </div>

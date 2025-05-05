@@ -20,10 +20,10 @@ import AttendancePDF from '@/lib/export/schedule/AttendanceSchedulePDF'
 import TrainingPDF from '@/lib/export/schedule/TrainingSchedulePDF'
 import { extractMetadataUrl } from '@/constants/format.constants'
 import { useAuthContext } from '@/context/AuthContext'
+import { baseFrontendUrl } from '@/utils/config'
 import { UserRoundCheck } from 'lucide-react'
 import { usePDFDownload } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
-import config from '@/utils/config'
 
 /*--------------------------------------------------schedule form--------------------------------------------------*/
 /**
@@ -137,8 +137,8 @@ export const useActivityForm = (onSuccess?: () => void) => {
       await sendNotification({ id: e.collaborator, title, body }) //messaging
       await createNotification({ //create notification inbox with redirect
         recipient: e.collaborator, sender: user?._id,
-        url: `${config.frontendUrl}/dashboard`,
         title, message: body, type: 'alert',
+        url: `${baseFrontendUrl}/calendar`,
       }) //Update solicit status to assigned, after creating activity
       await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
     })
@@ -201,7 +201,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
           company && await createNotification({ //create notification inbox with redirect
             title, message: body, type: data.priority ? 'payment' : 'alert',
             recipient: company._id, sender: client?._id,
-            url: `${config.frontendUrl}/form/solicit`,
+            url: `${baseFrontendUrl}/form/solicit`,
           })
         })
       }

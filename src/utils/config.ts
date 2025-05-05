@@ -1,3 +1,4 @@
+export const baseFrontendUrl = import.meta.env.VITE_NODE_ENV === 'production' ? 'https://mern-crud-three-lemon.vercel.app' : 'http://localhost:5173'
 export const baseUrl = import.meta.env.VITE_NODE_ENV === 'production' ? 'https://rest-api-qvo9.onrender.com/api' : 'http://localhost:4000/api'
 
 export default {

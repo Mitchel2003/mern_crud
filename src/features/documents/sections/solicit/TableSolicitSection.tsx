@@ -213,8 +213,8 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
                 <Box sx={{ width: '100%', height: { xs: 200, sm: 250 }, borderRadius: 2, overflow: 'hidden', boxShadow: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: 'grey.100' }}>
                   <img
                     alt={solicit.curriculum.name || 'Equipo'}
-                    src={solicit.photoUrl || '/placeholder-image.jpg'}
                     style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    src={solicit?.photoUrl || 'https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen'}
                   />
                 </Box>
 

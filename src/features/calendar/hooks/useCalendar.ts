@@ -1,36 +1,7 @@
+import { Event, WeekDay, MiniCalendarInfo, MonthDay } from "@/interfaces/props.interface"
 import { useState, useEffect, useCallback } from "react"
 
-export interface Event {
-  startTime: string
-  endTime: string
-  title: string
-  color: string
-  id: number
-  date: Date
-  location: string
-  attendees: string[]
-  description: string
-  organizer: string
-}
-
-export interface WeekDay {
-  date: Date
-  dayName: string
-  dayNumber: number
-}
-
-export interface MiniCalendarInfo {
-  days: (number | null)[]
-  firstDayOffset: number
-}
-
-export interface MonthDay {
-  date: Date
-  currentMonth: boolean
-}
-
 export interface CalendarHookResult {
-  // Estados
   selectedEvent: Event | null
   currentDate: Date
   currentView: string
@@ -38,8 +9,8 @@ export interface CalendarHookResult {
   displayDate: string
 
   // Días y slots
-  weekDays: WeekDay[]
   miniCalendarInfo: MiniCalendarInfo
+  weekDays: WeekDay[]
   monthDays: MonthDay[]
   timeSlots: number[]
 
@@ -84,25 +55,17 @@ export function useCalendar(): CalendarHookResult {
 
   const goToPrevious = useCallback(() => {
     const newDate = new Date(currentDate)
-    if (currentView === "day") {
-      newDate.setDate(newDate.getDate() - 1)
-    } else if (currentView === "week") {
-      newDate.setDate(newDate.getDate() - 7)
-    } else if (currentView === "month") {
-      newDate.setMonth(newDate.getMonth() - 1)
-    }
+    if (currentView === "day") { newDate.setDate(newDate.getDate() - 1) }
+    else if (currentView === "week") { newDate.setDate(newDate.getDate() - 7) }
+    else if (currentView === "month") { newDate.setMonth(newDate.getMonth() - 1) }
     setCurrentDate(newDate)
   }, [currentDate, currentView])
 
   const goToNext = useCallback(() => {
     const newDate = new Date(currentDate)
-    if (currentView === "day") {
-      newDate.setDate(newDate.getDate() + 1)
-    } else if (currentView === "week") {
-      newDate.setDate(newDate.getDate() + 7)
-    } else if (currentView === "month") {
-      newDate.setMonth(newDate.getMonth() + 1)
-    }
+    if (currentView === "day") { newDate.setDate(newDate.getDate() + 1) }
+    else if (currentView === "week") { newDate.setDate(newDate.getDate() + 7) }
+    else if (currentView === "month") { newDate.setMonth(newDate.getMonth() + 1) }
     setCurrentDate(newDate)
   }, [currentDate, currentView])
 
@@ -112,17 +75,11 @@ export function useCalendar(): CalendarHookResult {
     const day = date.getDay() // 0 = Sunday, 6 = Saturday
     const diff = date.getDate() - day
 
-    return Array(7)
-      .fill(0)
-      .map((_, i) => {
-        const d = new Date(date)
-        d.setDate(diff + i)
-        return {
-          date: d,
-          dayName: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(d).toUpperCase(),
-          dayNumber: d.getDate(),
-        }
-      })
+    return Array(7).fill(0).map((_, i) => {
+      const d = new Date(date)
+      d.setDate(diff + i)
+      return { date: d, dayNumber: d.getDate(), dayName: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(d).toUpperCase() }
+    })
   }, [currentDate])
 
   // Función para generar los días del mes para el mini calendario
@@ -134,10 +91,8 @@ export function useCalendar(): CalendarHookResult {
     const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
 
     return {
-      days: Array(daysInMonth + firstDayOfMonth)
-        .fill(null)
-        .map((_, i) => (i < firstDayOfMonth ? null : i - firstDayOfMonth + 1)),
       firstDayOffset: firstDayOfMonth,
+      days: Array(daysInMonth + firstDayOfMonth).fill(null).map((_, i) => (i < firstDayOfMonth ? null : i - firstDayOfMonth + 1)),
     }
   }, [currentDate])
 
@@ -149,7 +104,6 @@ export function useCalendar(): CalendarHookResult {
     const firstDayOfMonth = date.getDay() // 0 = Sunday, 6 = Saturday
     const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
     const prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate()
-
     const days = []
 
     // Días del mes anterior
@@ -204,7 +158,6 @@ export function useCalendar(): CalendarHookResult {
   const timeSlots = Array.from({ length: 9 }, (_, i) => i + 8) // 8 AM to 4 PM
 
   return {
-    // Estados
     selectedEvent,
     currentDate,
     currentView,
