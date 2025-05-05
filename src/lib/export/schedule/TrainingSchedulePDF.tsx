@@ -178,15 +178,15 @@ const TrainingTable = ({ areas = [], months = [] }: { areas: string[], months: s
 const FooterSection = ({ company }: { company: User }) => (
   <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
     {/* Sección izquierda - Firma e información del ingeniero */}
-    <View style={attendanceStyles.collaboratorSection}>
+    <View style={attendanceStyles.providerSection}>
       <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
       <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
 
       {/* Información del ingeniero */}
-      <Text style={attendanceStyles.collaboratorName}>{company?.username.toUpperCase()}</Text>
-      <Text style={attendanceStyles.collaboratorDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
-      <Text style={attendanceStyles.collaboratorDetail}>CC. {company?.nit} de Cúcuta</Text>
-      <Text style={attendanceStyles.collaboratorDetail}>REG. INVIMA: {company?.invima}</Text>
+      <Text style={attendanceStyles.providerName}>{company?.username.toUpperCase()}</Text>
+      <Text style={attendanceStyles.providerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
+      <Text style={attendanceStyles.providerDetail}>CC. {company?.nit} de Cúcuta</Text>
+      <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {company?.invima}</Text>
     </View>
 
     {/* Sección derecha - Logo de la empresa */}

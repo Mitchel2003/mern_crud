@@ -1,8 +1,8 @@
 import { CheckCircle, Clock, Play, Wrench, BookOpen, ClipboardList } from 'lucide-react'
 import { useFormatMutation } from '@/hooks/query/useFormatQuery'
 import { Activity } from '@/interfaces/context.interface'
+import { Event } from '@/interfaces/props.interface'
 import { useNavigate } from 'react-router-dom'
-import { Event } from '@/features/calendar/hooks/useCalendar'
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 

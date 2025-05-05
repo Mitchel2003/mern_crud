@@ -136,7 +136,7 @@ export const countryDefaultValues: CountryFormProps = { name: '' }
 export const stateDefaultValues: StateFormProps = { name: '', country: '' }
 export const cityDefaultValues: CityFormProps = { name: '', state: '' }
 export const headquarterDefaultValues: HeadquarterFormProps = { name: '', address: '', client: '', city: '', state: '', country: '' }
-export const officeDefaultValues: OfficeFormProps = { name: '', group: '', headquarter: '', services: [] }
+export const officeDefaultValues: OfficeFormProps = { name: '', headquarter: '', services: [] }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/

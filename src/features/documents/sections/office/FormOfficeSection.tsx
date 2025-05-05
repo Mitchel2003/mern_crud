@@ -2,16 +2,17 @@ import { groupCollection as groups } from "@/constants/values.constants"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useOfficeForm } from "@/hooks/core/form/useLocationForm"
 import { FormProvider } from "react-hook-form"
+import { HandHelpingIcon } from "lucide-react"
+import { CardContent } from "#/ui/card"
+import { useMemo } from "react"
 
+import InputSearchableField from "#/common/fields/InputSearchable"
 import SubmitFooter from "#/common/elements/SubmitFooter"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import AlertDialog from "#/common/elements/AlertDialog"
 import HeaderForm from "#/common/elements/HeaderForm"
 import SelectMulti from "#/common/fields/SelectMulti"
-import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
-import { HandHelpingIcon } from "lucide-react"
-import { CardContent } from "#/ui/card"
 
 interface FormOfficeSectionProps extends ThemeContextProps {
   id: string | undefined
@@ -20,9 +21,16 @@ interface FormOfficeSectionProps extends ThemeContextProps {
 
 const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
   const { open, methods, isLoading, options, setOpen, onConfirm, handleSubmit } = useOfficeForm(id, onChange)
-  const groupName = methods.watch('group')
+  /** Returns a list of services with the appropriate format */
+  const serviceOptions = useMemo(() =>
+    groups.flatMap(group => (
+      group.services.map(service => ({
+        label: `${service} - ${group.name}`,
+        value: `${service} - ${group.name}`,
+        icon: HandHelpingIcon,
+      }))
+    )), [groups])
 
-  const groupSelected = groups.find((group) => group.name === groupName)
   if (isLoading) return <Skeleton theme={theme} />
   return (
     <>
@@ -44,32 +52,23 @@ const FormOfficeSection = ({ id, theme, onChange }: FormOfficeSectionProps) => {
                 placeholder="Nombre del consultorio"
                 type="text"
               />
-              <SelectField
+              <InputSearchableField
                 label="Sede"
                 theme={theme}
                 name="headquarter"
-                span="Indica una sede referencia"
                 placeholder="Selecciona la sede"
+                span="Indica una sede o cliente referencia"
                 options={options.headquarter?.map((e) => ({ value: e._id, label: `${e.name} - ${e.address || ''} - ${e.client?.username || ''}` })) || []}
               />
             </div>
-            <SelectField
-              name="group"
-              theme={theme}
-              label="Grupos"
-              iconSpan="info"
-              span="Refiere al grupo al que pertenece este consultorio"
-              placeholder="Selecciona el grupo"
-              options={groups?.map((e) => ({ value: e.name, label: e.name })) || []}
-            />
             <SelectMulti
               theme={theme}
               name="services"
               iconSpan="warn"
               label="Servicios"
+              options={serviceOptions}
               placeholder="Selecciona los servicios"
               span="Selecciona varios servicios para este consultorio"
-              options={groupSelected?.services?.map((e) => ({ value: e, label: e, icon: HandHelpingIcon })) || []}
             />
           </CardContent>
           {/* -------------------- Submit footer -------------------- */}

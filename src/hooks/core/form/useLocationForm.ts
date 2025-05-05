@@ -1,6 +1,7 @@
 import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/constants/values.constants"
 import { City, Country, State, Headquarter, Office, User } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
+import { groupCollection as groups } from "@/constants/values.constants"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -35,15 +36,17 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
   useEffect(() => {
     office && methods.reset({
       name: office.name,
-      group: office.group || '',
-      services: office.services || [],
-      headquarter: office.headquarter?._id || ''
+      headquarter: office.headquarter?._id || '',
+      services: office.services.map(buildServices)
     })
   }, [office, methods.reset])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: OfficeFormProps) => {
-      id ? updateLocation({ id, data }) : createLocation(data)
+      const services = data.services.map((service) => service.split(' - ')[0])
+      const group = data.services[0].split(' - ')[1] //Obtain group of services
+      const dataFormat = { ...data, group, services } //Format data collection
+      id ? updateLocation({ id, data: dataFormat }) : createLocation(dataFormat)
       methods.reset()
     },
     onSuccess
@@ -235,3 +238,13 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * This function transforms the services of the office for the update form.
+ * Remember that field services is an array of strings, and we need to show them in the format "servicio - grupo"
+ */
+const buildServices = (service: string): string => {
+  const groupFound = groups.find(group => group.services.includes(service))
+  return groupFound ? `${service} - ${groupFound.name}` : service
+}
