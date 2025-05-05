@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/ui/card'
-import { RecentSales } from '@/components/common/reusables/RecentSales'
-import { Overview } from '@/components/common/reusables/Overview'
+import { RecentSales } from '@/features/dashboard/components/RecentSales'
+import { Overview } from '@/features/dashboard/components/Overview'
 
 export function OverviewSection() {
   return (

@@ -1,5 +1,5 @@
 import { FileText, Calendar, FileSpreadsheet, ShoppingBag } from 'lucide-react'
-import CarouselInfo from '#/common/reusables/CarouselInfo'
+import CarouselInfo from '@/features/home/components/CarouselInfo'
 import { useThemeContext } from '@/context/ThemeContext'
 import { useAuthContext } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom'

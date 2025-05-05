@@ -41,28 +41,6 @@ const CardIterable = ({
 
   return (
     <FormItem className="space-y-4">
-      {/* Button add card */}
-      {items.length < limit && (
-        <Button
-          size="sm"
-          type="button"
-          variant="outline"
-          onClick={handleAppend}
-          className={cn(
-            'flex w-full text-sm h-[5vh]',
-            theme === 'dark'
-              ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
-              : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
-          )}
-        >
-          {titleButton}
-          <PlusCircle className={cn(
-            'ml-2 h-4 w-4',
-            theme === 'dark' ? 'text-gray-300' : 'text-zinc-600'
-          )} />
-        </Button>
-      )}
-
       {/* Cards */}
       {items.map((item, index) => (
         <Card
@@ -127,6 +105,28 @@ const CardIterable = ({
           </CardContent>
         </Card>
       ))}
+
+      {/* Button add card */}
+      {items.length < limit && (
+        <Button
+          size="sm"
+          type="button"
+          variant="outline"
+          onClick={handleAppend}
+          className={cn(
+            'flex w-full text-sm h-[5vh]',
+            theme === 'dark'
+              ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+              : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
+          )}
+        >
+          {titleButton}
+          <PlusCircle className={cn(
+            'ml-2 h-4 w-4',
+            theme === 'dark' ? 'text-gray-300' : 'text-zinc-600'
+          )} />
+        </Button>
+      )}
     </FormItem>
   )
 }
