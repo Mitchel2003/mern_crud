@@ -125,7 +125,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
           }))
         })
       ) : (
-        createUser(data).then(async (e: User) => {
+        createUser(data).then(async (e: User) => { //Only company and admins can do.
           if (!clientImg && !companySignature && !companyLogo) return
           const files = [ //files to upload with those references
             { file: companySignature, base: 'company', ref: 'signature' },
@@ -138,7 +138,11 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
             const path = `${base}/${e._id}/preview/${ref}`
             const photoUrl = await createFile({ file, path })
             await updateUser({ id: e._id, data: { metadata: { [ref]: photoUrl } } })
-          }))
+          })) //allow permissions to above created user (client)
+          if (to === 'client' && credentials?.role === 'company') {
+            const permissions = [...(credentials?.permissions || []), e._id]
+            await updateUser({ id: credentials._id, data: { permissions } })
+          }
         })
       )
       methods.reset()

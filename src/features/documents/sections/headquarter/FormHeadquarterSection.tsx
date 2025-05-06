@@ -37,7 +37,7 @@ const FormHeadquarterSection = ({ id, theme, onChange }: FormHeadquarterSectionP
             description={id ? "Actualiza los datos de la sede" : "Diligencia la información para registrar una sede"}
           />
           {/* -------------------- Content form -------------------- */}
-          <CardContent className="py-6 space-y-6">
+          <CardContent className="py-6 space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <InputField
                 theme={theme}

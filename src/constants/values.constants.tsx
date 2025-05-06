@@ -236,6 +236,17 @@ export const groupCollection: ServiceGroup[] = [{
     'Consulta odontologica general',
     'Consulta odontologica especializada',
     'Consulta externa especialidades medicas',
+    'Medicinas alternativas'
+  ]
+}, {
+  name: 'Atención inmediata',
+  services: [
+    'Urgencias baja complejidad',
+    'Urgencias mediana complejidad',
+    'Urgencias alta complejidad',
+    'atención prehospitalaria',
+    'transporte asistencial',
+    'atención del parto'
   ]
 }, {
   name: 'Apoyo diagnostico y complementación terapéutica',
@@ -244,12 +255,40 @@ export const groupCollection: ServiceGroup[] = [{
     'Electrodiagnostico',
     'Laboratorio clínico',
     'Toma de muestras de laboratorio clínico',
+    'Servicio farmacéutico baja complejidad',
+    'Servicio farmacéutico mediana complejidad',
+    'Servicio farmacéutico alta complejidad',
+    'Toma e interpretación de radiografías odontológicas',
+    'Radiología e imágenes diagnósticas baja complejidad',
+    'Radiología e imágenes diagnósticas mediana complejidad',
+    'Radiología e imágenes diagnósticas alta complejidad',
+    'Ultrasonido',
+    'Quimioterapia',
+    'Medicina nuclear',
+    'Transfusión sanguínea',
+    'Diagnóstico cardiovascular',
+    'Laboratorio clínico baja complejidad',
+    'Laboratorio clínico mediana complejidad',
+    'Laboratorio clínico alta complejidad',
+    'Toma de muestras de cuello uterino y ginecológicas',
+    'Laboratorio de citologías cervico-uterinas',
+    'Laboratorio de función pulmonar',
+    'Laboratorio de histotecnología',
+    'Laboratorio de patología',
+    'Terapias alternativas',
+    'Endoscopia Digestiva',
+    'Diálisis peritoneal',
+    'Hemodiálisis',
+    'Vacunación',
+    'Neumología',
+    'Hemodinamia'
   ]
 }, {
   name: 'Urgencias',
   services: [
     'Urgencias de baja complejidad',
-    'Urgencias de mediana y alta complejidad'
+    'Urgencias de mediana complejidad',
+    'Urgencias de alta complejidad',
   ]
 }, {
   name: 'Transporte asistencial',
@@ -260,7 +299,9 @@ export const groupCollection: ServiceGroup[] = [{
 }, {
   name: 'Quirúrgicos',
   services: [
-    'Cirugía baja, mediana y alta complejidad',
+    'Cirugía baja complejidad',
+    'Cirugía mediana complejidad',
+    'Cirugía alta complejidad',
     'Cirugía ambulatoria',
     'Trasplante de órganos',
     'Trasplante de tejidos',
@@ -272,19 +313,24 @@ export const groupCollection: ServiceGroup[] = [{
     'Hospitalización baja complejidad',
     'Hospitalización mediana complejidad',
     'Hospitalización alta complejidad',
-    'Hospitalización obstétrica baja, mediana y alta complejidad',
-    'hospitalización paciente crónico',
-    'cuidado básico neonatal',
+    'Hospitalización paciente crónico',
+    'Hospitalización obstétrica baja complejidad',
+    'Hospitalización obstétrica mediana complejidad',
+    'Hospitalización obstétrica alta complejidad',
+    'Hospitalización en unidad de salud mental',
     'Unidad de quemados adultos y/o pediátricos',
-    'cuidado intermedio neonatal',
-    'cuidado intensivo neonatal',
-    'cuidado intermedio pediátrico',
-    'cuidado intensivo pediátrico',
-    'cuidado intermedio adulto',
-    'cuidado intensivo adultos',
-    'hospitalización en salud mental',
-    'hospitalización parcial',
-    'cuidado básico del consumo de sustancias psicoactivas'
+    'Cuidado básico del consumo de sustancias psicoactivas',
+    'Cuidado básico neonatal',
+    'Cuidado intermedio neonatal',
+    'Cuidado intensivo neonatal',
+    'Cuidado intermedio pediátrico',
+    'Cuidado intensivo pediátrico',
+    'Cuidado intermedio adultos',
+    'Cuidado intensivo adultos',
+    'Hospitalización parcial',
+    'Internación parcial en hospital',
+    'Atención institucional de paciente crónico',
+    'Internación Hospitalaria e Internación Parcial para la atención al consumidor de Sustancias Psicoactivas'
   ]
 }]
 /*---------------------------------------------------------------------------------------------------------*/

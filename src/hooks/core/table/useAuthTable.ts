@@ -24,7 +24,9 @@ export const useUserTable = (to: RoleProps) => {
     isProcessing.current = true
     const credential = `${user._id}-${user.uid}`
     await _delete({ id: credential }).then(async () => {
-      const files = user.role === 'client' ? [{ path: 'client', ref: 'img' }] : [{ path: 'company', ref: 'logo' }, { path: 'company', ref: 'signature' }]
+      const files = user.role === 'company'
+        ? [{ path: 'company', ref: 'logo' }, { path: 'company', ref: 'signature' }]
+        : (user.role === 'client' ? [{ path: 'client', ref: 'logo' }] : []) //empty to collaborators and admin (without photo)
       await Promise.all(files.map(async ({ path, ref }) => await deleteFile({ path: `${path}/${user._id}/preview/${ref}` })))
     }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
   }, [_delete, deleteFile])
