@@ -165,6 +165,13 @@ export const clientFlowSchema = z.object({
         .string({ required_error: "El nombre es requerido" })
         .min(3, "El nombre debe tener al menos 3 caracteres")
         .max(50, "El nombre debe tener menos de 50 caracteres")
+    }).superRefine((data, ctx) => {
+      const groups = data.services.map((service) => service.split(' - ')[1])
+      if (groups.length > 1 && new Set(groups).size > 1) ctx.addIssue({
+        message: "Debes seleccionar servicios del mismo grupo",
+        code: z.ZodIssueCode.custom,
+        path: ['services']
+      })
     })
   )
 })

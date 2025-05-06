@@ -196,30 +196,6 @@ export const defaultWarranty = [
   { label: "6 meses", value: "6 meses" },
   { label: "1 año", value: "12 meses" }
 ]
-export interface ServiceGroup { name: string, services: string[] }
-export const groupCollection: ServiceGroup[] = [{
-  name: 'Consulta externa',
-  services: [
-    'Consulta externa general',
-    'Consulta odontologica general',
-    'Consulta odontologica especializada',
-    'Consulta externa especialidades medicas',
-  ]
-}, {
-  name: 'Apoyo diagnostico y complementación terapéutica',
-  services: [
-    'Radioterapia',
-    'Electrodiagnostico',
-    'Laboratorio clínico',
-    'Toma de muestras de laboratorio clínico',
-  ]
-}, {
-  name: 'Urgencias',
-  services: [
-    'Urgencias de baja complejidad',
-    'Urgencias de mediana y alta complejidad'
-  ]
-}]
 //biomedics
 export const riskCollection: Curriculum['riskClassification'][] = [
   'I', 'IIA', 'IIB', 'III'
@@ -252,6 +228,65 @@ export const manualsMaintenanceCollection: Curriculum['manualsMaintenance'] = [
 export const typeSchedule: Schedule['type'][] = [
   'capacitación', 'mantenimiento', 'acta de asistencia'
 ]
+export interface ServiceGroup { name: string, services: string[] }
+export const groupCollection: ServiceGroup[] = [{
+  name: 'Consulta externa',
+  services: [
+    'Consulta externa general',
+    'Consulta odontologica general',
+    'Consulta odontologica especializada',
+    'Consulta externa especialidades medicas',
+  ]
+}, {
+  name: 'Apoyo diagnostico y complementación terapéutica',
+  services: [
+    'Radioterapia',
+    'Electrodiagnostico',
+    'Laboratorio clínico',
+    'Toma de muestras de laboratorio clínico',
+  ]
+}, {
+  name: 'Urgencias',
+  services: [
+    'Urgencias de baja complejidad',
+    'Urgencias de mediana y alta complejidad'
+  ]
+}, {
+  name: 'Transporte asistencial',
+  services: [
+    'Transporte asistencial básico',
+    'Transporte asistencial medicalizado'
+  ]
+}, {
+  name: 'Quirúrgicos',
+  services: [
+    'Cirugía baja, mediana y alta complejidad',
+    'Cirugía ambulatoria',
+    'Trasplante de órganos',
+    'Trasplante de tejidos',
+    'Trasplante de progenitores hematopoyéticos'
+  ]
+}, {
+  name: 'Internación',
+  services: [
+    'Hospitalización baja complejidad',
+    'Hospitalización mediana complejidad',
+    'Hospitalización alta complejidad',
+    'Hospitalización obstétrica baja, mediana y alta complejidad',
+    'hospitalización paciente crónico',
+    'cuidado básico neonatal',
+    'Unidad de quemados adultos y/o pediátricos',
+    'cuidado intermedio neonatal',
+    'cuidado intensivo neonatal',
+    'cuidado intermedio pediátrico',
+    'cuidado intensivo pediátrico',
+    'cuidado intermedio adulto',
+    'cuidado intensivo adultos',
+    'hospitalización en salud mental',
+    'hospitalización parcial',
+    'cuidado básico del consumo de sustancias psicoactivas'
+  ]
+}]
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default table values--------------------------------------------------*/

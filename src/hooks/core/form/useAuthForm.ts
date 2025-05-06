@@ -167,8 +167,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const [currentStep, setCurrentStep] = useState<'client' | 'headquarter' | 'office'>('client')
   const { createLocation: createHeadquarter } = useLocationMutation('headquarter')
   const { createLocation: createOffice } = useLocationMutation('office')
+  const { create: createUser, update: updateUser } = useAuthContext()
   const { createFile } = useFormatMutation("file")
-  const { create: createUser } = useAuthContext()
 
   const { data: cities, isLoading: isLoadingCities } = useQueryLocation().fetchAllLocations<City>('city')
 
@@ -184,6 +184,10 @@ export const useClientFlow = (onSuccess?: () => void) => {
       const user: User = await createUser(credentials)
       const file = data.client.photoUrl?.[0]?.file
       const path = `client/${user._id}/preview/img`
+      if (file instanceof File) { //save image reference (storage)
+        const photoUrl: string = await createFile({ file, path })
+        await updateUser(user._id, { metadata: { logo: photoUrl } })
+      } //create locations and references (headquarter and offices)
       await Promise.all(//complements in parallel
         data.headquarter.map(async (hq: any) => {
           const headquarter = await createHeadquarter({ ...hq, client: user._id })
@@ -191,17 +195,18 @@ export const useClientFlow = (onSuccess?: () => void) => {
           if (!offices.length) return
           //create offices associated to headquarter
           await Promise.all(offices.map(async (office) => {
-            const serviceGroup = groups?.find(group => group.services.includes(office.services[0]))
+            //remember that value of services is ['service1 - group', 'service2 - group', ...]
+            const service = office.services[0].split(' - ')[0] //['service - group'] -> 'service'
+            const group = groups?.find(group => group.services.includes(service))
             await createOffice({
               name: office.name,
               services: office.services,
+              group: group?.name ?? 'N/R',
               headquarter: headquarter._id,
-              group: serviceGroup?.name ?? 'N/R'
             })
           }))
         })
-      ) //save image reference (storage)
-      file && await createFile({ file, path })
+      )
       methods.reset()
     },
     onSuccess

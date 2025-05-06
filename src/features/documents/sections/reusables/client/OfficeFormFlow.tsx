@@ -18,12 +18,19 @@ const OfficeForm = ({ theme, getValues }: OfficeFormProps) => {
 
   /** Returns a list of headquarter with the appropriate format */
   const headquarterOptions = useMemo(() => (
-    headquarter.some((e: Headquarter) => e.name) ? headquarter.map((e: Headquarter) => ({ label: `${e.name} - ${e.address}`, value: `${e.name}-${e.address}` })) : []
+    headquarter.some((e: Headquarter) => e.name) ? headquarter.map((e: Headquarter) => ({
+      label: `${e.name} - ${e.address}`,
+      value: `${e.name}-${e.address}`
+    })) : []
   ), [headquarter])
 
   /** Returns a list of services with the appropriate format */
   const serviceOptions = useMemo(() => (
-    groups?.flatMap(group => group.services.map(service => ({ label: `${service} - ${group.name}`, icon: HandHelpingIcon, value: service }))) || []
+    groups?.flatMap(group => group.services.map(service => ({
+      label: `${service} - ${group.name}`,
+      value: `${service} - ${group.name}`,
+      icon: HandHelpingIcon
+    }))) || []
   ), [groups])
 
   return (
@@ -56,8 +63,8 @@ const OfficeForm = ({ theme, getValues }: OfficeFormProps) => {
               name="services"
               label="Servicios"
               options={serviceOptions}
+              span="Puedes seleccionar varios"
               placeholder="Selecciona los servicios"
-              span="Selecciona varios servicios para este consultorio"
             />
           },
           {

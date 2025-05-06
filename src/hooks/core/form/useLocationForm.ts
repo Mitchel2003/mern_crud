@@ -43,6 +43,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: OfficeFormProps) => {
+      //remember that value of services is ['service1 - group', 'service2 - group', ...]
       const services = data.services.map((service) => service.split(' - ')[0])
       const group = data.services[0].split(' - ')[1] //Obtain group of services
       const dataFormat = { ...data, group, services } //Format data collection
