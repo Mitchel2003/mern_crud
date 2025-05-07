@@ -1,7 +1,7 @@
 import { Headquarter, Office, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { groupCollection as groups } from "@/constants/values.constants"
+import InputSearchableField from "#/common/fields/InputSearchable"
 import HeaderCustom from "#/common/elements/HeaderCustom"
-import SelectField from "#/common/fields/Select"
 import { useFormContext } from "react-hook-form"
 
 interface LocationSectionProps extends ThemeContextProps {
@@ -36,33 +36,33 @@ const LocationSection = ({ id, theme, options }: LocationSectionProps) => {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
 
         {/* -------------------- Selects -------------------- */}
-        <SelectField
+        <InputSearchableField
           label="Cliente"
           theme={theme}
           name="client"
-          options={options.clients?.map((c) => ({ label: c.username, value: c._id })) || []}
           placeholder="Seleccionar cliente"
+          options={options.clients?.map((c) => ({ label: c.username, value: c._id })) || []}
         />
-        <SelectField
+        <InputSearchableField
           label="Sede"
           theme={theme}
           name="headquarter"
-          options={headquarters?.map((h) => ({ label: `${h.name} - ${h.address}`, value: h._id })) || []}
           placeholder="Seleccionar sede"
+          options={headquarters?.map((h) => ({ label: `${h.name} - ${h.address}`, value: h._id })) || []}
         />
-        <SelectField
+        <InputSearchableField
           theme={theme}
           name="office"
           label="Consultorio"
-          options={offices?.map((o) => ({ label: o.name, value: o._id })) || []}
           placeholder="Seleccionar consultorio"
+          options={offices?.map((o) => ({ label: o.name, value: o._id })) || []}
         />
-        <SelectField
+        <InputSearchableField
           theme={theme}
           name="service"
           label="Servicio"
-          options={services?.map((s) => ({ label: s, value: s })) || []}
           placeholder="Seleccionar servicio"
+          options={services?.map((s) => ({ label: s, value: s })) || []}
         />
       </div>
     </div>

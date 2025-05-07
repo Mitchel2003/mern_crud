@@ -1,8 +1,8 @@
+import InputSearchableField from "#/common/fields/InputSearchable"
 import HeaderCustom from "#/common/elements/HeaderCustom"
 import CardIterable from "#/common/fields/CardIterable"
 import AlertDialog from "#/common/elements/AlertDialog"
 import CheckboxField from "#/common/fields/Checkbox"
-import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
 
 import { useDialogConfirmContext as useDialogConfirm } from '@/context/DialogConfirmContext'
@@ -32,7 +32,7 @@ const PresetInspectionSection = ({ theme, options }: PresetInspectionProps) => {
         />
 
         <div className="grid grid-cols-1 gap-4">
-          <SelectField
+          <InputSearchableField
             theme={theme}
             name="inspection"
             options={options.inspections}
