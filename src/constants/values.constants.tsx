@@ -232,11 +232,12 @@ export interface ServiceGroup { name: string, services: string[] }
 export const groupCollection: ServiceGroup[] = [{
   name: 'Consulta externa',
   services: [
+    'Pediatría',
+    'Medicinas alternativas',
     'Consulta externa general',
     'Consulta odontologica general',
     'Consulta odontologica especializada',
     'Consulta externa especialidades medicas',
-    'Medicinas alternativas'
   ]
 }, {
   name: 'Atención inmediata',
