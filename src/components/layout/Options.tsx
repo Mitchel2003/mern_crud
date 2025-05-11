@@ -13,7 +13,7 @@ const OptionsMenu = ({ }: ThemeContextProps) => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src='' alt={user.username} />
+            <AvatarImage className="object-cover" src={user.metadata?.logo || '/placeholder.svg'} alt={user.username} />
             <AvatarFallback className="bg-muted-foreground font-medium text-background">
               {user.username.charAt(0).toUpperCase() + user.username.charAt(1).toUpperCase()}
             </AvatarFallback>

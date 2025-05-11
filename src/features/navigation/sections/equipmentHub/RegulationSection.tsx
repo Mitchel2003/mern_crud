@@ -2,16 +2,16 @@ import { ThemeContextProps } from "@/interfaces/context.interface"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-export interface InfoCardProps extends ThemeContextProps {
+export interface RegulationSectionProps extends ThemeContextProps {
   setOpen: (open: string | undefined) => void
 }
 
-const InfoCard = ({ theme, setOpen }: InfoCardProps) => (
+const RegulationSection = ({ theme, setOpen }: RegulationSectionProps) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ delay: 0.8, duration: 0.5 }}
-    className={cn("rounded-xl p-6 mb-8", theme === "dark"
+    className={cn("rounded-xl p-6", theme === "dark"
       ? "bg-gradient-to-r from-blue-900/50 to-indigo-900/50 border border-blue-800/50"
       : "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100",
     )}
@@ -92,4 +92,4 @@ const InfoCard = ({ theme, setOpen }: InfoCardProps) => (
   </motion.div>
 )
 
-export default InfoCard
+export default RegulationSection

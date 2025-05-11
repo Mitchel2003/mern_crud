@@ -44,7 +44,8 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   useEffect(() => { //This effect runs once time
     initializeAuth() //Initialize handler authentication
     unsubscribe.current = subscribeAuthChanges((firebaseUser) => {
-      if (firebaseUser) { getUser(firebaseUser.uid) }
+      const lastSignInTime = firebaseUser?.metadata?.lastSignInTime
+      if (firebaseUser) { getUser(firebaseUser.uid, lastSignInTime) }
       else { setAuthStatus(); setLoading(false) }
     }) //Add listeners events (token-expired, token-expiring)
     window.addEventListener('token-expired', handleTokenExpired)
@@ -82,7 +83,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    */
   const logout = async (): Promise<void> => {
     return handler('Cerrando sesión...', async () => {
-      try { await logoutFB().then(() => notifyInfo(txt('logout'))).finally(() => setAuthStatus()) }
+      try { await logoutFB().finally(() => setAuthStatus()) }
       catch (e) { notifyError(txt('logout', e)); setAuthStatus() }
     })
   }
@@ -200,9 +201,9 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * Actualiza el estado de autenticación basado en la respuesta del servidor.
    * @param {AxiosResponse | undefined} res - La respuesta del servidor.
    */
-  const setAuthStatus = (res?: AxiosResponse) => {
-    if (!res?.data) localStorage.removeItem('uid')
-    setUser(res?.data || undefined)
+  const setAuthStatus = (res?: AxiosResponse, config?: any) => {
+    if (!res?.data) localStorage.removeItem('uid') //remove local uid
+    setUser(res?.data ? { ...res.data, ...config } : undefined)
     setIsAuth(Boolean(res?.data))
   }
   /**
@@ -223,12 +224,13 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
   /**
    * Obtiene los datos del usuario desde la base de datos
    * @param {string} uid - ID del usuario en Firebase
+   * @param {string} lastSignInTime - Fecha de la última sesión del usuario
    */
-  const getUser = async (uid: string) => {
+  const getUser = async (uid: string, lastSignInTime?: string) => {
     try {
       const res = await useApi('user').getById(uid)
       res?.data && localStorage.setItem('uid', uid)
-      setAuthStatus(res) //set local and context status
+      setAuthStatus(res, { lastSignInTime }) //set local status
     } catch (e) { notifyError(txt('getUserById', e)); setAuthStatus() }
     finally { setLoading(false) }
   }

@@ -4,12 +4,14 @@ import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
+import { useAuthContext } from "@/context/AuthContext"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { Card, CardContent } from "#/ui/card"
 import { useParams } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 const PreviewCurriculumSection = () => {
+  const { isAuth } = useAuthContext()
   const { theme } = useThemeContext()
   const { id = '' } = useParams()
   const isMobile = useIsMobile()
@@ -21,13 +23,13 @@ const PreviewCurriculumSection = () => {
   /** basic data equipment, references company and client */
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id)
   const { data: com, isLoading: isLoadingCom } = queryUser.fetchUserByQuery<User>({ role: 'company' })
-  const { data: mt, isLoading: isLoadingMt } = queryFormat.fetchFormatByQuery<Maintenance>('maintenance', { curriculum: id })
+  const { data: mt, isLoading: isLoadingMt } = queryFormat.fetchFormatByQuery<Maintenance>('maintenance', { curriculum: id, enabled: !!id && isAuth })
+  const company = com?.filter((c) => !c?.belongsTo)[0] as User
   const client = cv?.office?.headquarter?.client
-  const company = com?.[0] as User
 
   /** complementaries curriculum */
-  const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string, { enabled: !!cv })
-  const { data: acc, isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
+  const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string, { enabled: !!cv && isAuth })
+  const { data: acc, isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id && isAuth })
   const isLoadingData = isLoadingCv || isLoadingMt || isLoadingAcc || isLoadingIns || isLoadingCom
   if (isLoadingData) return <Skeleton theme={theme} />
   return (
@@ -43,16 +45,16 @@ const PreviewCurriculumSection = () => {
               {/*** Info of client ***/}
               <Section.Client theme={theme} cv={cv} client={client} />
               {/*** Basic data, class biomedical and accessories associated ***/}
-              <Section.Equipment theme={theme} cv={cv} accs={acc} />
+              <Section.Equipment theme={theme} cv={cv} accs={acc} auth={isAuth} />
               {/*** Details associated and stakeholders ***/}
               <Section.Details theme={theme} cv={cv} />
               {/*** Info of maintenance, inspection and specifications ***/}
-              <Section.Maintenance theme={theme} cv={cv} ins={ins} />
+              <Section.Maintenance theme={theme} cv={cv} ins={ins} auth={isAuth} />
               {/*** Characteristics and provider service information ***/}
               <Section.Footer theme={theme} cv={cv} com={company} />
             </CardContent>
           </Card>
-          {mt && <Section.MaintenanceHistory theme={theme} mt={mt} company={company} />}
+          {isAuth && mt && <Section.MaintenanceHistory theme={theme} mt={mt} company={company} />}
         </>
       )}
     </div>

@@ -10,7 +10,7 @@ import LoginPage from '@/features/home/pages/LoginPage'
 import HomePage from '@/features/home/pages/HomePage'
 
 // Importaciones de pages navigation
-import DocumentsHub from '@/features/navigation/pages/DocumentsHub'
+import EquipmentHub from '@/features/navigation/pages/EquipmentHub'
 
 // Importaciones de pages calendar
 import CalendarPage from '@/features/calendar/pages/CalendarPage'
@@ -35,7 +35,7 @@ import Pages from "@/features/documents/pages/Docs"
 const DocumentPages = { ...Pages } as const
 const TriggerPages = { ScannerPage } as const
 const CalendarPages = { CalendarPage } as const
-const NavigationPages = { DocumentsHub } as const
+const NavigationPages = { EquipmentHub } as const
 const HomePages = { HomePage, LoginPage, RegisterPage } as const
 const DashboardPages = { DashboardPage, AdminDashboardPage, ClientDashboardPage, CollaboratorDashboardPage } as const
 

@@ -16,9 +16,10 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 export interface MaintenancePreviewCVProps extends ThemeContextProps {
   ins?: Inspection
   cv: Curriculum
+  auth?: boolean
 }
 
-const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => {
+const MaintenancePreviewCV = ({ cv, ins, auth, theme }: MaintenancePreviewCVProps) => {
   const fileNames = extractMetadataUrl(cv?.metadata?.files || [])
   const maintenanceDays = getMaintenanceDays(cv)
   const circleValue = calculateCircleValue(cv)
@@ -207,8 +208,8 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
       </div>
 
       {/* Inspecciones */}
-      <div className="mt-6">
-        <Card className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-purple-50')}>
+      {auth && (
+        <Card className={cn("mt-6", theme === 'dark' ? 'bg-zinc-800' : 'bg-purple-50')}>
           <CardHeader className="border-b border-purple-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -307,7 +308,7 @@ const MaintenancePreviewCV = ({ cv, ins, theme }: MaintenancePreviewCVProps) => 
             </div>
           </CardContent>
         </Card>
-      </div>
+      )}
 
       {/* Especificaciones Técnicas */}
       <div className="mt-6">

@@ -49,8 +49,8 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   const clientId = methods.watch('client')
   const typeSchedule = methods.watch('typeSchedule')
   const { data: client } = useQueryUser().fetchUserById<User>(clientId, { enabled: !!clientId })
-  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client', enabled: !!user }) //get clients to show in select
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', permissions: [client?._id], enabled: !!client })
+  const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client', enabled: !!user })
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', some: {}, enabled: !!client })
   const company = companies?.[0]
 
   /*--------------------------------------------------complements--------------------------------------------------*/
@@ -101,7 +101,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   return {
     methods,
     ...handleSubmit,
-    clients: clients?.filter((e) => user?.permissions?.includes(e._id)).map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || [],
+    clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}` })) || [],
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/

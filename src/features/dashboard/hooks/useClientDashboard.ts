@@ -1,7 +1,6 @@
 import { Curriculum, Maintenance, Solicit } from '@/interfaces/context.interface'
 import { ClientDashboardProps } from '@/interfaces/props.interface'
 import { useQueryFormat } from '@/hooks/query/useFormatQuery'
-import { useAuthContext } from '@/context/AuthContext'
 import { useEffect, useState } from 'react'
 
 /**
@@ -11,7 +10,6 @@ import { useEffect, useState } from 'react'
 export const useClientDashboard = () => {
   const [data, setData] = useState<ClientDashboardProps>(valueDefault)
   const queryFormat = useQueryFormat()
-  const { user } = useAuthContext()
 
   // Obtener datos del backend
   const { data: solicits = [], isLoading: isLoadingSolicits } = queryFormat.fetchAllFormats<Solicit>('solicit')
@@ -19,10 +17,9 @@ export const useClientDashboard = () => {
   const { data: cvs = [], isLoading: isLoadingCvs } = queryFormat.fetchAllFormats<Curriculum>('cv')
   const loading = isLoadingCvs || isLoadingMts || isLoadingSolicits
 
-  // Procesar datos cuando cambian las dependencias
   useEffect(() => {
-    if (user && !loading) { processData() }
-  }, [user, cvs, mts, solicits])
+    if (!loading) { processData() }
+  }, [cvs, mts, solicits])
 
   /** Procesa los datos obtenidos del backend y actualiza el estado */
   const processData = () => {

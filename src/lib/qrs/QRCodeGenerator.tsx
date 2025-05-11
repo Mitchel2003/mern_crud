@@ -19,7 +19,7 @@ export const generatePDF = async (rows: any[]) => {
 
   // Generate all QR codes in parallel
   const qrPromises = rows.map(async row => {
-    const url = `${config.frontendUrl}/form/solicit/${row._id}`
+    const url = `${config.frontendUrl}/equipment/${row._id}`
     return QRCode.toDataURL(url, { width: 150 }).then(qrCode => ({ name: row.name, qrCode }))
   })
 

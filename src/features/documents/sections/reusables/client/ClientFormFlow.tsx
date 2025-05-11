@@ -27,7 +27,7 @@ const ClientForm = ({ theme }: ThemeContextProps) => {
             placeholder="Password del cliente"
           />
         </div>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           <InputField
             theme={theme}
             label="Nombre"
@@ -40,28 +40,35 @@ const ClientForm = ({ theme }: ThemeContextProps) => {
             name="client.phone"
             placeholder="Teléfono del cliente"
           />
-        </div>
-        <div className="grid gap-5 md:grid-cols-2">
           <InputField
-            label="NIT"
             theme={theme}
-            name="client.nit"
-            placeholder="NIT del cliente"
-          />
-          <InputField
-            readOnly
-            label="Rol"
-            theme={theme}
-            value="client"
-            name="client.role"
-            placeholder={`Selecciona el rol`}
+            label="Cargo"
+            name="client.position"
+            placeholder="Cargo del cliente"
           />
         </div>
+        <InputField
+          label="NIT"
+          theme={theme}
+          name="client.nit"
+          placeholder="NIT del cliente"
+        />
         <CardIterable
           theme={theme}
           name="client.photoUrl"
           titleButton="Agregar imagen"
           fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
+        />
+
+        {/** Section role (hidden field) */}
+        <InputField
+          hidden
+          readOnly
+          label="Rol"
+          theme={theme}
+          value="client"
+          name="client.role"
+          placeholder={`Selecciona el rol`}
         />
       </div>
     </FormWrapper>

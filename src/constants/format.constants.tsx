@@ -176,7 +176,7 @@ export const getInspectionTags = (inspection: string) => {
 export const convertRole = (str: RoleProps) => {
   switch (str) {
     case "client": return "cliente"
-    case "company": return "proveedor de servicios"
+    case "company": return "prestador de servicio"
     case "collaborator": return "colaborador"
     case "admin": return "administrador"
     default: return str

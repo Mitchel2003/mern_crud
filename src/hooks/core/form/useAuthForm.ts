@@ -1,4 +1,4 @@
-import { userDefaultValues, clientFlowDefaultValues, groupCollection as groups } from "@/constants/values.constants"
+import { userDefaultValues, clientFlowDefaultValues } from "@/constants/values.constants"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useQueryUser, useUserMutation } from "@/hooks/query/useAuthQuery"
 import { City, RoleProps, User } from "@/interfaces/context.interface"
@@ -7,14 +7,13 @@ import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { useAuthContext } from "@/context/AuthContext"
+import { useEffect, useMemo, useState } from "react"
 import { UserRoundCheck } from "lucide-react"
-import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import {
-  userSchema, UserFormProps,
   loginSchema, LoginFormProps,
   signatureSchema, SignatureProps,
-  clientFlowSchema, ClientFlowProps,
+  authSchema, UserFormProps, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
 
@@ -66,15 +65,37 @@ export const useForgotPasswordForm = () => {
  * @param id - ID del usuario a actualizar, si no se proporciona, la request corresponde a crear
  * @param to - Contexto del formulario usuario, actualmente manejados: admin, company, client, collaborator
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ * 
+ * @description fetch logic implemented to get sub-companies:
+ * we need to get sub-companies; but the challenge is to get from user logged in
+ * 
+ * @example
+ * in the first case:
+ * when we're creating a collaborator, but im are a company (main)
+ * so, the subcompanies are all companies that have belongsTo = company._id
+ * 
+ * in the second case:
+ * when we're creating a collaborator, but im are a company (sub)
+ * so, the subcompanies are all companies that have belongsTo = company.belongsTo
  */
 export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void) => {
   const { createFile, deleteFile } = useFormatMutation('file')
   const { createUser, updateUser } = useUserMutation()
   const { user: credentials } = useAuthContext()
+  const { userSchema } = authSchema(credentials)
   const queryUser = useQueryUser()
 
+  /** "to" is the role of the user to be created and "credentials" is the user logged in */
+  const canAccess = (credentials?.role === 'company' || credentials?.role === 'admin')
+  const allow = (to === 'company' || to === 'collaborator') && canAccess
+
   const { data: user } = queryUser.fetchUserById<User>(id as string, { enabled: !!id })
-  const { data: clients } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: to === 'company' || to === 'collaborator' })
+  const { data: clients = [] } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: allow })
+  const { data: companies = [] } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: allow })
+
+  const companyFormat = useMemo(() => { //to form company (filter main-providers)
+    return companies.filter((e) => to === 'company' ? !e.belongsTo : e.belongsTo)
+  }, [companies, id])
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),
@@ -87,6 +108,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
       isUpdate: !!id,
       //user credentials
       username: user.username,
+      position: user.position,
       phone: user.phone,
       nit: user.nit || '',
       invima: user.invima || '',
@@ -94,7 +116,10 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
       //user access
       role: user.role,
       permissions: user.permissions || [],
-      //add previews...
+      //handle reference (company and collaborators)
+      belongsTo: user.belongsTo?._id || undefined,
+      classification: user.classification || [],
+      //add previews (metadata client - company)
       previewClientImage: user.metadata?.logo,
       previewCompanyLogo: user.metadata?.logo,
       previewCompanySignature: user.metadata?.signature,
@@ -154,9 +179,8 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
     methods,
     ...handleSubmit,
     options: {
-      clients: credentials?.role !== 'company'
-        ? clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
-        : clients?.filter((e) => credentials?.permissions?.includes(e._id)).map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
+      companies: [...(companyFormat)].map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}` })) || [],
+      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
     }
   }
 }
@@ -173,6 +197,8 @@ export const useClientFlow = (onSuccess?: () => void) => {
   const { createLocation: createOffice } = useLocationMutation('office')
   const { create: createUser, update: updateUser } = useAuthContext()
   const { createFile } = useFormatMutation("file")
+  const { user: credentials } = useAuthContext()
+  const { clientFlowSchema } = authSchema()
 
   const { data: cities, isLoading: isLoadingCities } = useQueryLocation().fetchAllLocations<City>('city')
 
@@ -184,10 +210,10 @@ export const useClientFlow = (onSuccess?: () => void) => {
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: ClientFlowProps) => {
-      const credentials: any = data.client //ts-ignore
-      const user: User = await createUser(credentials)
+      const userData: any = data.client //ts-ignore
+      const user: User = await createUser(userData)
       const file = data.client.photoUrl?.[0]?.file
-      const path = `client/${user._id}/preview/img`
+      const path = `client/${user._id}/preview/logo`
       if (file instanceof File) { //save image reference (storage)
         const photoUrl: string = await createFile({ file, path })
         await updateUser(user._id, { metadata: { logo: photoUrl } })
@@ -200,15 +226,13 @@ export const useClientFlow = (onSuccess?: () => void) => {
           //create offices associated to headquarter
           await Promise.all(offices.map(async (office) => {
             //remember that value of services is ['service1 - group', 'service2 - group', ...]
-            const service = office.services[0].split(' - ')[0] //['service - group'] -> 'service'
-            const group = groups?.find(group => group.services.includes(service))
-            await createOffice({
-              name: office.name,
-              services: office.services,
-              group: group?.name ?? 'N/R',
-              headquarter: headquarter._id,
-            })
-          }))
+            const services = office.services.map((service) => service.split(' - ')[0])
+            const group = office.services[0].split(' - ')[1] //Obtain group of services
+            await createOffice({ group, services, name: office.name, headquarter: headquarter._id })
+          })) //allow permissions to above created user (client); efficient to references
+          if (credentials?.role !== 'company') return //updating only for companies
+          const permissions = [...(credentials?.permissions || []), user._id]
+          await updateUser(credentials._id, { permissions }) //set permissions
         })
       )
       methods.reset()

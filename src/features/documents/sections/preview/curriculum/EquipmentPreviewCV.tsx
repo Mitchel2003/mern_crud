@@ -12,9 +12,10 @@ import { Badge } from "#/ui/badge"
 export interface EquipmentPreviewCVProps extends ThemeContextProps {
   accs?: Accessory[]
   cv: Curriculum
+  auth?: boolean
 }
 
-const EquipmentPreviewCV = ({ cv, accs, theme }: EquipmentPreviewCVProps) => {
+const EquipmentPreviewCV = ({ cv, accs, auth, theme }: EquipmentPreviewCVProps) => {
   return (
     <section className="animate-in fade-in-50 duration-500">
       <div className={cn('-mx-6 px-6 py-4 border-y bg-gradient-to-r', theme === 'dark'
@@ -146,105 +147,107 @@ const EquipmentPreviewCV = ({ cv, accs, theme }: EquipmentPreviewCVProps) => {
       </Card>
 
       {/* Accesorios */}
-      <Card className={cn("mt-6", theme === 'dark' ? 'bg-zinc-800/50' : 'bg-white/50')}>
-        <CardHeader className={cn("border-b", theme === 'dark' ? 'border-zinc-700' : 'border-purple-100')}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Puzzle className="w-5 h-5 text-purple-600" />
-              <CardTitle>Accesorios del Equipo</CardTitle>
+      {auth && (
+        <Card className={cn("mt-6", theme === 'dark' ? 'bg-zinc-800/50' : 'bg-white/50')}>
+          <CardHeader className={cn("border-b", theme === 'dark' ? 'border-zinc-700' : 'border-purple-100')}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Puzzle className="w-5 h-5 text-purple-600" />
+                <CardTitle>Accesorios del Equipo</CardTitle>
+              </div>
+              <Badge variant="success" className={cn("", theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-800')}>
+                {accs?.length || 0} accesorios
+              </Badge>
             </div>
-            <Badge variant="success" className={cn("", theme === 'dark' ? 'bg-zinc-700' : 'bg-zinc-800')}>
-              {accs?.length || 0} accesorios
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <ScrollArea className="max-h-[400px] w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-              {accs?.map((acc, index) => (
-                <div
-                  key={acc._id}
-                  className="group relative overflow-hidden"
-                >
-                  <div className="absolute -right-16 -top-16 z-10">
-                    <div className="w-32 h-32 bg-purple-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="max-h-[400px] w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+                {accs?.map((acc, index) => (
+                  <div
+                    key={acc._id}
+                    className="group relative overflow-hidden"
+                  >
+                    <div className="absolute -right-16 -top-16 z-10">
+                      <div className="w-32 h-32 bg-purple-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
 
-                  <div className={cn("relative z-20 p-4 rounded-lg border transition-all duration-300", theme === 'dark' ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700/80' : 'border-purple-100 bg-white hover:shadow-lg')}>
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="space-y-1">
-                        <h4 className="font-medium truncate">{acc.name}</h4>
-                        <Badge variant="secondary" className={cn(theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-50')}>
-                          {acc.type}
-                        </Badge>
-                      </div>
-                      <HoverCard>
-                        <HoverCardTrigger asChild>
-                          <Button variant="ghost" size="icon" className={cn("h-8 w-8", theme === 'dark' ? 'hover:bg-zinc-700' : '')}>
-                            <Info className={cn("h-4 w-4", theme === 'dark' ? 'text-purple-300' : '')} />
-                          </Button>
-                        </HoverCardTrigger>
-                        <HoverCardContent className={cn("w-64", theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : '')}>
-                          <div className="space-y-2">
-                            <h4 className="font-medium">Detalles del Accesorio</h4>
-                            <div className="text-sm space-y-1">
-                              <p><span className="text-muted-foreground">ID:</span> {acc._id}</p>
-                              <p><span className="text-muted-foreground">Estado:</span> Activo</p>
+                    <div className={cn("relative z-20 p-4 rounded-lg border transition-all duration-300", theme === 'dark' ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700/80' : 'border-purple-100 bg-white hover:shadow-lg')}>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="space-y-1">
+                          <h4 className="font-medium truncate">{acc.name}</h4>
+                          <Badge variant="secondary" className={cn(theme === 'dark' ? 'bg-zinc-700' : 'bg-purple-50')}>
+                            {acc.type}
+                          </Badge>
+                        </div>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Button variant="ghost" size="icon" className={cn("h-8 w-8", theme === 'dark' ? 'hover:bg-zinc-700' : '')}>
+                              <Info className={cn("h-4 w-4", theme === 'dark' ? 'text-purple-300' : '')} />
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className={cn("w-64", theme === 'dark' ? 'bg-zinc-800 border-zinc-700' : '')}>
+                            <div className="space-y-2">
+                              <h4 className="font-medium">Detalles del Accesorio</h4>
+                              <div className="text-sm space-y-1">
+                                <p><span className="text-muted-foreground">ID:</span> {acc._id}</p>
+                                <p><span className="text-muted-foreground">Estado:</span> Activo</p>
+                              </div>
                             </div>
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    </div>
-
-                    <Separator className={cn("my-3", theme === 'dark' ? 'bg-zinc-700' : '')} />
-
-                    <div className="grid gap-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Layers className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
-                        <span className="text-muted-foreground">Modelo:</span>
-                        <span className="font-medium truncate">{acc.modelEquip}</span>
+                          </HoverCardContent>
+                        </HoverCard>
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Barcode className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
-                        <span className="text-muted-foreground">Serie:</span>
-                        <span className="font-medium truncate">{acc.serie}</span>
+
+                      <Separator className={cn("my-3", theme === 'dark' ? 'bg-zinc-700' : '')} />
+
+                      <div className="grid gap-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Layers className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
+                          <span className="text-muted-foreground">Modelo:</span>
+                          <span className="font-medium truncate">{acc.modelEquip}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Barcode className={cn("w-4 h-4", theme === 'dark' ? 'text-purple-300' : 'text-purple-600')} />
+                          <span className="text-muted-foreground">Serie:</span>
+                          <span className="font-medium truncate">{acc.serie}</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="mt-4">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className={cn("w-full", theme === 'dark' ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700' : '')}
-                        onClick={() => copyToClipboard(acc.serie)}
-                      >
-                        <Copy className={cn("w-3 h-3 mr-2", theme === 'dark' ? 'text-purple-300' : '')} />
-                        Copiar Serie
-                      </Button>
-                    </div>
+                      <div className="mt-4">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn("w-full", theme === 'dark' ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700' : '')}
+                          onClick={() => copyToClipboard(acc.serie)}
+                        >
+                          <Copy className={cn("w-3 h-3 mr-2", theme === 'dark' ? 'text-purple-300' : '')} />
+                          Copiar Serie
+                        </Button>
+                      </div>
 
-                    <div className="absolute top-1 right-2">
-                      <span className="text-sm text-muted-foreground">
-                        #{String(index + 1).padStart(2, '0')}
-                      </span>
+                      <div className="absolute top-1 right-2">
+                        <span className="text-sm text-muted-foreground">
+                          #{String(index + 1).padStart(2, '0')}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              {(!accs || accs.length === 0) && (
-                <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                  <PackageX className={cn("w-12 h-12 mb-4", theme === 'dark' ? 'text-zinc-500' : 'text-muted-foreground')} />
-                  <h3 className="font-medium text-lg mb-2">Sin accesorios registrados</h3>
-                  <p className="text-sm text-muted-foreground max-w-md">
-                    Este equipo no tiene accesorios registrados en el sistema.
-                  </p>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+                {(!accs || accs.length === 0) && (
+                  <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                    <PackageX className={cn("w-12 h-12 mb-4", theme === 'dark' ? 'text-zinc-500' : 'text-muted-foreground')} />
+                    <h3 className="font-medium text-lg mb-2">Sin accesorios registrados</h3>
+                    <p className="text-sm text-muted-foreground max-w-md">
+                      Este equipo no tiene accesorios registrados en el sistema.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
     </section>
   )
 }

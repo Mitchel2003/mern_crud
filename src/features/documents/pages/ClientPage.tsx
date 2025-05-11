@@ -65,7 +65,7 @@ const ClientPage = () => {
                 <TabsTrigger
                   value="form"
                   className={cn(
-                    'hidden px-6 gap-2 items-center',
+                    'flex px-6 gap-2 items-center',
                     'duration-200 hover:scale-105 hover:bg-accent/50'
                   )}
                 >

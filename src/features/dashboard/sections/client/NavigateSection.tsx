@@ -17,7 +17,7 @@ const NavigateSection = ({ theme }: NavigateSectionProps) => {
         transition={{ type: "spring", stiffness: 300 }}
       >
         <Card
-          onClick={() => { navigate('/form') }}
+          onClick={() => { navigate('/equipment') }}
           className={cn("relative overflow-hidden h-64 cursor-pointer group", theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100')}
         >
           <div className={cn(
@@ -47,8 +47,8 @@ const NavigateSection = ({ theme }: NavigateSectionProps) => {
 
       {/* Card para Crear Solicitud */}
       <motion.div
-        whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.03 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
         <Card
@@ -62,11 +62,11 @@ const NavigateSection = ({ theme }: NavigateSectionProps) => {
           <div className="absolute inset-0 p-6 flex flex-col justify-between text-white z-10">
             <div className="flex items-center">
               <QrCode className="h-10 w-10 mr-4" />
-              <h2 className="text-2xl font-bold">Crear Solicitud</h2>
+              <h2 className="text-2xl font-bold">Escaneo QR</h2>
             </div>
             <div>
               <p className="mb-4 opacity-90">
-                Escanee el código QR de su equipo para solicitar mantenimiento o reportar problemas
+                Escanee el código QR de su equipo para acceder a su documentación, mantenimientos y demás
               </p>
               <div className="flex items-center mt-2 group-hover:translate-x-2 transition-transform">
                 <span className="mr-2">Escanear código QR</span>

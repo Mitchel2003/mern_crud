@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
 interface TableCurriculumSectionProps extends ThemeContextProps {
-  params?: { createdAt?: string } | null
+  params?: { modelEquip?: string, createdAt?: string } | null
   onChange: () => void
   credentials: User
 }
@@ -112,7 +112,10 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
       showGlobalFilter: true,
       showColumnFilters: !!params,
       columnPinning: { left: ['mrt-row-select', 'mrt-row-expand'], right: ['mrt-row-actions'] },
-      columnFilters: params ? [...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : [])] : []
+      columnFilters: params ? [
+        ...(params.modelEquip ? [{ id: 'modelEquip', value: params.modelEquip }] : []),
+        ...(params.createdAt ? [{ id: 'createdAt', value: params.createdAt }] : []),
+      ] : []
     },
     positionToolbarAlertBanner: 'head-overlay',
     paginationDisplayMode: 'pages',

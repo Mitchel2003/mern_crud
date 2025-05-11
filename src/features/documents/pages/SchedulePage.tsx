@@ -3,6 +3,7 @@ import FormScheduleSection from '@/features/documents/sections/schedule/FormSche
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
+import { useAuthContext } from "@/context/AuthContext"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
@@ -15,6 +16,7 @@ const route = '/form/schedule'
 
 const SchedulePage = () => {
   const { theme } = useThemeContext()
+  const { user } = useAuthContext()
   const { id } = useParams()
 
   const table = createTheme({ palette: { mode: theme } }) //theme table
@@ -29,6 +31,7 @@ const SchedulePage = () => {
             <TabsList className={cn(
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60",
+              user?.role === 'client' && 'hidden'
             )}>
               <TabsTrigger
                 value="table"

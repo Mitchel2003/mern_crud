@@ -6,7 +6,7 @@ const DialogConfirm = createContext<DialogConfirmContext>(undefined)
 
 /**
  * Hook personalizado para acceder al contexto de confirmación de acciones.
- * @throws {Error} Si se intenta usar fuera del ActionConfirmProvider.
+ * @throws {Error} Si se intenta usar fuera del DialogConfirmProvider.
  */
 export const useDialogConfirmContext = () => {
   const context = useContext(DialogConfirm)

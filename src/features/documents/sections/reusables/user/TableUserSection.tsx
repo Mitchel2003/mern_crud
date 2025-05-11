@@ -77,18 +77,13 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
       id: "nit",
       header: "NIT",
       accessorFn: (row) => row.nit || 'Sin Nit'
-    })
+    });
 
     to === 'company' && array.push({ //to show columns conditional
       size: 90,
-      id: "invima",
-      header: "Invima",
-      accessorFn: (row) => row.invima || 'Sin Invima'
-    }, {
-      size: 90,
-      id: "profesionalLicense",
-      header: "Licencia profesional",
-      accessorFn: (row) => row.profesionalLicense || 'Sin licencia'
+      id: "role",
+      header: "Rol",
+      accessorFn: (row) => row.belongsTo ? 'sub-proveedor' : 'proveedor'
     });
 
     array.push({ //to show column date created
@@ -96,7 +91,7 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
       id: "createdAt",
       header: "Creado",
       accessorFn: (row) => row.createdAt ? formatDateTime(row.createdAt) : 'Sin fecha'
-    })
+    });
     return array
   }, [isClient])
 

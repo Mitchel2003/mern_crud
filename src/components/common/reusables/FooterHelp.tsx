@@ -14,7 +14,6 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
   const isMobile = useIsMobile()
   return (
     <motion.div
-      className="mb-8"
       animate={{ opacity: 1, y: 0 }}
       initial={{ opacity: 0, y: 20 }}
       transition={{ delay: 0.5, duration: 0.5 }}
@@ -35,7 +34,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                 </CardDescription>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="hidden sm:flex flex-row gap-2">
               <Badge variant="outline" className={cn(theme === "dark" ? "bg-blue-900/20 text-blue-300 border-blue-800" : "bg-blue-50 text-blue-700 border-blue-200")}>
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Certificado
@@ -210,7 +209,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
           </Tabs>
         </CardContent>
 
-        <CardFooter className={cn("flex justify-between items-center p-4 border-t", theme === "dark" ? "border-zinc-800 bg-zinc-900/50" : "border-gray-100 bg-gray-50/50")}>
+        <CardFooter className={cn("flex flex-col sm:flex-row justify-between items-center p-4 border-t space-y-4", theme === "dark" ? "border-zinc-800 bg-zinc-900/50" : "border-gray-100 bg-gray-50/50")}>
           <div className="flex items-center gap-2">
             <Avatar className="h-14 w-14">
               <AvatarImage src="https://i.ibb.co/B5jVSxmL/panihida.jpg" />

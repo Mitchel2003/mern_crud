@@ -23,6 +23,10 @@ function App() {
                   <Route path="/" index element={<Render.HomePage />} />
                   <Route path="/auth/login" element={<Render.LoginPage />} />
 
+                  <Route path="/equipment" element={<Render.EquipmentHub />} />
+                  <Route path="/equipment/:id" element={<Render.EquipmentHub />} />
+                  <Route path="/form/curriculum/preview/:id" element={<Render.PreviewCurriculumPage />} />
+
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Render.DashboardPage />} />
@@ -32,11 +36,9 @@ function App() {
                     <Route path="/calendar" element={<Render.CalendarPage />} />
 
                     {/* forms routes */}
-                    <Route path="/form" element={<Render.DocumentsHub />} /> {/*list documents*/}
                     <Route path="/form/curriculum" element={<Render.CurriculumPage />} />
                     <Route path="/form/curriculums" element={<Render.CurriculumPage />} />
                     <Route path="/form/curriculum/:id" element={<Render.CurriculumPage />} />
-                    <Route path="/form/curriculum/preview/:id" element={<Render.PreviewCurriculumPage />} />
 
                     <Route path="/form/maintenance" element={<Render.MaintenancePage />} />
                     <Route path="/form/maintenances" element={<Render.MaintenancePage />} />

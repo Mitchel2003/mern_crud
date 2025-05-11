@@ -16,12 +16,12 @@ const route = '/form/maintenance'
 
 const MaintenancePage = () => {
   const { theme } = useThemeContext()
+  const { user } = useAuthContext()
   const { id } = useParams()
 
   const table = createTheme({ palette: { mode: theme } }) //theme table
   const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
-  const { user } = useAuthContext()
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
       <ThemeProvider theme={table}>

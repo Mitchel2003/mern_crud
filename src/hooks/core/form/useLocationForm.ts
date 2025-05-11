@@ -46,7 +46,8 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
       //remember that value of services is ['service1 - group', 'service2 - group', ...]
       const services = data.services.map((service) => service.split(' - ')[0])
       const group = data.services[0].split(' - ')[1] //Obtain group of services
-      const dataFormat = { ...data, group, services } //Format data collection
+      const { services: _, ...e } = data //extract services from original
+      const dataFormat = { ...e, group, services } //prepare to send
       id ? updateLocation({ id, data: dataFormat }) : createLocation(dataFormat)
       methods.reset()
     },

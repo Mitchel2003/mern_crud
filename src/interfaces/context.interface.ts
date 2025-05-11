@@ -34,17 +34,22 @@ export type DialogConfirmContext = {
 /*--------------------------------------------------AuthContext--------------------------------------------------*/
 export type RoleProps = 'admin' | 'company' | 'collaborator' | 'client'
 export type User = BaseMDB & {
+  lastSignInTime?: string
+  fcmToken?: string
   uid: string
   email: string
   username: string
+  position: string
   phone: string
   nit?: string
   invima?: string
   profesionalLicense?: string
   //user access
   role: RoleProps
-  fcmToken?: string
   permissions?: string[]
+  //handle reference
+  belongsTo?: User
+  classification?: string[]
   metadata?: Record<string, any>
 }
 
@@ -138,12 +143,12 @@ export type Maintenance = BaseMDB & {
   curriculum: Curriculum
 }
 export type Curriculum = BaseMDB & {
+  codeEquip: string //proximamente (to stock)
   //basicData
   name: string
   brand: string
   serie: string
   service: string
-  codeEquip: string
   modelEquip: string
   healthRecord: string
   photoUrl?: string

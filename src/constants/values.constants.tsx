@@ -152,15 +152,19 @@ export const userDefaultValues: UserFormProps = {
   email: '',
   phone: '',
   username: '',
+  position: '',
   nit: '',
   invima: '',
   profesionalLicense: '',
   //user access
   role: '',
-  permissions: []
+  permissions: [],
+  //handler references
+  belongsTo: undefined,
+  classification: []
 }
 export const clientFlowDefaultValues: ClientFlowProps = {
-  client: { email: '', password: '', username: '', phone: '', nit: '', role: 'client', photoUrl: [] },
+  client: { email: '', password: '', username: '', position: '', phone: '', nit: '', role: 'client', photoUrl: [] },
   headquarter: [{ name: '', address: '', city: '' }],
   office: [{ headquarter: '', services: [], name: '' }]
 }

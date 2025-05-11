@@ -4,30 +4,24 @@ import { Shield, Activity, Clock } from "lucide-react"
 import { Separator } from "#/ui/separator"
 import { cn } from "@/lib/utils"
 
-interface StatsSectionProps extends ThemeContextProps {
-  data: ClientDashboardProps
-}
-
+interface StatsSectionProps extends ThemeContextProps { data: ClientDashboardProps }
 const StatsSection = ({ theme, data }: StatsSectionProps) => {
   return (
-    <section className={cn('p-6 rounded-lg shadow-sm border', theme === 'dark'
-      ? 'bg-zinc-950 border-zinc-700'
-      : 'bg-white border-gray-100'
-    )}>
+    <section className={cn('p-6 rounded-lg shadow-sm border', theme === 'dark' ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-100')}>
       <div className="grid md:grid-cols-3 gap-6">
         <StatCard
+          trend="up"
           title="Total de Equipos"
           value={data.totalCurriculums.toString()}
           icon={<Shield className="h-5 w-5 text-blue-600" />}
           change={`${data.totalCurriculums > 0 ? '+' : ''}${data.totalCurriculums} equipos`}
-          trend="up"
         />
         <Separator orientation="horizontal" className="block sm:hidden" />
         <StatCard
           title="Mantenimientos"
           value={data.totalMaintenances.toString()}
-          icon={<Activity className="h-5 w-5 text-blue-600" />}
           change={`${data.pendingMaintenances} pendientes`}
+          icon={<Activity className="h-5 w-5 text-blue-600" />}
           trend={data.pendingMaintenances === 0 ? "up" : "neutral"}
         />
         <Separator orientation="horizontal" className="block sm:hidden" />
@@ -35,8 +29,8 @@ const StatsSection = ({ theme, data }: StatsSectionProps) => {
           title="Solicitudes en espera"
           value={`${data.pendingSolicitsCount}`}
           icon={<Clock className="h-5 w-5 text-amber-600" />}
-          change={data.pendingSolicitsCount === 0 ? "Sin solicitudes pendientes" : `${data.pendingSolicitsCount} en espera`}
           trend={data.pendingSolicitsCount === 0 ? "up" : "neutral"}
+          change={data.pendingSolicitsCount === 0 ? "Sin solicitudes pendientes" : `${data.pendingSolicitsCount} en espera`}
         />
       </div>
     </section >
