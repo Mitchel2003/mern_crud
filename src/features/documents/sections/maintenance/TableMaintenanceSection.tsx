@@ -239,31 +239,8 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
               })
             }}
           >
-            Descargar ZIP
+            Descargar
           </Button>
-
-          {/** Delete maintenance */}
-          {!isClient && (
-            <Button
-              size="small"
-              color="error"
-              variant="contained"
-              startIcon={<Delete />}
-              onClick={() => {
-                const selectedRows = table.getSelectedRowModel().flatRows
-                const firstEquipment = selectedRows[0].original.curriculum.name
-                const otherCount = selectedRows.length - 1
-                confirmAction({
-                  isDestructive: true,
-                  title: 'Eliminación múltiple',
-                  description: `¿Deseas eliminar los mantenimientos de: ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} equipos` : ''}?`,
-                  action: () => selectedRows.forEach(row => handleDelete(row.original._id))
-                })
-              }}
-            >
-              Eliminar
-            </Button>
-          )}
         </Box>
       </Box>
     )

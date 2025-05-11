@@ -31,14 +31,6 @@ export const logout = async (): Promise<void> => {
     if (!result.success) throw result.error
   } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'cerrar sesión')) }
 }
-/**
- * Obtiene el tiempo de la última sesión del usuario autenticado.
- * @returns {string | null} - El tiempo de la última sesión o null si no hay usuario.
- */
-export const getLastSignInTime = (): string | null => {
-  try { return authFB.getLastSignInTime() }
-  catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'obtener tiempo de última sesión')) }
-}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------state--------------------------------------------------*/

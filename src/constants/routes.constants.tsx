@@ -215,9 +215,9 @@ export const links = (): NavItemProps[] => {
       icon: TerminalSquare
     },
     {// documents
-      href: '/form',
       icon: PermMedia,
-      label: 'Documentación'
+      href: '/equipment',
+      label: 'Mis equipos'
     }
   ]
   /*--------------------------------------------------company--------------------------------------------------*/

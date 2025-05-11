@@ -50,8 +50,8 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   const typeSchedule = methods.watch('typeSchedule')
   const { data: client } = useQueryUser().fetchUserById<User>(clientId, { enabled: !!clientId })
   const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client', enabled: !!user })
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', some: {}, enabled: !!client })
-  const company = companies?.[0]
+  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', enabled: !!client })
+  const company = useMemo(() => companies?.filter((e) => !e.belongsTo)[0], [companies]) //to form company (filter main-company)
 
   /*--------------------------------------------------complements--------------------------------------------------*/
   const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', { enabled: !!clientId && typeSchedule === 'mantenimiento' }) //get cvs to maintenance

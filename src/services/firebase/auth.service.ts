@@ -65,11 +65,6 @@ class AuthService implements IAuth {
   async login(email: string, password: string): Promise<Result<UserCredential>> {
     return handler(async () => await signInWithEmailAndPassword(this.auth, email, password), 'verificar credenciales')
   }
-  /**
-   * Obtiene el tiempo de la última sesión del usuario.
-   * @returns {string | null} - El tiempo de la última sesión o null si no hay usuario.
-   */
-  public getLastSignInTime(): string | null { return AuthService.user?.metadata?.lastSignInTime || null }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------actions requests--------------------------------------------------*/
