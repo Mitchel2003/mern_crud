@@ -62,6 +62,7 @@ export type CustomMutation_Format = {
   deleteFormat: UseMutateAsyncFunction<any, Error, DeleteMutationProps, unknown>
   createFile: UseMutateAsyncFunction<any, Error, FileMutationProps, unknown>
   deleteFile: UseMutateAsyncFunction<any, Error, FileMutationProps, unknown>
+  deleteFolder: UseMutateAsyncFunction<any, Error, FileMutationProps, unknown>
   isLoading: boolean
 }
 /*---------------------------------------------------------------------------------------------------------*/

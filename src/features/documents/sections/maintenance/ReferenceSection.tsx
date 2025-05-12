@@ -11,6 +11,7 @@ import InputField from "#/common/fields/Input"
 import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
+import { cn } from "@/lib/utils"
 
 interface ReferenceProps extends ThemeContextProps {
   options: { clients: User[], offices: Office[], curriculums: Curriculum[], headquarters: Headquarter[] }
@@ -31,7 +32,7 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
   const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === hqId)
   const selectedCv = curriculums?.find(cv => cv._id === cvId)
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* -------------------- Selects -------------------- */}
       <div key="selects" className="space-y-4">
         <HeaderCustom
@@ -74,17 +75,17 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
         </div>
       </div>
 
-      <Separator />
+      <Separator className={`my-8 ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`} />
 
       {/* -------------------- Equipment -------------------- */}
       <div key="equipment" className="space-y-4">
         <HeaderCustom
           to="component"
           theme={theme}
+          iconSpan="warn"
+          span="Campos automáticos"
           title="Referencia del equipo"
           className="text-2xl font-light"
-          span="Campos automáticos"
-          iconSpan="warn"
         />
 
         <div className="grid gap-6 lg:grid-cols-5">
@@ -163,35 +164,35 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
           <HeaderCustom
             to="component"
             theme={theme}
-            title="Inspecciones"
+            iconSpan="info"
+            title="Actividades"
             className="text-2xl font-light"
-            span="Visualización de inspecciones"
+            span="Visualización de actividades"
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {selectedCv?.inspection?.typeInspection?.map((inspection, index) => (
-              <div key={index} className="group relative bg-white p-4 rounded-lg border border-purple-100 hover:shadow-md transition-all duration-300">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-purple-50 rounded-bl-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div key={index} className={cn("group relative p-4 rounded-lg border transition-all duration-300 hover:shadow-md", theme === "dark"
+                ? "bg-zinc-800 border-zinc-700 hover:bg-zinc-700"
+                : "bg-white border-purple-100"
+              )}>
+                <div className={cn("absolute top-0 right-0 w-16 h-16 rounded-bl-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity", theme === "dark" ? "bg-zinc-700" : "bg-purple-50")} />
                 <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-medium text-sm">
+                  <div className={cn("flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm", theme === "dark" ? "bg-zinc-700 text-purple-300" : "bg-purple-100 text-purple-600")}>
                     {String(index + 1).padStart(2, '0')}
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium mb-1">{inspection}</h4>
                     <div className="flex flex-wrap gap-2">
                       {getInspectionTags(inspection).map((tag, i) => (
-                        <Badge key={i} variant="secondary" className="bg-purple-50 text-xs">
+                        <Badge key={i} variant="secondary" className={cn("text-xs", theme === "dark" ? "bg-zinc-700 text-zinc-300" : "bg-purple-50 text-purple-600")}>
                           {tag}
                         </Badge>
                       ))}
                     </div>
                   </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <CheckCircle className="w-4 h-4 text-purple-600" />
+                  <Button size="icon" variant="ghost" className={cn("opacity-0 group-hover:opacity-100 transition-opacity", theme === "dark" ? "hover:bg-zinc-700" : "")}>
+                    <CheckCircle className={cn("w-4 h-4", theme === "dark" ? "text-purple-300" : "text-purple-600")} />
                   </Button>
                 </div>
               </div>

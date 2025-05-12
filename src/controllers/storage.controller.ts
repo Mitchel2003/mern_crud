@@ -31,6 +31,7 @@ export const uploadFile = async (data: FileReference): Promise<string> => {
     return result.data //url reference of uploaded file
   } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'subir archivos')) }
 }
+
 /**
  * Elimina un archivo específico
  * @param path: corresponde a la ruta del archivo
@@ -45,4 +46,19 @@ export const deleteFile = async (path: string): Promise<void> => {
     const result = await storageService.deleteFile(path)
     if (!result.success) throw result.error //is ErrorAPI
   } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'eliminar archivo')) }
+}
+
+/**
+ * Elimina una carpeta y todo su contenido (archivos y subcarpetas) recursivamente
+ * @param path: corresponde a la ruta de la carpeta a eliminar
+ * @example path = "files/uid/cv" donde cv es una carpeta que puede contener archivos y subcarpetas
+ */
+export const deleteFolder = async (path: string): Promise<void> => {
+  try {
+    const filesResult = await storageService.getFilesWithMetadata(path)
+    if (!filesResult.success && filesResult.error.name !== 'NotFound') throw filesResult.error
+    if (!filesResult.success || filesResult.data.length === 0) return
+    const result = await storageService.deleteFolder(path)
+    if (!result.success) throw result.error
+  } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'eliminar carpeta')) }
 }

@@ -137,10 +137,11 @@ export type Maintenance = BaseMDB & {
   dateMaintenance: Date
 
   //maintenance
-  typeMaintenance: string
-  statusEquipment: string
   observations: string
   curriculum: Curriculum
+  typeMaintenance: string
+  statusEquipment: string
+  metadata?: Record<string, any>
 }
 export type Curriculum = BaseMDB & {
   codeEquip: string //proximamente (to stock)
@@ -214,6 +215,7 @@ export type FormatContext = {
   getAllFiles: <T>(data: FileReference) => Promise<T[]>
   uploadFile: (data: FileReference) => Promise<any>
   deleteFile: (data: FileReference) => Promise<any>
+  deleteFolder: (data: FileReference) => Promise<any>
 } | undefined
 /*---------------------------------------------------------------------------------------------------------*/
 

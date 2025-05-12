@@ -141,6 +141,16 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
     try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-file')); return e }) }
     catch (e) { notifyError(txt('delete-file', e)); return undefined }
   }
+  /**
+   * Elimina una carpeta y todo su contenido recursivamente
+   * @param {FileReference} data - Los datos de la referencia del documento
+   * @example const data = { path: 'files/123/folder' } corresponde al path
+   * @returns {Promise<any>} Los metadatos del archivo eliminado o undefined.
+   */
+  const deleteFolder = async (data: FileReference): Promise<any> => {
+    try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-folder')); return e }) }
+    catch (e) { notifyError(txt('delete-folder', e)); return undefined }
+  }
   /*---------------------------------------------------------------------------------------------------------*/
 
   /*--------------------------------------------------returns--------------------------------------------------*/
@@ -155,6 +165,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
       getAllFiles,
       uploadFile,
       deleteFile,
+      deleteFolder,
     }}>
       {children}
     </Format.Provider>

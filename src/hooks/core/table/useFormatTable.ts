@@ -102,9 +102,10 @@ export const useSolicitTable = () => {
 export const useMaintenanceTable = () => {
   const [onDownloadZip, setOnDownloadZip] = useState<Maintenance[] | undefined>(undefined)
   const [onDownload, setOnDownload] = useState<Maintenance | undefined>(undefined)
-  const [onDelete, setOnDelete] = useState<string | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<Maintenance | undefined>(undefined)
   const { deleteFormat: deleteMT } = useFormatMutation("maintenance")
   const { downloadPDF, downloadZIP } = usePDFDownload()
+  const { deleteFile } = useFormatMutation("file")
   const isProcessing = useRef(false)
 
   const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
@@ -151,13 +152,18 @@ export const useMaintenanceTable = () => {
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
-   * @param {string} id - ID del mantenimiento a eliminar
+   * @param {Maintenance} mt - Mantenimiento a eliminar
    */
-  const deleteMaintenance = useCallback(async (id: string) => {
+  const deleteMaintenance = useCallback(async (mt: Maintenance) => {
     if (isProcessing.current) return
     isProcessing.current = true
-    await deleteMT({ id }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
-  }, [deleteMT])
+    await deleteMT({ id: mt._id }).then(async () => {
+      const urls = mt.metadata?.files || []
+      const files = extractMetadataUrl(urls)
+      if (!files || files.length === 0) return
+      await Promise.all(files.map(name => deleteFile({ path: `files/${mt.curriculum?._id}/maintenances/${name}` })))
+    }).finally(() => { setOnDelete(undefined); isProcessing.current = false })
+  }, [deleteMT, deleteFile, extractMetadataUrl])
 
   /** just one useEffect */
   useEffect(() => {
@@ -168,7 +174,7 @@ export const useMaintenanceTable = () => {
 
   return {
     maintenances: useMemo(() => mts, [mts]),
-    handleDelete: (id: string) => setOnDelete(id),
+    handleDelete: (mt: Maintenance) => setOnDelete(mt),
     handleDownload: (mt: Maintenance) => setOnDownload(mt),
     handleDownloadZip: (mts: Maintenance[]) => setOnDownloadZip(mts),
   }
@@ -193,7 +199,7 @@ export const useCurriculumTable = () => {
   const { deleteFormat: deleteMt } = useFormatMutation("maintenance")
   const { deleteFormat: deleteAcc } = useFormatMutation("accessory")
   const { deleteFormat: deleteCv } = useFormatMutation("cv")
-  const { deleteFile } = useFormatMutation("file")
+  const { deleteFolder } = useFormatMutation("file")
   const isProcessing = useRef(false)
   const queryFormat = useQueryFormat()
   const queryUser = useQueryUser()
@@ -275,7 +281,7 @@ export const useCurriculumTable = () => {
    * @param {Curriculum[]} cvs - Currículos a descargar
    */
   const downloadFileZip = useCallback(async (cvs: Curriculum[]) => {
-    if (!zipFinished) return
+    if (!zipFinished) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
     const pdfComponents = cvs.map(cv => { //Prepare each cv with its resources from map
@@ -295,7 +301,7 @@ export const useCurriculumTable = () => {
    * @param {CurriculumChildren[]} cvs - Currículos a descargar con sus mantenimientos
    */
   const downloadFileZipMts = useCallback(async (cvs: CurriculumChildren[]) => {
-    if (!zipFinished) return
+    if (!zipFinished) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
     const curriculumPromises = cvs.map(async (cv) => { //Prepare promises for generating curriculum PDFs
@@ -324,7 +330,7 @@ export const useCurriculumTable = () => {
    * @param {Curriculum} cv - Currículo a descargar
    */
   const downloadFile = useCallback(async (cv: Curriculum) => {
-    if (!accs) return //await for this
+    if (!accs) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
     const client = cv?.office?.headquarter?.client
@@ -339,7 +345,7 @@ export const useCurriculumTable = () => {
    * @param {Curriculum} cv - Currículo a eliminar
    */
   const deleteCurriculum = useCallback(async (cv: Curriculum) => {
-    if (!accs || !mts) return
+    if (!accs || !mts) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
     const deleteOperations = []
@@ -348,9 +354,9 @@ export const useCurriculumTable = () => {
     const curriculumMts = mts?.filter(mt => mt.curriculum?._id === cv._id) || [] //associated maintenances
     curriculumAccs.length > 0 && deleteOperations.push(Promise.all(curriculumAccs.map(acc => deleteAcc({ id: acc._id }))))
     curriculumMts.length > 0 && deleteOperations.push(Promise.all(curriculumMts.map(mt => deleteMt({ id: mt._id }))))
-    cv.photoUrl && deleteOperations.push(Promise.resolve(await deleteFile({ path: `files/${cv._id}/preview/img` })))
+    cv.photoUrl && deleteOperations.push(deleteFolder({ path: `files/${cv._id}` })) //with associated sub-folders
     await Promise.all(deleteOperations).finally(() => { isProcessing.current = false; setOnDelete(undefined) })
-  }, [deleteCv, deleteMt, deleteAcc, deleteFile, accs, mts])
+  }, [deleteCv, deleteMt, deleteAcc, deleteFolder, accs, mts])
 
   /** just one useEffect */
   useEffect(() => {

@@ -51,6 +51,7 @@ const InputSearchable = React.forwardRef<HTMLInputElement, InputSearchableProps>
         {...props}
         ref={ref}
         list={id}
+        autoComplete="off"
         value={displayValue}
         onChange={handleChange}
         className={cn(

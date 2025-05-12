@@ -27,7 +27,7 @@ export const curriculumSchema = z.object({
     .max(50, "La marca debe tener menos de 50 caracteres"),
   serie: z
     .string({ required_error: "La serie es requerida" })
-    .min(3, "Debes seleccionar una serie")
+    .min(2, "Debes seleccionar una serie")
     .max(50, "La serie debe tener menos de 50 caracteres"),
   modelEquip: z
     .string({ required_error: "El modelo es requerido" })

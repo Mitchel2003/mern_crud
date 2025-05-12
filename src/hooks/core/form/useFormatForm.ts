@@ -226,6 +226,8 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
 export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   const { referenceData, observationData } = formatHooks.maintenance()
   const { createFormat, updateFormat } = useFormatMutation("maintenance")
+  const { createFile, deleteFile } = useFormatMutation("file")
+
   const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
 
   const methods = useForm<MaintenanceFormProps>({
@@ -253,7 +255,54 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: MaintenanceFormProps) => {
       const data = { ...referenceData.submitData(e), ...observationData.submitData(e) }
-      id ? updateFormat({ id, data }) : createFormat(data)
+      id ? (
+        updateFormat({ id, data }).then(async (mt) => {
+          const originalFiles: string[] = mt?.metadata?.files || []
+          const keptUrls: string[] = e.annexesPreview || []
+          const hasNewAnnexes = e.newAnnexes?.length > 0
+
+          /** Determine if there are changes in the images comparing with the original metadata */
+          const hasRemovedFiles = originalFiles.some(url => !keptUrls.includes(url)) //check for removed files
+          const hasDifferentLength = originalFiles.length !== keptUrls.length //match length between arrays
+          const hasChangesMetadata = hasRemovedFiles || hasDifferentLength || hasNewAnnexes
+          if (!hasChangesMetadata) return // No changes in the images
+
+          /** Determine which files have been deleted by comparing the original URLs with the kept ones */
+          const toDeleteUrls = mt?.metadata?.files?.filter((url: any) => !keptUrls.includes(url)) || []
+          const toDelete = extractMetadataUrl(toDeleteUrls) || [] //extract file names from URLs to delete
+          await Promise.all(toDelete.map(async name => await deleteFile({ path: `files/${mt?.curriculum?._id}/maintenances/${name}` })))
+          const toAdd = e.newAnnexes?.map(item => item.file) || [] /** Prepare the new files to upload */
+          /** Upload new annexes if exist */
+          let newUrls: string[] = []
+          if (toAdd.length > 0) {
+            newUrls = (await Promise.all(toAdd.map(async (file) => {
+              const unique = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+              const path = `files/${mt.curriculum?._id}/maintenances/${unique}`
+              const url = await createFile({ file, path })
+              return url ?? undefined //expected string
+            }))).filter((url): url is string => Boolean(url))
+          }
+          /** Build new metadata and update maintenance */
+          const urlsUpdated = [...keptUrls, ...newUrls]
+          if (toDelete.length > 0 || toAdd.length > 0 || keptUrls.length !== (mt?.metadata?.files?.length || 0)) {
+            await updateFormat({ id, data: { metadata: { ...(mt?.metadata || {}), files: urlsUpdated } } })
+          }
+        })
+      ) : (
+        createFormat(data).then(async (mt) => {
+          const annexes = e.newAnnexes?.map(item => item.file) || []
+          /** Upload files to storage and update metadata maintenance */
+          if (annexes.length === 0) return //if we dont have some files
+          const urls = (await Promise.all(annexes.map(async (file) => {
+            const unique = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+            const path = `files/${mt.curriculum?._id}/maintenances/${unique}`
+            const url = await createFile({ file, path })
+            return url ?? undefined //expected string
+          }))).filter((url): url is string => Boolean(url))
+          /** Update metadata references with files (images) URLs, if have some */
+          urls.length > 0 && await updateFormat({ id: mt._id, data: { metadata: { files: urls } } })
+        })
+      )
       methods.reset()
     },
     onSuccess
@@ -386,8 +435,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
               newUrls = (await Promise.all(toAdd.map(async (file) => {
                 const path = `files/${id}/annexes/${file.name}`
                 const url = await createFile({ file, path })
-                return url ?? undefined //Avoid undefined values
-              }))).filter((url): url is string => url !== undefined)
+                return url ?? undefined //expected string
+              }))).filter((url): url is string => Boolean(url))
             }
             /** Build new metadata and update curriculum */
             const urlsUpdated = [...keptUrls, ...newUrls]
@@ -418,7 +467,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
             const path = `files/${cv._id}/annexes/${file.name}`
             const url = await createFile({ file, path })
             return url ?? undefined //expected string
-          }))).filter((url): url is string => url !== undefined)
+          }))).filter((url): url is string => Boolean(url))
           /** Update metadata references with annexes URLs, if have some */
           urls.length > 0 && await updateCV({ id: cv._id, data: { metadata: { files: urls } } })
         })

@@ -138,6 +138,28 @@ class StorageService implements IStorage {
     return handler(async () => await deleteObject(this.getReference(path)), 'eliminar archivo')
   }
   /**
+   * Elimina una carpeta y todo su contenido recursivamente del almacenamiento de Firebase.
+   * Firebase Storage no tiene un concepto nativo de carpetas, pero podemos simular su eliminación 
+   * eliminando todos los archivos cuya ruta comienza con la ruta de la carpeta.
+   * @param {string} path - La ruta de la carpeta a eliminar.
+   * @returns {Promise<Result<void>>} - Resultado de la operación.
+   */
+  async deleteFolder(path: string): Promise<Result<void>> {
+    return handler(async () => await this._recursiveDelete(this.getReference(path)), 'eliminar carpeta')
+  }
+  /**
+   * Método privado que implementa la eliminación recursiva de carpetas.
+   * Consiste una eliminacion dinámica de archivos y carpetas, usando la referencia de la carpeta.
+   * @param {StorageReference} ref - Referencia de almacenamiento a la carpeta.
+   * @private
+   */
+  private async _recursiveDelete(ref: any): Promise<void> {
+    const listResult = await listAll(ref) //lista todos los archivos y carpetas
+    const filePromises = listResult.items.map(fileRef => deleteObject(fileRef))
+    const folderPromises = listResult.prefixes.map(folderRef => this._recursiveDelete(folderRef))
+    await Promise.all([...filePromises, ...folderPromises])
+  }
+  /**
    * Obtiene una referencia a un archivo en el almacenamiento de Firebase.
    * @param {string} path - La ruta del archivo.
    */

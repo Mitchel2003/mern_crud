@@ -199,7 +199,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
             isDestructive: true,
             title: 'Eliminar mantenimiento',
             description: `¿Deseas eliminar el mantenimiento "${row.original.curriculum.name}"?`,
-            action: () => handleDelete(row.original._id)
+            action: () => handleDelete(row.original)
           })
         }}>
           <ListItemIcon> <Delete /> </ListItemIcon>

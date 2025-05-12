@@ -121,13 +121,15 @@ export const maintenanceDefaultValues: MaintenanceFormProps = {
   curriculum: '',
 
   //timestandard
+  annexesPreview: [],
   dateNextMaintenance: null,
   dateMaintenance: null,
 
   //maintenance
   typeMaintenance: '',
   statusEquipment: '',
-  observations: ''
+  observations: '',
+  newAnnexes: []
 }
 /*---------------------------------------------------------------------------------------------------------*/
 

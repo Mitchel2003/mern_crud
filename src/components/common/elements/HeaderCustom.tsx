@@ -84,7 +84,7 @@ const HeaderCustom = ({
           <span
             className={cn(
               className_span,
-              'flex text-sm text-end md:items-center gap-2 max-w-[400px]',
+              'flex text-sm text-start md:text-end md:items-center gap-2 max-w-[400px]',
               theme === 'dark' ? 'text-zinc-300' : 'text-gray-500'
             )}
           >

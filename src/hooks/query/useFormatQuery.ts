@@ -101,7 +101,7 @@ export const useQueryFormat = (): QueryReact_Format => {
 /*--------------------------------------------------useMutation--------------------------------------------------*/
 /** Hook personalizado para gestionar mutaciones de formatos */
 export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
-  const { create, update, delete: deleteFormat, uploadFile, deleteFile } = useFormatContext()
+  const { create, update, delete: deleteFormat, uploadFile, deleteFile, deleteFolder } = useFormatContext()
   const queryClient = useQueryClient()
 
   /**
@@ -160,16 +160,27 @@ export const useFormatMutation = (path: FormatType): CustomMutation_Format => {
     onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
   })
 
+  /**
+   * Mutation para eliminar una carpeta y todo su contenido recursivamente
+   * @param {FileMutationProps} props - Propiedades para eliminar la carpeta
+   */
+  const deleteFolderMutation = useMutation({
+    mutationFn: async (data: FileMutationProps) => await deleteFolder(data),
+    onSuccess: (_, variables) => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.files(variables) }) }
+  })
+
   return {
     createFormat: createMutation.mutateAsync,
     updateFormat: updateMutation.mutateAsync,
     deleteFormat: deleteMutation.mutateAsync,
     createFile: createFileMutation.mutateAsync,
     deleteFile: deleteFileMutation.mutateAsync,
+    deleteFolder: deleteFolderMutation.mutateAsync,
     isLoading: createMutation.isPending
       || updateMutation.isPending
       || deleteMutation.isPending
       || createFileMutation.isPending
       || deleteFileMutation.isPending
+      || deleteFolderMutation.isPending
   }
 }

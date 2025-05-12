@@ -57,7 +57,7 @@ type Context =
   | 'getAllUser' | 'getUserById' | 'getUserByQuery' | 'createUser' | 'updateUser' | 'deleteUser'
   | 'send-notification' | 'update-token-messaging' | 'setup-messaging-listener' | 'expired-token' //Messaging
   // FormatContext
-  | 'getAllFiles' | 'upload-files' | 'delete-file'
+  | 'getAllFiles' | 'upload-files' | 'delete-file' | 'delete-folder'
   | 'getAllFormat' | 'getFormatById' | 'getFormatByQuery' | 'createFormat' | 'updateFormat' | 'deleteFormat'
   // LocationContext
   | 'getAllLocation' | 'getLocationById' | 'getLocationByQuery' | 'createLocation' | 'updateLocation' | 'deleteLocation'
@@ -108,6 +108,7 @@ export const txt = (context: Context, e?: any): AlertContext => {
     case 'getAllFiles': return { title: !e ? 'Archivos obtenidos' : 'Error al obtener archivos', message: !e ? 'Los archivos han sido obtenidos correctamente' : errorMessage }
     case 'upload-files': return { title: !e ? 'Archivos subidos' : 'Error al subir archivos', message: !e ? 'Los archivos han sido subidos correctamente' : errorMessage }
     case 'delete-file': return { title: !e ? 'Archivo eliminado' : 'Error al eliminar archivo', message: !e ? 'El archivo ha sido eliminado correctamente' : errorMessage }
+    case 'delete-folder': return { title: !e ? 'Carpeta eliminada' : 'Error al eliminar carpeta', message: !e ? 'La carpeta ha sido eliminada correctamente' : errorMessage }
     /*---------------------------------------------------------------------------------------------------------*/
 
     /*--------------------------------------------------locationContext--------------------------------------------------*/

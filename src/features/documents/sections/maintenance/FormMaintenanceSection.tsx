@@ -24,7 +24,7 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
 
   const formSections = useMemo(() => [
     <ReferenceSection key="reference" theme={theme} id={!!id} options={referenceData} />,
-    <ObservationSection key="observation" theme={theme} />
+    <ObservationSection key="observation" theme={theme} id={!!id} />
   ], [referenceData])
 
   return (
@@ -44,7 +44,7 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
           />
 
           {/* -------------------- Content form -------------------- */}
-          <CardContent className="pt-6 space-y-8">
+          <CardContent className="pt-6 space-y-6">
             <RenderFormat format={formSections} />
           </CardContent>
 
