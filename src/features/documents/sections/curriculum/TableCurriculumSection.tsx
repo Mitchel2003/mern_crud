@@ -419,7 +419,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
                             isDestructive: true,
                             title: 'Eliminar mantenimiento',
                             description: `¿Deseas eliminar el mantenimiento ${maintenance.typeMaintenance} "${maintenance.curriculum.name} - ${maintenance.curriculum.modelEquip}"?`,
-                            action: () => handleDeleteMaintenance(maintenance._id)
+                            action: () => handleDeleteMaintenance(maintenance)
                           })
                         }}
                       >
