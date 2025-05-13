@@ -99,7 +99,7 @@ const ObservationSection = ({ id, theme }: ObservationSectionProps) => {
 
         <div className="space-y-2">
           {/* -------------------- Preview -------------------- */}
-          <div className={cn(!id || preview.length === 0 ? 'hidden' : 'block mb-6')}>
+          <div className={cn(!id || preview?.length === 0 ? 'hidden' : 'block mb-6')}>
             <ImagePreview
               theme={theme}
               name="annexesPreview"
@@ -111,7 +111,7 @@ const ObservationSection = ({ id, theme }: ObservationSectionProps) => {
           <CardIterable
             theme={theme}
             name="newAnnexes"
-            limit={3 - preview.length}
+            limit={3 - preview?.length}
             titleButton="Agregar imagen"
             fields={fields.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
           />
