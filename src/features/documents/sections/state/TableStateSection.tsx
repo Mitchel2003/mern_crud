@@ -60,7 +60,7 @@ const TableStateSection = ({ theme, params, onChange }: TableStateSectionProps) 
       size: 100,
       header: 'País',
       id: 'country.name',
-      accessorFn: (row) => row.country.name
+      accessorFn: (row) => row.country?.name || 'Sin pais'
     }, {
       size: 100,
       id: "createdAt",

@@ -1,5 +1,5 @@
 import { CustomMutation_Format, QueryReact_Format, UpdateMutationProps, DeleteMutationProps, FileMutationProps, QueryOptions, QueryConfig } from "@/interfaces/hook.interface"
-import { useQuery, useQueries, useQueryClient, useMutation } from "@tanstack/react-query"
+import { useQuery, useQueries, useQueryClient, useMutation, UseQueryResult } from "@tanstack/react-query"
 import { FormatType } from "@/interfaces/context.interface"
 import { useFormatContext } from "@/context/FormatContext"
 import { FileReference } from "@/interfaces/db.interface"
@@ -25,9 +25,9 @@ export const useQueryFormat = (): QueryReact_Format => {
   const fetchAllFormats = <T>(path: FormatType) => useQuery({
     queryKey: QUERY_KEYS.formats(path),
     queryFn: () => format.getAll<T>(path),
-    select: (data) => data || [],
-    initialData: [],
-  })
+    select: (data) => data || [] as T[],
+    initialData: [] as T[],
+  }) as UseQueryResult<T[]>
 
   /**
    * Obtener formato por ID
@@ -36,11 +36,11 @@ export const useQueryFormat = (): QueryReact_Format => {
    * @param {QueryConfig} config - Contiene la configuración de la consulta
    */
   const fetchFormatById = <T>(path: FormatType, id: string, config: QueryConfig = { enabled: true }) => useQuery({
-    select: (data) => data || undefined,
     queryKey: QUERY_KEYS.format(path, id),
     queryFn: () => format.getById<T>(path, id),
     enabled: Boolean(id) && (config.enabled ?? true),
-  })
+    select: (data) => data || undefined as T,
+  }) as UseQueryResult<T | undefined>
 
   /**
    * Buscar formato por término
@@ -48,11 +48,11 @@ export const useQueryFormat = (): QueryReact_Format => {
    * @param {QueryOptions} query - Elementos de busqueda y configuración de la consulta
    */
   const fetchFormatByQuery = <T>(path: FormatType, query: QueryOptions = { enabled: true }) => useQuery({
-    select: (data) => data || [] as T[],
     queryKey: QUERY_KEYS.search(path, query),
-    enabled: Boolean(query) && (query.enabled ?? true),
     queryFn: () => format.getByQuery<T>(path, { ...query, enabled: undefined }),
-  })
+    enabled: Boolean(query) && (query.enabled ?? true),
+    select: (data) => data || [] as T[],
+  }) as UseQueryResult<T[]>
 
   /**
    * Obtener todos los archivos de un formato
@@ -61,10 +61,10 @@ export const useQueryFormat = (): QueryReact_Format => {
   const fetchAllFiles = <T>(data: FileReference) => useQuery({
     queryKey: QUERY_KEYS.files(data),
     queryFn: () => format.getAllFiles<T>(data),
-    select: (data) => data || [],
+    select: (data) => data || [] as T[],
     enabled: Boolean(data.path),
-    initialData: []
-  })
+    initialData: [] as T[],
+  }) as UseQueryResult<T[]>
 
   /**
    * IMPORTANT! I need reconvert this logic to reusable queries fetch

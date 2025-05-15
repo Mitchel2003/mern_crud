@@ -1,5 +1,5 @@
 import { CustomMutation_Location, QueryReact_Location, UpdateMutationProps, DeleteMutationProps, QueryOptions, QueryConfig, } from '@/interfaces/hook.interface'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation, UseQueryResult } from '@tanstack/react-query'
 import { useLocationContext } from '@/context/LocationContext'
 import { LocationType } from '@/interfaces/context.interface'
 
@@ -22,9 +22,9 @@ export const useQueryLocation = (): QueryReact_Location => {
   const fetchAllLocations = <T>(path: LocationType) => useQuery({
     queryKey: QUERY_KEYS.locations(path),
     queryFn: () => location.getAll<T>(path),
-    select: (data) => data || [],
-    initialData: [],
-  })
+    select: (data) => data || [] as T[],
+    initialData: [] as T[],
+  }) as UseQueryResult<T[]>
 
   /**
    * Obtener ubicación por ID
@@ -33,11 +33,11 @@ export const useQueryLocation = (): QueryReact_Location => {
    * @param {QueryConfig} config - Contiene la configuración de la consulta
    */
   const fetchLocationById = <T>(path: LocationType, id: string, config: QueryConfig = { enabled: true }) => useQuery({
-    select: (data) => data || undefined,
     queryKey: QUERY_KEYS.location(path, id),
     queryFn: () => location.getById<T>(path, id),
     enabled: Boolean(id) && (config.enabled ?? true),
-  })
+    select: (data) => data || undefined as T,
+  }) as UseQueryResult<T | undefined>
 
   /**
    * Buscar ubicación por término
@@ -45,11 +45,11 @@ export const useQueryLocation = (): QueryReact_Location => {
    * @param {QueryOptions} query - Elementos de busqueda y configuración de la consulta
    */
   const fetchLocationByQuery = <T>(path: LocationType, query: QueryOptions = { enabled: true }) => useQuery({
-    select: (data) => data || [] as T[],
     queryKey: QUERY_KEYS.search(path, query),
-    enabled: Boolean(query) && (query.enabled ?? true),
     queryFn: () => location.getByQuery<T>(path, { ...query, enabled: undefined }),
-  })
+    enabled: Boolean(query) && (query.enabled ?? true),
+    select: (data) => data || [] as T[],
+  }) as UseQueryResult<T[]>
 
   return {
     fetchAllLocations,

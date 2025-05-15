@@ -60,7 +60,7 @@ const TableCitySection = ({ theme, params, onChange }: TableCitySectionProps) =>
       size: 100,
       id: 'state.name',
       header: 'Departamento',
-      accessorFn: (row) => row.state.name
+      accessorFn: (row) => row.state?.name || 'Sin departamento'
     }, {
       size: 100,
       id: "createdAt",

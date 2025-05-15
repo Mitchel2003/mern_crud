@@ -1,14 +1,51 @@
+import axios, { cachedAxios, invalidateCache } from "./axios"
 import { EndpointParams } from "@/interfaces/props.interface"
 import { toPlural } from "@/constants/format.constants"
-import axios from "./axios"
 
-export const getRequest = async (endpoint: string, params?: Record<string, any>) => axios.get(endpoint, { params, paramsSerializer: { indexes: null /* serializar correctamente los arrays */ } })
-export const postRequest = async (endpoint: string, data: object | undefined) => axios.post(endpoint, data)
-export const putRequest = async (endpoint: string, data: object) => axios.put(endpoint, data)
-export const deleteRequest = async (endpoint: string, params?: object) => axios.delete(endpoint, { params })
+/**
+ * Realiza una solicitud GET con uso de cache (axios-cache-interceptor)
+ * @param {string} endpoint - El endpoint a consultar, path de la request
+ * @param {Record<string, any>} params - Los parámetros de la solicitud
+ * @returns {Promise<any>} La respuesta de la solicitud
+ */
+export const getRequest = async (endpoint: string, params?: Record<string, any>): Promise<any> =>
+  cachedAxios.get(endpoint, { params, paramsSerializer: { indexes: null } })
 
-export const useApi = (type: string) => ({
-  // crud functions
+/**
+ * Realiza una solicitud POST con invalidación de cache
+ * @param {string} endpoint - El endpoint a consultar
+ * @param {object | undefined} data - Los datos de la solicitud
+ * @returns {Promise<any>} La respuesta de la solicitud
+ */
+export const postRequest = async (endpoint: string, data: object | undefined): Promise<any> =>
+  axios.post(endpoint, data).then((e) => { invalidateCache(endpoint); return e })
+
+/**
+ * Realiza una solicitud PUT con invalidación de cache
+ * @param {string} endpoint - El endpoint a consultar
+ * @param {object} data - Los datos de la solicitud
+ * @returns {Promise<any>} La respuesta de la solicitud
+ */
+export const putRequest = async (endpoint: string, data: object): Promise<any> =>
+  axios.put(endpoint, data).then((e) => { invalidateCache(endpoint); return e })
+
+/**
+ * Realiza una solicitud DELETE con invalidación de cache
+ * @param {string} endpoint - El endpoint a consultar
+ * @param {object} params - Los parámetros de la solicitud
+ * @returns {Promise<any>} La respuesta de la solicitud
+ */
+export const deleteRequest = async (endpoint: string, params?: object): Promise<any> =>
+  axios.delete(endpoint, { params }).then((e) => { invalidateCache(endpoint); return e })
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * Función que retorna las funciones CRUD para un tipo de dato
+ * @param {string} type - El tipo contexto de la solicitud
+ * @returns {object} Un objeto con las funciones CRUD
+ */
+export const useApi = (type: string): any => ({
   getAll: (data?: object) => getRequest(buildEndpoint({ type, action: 'many' }), data),
   getById: (id: string) => getRequest(buildEndpoint({ type, action: 'one', id })),
   getByQuery: (query: object) => getRequest(buildEndpoint({ type, action: 'many' }), query),
@@ -16,7 +53,7 @@ export const useApi = (type: string) => ({
   update: (id: string, data: object) => putRequest(buildEndpoint({ type, action: 'one', id }), data),
   delete: (id: string) => deleteRequest(buildEndpoint({ type, action: 'one', id })),
 
-  // essential functions
+  //essential functions
   get: (data?: object) => getRequest(buildEndpoint({ type, action: 'void' }), data),
   void: (data?: object) => postRequest(buildEndpoint({ type, action: 'void' }), data),
   remove: (data?: object) => deleteRequest(buildEndpoint({ type, action: 'void' }), data)

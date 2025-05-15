@@ -1,5 +1,5 @@
 import { CustomMutation_User, DeleteMutationProps, QueryReact_User, UpdateMutationProps, QueryOptions, QueryConfig } from '@/interfaces/hook.interface'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation, UseQueryResult } from '@tanstack/react-query'
 import { UserFormProps } from '@/schemas/auth/auth.schema'
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -20,9 +20,9 @@ export const useQueryUser = (): QueryReact_User => {
   const fetchAllUsers = <T>() => useQuery({
     queryKey: QUERY_KEYS.users(),
     queryFn: () => user.getAll<T>(),
-    select: (data) => data || [],
-    initialData: [],
-  })
+    select: (data) => data || [] as T[],
+    initialData: [] as T[],
+  }) as UseQueryResult<T[]>
 
   /**
    * Obtener usuario por ID
@@ -32,9 +32,9 @@ export const useQueryUser = (): QueryReact_User => {
   const fetchUserById = <T>(id: string, config: QueryConfig = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.user(id),
     queryFn: () => user.getById<T>(id),
-    select: (data) => data || undefined,
     enabled: Boolean(id) && (config.enabled ?? true),
-  })
+    select: (data) => data || undefined as T,
+  }) as UseQueryResult<T | undefined>
 
   /**
    * Buscar usuario por término
@@ -42,10 +42,10 @@ export const useQueryUser = (): QueryReact_User => {
    */
   const fetchUserByQuery = <T>(query: QueryOptions = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.search(query),
-    select: (data) => data || [] as T[],
-    enabled: Boolean(query) && (query.enabled ?? true),
     queryFn: () => user.getByQuery<T>({ ...query, enabled: undefined }),
-  })
+    enabled: Boolean(query) && (query.enabled ?? true),
+    select: (data) => data || [] as T[],
+  }) as UseQueryResult<T[]>
 
   return {
     fetchAllUsers,
