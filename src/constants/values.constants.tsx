@@ -739,6 +739,34 @@ export const styles = StyleSheet.create({ //styles basics
     width: '100%',
     height: '70pt',
     objectFit: 'contain',
+  },
+
+  // Estilos para la sección de no referencia
+  noReferenceContainer: {
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minHeight: '100px',
+    padding: '10px',
+  },
+  noReferenceTitleContainer: {
+    marginBottom: '5px',
+    alignItems: 'center'
+  },
+  noReferenceTitle: {
+    textAlign: 'center',
+    color: '#d32f2f',
+    fontWeight: 500,
+    fontSize: 14,
+  },
+  noReferenceContent: {
+    textAlign: 'center',
+    padding: '5px',
+  },
+  noReferenceText: {
+    color: '#616161',
+    lineHeight: 1.5,
+    fontSize: 10,
   }
 })
 

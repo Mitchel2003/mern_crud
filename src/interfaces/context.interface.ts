@@ -138,10 +138,11 @@ export type Maintenance = BaseMDB & {
 
   //maintenance
   observations: string
-  curriculum: Curriculum
   typeMaintenance: string
   statusEquipment: string
   metadata?: Record<string, any>
+  curriculum: Curriculum
+  createdBy: User
 }
 export type Curriculum = BaseMDB & {
   codeEquip: string //proximamente (to stock)
@@ -197,6 +198,7 @@ export type Curriculum = BaseMDB & {
   manualsMaintenance: ('servicio' | 'componentes' | 'usuario' | 'despiece')[]
 
   //relationship
+  createdBy: User
   office: Office
   inspection: Inspection
   supplier: Supplier

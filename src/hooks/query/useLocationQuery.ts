@@ -19,9 +19,10 @@ export const useQueryLocation = (): QueryReact_Location => {
    * Obtener todas las ubicaciones
    * @param {LocationType} path - Nos ayuda a construir la route
    */
-  const fetchAllLocations = <T>(path: LocationType) => useQuery({
+  const fetchAllLocations = <T>(path: LocationType, config: QueryConfig = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.locations(path),
     queryFn: () => location.getAll<T>(path),
+    enabled: Boolean(path) && (config.enabled ?? true),
     select: (data) => data || [] as T[],
     initialData: [] as T[],
   }) as UseQueryResult<T[]>

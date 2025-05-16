@@ -3,14 +3,8 @@ import { Curriculum, Accessory, User } from "@/interfaces/context.interface"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { styles } from "@/constants/values.constants"
 
-interface CurriculumPDFProps {
-  accs?: Accessory[]
-  cv: Curriculum
-  company: User
-  client: User
-}
-
-const CurriculumPDF = ({ cv, accs, company, client }: CurriculumPDFProps) => (
+interface CurriculumPDFProps { cv: Curriculum; client: User; accs?: Accessory[] }
+const CurriculumPDF = ({ cv, accs, client }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
@@ -22,7 +16,7 @@ const CurriculumPDF = ({ cv, accs, company, client }: CurriculumPDFProps) => (
         <TechnicalSection cv={cv} />{/* Technical Characteristics */}
         <InspectionsSection inspections={cv.inspection.typeInspection} />{/* Inspecciones */}
         <CharacteristicsSection cv={cv} />{/* Características */}
-        <ServiceProviderSection company={company} />{/* ProviderService */}
+        <ServiceProviderSection cv={cv} />{/* ProviderService */}
       </View>
     </Page>
   </Document>
@@ -439,37 +433,72 @@ const CharacteristicsSection = ({ cv }: { cv: Curriculum }) => (
 )
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ company }: { company: User }) => (
-  <>
-    <View style={[styles.sectionTitle, { marginBottom: '0pt' }]}>
-      <Text style={styles.sectionTitleText}>PROVEEDOR DEL SERVICIO</Text>
-    </View>
-
-    <View style={styles.providerContainer}>
-      {/* Información del proveedor */}
-      <View style={styles.providerInfo}>
-        <View style={styles.infoGroup}>
-          <Text style={styles.providerLabel}>Nombre del proveedor:</Text>
-          <Text style={styles.providerValue}>
-            {company?.username || 'N/A'}
-          </Text>
-        </View>
-
-        <View style={styles.infoGroup}>
-          <Text style={styles.providerLabel}>Registro Invima:</Text>
-          <Text style={styles.providerValue}>
-            {company?.invima || 'N/A'}
-          </Text>
-        </View>
+const ServiceProviderSection = ({ cv }: { cv: Curriculum }) => {
+  const provider = resolveProviderHierarchy(cv.createdBy)
+  return provider ? (
+    <>
+      <View style={[styles.sectionTitle, { marginBottom: '0pt' }]}>
+        <Text style={styles.sectionTitleText}>PROVEEDOR DEL SERVICIO</Text>
       </View>
 
-      {/* Logo de la empresa */}
-      {company?.metadata && (
-        <Image
-          style={styles.providerLogo}
-          src={company?.metadata?.logo || "https://placehold.co/100x100/e2e2e2/666666?text=Sin+imagen"}
-        />
-      )}
+      <View style={styles.providerContainer}>
+        {/* Información del proveedor */}
+        <View style={styles.providerInfo}>
+          <View style={styles.infoGroup}>
+            <Text style={styles.providerLabel}>Nombre del proveedor:</Text>
+            <Text style={styles.providerValue}>
+              {provider?.username || 'N/A'}
+            </Text>
+          </View>
+
+          <View style={styles.infoGroup}>
+            <Text style={styles.providerLabel}>Registro Invima:</Text>
+            <Text style={styles.providerValue}>
+              {provider?.invima || 'N/A'}
+            </Text>
+          </View>
+        </View>
+
+        {/* Logo de la empresa */}
+        {provider?.metadata && (
+          <Image
+            style={styles.providerLogo}
+            src={provider?.metadata?.logo || "https://placehold.co/100x100/e2e2e2/666666?text=Sin+imagen"}
+          />
+        )}
+      </View>
+    </>
+  ) : (
+    <View style={styles.noReferenceContainer}>
+      <View style={styles.noReferenceTitleContainer}>
+        <Text style={styles.noReferenceTitle}>SIN REFERENCIAS</Text>
+      </View>
+      <View style={styles.noReferenceContent}>
+        <Text style={styles.noReferenceText}>
+          No se encontraron referencias válidas para este mantenimiento.
+          Por favor, verifique la información del proveedor de servicios.
+        </Text>
+      </View>
     </View>
-  </>
-)
+  )
+}
+
+
+
+
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/**
+ * Resuelve la jerarquía de usuarios y compañías para obtener los datos correctos del proveedor
+ * @param user - El usuario inicial (createdBy)
+ * @returns El usuario o compañía con los datos completos
+ */
+const resolveProviderHierarchy = (user: User): User | undefined => {
+  if (!user) return undefined
+  // If its a collaborator, search for its company
+  if (user.role === 'collaborator' && user.belongsTo) { const company = resolveProviderHierarchy(user.belongsTo); return company }
+  //If its a company, verify if it is a sub company and search for its main company
+  if (user.role === 'company' && user.belongsTo) { const mainCompany = resolveProviderHierarchy(user.belongsTo); return mainCompany }
+  return user
+}

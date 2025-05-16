@@ -227,7 +227,10 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   const { referenceData, observationData } = formatHooks.maintenance()
   const { createFormat, updateFormat } = useFormatMutation("maintenance")
   const { createFile, deleteFile } = useFormatMutation("file")
+  const { user = {} as User } = useAuthContext()
+  const { notifyError } = useNotification()
 
+  const userAllowed = user?.role === 'company' || user?.role === 'collaborator' //user allowed to create mts
   const { data: mt, isLoading } = useQueryFormat().fetchFormatById<Maintenance>('maintenance', id as string)
 
   const methods = useForm<MaintenanceFormProps>({
@@ -288,8 +291,8 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
             await updateFormat({ id, data: { metadata: { ...(mt?.metadata || {}), files: urlsUpdated } } })
           }
         })
-      ) : (
-        createFormat(data).then(async (mt) => {
+      ) : userAllowed ? (
+        createFormat({ ...data, createdBy: user._id }).then(async (mt) => {
           const annexes = e.newAnnexes?.map(item => item.file) || []
           /** Upload files to storage and update metadata maintenance */
           if (annexes.length === 0) return //if we dont have some files
@@ -302,7 +305,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
           /** Update metadata references with files (images) URLs, if have some */
           urls.length > 0 && await updateFormat({ id: mt._id, data: { metadata: { files: urls } } })
         })
-      )
+      ) : (notifyError({ message: "No tienes permiso para crear mantenimientos" }))
       methods.reset()
     },
     onSuccess
@@ -327,8 +330,11 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
   const { createFormat: createAcc, deleteFormat: deleteAcc } = useFormatMutation("accessory")
   const { createFormat: createCV, updateFormat: updateCV } = useFormatMutation("cv")
   const { createFile, deleteFile } = useFormatMutation("file")
+  const { user = {} as User } = useAuthContext()
+  const { notifyError } = useNotification()
   const queryFormat = useQueryFormat()
 
+  const userAllowed = user?.role === 'company' || user?.role === 'collaborator' //user allowed to create curriculums (createdBy)
   const { data: acc = [], isLoading: isLoadingAcc } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: id, enabled: !!id })
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id as string)
   const isLoading = isLoadingAcc || isLoadingCv
@@ -452,8 +458,8 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
             await updateCV({ id, data: { photoUrl } })
           })
         })
-      ) : (
-        createCV(data).then(async (cv) => {
+      ) : userAllowed ? (
+        createCV({ ...data, createdBy: user._id }).then(async (cv) => {
           const file = e.photoUrl?.[0]?.file
           const path = `files/${cv._id}/preview/img`
           const annexes = e.newAnnexes?.map(item => item.file) || []
@@ -471,7 +477,7 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
           /** Update metadata references with annexes URLs, if have some */
           urls.length > 0 && await updateCV({ id: cv._id, data: { metadata: { files: urls } } })
         })
-      )
+      ) : (notifyError({ message: "No tienes permiso para crear hojas de vida" }))
       methods.reset()
     },
     onSuccess

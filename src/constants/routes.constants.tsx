@@ -46,7 +46,7 @@ const routePermissions: RoutePermission[] = [
   {// Curriculums (form)
     isPrefix: true,
     path: '/form/curriculum',
-    allowed: ['admin', 'company:main', 'company:sub', 'client'],
+    allowed: ['company:main', 'company:sub', 'collaborator'],
   },
   {// Curriculums (table)
     isPrefix: true,
@@ -57,7 +57,7 @@ const routePermissions: RoutePermission[] = [
   {// Maintenance (form)
     isPrefix: true,
     path: '/form/maintenance',
-    allowed: ['admin', 'company:main', 'company:sub', 'collaborator', 'client'],
+    allowed: ['company:main', 'company:sub', 'collaborator'],
   },
   {// Maintenance (table)
     isPrefix: true,
@@ -68,7 +68,7 @@ const routePermissions: RoutePermission[] = [
   {// Cronograma (form)
     isPrefix: true,
     path: '/form/schedule',
-    allowed: ['admin', 'company:main', 'company:sub', 'collaborator', 'client'],
+    allowed: ['company:main', 'company:sub', 'collaborator'],
   },
   {// Cronograma (table)
     isPrefix: true,
@@ -79,7 +79,7 @@ const routePermissions: RoutePermission[] = [
   {// Solicitud (form)
     isPrefix: true,
     path: '/form/solicit',
-    allowed: ['admin', 'client'],
+    allowed: ['client'],
   },
   {// Solicitud (table)
     isPrefix: true,
@@ -92,7 +92,7 @@ const routePermissions: RoutePermission[] = [
   {// Consultorios (form)
     isPrefix: true,
     path: '/location/office',
-    allowed: ['admin', 'company:main'],
+    allowed: ['admin', 'company:main', 'company:sub'],
   },
   {// Consultorios (table)
     isPrefix: true,
@@ -103,7 +103,7 @@ const routePermissions: RoutePermission[] = [
   {// Sedes (form)
     isPrefix: true,
     path: '/location/headquarter',
-    allowed: ['admin', 'company:main'],
+    allowed: ['admin', 'company:main', 'company:sub'],
   },
   {// Sedes (table)
     isPrefix: true,
@@ -160,7 +160,7 @@ const routePermissions: RoutePermission[] = [
   {// Colaboradores (form)
     isPrefix: true,
     path: '/collaborator',
-    allowed: ['admin', 'company:sub'],
+    allowed: ['admin', 'company:main', 'company:sub'],
   },
   {// Colaboradores (table)
     isPrefix: true,

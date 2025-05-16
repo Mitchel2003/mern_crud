@@ -22,9 +22,10 @@ export const useQueryFormat = (): QueryReact_Format => {
    * Obtener todos los formatos
    * @param {FormatType} path - Nos ayuda a construir la route
    */
-  const fetchAllFormats = <T>(path: FormatType) => useQuery({
+  const fetchAllFormats = <T>(path: FormatType, config: QueryConfig = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.formats(path),
     queryFn: () => format.getAll<T>(path),
+    enabled: Boolean(path) && (config.enabled ?? true),
     select: (data) => data || [] as T[],
     initialData: [] as T[],
   }) as UseQueryResult<T[]>

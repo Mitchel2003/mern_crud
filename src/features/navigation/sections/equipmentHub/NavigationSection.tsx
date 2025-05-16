@@ -153,7 +153,7 @@ const cardData = ({ cv, auth, theme }: CardDataProps): CardData[] => {
     alert: "Equipos de computo, biomedicos etc",
     description: "Gestione y consulte información detallada sobre sus equipos",
     gradient: theme === "dark" ? "from-purple-600 to-indigo-700" : "from-purple-500 to-indigo-600",
-    path: cv?._id ? `/form/curriculum/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/curriculum",
+    path: cv?._id ? `/form/curriculum/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/curriculums",
   }, {
     icon: Wrench,
     id: "mantenimientos",
@@ -161,7 +161,7 @@ const cardData = ({ cv, auth, theme }: CardDataProps): CardData[] => {
     alert: "Preventivos y correctivos",
     description: "Consulte el historial y maneje los mantenimientos de los equipos",
     gradient: theme === "dark" ? "from-amber-600 to-orange-700" : "from-amber-500 to-orange-600",
-    path: cv?._id ? `/form/maintenance/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/maintenance",
+    path: cv?._id ? `/form/maintenance/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/maintenances",
   }]
 
   auth && cv && arrayDefault.unshift({

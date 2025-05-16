@@ -14,7 +14,7 @@ export interface QueryOptions extends QueryConfig {
 /*--------------------------------------------------to user--------------------------------------------------*/
 /*useQuery and useMutation*/
 export type QueryReact_User = {
-  fetchAllUsers: <T>() => UseQueryResult<T[], Error>
+  fetchAllUsers: <T>(config?: QueryConfig) => UseQueryResult<T[], Error>
   fetchUserById: <T>(id: string, config?: QueryConfig) => UseQueryResult<T | undefined, Error>
   fetchUserByQuery: <T>(query: QueryOptions) => UseQueryResult<T[], Error>
 }
@@ -29,7 +29,7 @@ export type CustomMutation_User = {
 /*--------------------------------------------------to location--------------------------------------------------*/
 /*useQuery and useMutation*/
 export type QueryReact_Location = {
-  fetchAllLocations: <T>(path: LocationType) => UseQueryResult<T[], Error>
+  fetchAllLocations: <T>(path: LocationType, config?: QueryConfig) => UseQueryResult<T[], Error>
   fetchLocationById: <T>(path: LocationType, id: string, config?: QueryConfig) => UseQueryResult<T | undefined, Error>
   fetchLocationByQuery: <T>(path: LocationType, query: QueryOptions) => UseQueryResult<T[], Error>
 }
@@ -44,7 +44,7 @@ export type CustomMutation_Location = {
 /*--------------------------------------------------to format--------------------------------------------------*/
 /*useQuery and useMutation*/
 export type QueryReact_Format = {
-  fetchAllFormats: <T>(path: FormatType) => UseQueryResult<T[], Error>
+  fetchAllFormats: <T>(path: FormatType, config?: QueryConfig) => UseQueryResult<T[], Error>
   fetchFormatById: <T>(path: FormatType, id: string, config?: QueryConfig) => UseQueryResult<T | undefined, Error>
   fetchFormatByQuery: <T>(path: FormatType, query: QueryOptions) => UseQueryResult<T[], Error>
   fetchAllFiles: <T>(data: FileReference) => UseQueryResult<T[], Error>

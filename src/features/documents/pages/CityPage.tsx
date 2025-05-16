@@ -9,17 +9,20 @@ import { cn } from '@/lib/utils'
 import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
+import { useAuthContext } from "@/context/AuthContext"
 import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 const route = '/location/city'
 
 const CityPage = () => {
   const { theme } = useThemeContext()
+  const { user } = useAuthContext()
   const { id } = useParams()
 
   const table = createTheme({ palette: { mode: theme } }) //theme table
   const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
+  const userAllowed = user?.role === 'admin' //Only admin can access to this page
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
       <ThemeProvider theme={table}>
@@ -27,6 +30,7 @@ const CityPage = () => {
           <Tabs value={tab} onValueChange={handle}>
             {/* Local action tabs */}
             <TabsList className={cn(
+              !userAllowed && 'hidden',
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60"
             )}>

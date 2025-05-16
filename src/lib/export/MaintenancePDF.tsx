@@ -3,9 +3,8 @@ import { Curriculum, Maintenance, User } from '@/interfaces/context.interface'
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { styles } from "@/constants/values.constants"
 
-interface MaintenancePDFProps { mt: Maintenance, com?: User }
-
-const MaintenancePDF = ({ mt, com }: MaintenancePDFProps) => (
+interface MaintenancePDFProps { mt: Maintenance }
+const MaintenancePDF = ({ mt }: MaintenancePDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
@@ -16,7 +15,7 @@ const MaintenancePDF = ({ mt, com }: MaintenancePDFProps) => (
         <TechnicalSection mt={mt} />{/* Technical Characteristics */}
         <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
         <ObservationsSection mt={mt} />{/* Observaciones */}
-        <ServiceProviderSection mt={mt} com={com} />{/* ProviderService */}
+        <ServiceProviderSection mt={mt} />{/* ProviderService */}
       </View>
     </Page>
   </Document>
@@ -276,66 +275,81 @@ const ObservationsSection = ({ mt }: { mt: Maintenance }) => {
 }
 
 /** Proveedor del Servicio */
-const ServiceProviderSection = ({ mt, com }: { mt: Maintenance, com?: User }) => (
-  <>
-    <View style={styles.sectionTitle}>
-      <Text style={styles.sectionTitleText}></Text>
-    </View>
-
-    {/* Fechas de mantenimiento */}
-    <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col2]}>
-        <Text style={styles.label}>FECHA MANTENIMIENTO:</Text>
-        <Text>{formatDate(mt?.dateMaintenance)}</Text>
+const ServiceProviderSection = ({ mt }: { mt: Maintenance }) => {
+  const provider = resolveProviderHierarchy(mt.createdBy)
+  return provider ? (
+    <>
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}></Text>
       </View>
-      {mt.typeMaintenance === 'preventivo' && (
-        <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
-          <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
-          <Text>{formatDate(mt?.dateNextMaintenance)}</Text>
+
+      {/* Fechas de mantenimiento */}
+      <View style={styles.infoRow}>
+        <View style={[styles.infoCol, styles.col2]}>
+          <Text style={styles.label}>FECHA MANTENIMIENTO:</Text>
+          <Text>{formatDate(mt?.dateMaintenance)}</Text>
         </View>
-      )}
-    </View>
-
-    <View style={styles.mainContainer}>
-      {/* Información del proveedor */}
-      <View style={styles.providerInfoContainer}>
-        <Text style={styles.providerTitle}>INGENIERO DE SERVICIO</Text>
-        <Text style={styles.providerDetails}>{com?.username}</Text>
-        <Text style={styles.providerDetails}>REG. INVIMA: {com?.invima}</Text>
-        <Text style={styles.providerDetails}>MP: {com?.profesionalLicense}</Text>
+        {mt.typeMaintenance === 'preventivo' && (
+          <View style={[styles.infoCol, styles.col2, { width: '60%' }]}>
+            <Text style={styles.label}>PRÓXIMO MANTENIMIENTO PREVENTIVO:</Text>
+            <Text>{formatDate(mt?.dateNextMaintenance)}</Text>
+          </View>
+        )}
       </View>
 
-      {/* Recibido a satisfacción */}
-      <View style={styles.signatureBox}>
-        <Text style={styles.signatureLabel}>RECIBIDO A SATISFACCIÓN</Text>
-        <View style={styles.signatureLine} />
-      </View>
+      <View style={styles.mainContainer}>
+        {/* Información del proveedor */}
+        <View style={styles.providerInfoContainer}>
+          <Text style={styles.providerTitle}>INGENIERO DE SERVICIO</Text>
+          <Text style={styles.providerDetails}>{provider.username || 'N/A'}</Text>
+          <Text style={styles.providerDetails}>REG. INVIMA: {provider.invima || 'N/A'}</Text>
+          <Text style={styles.providerDetails}>MP: {provider.profesionalLicense || 'N/A'}</Text>
+        </View>
 
-      {/* Firma del proveedor */}
-      <View style={styles.signatureBox}>
-        <Text style={styles.signatureLabel}>FIRMA INGENIERO</Text>
-        <View style={styles.signatureLine}>
-          {com?.metadata?.signature && (
+        {/* Recibido a satisfacción */}
+        <View style={styles.signatureBox}>
+          <Text style={styles.signatureLabel}>RECIBIDO A SATISFACCIÓN</Text>
+          <View style={styles.signatureLine} />
+        </View>
+
+        {/* Firma del proveedor */}
+        <View style={styles.signatureBox}>
+          <Text style={styles.signatureLabel}>FIRMA INGENIERO</Text>
+          <View style={styles.signatureLine}>
+            {provider.metadata?.signature && (
+              <Image
+                style={styles.providerSignature}
+                src={provider.metadata.signature}
+              />
+            )}
+          </View>
+        </View>
+
+        {/* Logo de la empresa */}
+        <View style={styles.providerLogoContainer}>
+          {provider.metadata?.logo && (
             <Image
-              style={styles.providerSignature}
-              src={com.metadata.signature || "/placeholder.svg"}
+              style={styles.providerCompanyLogo}
+              src={provider.metadata.logo}
             />
           )}
         </View>
       </View>
-
-      {/* Logo de la empresa */}
-      <View style={styles.providerLogoContainer}>
-        {com?.metadata?.logo && (
-          <Image
-            style={styles.providerCompanyLogo}
-            src={com.metadata.logo || "/placeholder.svg"}
-          />
-        )}
+    </>
+  ) : (
+    <View style={styles.noReferenceContainer}>
+      <View style={styles.noReferenceTitleContainer}>
+        <Text style={styles.noReferenceTitle}>SIN REFERENCIAS</Text>
+      </View>
+      <View style={styles.noReferenceContent}>
+        <Text style={styles.noReferenceText}>
+          No se encontraron referencias válidas para este mantenimiento.
+          Por favor, verifique la información del proveedor de servicios.
+        </Text>
       </View>
     </View>
-  </>
-)
+  )
+}
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
@@ -351,4 +365,18 @@ const getStatusStyles = (status: string) => {
     default:
       return { badge: styles.statusDefault, text: styles.statusDefaultText }
   }
+}
+
+/**
+ * Resuelve la jerarquía de usuarios y compañías para obtener los datos correctos del proveedor
+ * @param user - El usuario inicial (createdBy)
+ * @returns El usuario o compañía con los datos completos
+ */
+const resolveProviderHierarchy = (user: User): User | undefined => {
+  if (!user) return undefined
+  // If its a collaborator, search for its company
+  if (user.role === 'collaborator' && user.belongsTo) { const company = resolveProviderHierarchy(user.belongsTo); return company }
+  //If its a company, verify if it is a sub company and search for its main company
+  if (user.role === 'company' && user.belongsTo) { const mainCompany = resolveProviderHierarchy(user.belongsTo); return mainCompany }
+  return user
 }

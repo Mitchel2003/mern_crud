@@ -1,7 +1,6 @@
-import { Accessory, Curriculum, Maintenance, Solicit, User, Schedule } from '@/interfaces/context.interface'
+import { Accessory, Curriculum, Maintenance, Solicit, Schedule } from '@/interfaces/context.interface'
 import { extractMetadataUrl, formatDateTime } from '@/constants/format.constants'
 import { useFormatMutation, useQueryFormat } from '@/hooks/query/useFormatQuery'
-import { useQueryUser } from '@/hooks/query/useAuthQuery'
 import MaintenancePDF from '@/lib/export/MaintenancePDF'
 import CurriculumPDF from '@/lib/export/CurriculumPDF'
 import { Metadata } from '@/interfaces/db.interface'
@@ -108,9 +107,7 @@ export const useMaintenanceTable = () => {
   const { deleteFile } = useFormatMutation("file")
   const isProcessing = useRef(false)
 
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
   const { data: mts = [] } = useQueryFormat().fetchAllFormats<Maintenance>('maintenance')
-  const com = companies?.[0]
 
   /**
    * Función que se ejecuta cuando se descarga mantenimientos multiple
@@ -130,13 +127,13 @@ export const useMaintenanceTable = () => {
     //Prepare components for the ZIP
     const pdfComponents = Array.from(groupedByEquipment.entries()).flatMap(([_, equipmentMts]) =>
       equipmentMts.map(mt => ({
-        props: { mt, com }, component: MaintenancePDF,
+        props: { mt }, component: MaintenancePDF,
         fileName: `${mt.curriculum?.name} - ${mt.curriculum?.modelEquip}/${mt.typeMaintenance}-${new Date(mt.dateMaintenance).toISOString().split('T')[0]}.pdf`
       }))
     ) //Generate zip name based on date and number of equipments
     const zipName = `mantenimientos-${new Date().toISOString().split('T')[0]}-${groupedByEquipment.size}equipos.zip`
     await downloadZIP({ zipName, components: pdfComponents }).finally(() => { setOnDownloadZip(undefined); isProcessing.current = false })
-  }, [downloadZIP, com])
+  }, [downloadZIP])
 
   /**
    * Función que se ejecuta cuando se descarga un mantenimiento
@@ -146,9 +143,9 @@ export const useMaintenanceTable = () => {
     if (isProcessing.current) return
     isProcessing.current = true
     const fileName = `mantenimiento-${mt.curriculum?.name}-${mt.curriculum?.modelEquip} (${formatDateTime(mt.dateMaintenance)}).pdf`
-    await downloadPDF({ fileName, component: MaintenancePDF, props: { mt, com } })
+    await downloadPDF({ fileName, component: MaintenancePDF, props: { mt } })
       .finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF, com])
+  }, [downloadPDF])
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
@@ -202,12 +199,9 @@ export const useCurriculumTable = () => {
   const { deleteFolder } = useFormatMutation("file")
   const isProcessing = useRef(false)
   const queryFormat = useQueryFormat()
-  const queryUser = useQueryUser()
 
-  const { data: companies } = queryUser.fetchUserByQuery<User>({ role: 'company' })
   const { data: mts = [] } = queryFormat.fetchAllFormats<Maintenance>('maintenance')
   const { data: cvs = [] } = queryFormat.fetchAllFormats<Curriculum>('cv')
-  const company = companies?.[0] //mean while we can work with one company
 
   const { data: accs } = queryFormat.fetchFormatByQuery<Accessory>('accessory', { curriculum: onDelete?._id || onDownload?._id, enabled: !!onDelete || !!onDownload })
   const zipFiles = queryFormat.fetchQueriesCV((onDownloadZip || onDownloadZipMts || [])) //fetch all queries for zip
@@ -289,7 +283,7 @@ export const useCurriculumTable = () => {
       const curriculumAccs = resources.curriculumAccs || [] //accs
       const client = cv?.office?.headquarter?.client //client context
       const fileName = `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
-      return { fileName, component: CurriculumPDF, props: { cv, company: company!, client: client!, accs: curriculumAccs } }
+      return { fileName, component: CurriculumPDF, props: { cv, client: client!, accs: curriculumAccs } }
     })
     //Generate zip name based on date and number of equipments
     const zipName = `hojas-de-vida-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
@@ -308,13 +302,13 @@ export const useCurriculumTable = () => {
       const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
       const curriculumAccs = resources.curriculumAccs || [] //accs
       const client = cv?.office?.headquarter?.client //client context
-      const pdf = await pdfToBase64(CurriculumPDF, { cv, company: company!, client: client, accs: curriculumAccs })
+      const pdf = await pdfToBase64(CurriculumPDF, { cv, client: client, accs: curriculumAccs })
       return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Hoja de vida.pdf` }
     }) //Prepare promises for generating maintenance PDFs
     const maintenancePromises = cvs.flatMap((cv) =>
       cv.hasMaintenances && cv.childRows?.length > 0
         ? cv.childRows.map(async (mt) => {
-          const pdf = await pdfToBase64(MaintenancePDF, { mt, com: company! })
+          const pdf = await pdfToBase64(MaintenancePDF, { mt })
           return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Mantenimientos/${mt.typeMaintenance}-${mt.dateMaintenance.toISOString().split('T')[0]}.pdf` }
         }) : []
     )
@@ -336,9 +330,9 @@ export const useCurriculumTable = () => {
     const client = cv?.office?.headquarter?.client
     await downloadPDF({ //Download curriculum PDF
       fileName: `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`,
-      component: CurriculumPDF, props: { cv, accs, company: company!, client: client }
+      component: CurriculumPDF, props: { cv, accs, client: client }
     }).finally(() => { setOnDownload(undefined); isProcessing.current = false })
-  }, [downloadPDF, company, accs])
+  }, [downloadPDF, accs])
 
   /**
    * Función que se ejecuta cuando se elimina un currículo
@@ -367,7 +361,7 @@ export const useCurriculumTable = () => {
   }, [
     deleteCurriculum, downloadFile, downloadFileZip, downloadFileZipMts,
     onDelete, onDownload, onDownloadZip, onDownloadZipMts,
-    isLoading, companies, accs, mts
+    isLoading, accs, mts
   ])
 
   return {

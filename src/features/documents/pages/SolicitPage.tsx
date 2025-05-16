@@ -22,6 +22,7 @@ const SolicitPage = () => {
   const table = createTheme({ palette: { mode: theme } }) //theme table
   const { tab, isQuery, handle } = useTabs({ id, to: route, startOn: user?.role === 'client' ? 'form' : 'table' })
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
+  const userAllowed = user?.role === 'admin'
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
       <ThemeProvider theme={table}>
@@ -29,6 +30,7 @@ const SolicitPage = () => {
           <Tabs value={tab} onValueChange={handle}>
             {/* Local action tabs */}
             <TabsList className={cn(
+              !userAllowed && 'hidden',
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60"
             )}>
@@ -37,7 +39,6 @@ const SolicitPage = () => {
                 className={cn(
                   'flex px-6 gap-2 items-center',
                   'duration-200 hover:scale-105 hover:bg-accent/50',
-                  user?.role === 'client' && 'hidden'
                 )}
               >
                 Tabla <TableProperties className='h-4 w-4' />
@@ -47,7 +48,6 @@ const SolicitPage = () => {
                 className={cn(
                   'flex px-6 gap-2 items-center',
                   'duration-200 hover:scale-105 hover:bg-accent/50',
-                  user?.role === 'company' && 'hidden'
                 )}
               >
                 Añadir <PlusCircle className='h-4 w-4' />

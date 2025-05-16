@@ -22,6 +22,7 @@ const CurriculumPage = () => {
   const table = createTheme({ palette: { mode: theme } }) //theme table
   const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
+  const userAllowed = user?.role === 'company' || user?.role === 'collaborator'
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
       <ThemeProvider theme={table}>
@@ -29,9 +30,9 @@ const CurriculumPage = () => {
           <Tabs value={tab} onValueChange={handle}>
             {/* Local action tabs */}
             <TabsList className={cn(
+              !userAllowed && 'hidden',
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60",
-              user?.role === 'client' && 'hidden'
             )}>
               <TabsTrigger
                 value="table"

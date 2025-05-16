@@ -50,8 +50,8 @@ const ClientPage = () => {
 
               {/* Local action tabs */}
               <TabsList className={cn(
-                "bg-muted/60 backdrop-blur transition-all",
-                "supports-[backdrop-filter]:bg-background/60"
+                "hidden bg-muted/60 backdrop-blur transition-all",
+                "supports-[backdrop-filter]:bg-background/60",
               )}>
                 <TabsTrigger
                   value="table"

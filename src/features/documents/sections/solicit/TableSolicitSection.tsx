@@ -183,9 +183,9 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
 
     /*--------------------------------------------------Row details dropdown--------------------------------------------------*/
     renderDetailPanel: ({ row: { original: solicit } }) => (// row details (Dropdown collapsible)
-      <Box sx={{ gap: 2, boxShadow: 2, width: '100%', display: 'flex', borderRadius: 1, flexDirection: 'column', overflow: 'hidden' }}>
+      <Box sx={{ gap: 2, boxShadow: 2, width: '100%', display: 'flex', borderRadius: 1, overflow: 'hidden', flexDirection: 'column', bgcolor: theme === 'dark' ? 'background.paper' : 'background.default' }}>
         {/* Header Banner with Status and Priority */}
-        <Box sx={{ p: 2, display: 'flex', color: 'white', justifyContent: 'space-between', alignItems: 'center', bgcolor: solicit.status === 'pendiente' ? 'warning.main' : (solicit.status === 'asignado' ? 'info.main' : 'success.main') }}>
+        <Box sx={{ p: 2, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: theme === 'dark' ? (solicit.status === 'pendiente' ? 'warning.dark' : (solicit.status === 'asignado' ? 'info.dark' : 'success.dark')) : (solicit.status === 'pendiente' ? 'warning.main' : (solicit.status === 'asignado' ? 'info.main' : 'success.main')) }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
               Solicitud {solicit.status === 'pendiente' ? 'Pendiente' : (solicit.status === 'asignado' ? 'Asignada' : 'Completada')}
@@ -195,14 +195,14 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
             size="small"
             label={solicit.priority ? 'URGENTE' : 'NORMAL'}
             icon={solicit.priority ? <AlertCircle size={14} color="white" /> : <Clock size={14} color="white" />}
-            sx={{ color: 'white', fontWeight: 'bold', bgcolor: solicit.priority ? 'error.dark' : 'rgba(255,255,255,0.2)' }}
+            sx={{ color: 'white', fontWeight: 'bold', bgcolor: theme === 'dark' ? (solicit.priority ? 'error.dark' : 'rgba(255,255,255,0.1)') : (solicit.priority ? 'error.dark' : 'rgba(255,255,255,0.2)') }}
           />
         </Box>
 
         {/* Main Content Area */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, bgcolor: 'background.paper' }}>
           {/* Left Column - Equipment Details */}
-          <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', borderRight: { xs: 'none', md: '1px solid #eee' } }}>
+          <Box sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', borderRight: { xs: 'none', md: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.1)' : '#eee'}` } }}>
             <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
               <FileText size={20} /> Detalles del Equipo
             </Typography>
@@ -295,7 +295,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
                 </Box>
               </Box>
             ) : (
-              <Box sx={{ p: 3, textAlign: 'center', color: 'text.secondary', bgcolor: 'grey.50', borderRadius: 2 }}>
+              <Box sx={{ p: 3, borderRadius: 2, textAlign: 'center', color: theme === 'dark' ? 'text.secondary' : 'text.primary', bgcolor: theme === 'dark' ? 'background.paper' : 'grey.50' }}>
                 <AlertCircle size={40} style={{ marginBottom: '16px', opacity: 0.5 }} />
                 <Typography>No hay equipo asociado a esta solicitud</Typography>
               </Box>
@@ -303,11 +303,11 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
           </Box>
 
           {/* Right Column - Client and Request Details */}
-          <Box sx={{ flex: 1, p: 3, bgcolor: 'grey.50' }}>
+          <Box sx={{ flex: 1, p: 3, bgcolor: theme === 'dark' ? 'background.paper' : 'grey.50' }}>
             {/* Request Details */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', p: 0.5, borderRadius: '50%', bgcolor: 'secondary.main' }}>
+                <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', p: 0.5, borderRadius: '50%', bgcolor: theme === 'dark' ? 'secondary.dark' : 'secondary.main' }}>
                   <Box component="span" sx={{ width: 20, height: 20, borderRadius: '50%', bgcolor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography variant="caption" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>S</Typography>
                   </Box>
@@ -319,7 +319,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                     <Typography variant="caption" color="text.secondary">Mensaje</Typography>
-                    <Paper sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+                    <Paper sx={{ p: 2, borderRadius: 1, bgcolor: theme === 'dark' ? 'background.paper' : 'grey.100' }}>
                       <Typography variant="body2">{solicit.message}</Typography>
                     </Paper>
                   </Box>
@@ -343,7 +343,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
             {solicit.curriculum?.office?.headquarter?.client && (
               <Box>
                 <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', p: 0.5, borderRadius: '50%', bgcolor: 'primary.main' }}>
+                  <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', p: 0.5, borderRadius: '50%', bgcolor: theme === 'dark' ? 'primary.dark' : 'primary.main' }}>
                     <Box component="span" sx={{ width: 20, height: 20, borderRadius: '50%', bgcolor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Typography variant="caption" sx={{ fontWeight: 'bold', color: 'primary.main' }}>C</Typography>
                     </Box>
@@ -351,7 +351,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
                   Información del Cliente
                 </Typography>
 
-                <Paper sx={{ p: 2, borderRadius: 2 }}>
+                <Paper sx={{ p: 2, borderRadius: 2, bgcolor: theme === 'dark' ? 'background.paper' : 'background.default' }}>
                   <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                       <Typography variant="caption" color="text.secondary">Cliente</Typography>

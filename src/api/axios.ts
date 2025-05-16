@@ -77,8 +77,14 @@ export const cachedAxios = setupCache(instance, {
   cachePredicate: (response) => { //decides if the response should be cached, returns true by default
     const contentLength = Number(response.headers?.['content-length'] || '0')
     if (contentLength > 200 * 1024) return false //too large to cache (200kb)
-    const sensitivePattern = /(user|auth)\//i //sensitive (users, auth)
     const url = (response.config?.url || '').toLowerCase()
+
+    /**
+     * Busca: /user, /users, /auth, /notifications en cualquier parte
+     * Permite parámetros de búsqueda (como ?role=company)
+     * Ignora mayúsculas/minúsculas con /i
+     */
+    const sensitivePattern = /\/(user(s)?|auth|notifications)\/?(?:\?|$)/i
     if (sensitivePattern.test(url)) return false
     return true
   }

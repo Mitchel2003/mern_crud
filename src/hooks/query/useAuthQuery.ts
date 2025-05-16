@@ -17,9 +17,10 @@ export const useQueryUser = (): QueryReact_User => {
   const user = useAuthContext()
 
   /** Obtener todos los usuarios */
-  const fetchAllUsers = <T>() => useQuery({
+  const fetchAllUsers = <T>(config: QueryConfig = { enabled: true }) => useQuery({
     queryKey: QUERY_KEYS.users(),
     queryFn: () => user.getAll<T>(),
+    enabled: (config.enabled ?? true),
     select: (data) => data || [] as T[],
     initialData: [] as T[],
   }) as UseQueryResult<T[]>
