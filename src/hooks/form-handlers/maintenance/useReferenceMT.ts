@@ -25,12 +25,7 @@ const useReferenceMT = () => {
   return {
     mapValues,
     submitData,
-    options: {
-      clients: clients || [],
-      offices: offices || [],
-      curriculums: curriculums || [],
-      headquarters: headquarters || []
-    }
+    options: { clients: clients || [], headquarters: headquarters || [], offices: offices || [], curriculums: curriculums || [] }
   }
 }
 

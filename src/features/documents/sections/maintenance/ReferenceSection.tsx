@@ -70,7 +70,7 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
             name="curriculum"
             label="Seleccion de equipo"
             placeholder="Seleccionar equipo"
-            options={curriculums?.map(c => ({ label: `${c.name} => ${c.modelEquip}`, value: c._id })) || []}
+            options={curriculums?.map((c) => ({ label: `${c.name} => ${c.modelEquip}`, value: c._id })) || []}
           />
         </div>
       </div>

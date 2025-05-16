@@ -240,7 +240,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   })
 
   //to load the form on update mode "id"
-  useEffect(() => { id && loadData() }, [id, isLoading])
+  useEffect(() => { id && loadData() }, [id, isLoading, referenceData.options])
 
   /** Carga los datos del currículo en el formulario */
   const loadData = async () => {// implement callback (suggested)
