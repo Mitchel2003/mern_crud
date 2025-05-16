@@ -35,7 +35,7 @@ export const NotificationProvider = ({ children }: Props): JSX.Element => {
 
   /** Obtain the notifications unread count of this user context */
   const fetchUnreadCount = useCallback(async (showError = false) => {
-    try { await useApi('notifications/unread/count').get().then((res) => setUnreadCount(res.data.count || 0)) }
+    try { await useApi('notifications/unread/count').get().then((res: any) => setUnreadCount(res.data.count || 0)) }
     catch (e) { showError && notifyError({ message: formatError(e) }) }
   }, [notifyError])
 
