@@ -1,6 +1,7 @@
 import { formatDateTime, toLabel_technicalSpecification } from "@/constants/format.constants"
 import { Curriculum, Accessory, User } from "@/interfaces/context.interface"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
+import { resolveProviderHierarchy } from '@/lib/utils'
 import { styles } from "@/constants/values.constants"
 
 interface CurriculumPDFProps { cv: Curriculum; client: User; accs?: Accessory[] }
@@ -481,24 +482,4 @@ const ServiceProviderSection = ({ cv }: { cv: Curriculum }) => {
       </View>
     </View>
   )
-}
-
-
-
-
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-/**
- * Resuelve la jerarquía de usuarios y compañías para obtener los datos correctos del proveedor
- * @param user - El usuario inicial (createdBy)
- * @returns El usuario o compañía con los datos completos
- */
-const resolveProviderHierarchy = (user: User): User | undefined => {
-  if (!user) return undefined
-  // If its a collaborator, search for its company
-  if (user.role === 'collaborator' && user.belongsTo) { const company = resolveProviderHierarchy(user.belongsTo); return company }
-  //If its a company, verify if it is a sub company and search for its main company
-  if (user.role === 'company' && user.belongsTo) { const mainCompany = resolveProviderHierarchy(user.belongsTo); return mainCompany }
-  return user
 }

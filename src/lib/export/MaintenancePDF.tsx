@@ -1,6 +1,7 @@
 import { formatDate, toLabel_technicalSpecification } from "@/constants/format.constants"
-import { Curriculum, Maintenance, User } from '@/interfaces/context.interface'
+import { Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
+import { resolveProviderHierarchy } from '@/lib/utils'
 import { styles } from "@/constants/values.constants"
 
 interface MaintenancePDFProps { mt: Maintenance }
@@ -300,7 +301,7 @@ const ServiceProviderSection = ({ mt }: { mt: Maintenance }) => {
       <View style={styles.mainContainer}>
         {/* Información del proveedor */}
         <View style={styles.providerInfoContainer}>
-          <Text style={styles.providerTitle}>INGENIERO DE SERVICIO</Text>
+          <Text style={styles.providerTitle}>{provider.position || 'INGENIERO DE SERVICIO'}</Text>
           <Text style={styles.providerDetails}>{provider.username || 'N/A'}</Text>
           <Text style={styles.providerDetails}>REG. INVIMA: {provider.invima || 'N/A'}</Text>
           <Text style={styles.providerDetails}>MP: {provider.profesionalLicense || 'N/A'}</Text>
@@ -365,18 +366,4 @@ const getStatusStyles = (status: string) => {
     default:
       return { badge: styles.statusDefault, text: styles.statusDefaultText }
   }
-}
-
-/**
- * Resuelve la jerarquía de usuarios y compañías para obtener los datos correctos del proveedor
- * @param user - El usuario inicial (createdBy)
- * @returns El usuario o compañía con los datos completos
- */
-const resolveProviderHierarchy = (user: User): User | undefined => {
-  if (!user) return undefined
-  // If its a collaborator, search for its company
-  if (user.role === 'collaborator' && user.belongsTo) { const company = resolveProviderHierarchy(user.belongsTo); return company }
-  //If its a company, verify if it is a sub company and search for its main company
-  if (user.role === 'company' && user.belongsTo) { const mainCompany = resolveProviderHierarchy(user.belongsTo); return mainCompany }
-  return user
 }

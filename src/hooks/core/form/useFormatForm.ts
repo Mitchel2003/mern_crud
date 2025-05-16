@@ -50,8 +50,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   const typeSchedule = methods.watch('typeSchedule')
   const { data: client } = useQueryUser().fetchUserById<User>(clientId, { enabled: !!clientId })
   const { data: clients } = useQueryUser().fetchUserByQuery<User>({ role: 'client', enabled: !!user })
-  const { data: companies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', enabled: !!client })
-  const company = useMemo(() => companies?.filter((e) => !e.belongsTo)[0], [companies]) //to form company (filter main-company)
+  const userAllowed = user?.role === 'company' || user?.role === 'collaborator' //user allowed to create schedules
 
   /*--------------------------------------------------complements--------------------------------------------------*/
   const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', { enabled: !!clientId && typeSchedule === 'mantenimiento' }) //get cvs to maintenance
@@ -69,8 +68,9 @@ export const useScheduleForm = (onSuccess?: () => void) => {
    * @param e - Valores del formulario
    */
   const submit = useCallback(async (e: ScheduleFormProps) => {
+    if (!userAllowed) { setOnSubmit(null); isProcessing.current = false; return notifyError({ message: 'No tienes permiso para crear cronogramas' }) }
     if ((e.typeSchedule === 'mantenimiento' && !cvs.length) || (e.typeSchedule === 'capacitación' && !areas.length)) return
-    if (!client || !company || isProcessing.current) return
+    if (!client || isProcessing.current) return
     isProcessing.current = true
     try { //build path fileName and upload pdf
       const typeClassification = e.typeClassification || 'estándar'
@@ -80,10 +80,10 @@ export const useScheduleForm = (onSuccess?: () => void) => {
       const type = e.typeSchedule
       const adds = type === 'capacitación' ? { areas } : (type === 'mantenimiento' ? { cvs } : {})
       const PDF = type === 'capacitación' ? TrainingPDF : (type === 'mantenimiento' ? MaintenancePDF : AttendancePDF)
-      const blob = await downloadPDFDirect({ fileName, component: PDF as any, props: { ...e, client, company, ...adds } })
+      const blob = await downloadPDFDirect({ fileName, component: PDF as any, props: { ...e, client, createdBy: user, ...adds } })
       if (!blob) return notifyError({ message: 'No se pudo crear el cronograma' }) //if dont download pdf, return error
       const schedule = { name: fileName, client: e.client, typeClassification, type } //build schedule element to create
-      await createFile({ file: blob, path }).then(async (url) => await createSchedule({ ...schedule, url }))
+      await createFile({ file: blob, path }).then(async (url) => await createSchedule({ ...schedule, url, createdBy: user?._id }))
     } finally { setOnSubmit(null); isProcessing.current = false }
     methods.reset()
   }, [createFile, downloadPDFDirect, areas, cvs])

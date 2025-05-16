@@ -1,7 +1,7 @@
 import { attendanceStyles, styles } from "@/constants/values.constants"
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
+import { chunkTable, resolveProviderHierarchy } from "@/lib/utils"
 import { Curriculum, User } from "@/interfaces/context.interface"
-import { chunkTable } from "@/lib/utils"
 import { useMemo } from 'react'
 import dayjs from "dayjs"
 import "dayjs/locale/es"
@@ -11,22 +11,22 @@ interface MaintenancePDFProps {
   typeClassification: string
   monthOperation: string[]
   cvs: Curriculum[]
-  company: User
+  createdBy: User
   client: User
 }
 
 /** Cronograma de mantenimiento */
-const MaintenancePDF = ({ client, company, cvs, monthOperation, typeClassification }: MaintenancePDFProps) => {
+const MaintenancePDF = ({ cvs, client, createdBy, monthOperation, typeClassification }: MaintenancePDFProps) => {
   const equipments = useMemo(() => cvs.filter(cv => cv?.typeClassification.includes(typeClassification)).map((e) => `${e?.name} - ${e?.modelEquip}`), [cvs])
-  const equipmentChunks = chunkTable(equipments, 10)
+  const equipmentChunks = chunkTable(equipments, 13)
   return (
     <Document>
       {equipmentChunks.map((chunk, pageIndex) => (
-        <Page key={`page-${pageIndex}`} size="A4" orientation='landscape' style={styles.page} wrap={false}>
+        <Page key={`page-${pageIndex}`} size="A4" orientation='landscape' style={styles.page}>
           <View style={styles.container}>
             <HeaderSection client={client} typeClass={typeClassification} />
             <MaintenanceTable equipments={chunk} months={monthOperation} />
-            <FooterSection company={company} />
+            <FooterSection createdBy={createdBy} />
           </View>
         </Page>
       ))}
@@ -43,8 +43,8 @@ const HeaderSection = ({ client, typeClass }: { client: User, typeClass: string 
   <>
     <View style={[styles.headerContainer, { borderBottom: '1pt solid black' }]}>
       {/* Logo - Columna izquierda */}
-      <View style={[styles.logoContainer, { width: '150pt', borderRight: '1pt solid black' }]}>
-        <Image src={client?.metadata?.logo || "/placeholder.svg"} style={[styles.logo, { width: '150pt', height: '60pt' }]} />
+      <View style={[styles.logoContainer, { width: '170pt', borderRight: '1pt solid black' }]}>
+        <Image src={client?.metadata?.logo || "/placeholder.svg"} style={[styles.logo, { width: '170pt', height: '70pt' }]} />
       </View>
 
       {/* Nombre cliente y título - Columna centro */}
@@ -76,12 +76,7 @@ const HeaderSection = ({ client, typeClass }: { client: User, typeClass: string 
       </View>
 
       {/* Código y Versión - Columna derecha */}
-      <View style={{
-        borderLeft: '1pt solid black',
-        fontSize: '10pt',
-        height: '60pt',
-        width: '120pt',
-      }}>
+      <View style={{ height: '70pt', width: '120pt', fontSize: '10pt', borderLeft: '1pt solid black' }}>
         <View style={[styles.infoRow, { justifyContent: 'space-between', padding: '10pt 5pt' }]}>
           <Text style={[styles.label, { marginLeft: '5pt' }]}>
             Código:
@@ -115,7 +110,7 @@ const HeaderSection = ({ client, typeClass }: { client: User, typeClass: string 
 
 /** Tabla de mantenimiento */
 const MaintenanceTable = ({ equipments = [], months = [] }: { equipments: string[], months: string[] }) => {
-  const rowsPerPage = 10 //Static number of rows per page
+  const rowsPerPage = 13 //Static number of rows per page
   const selectedMonths = months.map(month => month.toLowerCase())
   const emptyRowsCount = Math.max(0, rowsPerPage - equipments.length)
   const emptyRows = Array(emptyRowsCount).fill(null)
@@ -188,23 +183,38 @@ const MaintenanceTable = ({ equipments = [], months = [] }: { equipments: string
 }
 
 /** Footer con firma e información del proveedor */
-const FooterSection = ({ company }: { company: User }) => (
-  <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
-    {/* Sección izquierda - Firma e información del ingeniero */}
-    <View style={attendanceStyles.providerSection}>
-      <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
-      <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
+const FooterSection = ({ createdBy }: { createdBy: User }) => {
+  const provider = resolveProviderHierarchy(createdBy)
+  return provider ? (
+    <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
+      {/* Sección izquierda - Firma e información del ingeniero */}
+      <View style={attendanceStyles.providerSection}>
+        <Image src={provider?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
+        <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
 
-      {/* Información del ingeniero */}
-      <Text style={attendanceStyles.providerName}>{company?.username.toUpperCase()}</Text>
-      <Text style={attendanceStyles.providerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
-      <Text style={attendanceStyles.providerDetail}>CC. {company?.nit} de Cúcuta</Text>
-      <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {company?.invima}</Text>
-    </View>
+        {/* Información del ingeniero */}
+        <Text style={attendanceStyles.providerName}>{provider?.username?.toUpperCase()}</Text>
+        <Text style={attendanceStyles.providerDetail}>{provider?.position || 'INGENIERO ELECTRÓNICO'}</Text>
+        <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {provider?.invima}</Text>
+        <Text style={attendanceStyles.providerDetail}>CC. {provider?.nit}</Text>
+      </View>
 
-    {/* Sección derecha - Logo de la empresa */}
-    <View style={attendanceStyles.logoSection}>
-      <Image src={company?.metadata?.logo || "/placeholder.svg"} style={attendanceStyles.companyLogo} />
+      {/* Sección derecha - Logo de la empresa */}
+      <View style={attendanceStyles.logoSection}>
+        <Image src={provider?.metadata?.logo || "/placeholder.svg"} style={attendanceStyles.companyLogo} />
+      </View>
     </View>
-  </View>
-)
+  ) : (
+    <View style={styles.noReferenceContainer}>
+      <View style={styles.noReferenceTitleContainer}>
+        <Text style={styles.noReferenceTitle}>SIN REFERENCIAS</Text>
+      </View>
+      <View style={styles.noReferenceContent}>
+        <Text style={styles.noReferenceText}>
+          No se encontraron referencias válidas para este mantenimiento.
+          Por favor, verifique la información del proveedor de servicios.
+        </Text>
+      </View>
+    </View>
+  )
+}

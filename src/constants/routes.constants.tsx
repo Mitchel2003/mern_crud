@@ -68,7 +68,7 @@ const routePermissions: RoutePermission[] = [
   {// Cronograma (form)
     isPrefix: true,
     path: '/form/schedule',
-    allowed: ['company:main', 'company:sub', 'collaborator'],
+    allowed: ['company:main', 'company:sub', 'collaborator', 'client'],
   },
   {// Cronograma (table)
     isPrefix: true,

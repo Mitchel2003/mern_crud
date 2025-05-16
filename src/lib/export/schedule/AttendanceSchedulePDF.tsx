@@ -1,7 +1,7 @@
 import { attendanceStyles, styles } from "@/constants/values.constants"
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
+import { chunkTable, resolveProviderHierarchy } from "@/lib/utils"
 import { User } from "@/interfaces/context.interface"
-import { chunkTable } from "@/lib/utils"
 import dayjs from "dayjs"
 import "dayjs/locale/es"
 dayjs.locale("es")
@@ -12,12 +12,12 @@ interface AttendancePDFProps {
   dateAttendance: Date
   subject: string
   message: string
-  company: User
+  createdBy: User
   client: User
 }
 
 /** Acta de asistencia */
-const AttendancePDF = ({ client, company, newRowAttendance = [], dateAttendance, subject, message }: AttendancePDFProps) => {
+const AttendancePDF = ({ client, createdBy, newRowAttendance = [], dateAttendance, subject, message }: AttendancePDFProps) => {
   const attendeesChunks = chunkTable(newRowAttendance as any, 17)
   return (
     <Document>
@@ -26,7 +26,7 @@ const AttendancePDF = ({ client, company, newRowAttendance = [], dateAttendance,
           <View style={styles.container}>
             <HeaderSection client={client} dateAttendance={dateAttendance} subject={subject} message={message} />
             <AttendanceTable attendees={chunk as unknown as AttendanceRow[]} pageIndex={pageIndex} totalPages={attendeesChunks.length} />
-            <FooterSection company={company} />
+            <FooterSection createdBy={createdBy} />
           </View>
         </Page>
       ))}
@@ -219,23 +219,38 @@ const AttendanceTable = ({ attendees = [], pageIndex = 0, totalPages = 1 }: { at
 }
 
 /** Footer con firma e información del proveedor */
-const FooterSection = ({ company }: { company: User }) => (
-  <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
-    {/* Sección izquierda - Firma e información del ingeniero */}
-    <View style={[attendanceStyles.providerSection, { width: '40%' }]}>
-      <Image src={company?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
-      <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
+const FooterSection = ({ createdBy }: { createdBy: User }) => {
+  const provider = resolveProviderHierarchy(createdBy)
+  return provider ? (
+    <View style={[attendanceStyles.footerContainer, { marginTop: '0pt', borderTop: 'none' }]}>
+      {/* Sección izquierda - Firma e información del ingeniero */}
+      <View style={[attendanceStyles.providerSection, { width: '40%' }]}>
+        <Image src={provider?.metadata?.signature || "/placeholder.svg"} style={attendanceStyles.signatureImage} />{/* Imagen de la firma */}
+        <View style={attendanceStyles.signatureLine}></View>{/* Línea de firma */}
 
-      {/* Información del ingeniero */}
-      <Text style={attendanceStyles.providerName}>{company?.username.toUpperCase()}</Text>
-      <Text style={attendanceStyles.providerDetail}>{company?.metadata?.title || 'INGENIERO ELECTRÓNICO'}</Text>
-      <Text style={attendanceStyles.providerDetail}>CC. {company?.nit} de Cúcuta</Text>
-      <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {company?.invima}</Text>
-    </View>
+        {/* Información del ingeniero */}
+        <Text style={attendanceStyles.providerName}>{provider?.username?.toUpperCase()}</Text>
+        <Text style={attendanceStyles.providerDetail}>{provider?.position || 'INGENIERO ELECTRÓNICO'}</Text>
+        <Text style={attendanceStyles.providerDetail}>CC. {provider?.nit} de Cúcuta</Text>
+        <Text style={attendanceStyles.providerDetail}>REG. INVIMA: {provider?.invima}</Text>
+      </View>
 
-    {/* Sección derecha - Logo de la empresa */}
-    <View style={attendanceStyles.logoSection}>
-      <Image src={company?.metadata?.logo || "/placeholder.svg"} style={[{ width: '170pt', height: '100pt' }]} />
+      {/* Sección derecha - Logo de la empresa */}
+      <View style={attendanceStyles.logoSection}>
+        <Image src={provider?.metadata?.logo || "/placeholder.svg"} style={[{ width: '170pt', height: '100pt' }]} />
+      </View>
     </View>
-  </View>
-)
+  ) : (
+    <View style={styles.noReferenceContainer}>
+      <View style={styles.noReferenceTitleContainer}>
+        <Text style={styles.noReferenceTitle}>SIN REFERENCIAS</Text>
+      </View>
+      <View style={styles.noReferenceContent}>
+        <Text style={styles.noReferenceText}>
+          No se encontraron referencias válidas para este mantenimiento.
+          Por favor, verifique la información del proveedor de servicios.
+        </Text>
+      </View>
+    </View>
+  )
+}
