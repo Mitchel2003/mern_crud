@@ -11,15 +11,12 @@ import { CardFooter } from '#/ui/card'
 import { Button } from '#/ui/button'
 
 const FooterSection = ({ theme }: ThemeContextProps) => {
-  const [showForgotDialog, setShowForgotDialog] = useState(false)
-  const { methods, onSubmit } = useForgotPasswordForm()
-
+  const [showDialog, setShowDialog] = useState(false)
+  const { methods, open, setOpen, onConfirm, handleSubmit } = useForgotPasswordForm(() => setShowDialog(false))
   return (
     <CardFooter className="flex flex-col pb-4">
-      <div className={cn('text-center',
-        theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-      )}>
-        <Button type="button" size="sm" variant="ghost" onClick={() => setShowForgotDialog(true)}>
+      <div className={cn('text-center', theme === 'dark' ? 'text-purple-400' : 'text-purple-600')}>
+        <Button type="button" size="sm" variant="ghost" onClick={() => setShowDialog(true)}>
           ¿Olvidaste tu contraseña?
           <Mail className="h-4 w-4" />
         </Button>
@@ -27,13 +24,18 @@ const FooterSection = ({ theme }: ThemeContextProps) => {
         <Dialog
           theme={theme}
           iconSpan="info"
-          open={showForgotDialog}
+          methods={methods}
+          open={showDialog}
           fields={fields({ theme })}
-          form={{ methods, onSubmit }}
-          onOpenChange={setShowForgotDialog}
           labelSubmit="Enviar enlace"
           title="Recuperar contraseña"
+          onOpenChange={setShowDialog}
           description="Ingresa tu email para recibir un enlace de recuperación"
+          /** handler alert dialog confirm */
+          onOpenAlertDialogChange={setOpen}
+          handleSubmit={handleSubmit}
+          openAlertDialog={open}
+          onConfirm={onConfirm}
         />
       </div>
     </CardFooter>
@@ -44,18 +46,17 @@ export default FooterSection
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
-const fields = ({ theme }: ThemeContextProps): DialogField[] => [
-  {
-    name: "email",
-    component: (
-      <InputField
-        icon={Mail}
-        type="email"
-        name="email"
-        label="Email"
-        theme={theme}
-        placeholder="Ej: example@gmail.com"
-      />
-    )
-  }
-]
+/** Permite construir un array de campos para el dialogo de recuperacion de contraseña */
+const fields = ({ theme }: ThemeContextProps): DialogField[] => [{
+  name: "email",
+  component: (
+    <InputField
+      icon={Mail}
+      type="email"
+      name="email"
+      label="Email"
+      theme={theme}
+      placeholder="Ej: example@gmail.com"
+    />
+  )
+}]

@@ -6,6 +6,7 @@ const useObservationMT = () => {
   const mapValues = (data: Maintenance) => ({
     dateNextMaintenance: data.dateNextMaintenance ? new Date(data.dateNextMaintenance) : null,
     dateMaintenance: data.dateMaintenance ? new Date(data.dateMaintenance) : null,
+    annexesPreview: data.metadata?.files || [],
     typeMaintenance: data.typeMaintenance,
     statusEquipment: data.statusEquipment,
     observations: data.observations,

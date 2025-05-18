@@ -129,25 +129,28 @@ export const useActivityForm = (onSuccess?: () => void) => {
    * nos permite controlar el envío del formulario y la ejecución de la request
    * @param e - Valores del formulario
    */
-  const onSubmit = methods.handleSubmit(async (e: ActivityFormProps) => {
-    if (user?.role !== 'company') return notifyError({ message: 'No tienes permiso para crear actividades' })
-    await createActivity({ ...e, status: 'pendiente' }).then(async () => {
-      const title = `Nueva actividad - ${user?.username}`
-      const body = `Revisa tu bandeja de entradas`
-      await sendNotification({ id: e.collaborator, title, body }) //messaging
-      await createNotification({ //create notification inbox with redirect
-        recipient: e.collaborator, sender: user?._id,
-        title, message: body, type: 'alert',
-        url: `${baseFrontendUrl}/calendar`,
-      }) //Update solicit status to assigned, after creating activity
-      await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
-    })
-    methods.reset()
-    onSuccess?.()
-  })
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: ActivityFormProps) => {
+      if (user?.role !== 'company') return notifyError({ message: 'No tienes permiso para crear actividades' })
+      await createActivity({ ...e, status: 'pendiente' }).then(async () => {
+        const title = `Nueva actividad - ${user?.username}`
+        const body = `Revisa tu bandeja de entradas`
+        await sendNotification({ id: e.collaborator, title, body }) //messaging
+        await createNotification({ //create notification inbox with redirect
+          recipient: e.collaborator, sender: user?._id,
+          title, message: body, type: 'alert',
+          url: `${baseFrontendUrl}/calendar`,
+        }) //Update solicit status to assigned, after creating activity
+        await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
+      })
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
 
   return {
-    methods, onSubmit,
+    methods,
+    ...handleSubmit,
     collaborators: collaborators?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`, icon: UserRoundCheck })) || [],
   }
 }
@@ -240,7 +243,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   })
 
   //to load the form on update mode "id"
-  useEffect(() => { id && loadData() }, [id, isLoading, referenceData.options])
+  useEffect(() => { id && loadData() }, [id, isLoading, referenceData.options.curriculums])
 
   /** Carga los datos del currículo en el formulario */
   const loadData = async () => {// implement callback (suggested)

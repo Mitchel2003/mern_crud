@@ -100,6 +100,7 @@ const getBase = (type: string): string | undefined => {
     case 'state':
     case 'city':
     case 'office':
+    case 'signature':
     case 'headquarter': return '/location'
     /*-------------------------format-------------------------*/
     case 'cv':

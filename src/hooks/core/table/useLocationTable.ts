@@ -1,7 +1,6 @@
-import { City, Country, Headquarter, Office, State } from "@/interfaces/context.interface"
+import { Office, Headquarter, City, State, Country } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-
 
 /*--------------------------------------------------office table--------------------------------------------------*/
 export const useOfficeTable = () => {

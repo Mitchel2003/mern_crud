@@ -4,17 +4,26 @@ import { BarChart2, Clock, AlertTriangle, Wrench, Eye } from "lucide-react"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import { Update, Delete, Download } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
+import ImagePreview from "#/common/fields/ImagePreview"
+import CardIterable from "#/common/fields/CardIterable"
+import SignatureField from "#/common/fields/Signature"
+import DialogSubmit from '#/common/elements/Dialog'
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
+import { useSignMaintenanceForm } from "@/hooks/core/form/useLocationForm"
 import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
-
 import { tableTranslations } from "@/constants/values.constants"
 import { formatDateTime } from "@/constants/format.constants"
+import { useNotification } from "@/hooks/ui/useNotification"
+import { DialogField } from "@/interfaces/props.interface"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+
 import { encodeQueryParams } from "@/lib/query"
+import { UseFormReturn } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import { cn } from "@/lib/utils"
 
 interface TableMaintenanceSectionProps extends ThemeContextProps {
   params?: { name?: string; modelEquip?: string; statusEquipment?: string } | null
@@ -32,9 +41,13 @@ interface TableMaintenanceSectionProps extends ThemeContextProps {
 const TableMaintenanceSection = ({ theme, params, credentials, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
+  const [showDialog, setShowDialog] = useState<Maintenance[] | undefined>(undefined)
   const isClient = credentials?.role === 'client'
+  const { notifyWarning } = useNotification()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+
+  const { methods, open, setOpen, onConfirm, handleSubmit } = useSignMaintenanceForm(showDialog, () => setShowDialog(undefined))
 
   /** Header stats */
   const stats: Stat[] = [{
@@ -65,12 +78,17 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
       id: 'curriculum.name',
       accessorFn: (row) => row.curriculum.name,
     }, {
-      size: 125,
+      size: 100,
       header: "Modelo",
       id: "curriculum.modelEquip",
       accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
     }, {
-      size: 200,
+      size: 100,
+      header: "Sede",
+      id: "curriculum.office.headquarter.name",
+      accessorFn: (row) => row?.curriculum?.office?.headquarter?.name || 'Sin sede'
+    }, {
+      size: 250,
       header: "Cliente",
       id: "curriculum.office.headquarter.client.username",
       accessorFn: (row) => row?.curriculum?.office?.headquarter?.client?.username || 'Sin cliente'
@@ -241,6 +259,23 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
           >
             Descargar
           </Button>
+          {/** Sign maintenance (ZIP) */}
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            startIcon={<Download />}
+            onClick={() => {
+              const selectedRows = table.getSelectedRowModel().flatRows
+              const someSigned = selectedRows.some(row => row.original.signature)
+              const headquarters = selectedRows.map(row => row.original.curriculum.office.headquarter.name)
+              if (new Set(headquarters).size > 1) return notifyWarning({ title: '☣️ Más de una sede seleccionada', message: 'En la firma multiple, los documentos deben pertenecer a la misma sede' })
+              if (someSigned) return notifyWarning({ title: '☣️ Algunos documentos ya están firmados', message: 'No se puede firmar documentos que ya están firmados' })
+              setShowDialog(selectedRows.map(row => row.original))
+            }}
+          >
+            Firmar documentos
+          </Button>
         </Box>
       </Box>
     )
@@ -271,8 +306,56 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
         onConfirm={handleConfirm}
         variant={isDestructive ? "destructive" : "default"}
       />
+
+      {/* dialog signature */}
+      <DialogSubmit
+        theme={theme}
+        iconSpan="info"
+        methods={methods}
+        open={!!showDialog}
+        labelSubmit="Firmar"
+        title="Firmar documentos"
+        fields={fields({ methods, theme })}
+        onOpenChange={() => setShowDialog(undefined)}
+        description="Indica la firma que aprobará los documentos"
+        onOpenAlertDialogChange={setOpen}
+        handleSubmit={handleSubmit}
+        openAlertDialog={open}
+        onConfirm={onConfirm}
+      />
     </>
   )
 }
 
 export default TableMaintenanceSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+interface Props extends ThemeContextProps { methods: UseFormReturn<any> }
+/** Permite construir un array de campos para el dialogo de asignacion de actividad */
+const fields = ({ methods, theme }: Props): DialogField[] => [{
+  name: "preview",
+  component: (
+    <ImagePreview
+      theme={theme}
+      name="preview"
+      alt="imgEquip"
+      sizeImage='max-w-full max-h-72'
+      className={cn(methods.getValues('signature')?.length > 0 ? 'hidden' : 'block')}
+    />
+  )
+}, {
+  name: "signature",
+  component: (
+    <CardIterable
+      limit={1}
+      theme={theme}
+      name="signature"
+      titleButton="Agregar nueva firma"
+      fields={fieldsCard.map(field => ({ name: field.name, component: <SignatureField {...field} theme={theme} /> }))}
+    />
+  )
+}]
+
+/** Permite construir un array de campos para el dialogo de firma */
+const fieldsCard = [{ name: "signature.png", label: "Firma", height: 150, showDownload: false }]

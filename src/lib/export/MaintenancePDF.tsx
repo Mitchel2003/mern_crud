@@ -310,7 +310,14 @@ const ServiceProviderSection = ({ mt }: { mt: Maintenance }) => {
         {/* Recibido a satisfacción */}
         <View style={styles.signatureBox}>
           <Text style={styles.signatureLabel}>RECIBIDO A SATISFACCIÓN</Text>
-          <View style={styles.signatureLine} />
+          <View style={styles.signatureLine}>
+            {mt?.signature?.url && (
+              <Image
+                style={styles.providerSignature}
+                src={mt?.signature?.url}
+              />
+            )}
+          </View>
         </View>
 
         {/* Firma del proveedor */}

@@ -226,8 +226,8 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
           size="lg"
           stats={stats}
           variant="gradient"
-          title="Cronogramas"
           icon={CalendarMonth}
+          title="Actas y cronogramas"
           badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />

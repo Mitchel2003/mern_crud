@@ -1,10 +1,13 @@
-import { cityDefaultValues, countryDefaultValues, headquarterDefaultValues, officeDefaultValues, stateDefaultValues } from "@/constants/values.constants"
-import { City, Country, State, Headquarter, Office, User } from "@/interfaces/context.interface"
+import { signMaintenanceDefaultValues, officeDefaultValues, headquarterDefaultValues, cityDefaultValues, stateDefaultValues, countryDefaultValues } from "@/constants/values.constants"
+import { City, Country, State, Headquarter, Office, User, Signature, Maintenance } from "@/interfaces/context.interface"
 import { useLocationMutation, useQueryLocation } from "@/hooks/query/useLocationQuery"
 import { groupCollection as groups } from "@/constants/values.constants"
+import { useFormatMutation } from "@/hooks/query/useFormatQuery"
+import { useNotification } from "@/hooks/ui/useNotification"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { dataUrlToFile } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 import {
@@ -12,8 +15,69 @@ import {
   stateSchema, StateFormProps,
   officeSchema, OfficeFormProps,
   countrySchema, CountryFormProps,
-  headquarterSchema, HeadquarterFormProps
+  headquarterSchema, HeadquarterFormProps,
+  signMaintenanceSchema, SignMaintenanceFormProps,
 } from "@/schemas/location/location.schema"
+
+/*--------------------------------------------------sign maintenance form--------------------------------------------------*/
+/**
+ * Hook personalizado para manejar el formulario de creación o actualización de firmas
+ * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
+ */
+export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?: () => void) => {
+  const { createLocation: createSignature } = useLocationMutation('signature')
+  const { updateFormat: updateMaintenance } = useFormatMutation('maintenance')
+  const { createFile } = useFormatMutation('file')
+  const { notifySuccess } = useNotification()
+  const queryLocation = useQueryLocation()
+
+  const headquarter = maintenances?.[0]?.curriculum?.office?.headquarter
+  const { data: signature } = queryLocation.fetchLocationByQuery<Signature>('signature', { headquarter: headquarter?._id, enabled: !!headquarter })
+
+  const methods = useForm<SignMaintenanceFormProps>({
+    resolver: zodResolver(signMaintenanceSchema),
+    defaultValues: signMaintenanceDefaultValues,
+    mode: "onChange",
+  })
+
+  useEffect(() => {
+    signature && methods.reset({ preview: signature?.[0]?.url })
+  }, [signature])
+
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: SignMaintenanceFormProps) => {
+      //prepare and evaluate local fields (signature)
+      let sign: Signature | undefined
+      const newSignature = e.signature?.[0]?.png
+      const signedAt = new Date()
+      if (newSignature) { //create this new reference
+        const signatureFile = dataUrlToFile(newSignature)
+        const path = `client/${headquarter?.client?._id}`
+          + `/headquarters/${headquarter?._id}/signatures/${Date.now()}`
+        const fileUrl = await createFile({ file: signatureFile, path })
+        sign = await createSignature({ headquarter: headquarter?._id, url: fileUrl })
+      } //Use the old reference if there is no new signature
+      else { sign = signature?.[0] } //most recent
+      if (!maintenances?.length || !sign) return
+      await Promise.all(maintenances.map(mt => updateMaintenance({ id: mt._id, data: { signature: sign?._id, signedAt } })))
+      notifySuccess({ title: '✅ Documentos firmados', message: `Se han firmado ${maintenances?.length || 0} mantenimiento(s) correctamente` })
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return {
+    methods,
+    ...handleSubmit,
+    onSubmit: handleSubmit.handleSubmit
+  }
+}
+/*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------office form--------------------------------------------------*/
 /**

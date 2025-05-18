@@ -47,15 +47,27 @@ export const useLoginForm = () => {
 
 /*--------------------------------------------------forgotPassword form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de recuperación de contraseña */
-export const useForgotPasswordForm = () => {
+export const useForgotPasswordForm = (onSuccess?: () => void) => {
   const { sendResetPassword } = useAuthContext()
   const methods = useForm<ForgotPasswordFormProps>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: '' },
     mode: 'onSubmit',
   })
-  const onSubmit = methods.handleSubmit(async (data: ForgotPasswordFormProps) => await sendResetPassword(data.email))
-  return { methods, onSubmit }
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
+  const handleSubmit = useFormSubmit({
+    onSubmit: async (e: ForgotPasswordFormProps) => {
+      await sendResetPassword(e.email)
+      methods.reset()
+    },
+    onSuccess
+  }, methods)
+
+  return { methods, ...handleSubmit }
 }
 /*---------------------------------------------------------------------------------------------------------*/
 

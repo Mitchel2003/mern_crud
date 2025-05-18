@@ -1,5 +1,6 @@
 import { Dialog as DialogPrimitive, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "#/ui/dialog"
 import HeaderCustom from "#/common/elements/HeaderCustom"
+import AlertDialog from "#/common/elements/AlertDialog"
 import { Button } from "#/ui/button"
 
 import { HeaderSpanProps, DialogField } from "@/interfaces/props.interface"
@@ -10,8 +11,7 @@ import { cloneElement } from "react"
 import { cn } from "@/lib/utils"
 
 interface DialogProps extends ThemeContextProps, HeaderSpanProps {
-  //form props
-  form: { methods: UseFormReturn<any>, onSubmit: () => Promise<void> | void }
+  methods: UseFormReturn<any>
   fields: DialogField[]
   description?: string
   labelSubmit?: string
@@ -20,86 +20,89 @@ interface DialogProps extends ThemeContextProps, HeaderSpanProps {
   //handler dialog
   open: boolean
   onOpenChange: (open: boolean) => void
+
+  //handler alert dialog
+  openAlertDialog: boolean
+  onConfirm: () => Promise<void>
+  handleSubmit: (e?: React.FormEvent) => void
+  onOpenAlertDialogChange: (open: boolean) => void
 }
 
 const Dialog = ({
+  onOpenAlertDialogChange,
+  openAlertDialog,
+  handleSubmit,
+  onConfirm,
+
   labelSubmit = 'Subir',
   onOpenChange,
   description,
   iconSpan,
+  methods,
   fields,
   title,
   theme,
-  form,
   span,
   open
 }: DialogProps) => (
-  <DialogPrimitive
-    open={open}
-    onOpenChange={onOpenChange}
-  >
-    <DialogContent
-      aria-describedby={undefined}
-      className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}
-    >
-      {/* Header */}
-      <DialogHeader>
-        <DialogTitle>
-          <HeaderCustom
-            to="component"
-            span={span}
-            theme={theme}
-            title={title}
-            iconSpan={iconSpan}
-            className="text-left"
-          />
-        </DialogTitle>
-        {description && (
-          <DialogDescription id="dialog-description">
-            {description}
-          </DialogDescription>
-        )}
-      </DialogHeader>
+  <>
+    <DialogPrimitive open={open} onOpenChange={onOpenChange} aria-hidden={!open}>
+      <DialogContent aria-describedby={undefined} className={cn(theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+        {/* Header */}
+        <DialogHeader>
+          <DialogTitle>
+            <HeaderCustom
+              to="component"
+              span={span}
+              theme={theme}
+              title={title}
+              iconSpan={iconSpan}
+              className="text-left"
+            />
+          </DialogTitle>
+          {description && (
+            <DialogDescription id="dialog-description">
+              {description}
+            </DialogDescription>
+          )}
+        </DialogHeader>
 
-      {/* Form */}
-      <FormProvider {...form.methods}>
-        <form onSubmit={form.onSubmit} className="space-y-6">
-          {fields.map((field, index) => (
-            <div key={`${field.name}-${index}`}>
-              {cloneElement(field.component, {
-                'aria-describedby': field.name ?? `field-description-${index}`,
-                name: field.name,
-                theme
-              })}
-              {field.name && <div id={`field-description-${index}`} className="sr-only">{field.name}</div>}
-            </div>
-          ))}
+        {/* Form */}
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {fields.map((field, index) => (
+              <div key={`${field.name}-${index}`}>
+                {cloneElement(field.component, {
+                  'aria-describedby': field.name ?? `field-description-${index}`,
+                  name: field.name,
+                  theme
+                })}
+                {field.name && <div id={`field-description-${index}`} className="sr-only">{field.name}</div>}
+              </div>
+            ))}
 
-          <SubmitButton theme={theme} label={labelSubmit} />
-        </form>
-      </FormProvider>
-    </DialogContent>
-  </DialogPrimitive >
+            {/* Submit button */}
+            <Button type="submit" variant="success" className="w-full">
+              {labelSubmit}
+              <CheckIcon className="h-4 w-4" />
+            </Button>
+          </form>
+        </FormProvider>
+      </DialogContent>
+    </DialogPrimitive>
+
+    <AlertDialog
+      theme={theme}
+      title={title}
+      variant={"default"}
+      onConfirm={onConfirm}
+      open={openAlertDialog}
+      cancelLabel="Cancelar"
+      confirmLabel="Confirmar"
+      onOpenChange={onOpenAlertDialogChange}
+      description={"¿Esta seguro?, esta acción no se puede revertir"}
+    />
+  </>
 )
 
 export default Dialog
-/*---------------------------------------------------------------------------------------------------------*/
-
-/*--------------------------------------------------tools--------------------------------------------------*/
-// Botón de envío
-interface SubmitButtonProps extends ThemeContextProps {
-  label: string
-}
-
-const SubmitButton = ({ label, theme }: SubmitButtonProps) => (
-  <Button
-    type="submit"
-    className={cn('w-full text-white', theme === 'dark'
-      ? 'bg-purple-600 hover:bg-purple-700'
-      : 'bg-purple-800 hover:bg-purple-900'
-    )}
-  >
-    {label}
-    <CheckIcon className="h-4 w-4" />
-  </Button>
-)

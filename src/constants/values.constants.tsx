@@ -1,4 +1,4 @@
-import { CountryFormProps, HeadquarterFormProps, OfficeFormProps, StateFormProps, CityFormProps } from '@/schemas/location/location.schema'
+import { SignMaintenanceFormProps, OfficeFormProps, HeadquarterFormProps, CityFormProps, StateFormProps, CountryFormProps } from '@/schemas/location/location.schema'
 import { ClientFlowProps, UserFormProps } from '@/schemas/auth/auth.schema'
 import { MaintenanceFormProps } from '@/schemas/format/maintenance.schema'
 import { CurriculumFormProps } from '@/schemas/format/curriculum.schema'
@@ -139,6 +139,7 @@ export const stateDefaultValues: StateFormProps = { name: '', country: '' }
 export const cityDefaultValues: CityFormProps = { name: '', state: '' }
 export const headquarterDefaultValues: HeadquarterFormProps = { name: '', address: '', client: '', city: '', state: '', country: '' }
 export const officeDefaultValues: OfficeFormProps = { name: '', headquarter: '', services: [] }
+export const signMaintenanceDefaultValues: SignMaintenanceFormProps = { preview: '', signature: [] }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/

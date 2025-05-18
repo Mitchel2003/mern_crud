@@ -106,7 +106,7 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
               name="role"
               label="Rol"
               theme={theme}
-              placeholder={`Selecciona el rol`}
+              placeholder="Selecciona el rol"
             />
 
             {/** Section access (conditional) */}
@@ -128,7 +128,7 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
                   name="permissions"
                   span="Selecciona varios"
                   options={options.clients}
-                  label={`Acceso a clientes`}
+                  label="Acceso a clientes"
                   placeholder={`Selecciona los clientes asociados`}
                 />
               )}
@@ -151,9 +151,9 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
                     theme={theme}
                     iconSpan='alert'
                     name="classification"
-                    label={`Clasificación`}
-                    placeholder={`Selecciona la clasificación`}
-                    span='Selecciona las clasificaciones del usuario (obligatorio)'
+                    label="Clasificación"
+                    placeholder="Selecciona la clasificación"
+                    span="Selecciona las clasificaciones del usuario (obligatorio)"
                     options={typeClass?.map(type => ({ label: type, value: type, icon: User2 })) || []}
                   />
                 )}

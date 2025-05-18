@@ -10,6 +10,7 @@ import InputField from "#/common/fields/Input"
 import DateField from "#/common/fields/Date"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
+import { DialogField, SelectOptionProps } from "@/interfaces/props.interface"
 import { ThemeContextProps, Solicit } from "@/interfaces/context.interface"
 import { useSolicitTable } from "@/hooks/core/table/useFormatTable"
 import { useActivityForm } from "@/hooks/core/form/useFormatForm"
@@ -34,7 +35,7 @@ interface TableSolicitSectionProps extends ThemeContextProps {
  */
 const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { methods, collaborators, onSubmit } = useActivityForm(() => setShowDialog(false))
+  const { methods, collaborators, open, setOpen, onConfirm, handleSubmit } = useActivityForm(() => setShowDialog(false))
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [solicit, setSolicit] = useState<Solicit | null>(null)
   const { solicits, handleDelete } = useSolicitTable()
@@ -418,49 +419,63 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
       <DialogSubmit
         theme={theme}
         iconSpan="info"
-        title="Asignar Actividad"
-        labelSubmit="Poner en marcha"
-        description="Indica el operador que atendera la solicitud"
-        onOpenChange={setShowDialog}
-        form={{ methods, onSubmit }}
         open={showDialog}
-        fields={[{
-          name: "solicit",
-          component: (
-            <InputField
-              hidden
-              readOnly
-              theme={theme}
-              name="solicit"
-              value={solicit?._id}
-              label="ID de la solicitud"
-            />
-          )
-        }, {
-          name: "dateAssignment",
-          component: (
-            <DateField
-              theme={theme}
-              name="dateAssignment"
-              label="Fecha de asignación"
-              placeholder="Seleccione la fecha de asignación"
-            />
-          )
-        }, {
-          name: "collaborator",
-          component: (
-            <SelectField
-              theme={theme}
-              name="collaborator"
-              label="Colaborador"
-              options={collaborators}
-              placeholder={`Selecciona el colaborador encargado`}
-            />
-          )
-        }]}
+        methods={methods}
+        title="Asignar Actividad"
+        onOpenChange={setShowDialog}
+        labelSubmit="Poner en marcha"
+        fields={fields({ solicit, collaborators, theme })}
+        description="Indica el operador que atendera la solicitud"
+        /** handler alert dialog confirm */
+        onOpenAlertDialogChange={setOpen}
+        handleSubmit={handleSubmit}
+        openAlertDialog={open}
+        onConfirm={onConfirm}
       />
     </>
   )
 }
 
 export default TableSolicitSection
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+interface Props extends ThemeContextProps {
+  collaborators: SelectOptionProps[]
+  solicit: Solicit | null
+}
+/** Permite construir un array de campos para el dialogo de asignacion de actividad */
+const fields = ({ solicit, collaborators, theme }: Props): DialogField[] => [{
+  name: "solicit",
+  component: (
+    <InputField
+      hidden
+      readOnly
+      theme={theme}
+      name="solicit"
+      value={solicit?._id}
+      label="ID de la solicitud"
+    />
+  )
+}, {
+  name: "dateAssignment",
+  component: (
+    <DateField
+      theme={theme}
+      name="dateAssignment"
+      label="Fecha de asignación"
+      placeholder="Seleccione la fecha de asignación"
+    />
+  )
+}, {
+  name: "collaborator",
+  component: (
+    <SelectField
+      theme={theme}
+      name="collaborator"
+      label="Colaborador"
+      options={collaborators}
+      placeholder={`Selecciona el colaborador encargado`}
+    />
+  )
+}]

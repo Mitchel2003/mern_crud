@@ -98,15 +98,10 @@ const SignatureField = React.forwardRef<HTMLDivElement, SignatureFieldProps>(({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div
-              ref={ref as React.RefObject<HTMLDivElement>}
-              className="w-full"
-            >
-              <div className={cn(
-                "w-full border rounded-lg overflow-hidden mb-2 relative",
-                theme === 'dark'
-                  ? "border-zinc-600 bg-zinc-800"
-                  : "border-gray-300 bg-white",
+            <div ref={ref as React.RefObject<HTMLDivElement>} className="w-full">
+              <div className={cn("w-full border rounded-lg overflow-hidden mb-2 relative", theme === 'dark'
+                ? "border-zinc-600 bg-zinc-800"
+                : "border-gray-300 bg-white",
                 error && "border-red-500",
                 readOnly && "opacity-70"
               )}>
@@ -145,13 +140,11 @@ const SignatureField = React.forwardRef<HTMLDivElement, SignatureFieldProps>(({
                       <Button
                         type="button"
                         variant="outline"
-                        className={cn(
-                          "px-4 py-2 h-auto",
-                          theme === 'dark'
-                            ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border-zinc-600"
-                            : "bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-300"
-                        )}
                         onClick={() => setDialogOpen(true)}
+                        className={cn("px-4 py-2 h-auto", theme === 'dark'
+                          ? "bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border-zinc-600"
+                          : "bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-300"
+                        )}
                       >
                         {!isMobile && <Pen className="h-4 w-4 mr-2" />}
                         {!isMobile ? 'Abrir panel para firmar' : 'Firmar'}
@@ -184,15 +177,13 @@ const SignatureField = React.forwardRef<HTMLDivElement, SignatureFieldProps>(({
 
                   {showDownload && (
                     <Button
-                      type="button"
-                      onClick={() => descargar(field.value)}
-                      variant="outline"
                       size="sm"
-                      className={cn(
-                        "flex-1",
-                        theme === 'dark'
-                          ? "border-blue-700 text-blue-400 hover:bg-blue-900/20"
-                          : "border-blue-300 text-blue-600 hover:bg-blue-50"
+                      type="button"
+                      variant="outline"
+                      onClick={() => descargar(field.value)}
+                      className={cn("flex-1", theme === 'dark'
+                        ? "border-blue-700 text-blue-400 hover:bg-blue-900/20"
+                        : "border-blue-300 text-blue-600 hover:bg-blue-50"
                       )}
                     >
                       <Download className="h-4 w-4 mr-1" />

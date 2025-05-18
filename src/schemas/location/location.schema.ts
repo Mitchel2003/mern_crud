@@ -1,5 +1,12 @@
 import { z } from "zod"
 
+export const signMaintenanceSchema = z.object({
+  preview: z.string().optional(),
+  signature: z.array(
+    z.object({ png: z.string() })
+  ).optional().default([]),
+})
+
 export const officeSchema = z.object({
   name: z
     .string({ required_error: "El nombre es requerido" })
@@ -75,3 +82,4 @@ export type StateFormProps = z.infer<typeof stateSchema>
 export type OfficeFormProps = z.infer<typeof officeSchema>
 export type CountryFormProps = z.infer<typeof countrySchema>
 export type HeadquarterFormProps = z.infer<typeof headquarterSchema>
+export type SignMaintenanceFormProps = z.infer<typeof signMaintenanceSchema>

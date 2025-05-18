@@ -72,13 +72,14 @@ export type AuthContext = {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------LocationContext--------------------------------------------------*/
-export type LocationType = 'country' | 'state' | 'city' | 'headquarter' | 'office'
+export type LocationType = 'country' | 'state' | 'city' | 'headquarter' | 'office' | 'signature'
 
 export type Country = BaseMDB & { name: string }
 export type State = BaseMDB & { name: string; country: Country }
 export type City = BaseMDB & { name: string; state: State }
 export type Headquarter = BaseMDB & { name: string; address: string; client: User; city: City }
 export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
+export type Signature = BaseMDB & { url: string; active: boolean; headquarter: Headquarter }
 
 export type LocationContext = {
   getAll: <T>(type: LocationType) => Promise<T[]>
@@ -142,6 +143,8 @@ export type Maintenance = BaseMDB & {
   statusEquipment: string
   metadata?: Record<string, any>
   curriculum: Curriculum
+  signature?: Signature,
+  signedAt?: Date,
   createdBy: User
 }
 export type Curriculum = BaseMDB & {

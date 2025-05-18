@@ -1,10 +1,10 @@
+import { User } from "@/interfaces/context.interface"
 import { type ClassValue, clsx } from "clsx"
 import { FC, createElement } from "react"
 import { pdf } from "@react-pdf/renderer"
 import { twMerge } from "tailwind-merge"
 import { saveAs } from "file-saver"
 import JSZip from 'jszip'
-import { User } from "@/interfaces/context.interface"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -30,6 +30,23 @@ export const processFile = (data: File): Promise<string> => {
     reader.onloadend = () => resolve((reader.result as string).split(',')[1])
     reader.readAsDataURL(data)
   })
+}
+
+/**
+ * Convierte una URL de datos (base64) en un objeto File
+ * @param dataUrl - URL de datos en formato base64 (ej: data:image/png;base64,...)
+ * @returns Objeto File listo para ser subido al servidor
+ */
+export const dataUrlToFile = (dataUrl: string): File => {
+  //Extract MIME type from data URL (image/png, image/jpeg, etc.)
+  const mime = dataUrl.match(/data:([^;]+);/)![1]
+  //Extract base64 from data URL
+  const bstr = atob(dataUrl.split(',')[1])
+  let n = bstr.length //string length base64
+  const u8arr = new Uint8Array(n)
+  //Convert the string to a byte array
+  while (n--) { u8arr[n] = bstr.charCodeAt(n) }
+  return new File([u8arr], 'file', { type: mime })
 }
 /*---------------------------------------------------------------------------------------------------------*/
 
