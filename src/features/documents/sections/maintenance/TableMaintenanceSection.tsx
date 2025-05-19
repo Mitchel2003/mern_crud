@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils"
 interface TableMaintenanceSectionProps extends ThemeContextProps {
   params?: { name?: string; modelEquip?: string; statusEquipment?: string } | null
   onChange: () => void
+  isHistory?: boolean
   credentials: User
 }
 
@@ -38,15 +39,16 @@ interface TableMaintenanceSectionProps extends ThemeContextProps {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los formatos, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableMaintenanceSection = ({ theme, params, credentials, onChange }: TableMaintenanceSectionProps) => {
+const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChange }: TableMaintenanceSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { maintenances, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
+  const { maintenances: mts, handleDelete, handleDownload, handleDownloadZip } = useMaintenanceTable()
   const [showDialog, setShowDialog] = useState<Maintenance[] | undefined>(undefined)
   const isClient = credentials?.role === 'client'
   const { notifyWarning } = useNotification()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
+  const maintenances = useMemo(() => (mts.filter(m => isHistory ? !!m.signature : !m.signature)), [isHistory, mts])
   const { methods, open, setOpen, onConfirm, handleSubmit } = useSignMaintenanceForm(showDialog, () => setShowDialog(undefined))
 
   /** Header stats */
@@ -260,22 +262,24 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
             Descargar
           </Button>
           {/** Sign maintenance (ZIP) */}
-          <Button
-            size="small"
-            color="secondary"
-            variant="contained"
-            startIcon={<Download />}
-            onClick={() => {
-              const selectedRows = table.getSelectedRowModel().flatRows
-              const someSigned = selectedRows.some(row => row.original.signature)
-              const headquarters = selectedRows.map(row => row.original.curriculum.office.headquarter.name)
-              if (new Set(headquarters).size > 1) return notifyWarning({ title: '☣️ Más de una sede seleccionada', message: 'En la firma multiple, los documentos deben pertenecer a la misma sede' })
-              if (someSigned) return notifyWarning({ title: '☣️ Algunos documentos ya están firmados', message: 'No se puede firmar documentos que ya están firmados' })
-              setShowDialog(selectedRows.map(row => row.original))
-            }}
-          >
-            Firmar documentos
-          </Button>
+          {!isHistory && (
+            <Button
+              size="small"
+              color="secondary"
+              variant="contained"
+              startIcon={<Download />}
+              onClick={() => {
+                const selectedRows = table.getSelectedRowModel().flatRows
+                const someSigned = selectedRows.some(row => row.original.signature)
+                const headquarters = selectedRows.map(row => row.original.curriculum.office.headquarter.name)
+                if (new Set(headquarters).size > 1) return notifyWarning({ title: '☣️ Más de una sede seleccionada', message: 'En la firma multiple, los documentos deben pertenecer a la misma sede' })
+                if (someSigned) return notifyWarning({ title: '☣️ Algunos documentos ya están firmados', message: 'No se puede firmar documentos que ya están firmados' })
+                setShowDialog(selectedRows.map(row => row.original))
+              }}
+            >
+              Firmar documentos
+            </Button>
+          )}
         </Box>
       </Box>
     )
@@ -289,7 +293,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, onChange }: Table
           icon={Wrench}
           stats={stats}
           variant="gradient"
-          title={`${!isMobile ? 'Historial de' : ''} Mantenimientos`}
+          title={`${!isMobile && isHistory ? 'Historial de' : ''} Mantenimientos`}
           badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />

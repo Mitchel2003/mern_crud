@@ -31,6 +31,17 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
   const { notifySuccess } = useNotification()
   const queryLocation = useQueryLocation()
 
+  /**
+   * issues with re-render (fetch)
+   * 
+   * when solicit sign, the component is called
+   * so the fetch its executed,
+   * 
+   * but when close dialog (without submit)
+   * and we going to another context (other headquarter)
+   * so the refetch not is executed, so we can see the last sign (inconsistence)
+   */
+  // console.log(headquarter?._id)
   const headquarter = maintenances?.[0]?.curriculum?.office?.headquarter
   const { data: signature } = queryLocation.fetchLocationByQuery<Signature>('signature', { headquarter: headquarter?._id, enabled: !!headquarter })
 
@@ -42,6 +53,7 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
 
   useEffect(() => {
     signature && methods.reset({ preview: signature?.[0]?.url })
+    // console.log(signature)
   }, [signature])
 
   /**

@@ -1,5 +1,5 @@
 import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, Users, UserSquare, UserCircle2 } from 'lucide-react'
-import { PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox, Devices, HomeRepairService } from '@mui/icons-material'
+import { PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox, Devices, HomeRepairService, ManageSearch } from '@mui/icons-material'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { RoleProps } from '@/interfaces/context.interface'
 import { useAuthContext } from '@/context/AuthContext'
@@ -274,6 +274,11 @@ export const links = (): NavItemProps[] => {
       icon: HomeRepairService,
       href: '/form/maintenances',
       label: 'Mantenimientos',
+    },
+    {// maintenances history
+      icon: ManageSearch,
+      href: '/form/maintenance-history',
+      label: 'Historial mantenimientos',
     },
     {// cronogramas
       icon: WorkHistory,

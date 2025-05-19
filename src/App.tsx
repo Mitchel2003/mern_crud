@@ -43,6 +43,7 @@ function App() {
                     <Route path="/form/maintenance" element={<Render.MaintenancePage />} />
                     <Route path="/form/maintenances" element={<Render.MaintenancePage />} />
                     <Route path="/form/maintenance/:id" element={<Render.MaintenancePage />} />
+                    <Route path="/form/maintenance-history" element={<Render.MaintenancePage />} />
 
                     <Route path="/form/solicit" element={<Render.SolicitPage />} />
                     <Route path="/form/solicits" element={<Render.SolicitPage />} />

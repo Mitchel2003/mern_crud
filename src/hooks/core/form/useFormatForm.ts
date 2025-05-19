@@ -245,7 +245,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
   //to load the form on update mode "id"
   useEffect(() => { id && loadData() }, [id, isLoading, referenceData.options.curriculums])
 
-  /** Carga los datos del currículo en el formulario */
+  /** Carga los datos del mantenimiento en el formulario */
   const loadData = async () => {// implement callback (suggested)
     mt && methods.reset({
       ...referenceData.mapValues(mt),

@@ -19,8 +19,9 @@ const SolicitPage = () => {
   const { user } = useAuthContext()
   const { id } = useParams()
 
+  const startOn = user?.role === 'client' ? 'form' : 'table'
   const table = createTheme({ palette: { mode: theme } }) //theme table
-  const { tab, isQuery, handle } = useTabs({ id, to: route, startOn: user?.role === 'client' ? 'form' : 'table' })
+  const { tab, isQuery, handle } = useTabs({ id, to: route, startOn })
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const userAllowed = user?.role === 'admin'
   return (

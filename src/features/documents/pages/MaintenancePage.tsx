@@ -9,16 +9,18 @@ import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
 
 import { createTheme, ThemeProvider } from '@mui/material'
+import { useParams, useLocation } from 'react-router-dom'
 import { useThemeContext } from '@/context/ThemeContext'
-import { useParams } from 'react-router-dom'
 import { Suspense } from 'react'
 const route = '/form/maintenance'
 
 const MaintenancePage = () => {
   const { theme } = useThemeContext()
   const { user } = useAuthContext()
+  const location = useLocation()
   const { id } = useParams()
 
+  const isHistory = location.pathname.includes('history')
   const table = createTheme({ palette: { mode: theme } }) //theme table
   const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
@@ -30,6 +32,7 @@ const MaintenancePage = () => {
           <Tabs value={tab} onValueChange={handle}>
             {/* Local action tabs */}
             <TabsList className={cn(
+              isHistory && 'hidden',
               !userAllowed && 'hidden',
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60",
@@ -56,7 +59,7 @@ const MaintenancePage = () => {
 
             {/* tabs content */}
             <TabsContent value="table">
-              <TableMaintenanceSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} />
+              <TableMaintenanceSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} isHistory={isHistory} />
             </TabsContent>
             <TabsContent value="form">
               <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
