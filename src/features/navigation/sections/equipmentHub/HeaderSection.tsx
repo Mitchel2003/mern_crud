@@ -1,15 +1,13 @@
 import { ThemeContextProps, Curriculum, User } from "@/interfaces/context.interface"
-import { motion, useScroll, useTransform } from "framer-motion"
 import { CrossIcon as MedicalCross, Verified } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "#/ui/avatar"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
+import { DevicesOther } from "@mui/icons-material"
 import { Badge } from "#/ui/badge"
 import { cn } from "@/lib/utils"
 
-export interface EquipmentHubHeaderProps extends ThemeContextProps {
-  cv?: Curriculum
-  user?: User
-}
-
+export interface EquipmentHubHeaderProps extends ThemeContextProps { cv?: Curriculum; user?: User }
 const EquipmentHubHeader = ({ cv, user, theme }: EquipmentHubHeaderProps) => {
   const { scrollY } = useScroll() // Animaciones basadas en scroll
   const isMobile = useIsMobile()
@@ -31,8 +29,8 @@ const EquipmentHubHeader = ({ cv, user, theme }: EquipmentHubHeaderProps) => {
       className={cn("relative rounded-xl shadow-lg overflow-hidden", bgColor)}
       style={{ opacity, scale, y }}
       variants={containerVariants}
-      initial="hidden"
       animate="visible"
+      initial="hidden"
     >
       {/* Decoración de fondo */}
       <div className="absolute inset-0 overflow-hidden">
@@ -49,32 +47,31 @@ const EquipmentHubHeader = ({ cv, user, theme }: EquipmentHubHeaderProps) => {
       </div>
 
       {/* Contenido principal */}
-      <div className="relative z-10 px-6 py-10 md:px-10">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <motion.div variants={itemVariants} className="flex items-center mb-4 md:mb-0">
-            <motion.div
-              className={cn("flex items-center justify-center w-12 h-12 rounded-full mr-4", isDark ? "bg-blue-600" : "bg-blue-500")}
-              variants={iconVariants}
-            >
-              <MedicalCross className="text-white h-6 w-6" />
-            </motion.div>
+      <div className={cn(`relative z-10 px-6 ${isMobile ? "py-4" : "py-8"} md:px-10`)}>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+          <motion.div variants={itemVariants} className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            {isMobile ? (
+              <>
+                {user && (<Badge variant={isDark ? "secondary" : "default"} className="mt-1"><Verified className="mr-2 h-4 w-4" /> Usuario verificado</Badge>)}
+                {cv && (<Badge variant={isDark ? "secondary" : "default"} className="mt-1"><DevicesOther className="mr-2 h-4 w-4" /> Equipo {cv?.typeClassification}</Badge>)}
+                <img src={user?.metadata?.logo || '/placeholder.svg'} className="rounded-full mb-2" />
+              </>
+            ) : (
+              <Avatar className="h-20 w-20 mr-4 mb-4 sm:mb-0">
+                <AvatarImage className="object-cover" src={user?.metadata?.logo || '/placeholder.svg'} alt={user?.username} />
+                <AvatarFallback className="bg-muted-foreground font-medium text-background">
+                  <MedicalCross className="text-white h-6 w-6" />
+                </AvatarFallback>
+              </Avatar>
+            )}
 
-            <div className="flex flex-col">
-              <h2 className={cn("text-xl font-semibold", textColor, isMobile ? "text-lg" : "")}>
+            <div className="flex flex-col space-y-2">
+              <h2 className={cn("text-xl font-semibold text-center", textColor, isMobile ? "text-lg" : "")}>
                 {cv?.office?.headquarter?.client?.username || user?.username}
               </h2>
-              <div className="flex flex-row gap-2">
-                {user && (
-                  <Badge variant={isDark ? "secondary" : "default"} className="mt-1">
-                    <Verified className="mr-2 h-4 w-4" />
-                    Usuario verificado
-                  </Badge>
-                )}
-                {cv && (
-                  <Badge variant={isDark ? "secondary" : "default"} className="mt-1">
-                    Equipo de clasificación {cv?.typeClassification}
-                  </Badge>
-                )}
+              <div className={cn(`flex flex-row gap-2 ${isMobile && 'hidden'}`)}>
+                {user && (<Badge variant={isDark ? "secondary" : "default"} className="mt-1"><Verified className="mr-2 h-4 w-4" /> Usuario verificado</Badge>)}
+                {cv && (<Badge variant={isDark ? "secondary" : "default"} className="mt-1"><DevicesOther className="mr-2 h-4 w-4" /> Equipo de clasificación {cv?.typeClassification}</Badge>)}
               </div>
             </div>
           </motion.div>
@@ -106,7 +103,7 @@ const EquipmentHubHeader = ({ cv, user, theme }: EquipmentHubHeaderProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            Acceda a toda la información técnica de su equipo {cv?.typeClassification ?? ""}. Toda la documentación en un solo lugar disponible 24/7
+            Acceda a toda la información técnica de su{!cv && 's'} equipo{!cv ? "s" : ` ${cv.typeClassification}`}. Toda la documentación en un solo lugar disponible 24/7
           </motion.p>
         </motion.div>
       </div>
@@ -135,9 +132,4 @@ const containerVariants = {
 const itemVariants = {
   hidden: { y: -20, opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 24 } },
-}
-
-const iconVariants = {
-  hidden: { scale: 0, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 500, damping: 30 } },
 }

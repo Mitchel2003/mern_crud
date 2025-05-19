@@ -1,5 +1,6 @@
 import { ArrowRight, Calendar, HandPlatterIcon, Laptop, Wrench, BookDownIcon } from "lucide-react"
 import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
 import { LucideIcon } from "lucide-react"
@@ -18,8 +19,9 @@ const NavigationSection = ({ cv, auth, theme, setOpen }: NavigationSectionProps)
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const cronogramasCardRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   return (
-    <div className={cn("grid gap-6", auth ? (!cv ? "md:grid-cols-3" : "md:grid-cols-2") : "md:grid-cols-1")}>
+    <div className={cn("grid gap-4", auth ? (!cv ? "md:grid-cols-3" : "md:grid-cols-2") : "md:grid-cols-1")}>
       {cardData({ cv, auth, theme }).map((card, index) => (
         <motion.div
           key={card.id}
@@ -36,7 +38,7 @@ const NavigationSection = ({ cv, auth, theme, setOpen }: NavigationSectionProps)
         >
           <Card
             onClick={() => { if (card.id === "cronogramas") setOpen(true); else navigate(card.path) }}
-            className={cn("relative overflow-hidden h-72 cursor-pointer group", theme === "dark"
+            className={cn(`relative overflow-hidden ${isMobile ? 'h-48' : 'h-60'} cursor-pointer group`, theme === "dark"
               ? "bg-zinc-950 border-zinc-700" : "bg-white border-gray-100",
               hoveredCard === card.id && "ring-2 ring-offset-2",
               hoveredCard === card.id && theme === "dark"
@@ -89,6 +91,7 @@ const NavigationSection = ({ cv, auth, theme, setOpen }: NavigationSectionProps)
 
             {/* Badge con estadísticas */}
             <motion.div
+              hidden={isMobile}
               animate={{ x: 0, opacity: 1 }}
               initial={{ x: 20, opacity: 0 }}
               transition={{ delay: 0.5 + index * 0.1 }}
@@ -139,19 +142,11 @@ const cardData = ({ cv, auth, theme }: CardDataProps): CardData[] => {
   }]
 
   const arrayDefault: CardData[] = [{
-    icon: Calendar,
-    id: "cronogramas",
-    title: "Cronogramas",
-    path: "/form/schedule",
-    alert: "Mantenimiento, capacitaciones y asistencias",
-    description: "Visualice y organice los diferentes cronogramas disponibles para usted",
-    gradient: theme === "dark" ? "from-teal-600 to-emerald-700" : "from-teal-500 to-emerald-600",
-  }, {
     id: "equipos",
     icon: Laptop,
     title: "Equipos",
     alert: "Equipos de computo, biomedicos etc",
-    description: "Gestione y consulte información detallada sobre sus equipos",
+    description: "Consulte información detallada sobre sus equipos",
     gradient: theme === "dark" ? "from-purple-600 to-indigo-700" : "from-purple-500 to-indigo-600",
     path: cv?._id ? `/form/curriculum/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/curriculums",
   }, {
@@ -159,9 +154,17 @@ const cardData = ({ cv, auth, theme }: CardDataProps): CardData[] => {
     id: "mantenimientos",
     title: "Mantenimientos",
     alert: "Preventivos y correctivos",
-    description: "Consulte el historial y maneje los mantenimientos de los equipos",
+    description: "Consulte el historial de mantenimiento de sus equipos",
     gradient: theme === "dark" ? "from-amber-600 to-orange-700" : "from-amber-500 to-orange-600",
     path: cv?._id ? `/form/maintenance/${encodeQueryParams({ modelEquip: cv?.modelEquip })}` : "/form/maintenances",
+  }, {
+    icon: Calendar,
+    id: "cronogramas",
+    title: "Cronogramas",
+    path: "/form/schedule",
+    alert: "Mantenimiento, capacitaciones y asistencias",
+    description: "Visualice los diferentes cronogramas disponibles",
+    gradient: theme === "dark" ? "from-teal-600 to-emerald-700" : "from-teal-500 to-emerald-600",
   }]
 
   auth && cv && arrayDefault.unshift({

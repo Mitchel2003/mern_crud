@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, CheckCircle, Clock, FileText, LifeBuoy, MessageSquare, Phone, Shield, Users } from "lucide-react"
+import { CheckCircle, Clock, FileText, LifeBuoy, MessageSquare, Phone, Shield } from "lucide-react"
 import { ThemeContextProps } from "@/interfaces/context.interface"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { motion } from "framer-motion"
@@ -80,7 +80,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
             </TabsList>
 
             <TabsContent value="features" className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[{
                   icon: <FileText className="h-5 w-5" />,
                   title: "Gestión Documental",
@@ -88,11 +88,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                 }, {
                   icon: <Clock className="h-5 w-5" />,
                   title: "Mantenimientos Programados",
-                  description: "Planifique y controle los mantenimientos preventivos y correctivos con alertas automáticas."
-                }, {
-                  icon: <Users className="h-5 w-5" />,
-                  title: "Control de Usuarios",
-                  description: "Asigne roles y permisos específicos para cada miembro de su equipo técnico y administrativo."
+                  description: "Visualize las fechas de sus proximos mantenimientos preventivos."
                 }].map((feature, index) => (
                   <motion.div
                     key={index}
@@ -144,8 +140,9 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
             </TabsContent>
 
             <TabsContent value="support" className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className={cn("col-span-1 md:col-span-2 p-4 rounded-lg border",
+              <div className="grid gap-6">
+                {/** temporally disabled */}
+                {/* <div className={cn("col-span-1 md:col-span-2 p-4 rounded-lg border",
                   theme === "dark" ? "bg-zinc-900/50 border-zinc-800" : "bg-white border-gray-100"
                 )}>
                   <h3 className={cn("font-medium mb-3", theme === "dark" ? "text-white" : "text-gray-800")}>
@@ -176,7 +173,7 @@ const FooterHelp = ({ theme }: ThemeContextProps) => {
                       </motion.div>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 <div className={cn("p-4 rounded-lg border", theme === "dark" ? "bg-blue-900/10 border-blue-900/30" : "bg-blue-50 border-blue-100")}>
                   <h3 className={cn("font-medium mb-3 flex items-center gap-2", theme === "dark" ? "text-blue-300" : "text-blue-700")}>

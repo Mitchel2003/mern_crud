@@ -22,7 +22,7 @@ const EquipmentHub = () => {
   if (isLoading) return <Skeleton theme={theme} />
   if (!cv && !isLoading && id) return <NotFound theme={theme} />
   return (
-    <main className="container mx-auto px-4 py-8 space-y-8">
+    <main className="container mx-auto px-4 py-8 space-y-6">
       <Section.HeaderSection theme={theme} cv={cv} user={user} />{/** Header section, contain client and equipment information */}
       <Section.RegulationSection theme={theme} setOpen={setRegulationsDrawerOpen} />{/** Information section, contain regulations quality */}
       <Section.NavigationSection theme={theme} setOpen={setScheduleDrawerOpen} cv={cv} auth={isAuth} />{/** Nav section, contain navigation */}
