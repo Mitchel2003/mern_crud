@@ -46,7 +46,7 @@ const routePermissions: RoutePermission[] = [
   {// Curriculums (form)
     isPrefix: true,
     path: '/form/curriculum',
-    allowed: ['company:main', 'company:sub', 'collaborator'],
+    allowed: ['company:main', 'company:sub', 'collaborator', 'client'],
   },
   {// Curriculums (table)
     isPrefix: true,
