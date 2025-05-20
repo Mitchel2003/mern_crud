@@ -48,7 +48,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
   const navigate = useNavigate()
   const isMobile = useIsMobile()
 
-  const maintenances = useMemo(() => (mts.filter(m => isHistory ? !!m.signature : !m.signature)), [isHistory, mts])
+  const maintenances = useMemo(() => (mts.filter(m => isHistory || isClient ? !!m.signature : !m.signature)), [isHistory, mts])
   const { methods, open, setOpen, onConfirm, handleSubmit } = useSignMaintenanceForm(showDialog, () => setShowDialog(undefined))
 
   /** Header stats */
@@ -75,44 +75,46 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<Maintenance>[] = [{
-      size: 150,
+      size: 120,
       header: 'Equipo',
       id: 'curriculum.name',
       accessorFn: (row) => row.curriculum.name,
     }, {
-      size: 100,
+      size: 70,
       header: "Modelo",
       id: "curriculum.modelEquip",
-      accessorFn: (row) => row?.curriculum?.modelEquip || 'Sin modelo'
+      accessorFn: (row) => row.curriculum?.modelEquip || 'Sin modelo'
     }, {
-      size: 100,
+      size: 50,
       header: "Sede",
       id: "curriculum.office.headquarter.name",
-      accessorFn: (row) => row?.curriculum?.office?.headquarter?.name || 'Sin sede'
-    }, {
-      size: 250,
-      header: "Cliente",
-      id: "curriculum.office.headquarter.client.username",
-      accessorFn: (row) => row?.curriculum?.office?.headquarter?.client?.username || 'Sin cliente'
-    }, {
-      size: 100,
-      id: "typeMaintenance",
-      header: "Tipo mantenimiento",
-      accessorFn: (row) => row.typeMaintenance
-    }, {
-      size: 100,
-      header: "Estado",
-      id: "statusEquipment",
-      accessorFn: (row) => row.statusEquipment
-    }, {
-      size: 100,
-      id: "dateNextMaintenance",
-      header: "Prox. mantenimiento",
-      accessorFn: (row) => formatDateTime(row.dateNextMaintenance)
+      accessorFn: (row) => row.curriculum?.office?.headquarter?.name || 'Sin sede'
     }];
 
-    // to show columns conditional
-    isClient && array.splice(2, 1)
+    !isClient && array.push({// to show columns conditional
+      size: 120,
+      header: "Cliente",
+      id: "office.headquarter.client.username",
+      accessorFn: (row) => row.curriculum?.office?.headquarter?.client?.username || 'Sin cliente'
+    });
+
+    /** servicio y consultorio */
+    isClient && array.push({
+      size: 80,
+      header: "Servicio",
+      id: "curriculum.service",
+      accessorFn: (row) => row.curriculum?.service
+    }, {
+      size: 120,
+      header: "Consultorio",
+      id: "curriculum.office.name",
+      accessorFn: (row) => row.curriculum?.office?.name,
+    }, {
+      size: 70,
+      id: "updatedAt",
+      header: "Ultima actualización",
+      accessorFn: (row) => formatDateTime(row.updatedAt)
+    });
     return array
   }, [isClient])
 
@@ -262,7 +264,7 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
             Descargar
           </Button>
           {/** Sign maintenance (ZIP) */}
-          {!isHistory && (
+          {!isHistory && !isClient && (
             <Button
               size="small"
               color="secondary"

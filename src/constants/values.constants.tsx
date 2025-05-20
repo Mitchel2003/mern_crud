@@ -191,6 +191,7 @@ export const scheduleDefaultValues: ScheduleFormProps = {
   subject: '',
   message: '',
   typeClassification: '',
+  yearOperation: undefined,
   monthOperation: undefined,
   dateAttendance: undefined,
   newRowAttendance: [],
@@ -426,8 +427,8 @@ export const styles = StyleSheet.create({ //styles basics
   },
   // Client section
   sectionTitle: {
-    padding: '2pt 4pt',
-    marginBottom: '2pt',
+    padding: '0pt',
+    marginBottom: '0pt',
     backgroundColor: '#000000',
   },
   sectionTitleText: {
@@ -768,6 +769,29 @@ export const styles = StyleSheet.create({ //styles basics
     color: '#616161',
     lineHeight: 1.5,
     fontSize: 10,
+  },
+
+  // Estilos para la seccion de imagenes
+  imagesContainer: {
+    marginTop: 5,
+    width: "100%",
+    marginBottom: 5,
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+  },
+  imageWrapper: {
+    padding: 3,
+    width: "33%",
+    boxSizing: "border-box",
+  },
+  maintenanceImage: {
+    width: "100%",
+    borderRadius: 4,
+    objectFit: "cover",
+    border: "1px solid #ccc",
   }
 })
 

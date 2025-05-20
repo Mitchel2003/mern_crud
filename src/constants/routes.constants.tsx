@@ -57,7 +57,7 @@ const routePermissions: RoutePermission[] = [
   {// Maintenance (form)
     isPrefix: true,
     path: '/form/maintenance',
-    allowed: ['company:main', 'company:sub', 'collaborator'],
+    allowed: ['company:main', 'company:sub', 'collaborator', 'client'],
   },
   {// Maintenance (table)
     isPrefix: true,

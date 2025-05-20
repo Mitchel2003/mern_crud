@@ -62,17 +62,17 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<CurriculumChildren>[] = [{
-      size: 150,
+      size: 130,
       id: 'name',
       header: 'Equipo',
       accessorFn: (row) => row.name,
     }, {
-      size: 100,
+      size: 80,
       header: "Modelo",
       id: "modelEquip",
       accessorFn: (row) => row.modelEquip || 'Sin modelo'
     }, {
-      size: 150,
+      size: 80,
       header: "Sede",
       id: "office.headquarter.name",
       accessorFn: (row) => row.office?.headquarter?.name || 'Sin sede'
@@ -83,13 +83,10 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
       header: "Cliente",
       id: "office.headquarter.client.username",
       accessorFn: (row) => row.office?.headquarter?.client?.username || 'Sin cliente'
-    }, {
-      size: 90,
-      header: "Riesgo",
-      id: "riskClassification",
-      accessorFn: (row) => row.riskClassification
-    }, {
-      size: 100,
+    });
+
+    array.push({
+      size: 80,
       id: "createdAt",
       header: "Fecha de creación",
       accessorFn: (row) => formatDateTime(row.createdAt)

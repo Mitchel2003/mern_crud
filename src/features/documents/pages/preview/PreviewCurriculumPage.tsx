@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { Card, CardContent } from "#/ui/card"
 import { useParams } from "react-router-dom"
 import { cn } from "@/lib/utils"
+import { useMemo } from "react"
 
 const PreviewCurriculumSection = () => {
   const { isAuth } = useAuthContext()
@@ -23,9 +24,10 @@ const PreviewCurriculumSection = () => {
   /** basic data equipment, references company and client */
   const { data: cv, isLoading: isLoadingCv } = queryFormat.fetchFormatById<Curriculum>('cv', id)
   const { data: com, isLoading: isLoadingCom } = queryUser.fetchUserByQuery<User>({ role: 'company' })
-  const { data: mt, isLoading: isLoadingMt } = queryFormat.fetchFormatByQuery<Maintenance>('maintenance', { curriculum: id, enabled: !!id && isAuth })
-  const company = com?.filter((c) => !c?.belongsTo)[0] as User
-  const client = cv?.office?.headquarter?.client
+  const { data: mts, isLoading: isLoadingMt } = queryFormat.fetchFormatByQuery<Maintenance>('maintenance', { curriculum: id, enabled: !!id && isAuth })
+  const maintenances = useMemo(() => mts?.filter((mt) => mt.curriculum?._id === id), [mts])
+  const company = useMemo(() => com?.filter((c) => !c?.belongsTo)[0] as User, [com])
+  const client = useMemo(() => cv?.office?.headquarter?.client, [cv])
 
   /** complementaries curriculum */
   const { data: ins, isLoading: isLoadingIns } = queryFormat.fetchFormatById<Inspection>('inspection', cv?.inspection._id as string, { enabled: !!cv && isAuth })
@@ -54,7 +56,7 @@ const PreviewCurriculumSection = () => {
               <Section.Footer theme={theme} cv={cv} com={company} />
             </CardContent>
           </Card>
-          {isAuth && mt && <Section.MaintenanceHistory theme={theme} mt={mt} company={company} />}
+          {isAuth && maintenances && <Section.MaintenanceHistory theme={theme} mt={maintenances} company={company} />}
         </>
       )}
     </div>

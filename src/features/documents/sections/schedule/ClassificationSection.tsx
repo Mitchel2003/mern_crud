@@ -17,6 +17,7 @@ import AreaField from "#/common/fields/Area"
 const ClassificationSection = ({ theme }: ThemeContextProps) => {
   const { watch } = useFormContext()
   const type = watch('typeSchedule')
+  const currentYear = dayjs().year()
   return (
     <>
       {type === 'acta de asistencia' && (
@@ -53,6 +54,18 @@ const ClassificationSection = ({ theme }: ThemeContextProps) => {
         </>
       )}
 
+      {type === 'mantenimiento' && (
+        <MultiSelect
+          theme={theme}
+          name="yearOperation"
+          label="Año del mantenimiento"
+          placeholder="Seleccione el año previsto para el mantenimiento"
+          options={Array.from({ length: 20 }, (_, i) => {
+            const year = currentYear + i
+            return { value: year.toString(), label: year.toString(), icon: CalendarIcon }
+          })}
+        />
+      )}
       {(type === 'capacitación' || type === 'mantenimiento') && (
         <MultiSelect
           theme={theme}

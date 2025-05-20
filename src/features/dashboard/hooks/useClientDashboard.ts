@@ -2,14 +2,16 @@ import { Curriculum, Maintenance, Solicit } from '@/interfaces/context.interface
 import { ClientDashboardProps } from '@/interfaces/props.interface'
 import { useQueryFormat } from '@/hooks/query/useFormatQuery'
 import { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
 
 /**
  * Hook personalizado para gestionar los datos del dashboard del cliente
  * Proporciona estadísticas, actividades recientes y próximos mantenimientos
- */
+*/
 export const useClientDashboard = () => {
   const [data, setData] = useState<ClientDashboardProps>(valueDefault)
   const queryFormat = useQueryFormat()
+  const currentYear = dayjs().year()
 
   // Obtener datos del backend
   const { data: solicits = [], isLoading: isLoadingSolicits } = queryFormat.fetchAllFormats<Solicit>('solicit')
@@ -26,10 +28,15 @@ export const useClientDashboard = () => {
     const now = new Date()
 
     // Clasificación por fecha y estado
-    const pendingSolicits = solicits.filter(s => s.status === 'pendiente' || s.status === 'asignado')
-    const pendingMaintenancesArray = mts.filter(m => m.dateNextMaintenance && new Date(m.dateNextMaintenance) > now)
     const completedMaintenancesArray = mts.filter(m => m.statusEquipment === 'funcionando')
     const maintenancesWithAlerts = mts.filter(m => m.dateNextMaintenance && new Date(m.dateNextMaintenance) < now)
+    const pendingMaintenancesProx = mts.filter(m => m.dateNextMaintenance && new Date(m.dateNextMaintenance) > now)
+    const pendingSolicits = solicits.filter(s => s.status === 'pendiente' || s.status === 'asignado')
+    const pendingMaintenancesArray = mts.filter(m => {
+      if (!m.dateNextMaintenance) return false
+      const maintenanceDate = dayjs(m.dateNextMaintenance)
+      return maintenanceDate.isValid() && maintenanceDate.year() === currentYear
+    })
 
     // Cálculo de estadísticas principales
     const totalCurriculums = cvs.length
@@ -52,11 +59,11 @@ export const useClientDashboard = () => {
       const activityDate = m.updatedAt ? new Date(m.updatedAt) : new Date(m.dateMaintenance)
       const timeAgo = getTimeAgo(activityDate)
       return {
-        timeAgo, id: m._id,
-        date: activityDate.toLocaleDateString(),
-        equipment: curriculum?.name || 'Equipo sin nombre',
-        type: m.typeMaintenance === 'preventivo' ? 'maintenance' : 'request',
         status: m.statusEquipment === 'funcionando' ? 'completed' : 'pending',
+        type: m.typeMaintenance === 'preventivo' ? 'maintenance' : 'request',
+        equipment: curriculum?.name || 'Equipo sin nombre',
+        date: activityDate.toLocaleDateString(),
+        timeAgo, id: m._id,
       }
     })
 
@@ -71,12 +78,12 @@ export const useClientDashboard = () => {
       if (latestAlert) {
         const curriculum = cvs.find(cv => cv._id === latestAlert.curriculum._id)
         recentActivities.push({
-          type: 'alert',
-          status: 'urgent',
-          id: latestAlert._id,
-          timeAgo: 'Mantenimiento vencido',
-          equipment: curriculum?.name || 'Equipo sin nombre',
           date: new Date(latestAlert.dateNextMaintenance || new Date()).toLocaleDateString(),
+          equipment: curriculum?.name || 'Equipo sin nombre',
+          timeAgo: 'Mantenimiento vencido',
+          id: latestAlert._id,
+          status: 'urgent',
+          type: 'alert',
         })
       }
     }
@@ -85,17 +92,17 @@ export const useClientDashboard = () => {
      * Genera la lista de próximos mantenimientos
      * Ordenados por fecha (más cercanos primero)
      */
-    const upcomingMaintenances = pendingMaintenancesArray.sort((a, b) => {
+    const upcomingMaintenances = pendingMaintenancesProx.sort((a, b) => {
       const dateA = a.dateNextMaintenance ? new Date(a.dateNextMaintenance).getTime() : 0
       const dateB = b.dateNextMaintenance ? new Date(b.dateNextMaintenance).getTime() : 0
       return dateA - dateB // Orden ascendente por fecha
     }).map(m => {
       const curriculum = cvs.find(cv => cv._id === m.curriculum._id)
       return {
-        id: m._id,
-        type: m.typeMaintenance || 'preventivo',
-        equipment: curriculum?.name || 'Equipo sin nombre',
         date: new Date(m.dateNextMaintenance!).toLocaleDateString(),
+        equipment: curriculum?.name || 'Equipo sin nombre',
+        type: m.typeMaintenance || 'preventivo',
+        id: m._id,
       }
     })
 
@@ -130,7 +137,6 @@ export const useClientDashboard = () => {
       { id: 3, name: "Fuera de servicio", count: outOfServiceCount, total: totalCurriculums, color: "bg-red-500" },
     ]
 
-    // Actualizar el estado con todos los datos procesados
     setData({
       // Estadísticas generales
       totalCurriculums,
@@ -152,6 +158,25 @@ export const useClientDashboard = () => {
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------tools--------------------------------------------------*/
+/** Valores por defecto para el estado inicial del dashboard */
+const valueDefault: ClientDashboardProps = {
+  // Estadísticas generales
+  totalCurriculums: 0,
+  totalMaintenances: 0,
+  completedMaintenances: 0,
+  pendingSolicitsCount: 0,
+  pendingMaintenances: 0,
+  activeAlerts: 0,
+
+  // Datos detallados
+  recentActivities: [],
+  upcomingMaintenances: [],
+  equipmentStatus: [
+    { id: 1, name: "Operativos", count: 0, total: 0, color: "bg-green-500" },
+    { id: 2, name: "En espera de repuestos", count: 0, total: 0, color: "bg-amber-500" },
+    { id: 3, name: "Fuera de servicio", count: 0, total: 0, color: "bg-red-500" },
+  ]
+}
 /**
  * Calcula el tiempo transcurrido desde una fecha hasta ahora en formato legible
  * @param date La fecha desde la que calcular el tiempo transcurrido
@@ -174,25 +199,4 @@ function getTimeAgo(date: Date): string {
   } else {
     return `Hace ${diffDays} días`
   }
-}
-/**
- * Valores por defecto para el estado inicial del dashboard
- */
-const valueDefault: ClientDashboardProps = {
-  // Estadísticas generales
-  totalCurriculums: 0,
-  totalMaintenances: 0,
-  completedMaintenances: 0,
-  pendingSolicitsCount: 0,
-  pendingMaintenances: 0,
-  activeAlerts: 0,
-
-  // Datos detallados
-  recentActivities: [],
-  upcomingMaintenances: [],
-  equipmentStatus: [
-    { id: 1, name: "Operativos", count: 0, total: 0, color: "bg-green-500" },
-    { id: 2, name: "En espera de repuestos", count: 0, total: 0, color: "bg-amber-500" },
-    { id: 3, name: "Fuera de servicio", count: 0, total: 0, color: "bg-red-500" },
-  ]
 }

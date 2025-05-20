@@ -18,11 +18,11 @@ const StatsSection = ({ theme, data }: StatsSectionProps) => {
         />
         <Separator orientation="horizontal" className="block sm:hidden" />
         <StatCard
-          title="Mantenimientos"
-          value={data.totalMaintenances.toString()}
-          change={`${data.pendingMaintenances} pendientes`}
+          title="Mantenimientos pendientes"
+          value={data.pendingMaintenances.toString()}
           icon={<Activity className="h-5 w-5 text-blue-600" />}
           trend={data.pendingMaintenances === 0 ? "up" : "neutral"}
+          change={`${data.pendingMaintenances} pendientes para este año`}
         />
         <Separator orientation="horizontal" className="block sm:hidden" />
         <StatCard

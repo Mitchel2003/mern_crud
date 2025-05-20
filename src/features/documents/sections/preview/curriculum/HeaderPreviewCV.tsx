@@ -20,7 +20,7 @@ const HeaderPreviewCV = ({ theme, client, isMobile }: HeaderPreviewCVProps) => {
         <div className="relative max-w-72 max-h-40 transition-transform hover:scale-105">
           <img
             alt="Logo Cliente"
-            className="object-contain rounded-lg border border-purple-100 shadow-sm"
+            className="max-h-40 object-contain rounded-lg border border-purple-100 shadow-sm"
             src={client?.metadata?.logo || "https://placehold.co/400x400/e2e2e2/666666?text=Sin+imagen"}
           />
         </div>

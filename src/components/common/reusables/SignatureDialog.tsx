@@ -108,6 +108,8 @@ const SignatureDialog = ({
           )}>
             <SignatureCanvas
               ref={sigCanvas}
+              minWidth={2}
+              maxWidth={4}
               canvasProps={{
                 height: 300,
                 onMouseDown: () => setIsSigning(true),

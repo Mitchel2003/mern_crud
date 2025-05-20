@@ -12,17 +12,12 @@ import { Badge } from "#/ui/badge"
 interface WelcomeSectionProps extends ThemeContextProps { credentials?: User }
 const WelcomeSection = ({ credentials, theme }: WelcomeSectionProps) => {
   const [weatherIcon, setWeatherIcon] = useState<React.ReactNode>(null)
-  const [showTip, setShowTip] = useState(false)
   const [greeting, setGreeting] = useState("")
   const [tipIndex, setTipIndex] = useState(0)
   const isDark = theme === "dark"
 
   useEffect(() => { //Tip cada 10 segundos
-    setShowTip(true)
-    const tipTimer = setInterval(() => {
-      setShowTip(false)
-      setTimeout(() => { setTipIndex((prev) => (prev + 1) % tips.length); setShowTip(true) }, 500)
-    }, 10000)
+    const tipTimer = setInterval(() => { setTimeout(() => { setTipIndex((prev) => (prev + 1) % tips.length) }, 500) }, 10000)
     return () => clearInterval(tipTimer)
   }, [])
 
@@ -140,27 +135,25 @@ const WelcomeSection = ({ credentials, theme }: WelcomeSectionProps) => {
 
             {/* Tip profesional */}
             <AnimatePresence mode="wait">
-              {showTip && (
-                <motion.div
-                  key={tipIndex}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className={cn("mt-6 p-4 rounded-lg border flex items-start gap-3", isDark
-                    ? "bg-zinc-800/50 border-zinc-700 text-zinc-300"
-                    : "bg-blue-50 border-blue-100 text-blue-700"
-                  )}
-                >
-                  <div className={cn("rounded-full p-1 flex-shrink-0", isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-600")}>
-                    <AlertCircle className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Consejo profesional:</p>
-                    <p className="text-sm">{tips[tipIndex]}</p>
-                  </div>
-                </motion.div>
-              )}
+              <motion.div
+                key={tipIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className={cn("mt-6 p-4 rounded-lg border flex items-start gap-3", isDark
+                  ? "bg-zinc-800/50 border-zinc-700 text-zinc-300"
+                  : "bg-blue-50 border-blue-100 text-blue-700"
+                )}
+              >
+                <div className={cn("rounded-full p-1 flex-shrink-0", isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-600")}>
+                  <AlertCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Consejo profesional:</p>
+                  <p className="text-sm">{tips[tipIndex]}</p>
+                </div>
+              </motion.div>
             </AnimatePresence>
           </motion.div>
         </div>

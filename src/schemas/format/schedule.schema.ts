@@ -16,6 +16,7 @@ export const scheduleSchema = z.object({
 
   // Campos opcionales que pueden volverse requeridos
   monthOperation: z.array(z.string()).optional(), //to maintenance or training
+  yearOperation: z.array(z.string()).optional(), //to maintenance
   typeClassification: z.string().optional(), //to maintenance
   subject: z.string().optional(), //to attendance
   message: z.string().optional(), //to attendance
@@ -26,6 +27,8 @@ export const scheduleSchema = z.object({
     case 'mantenimiento':
       if (!data.typeClassification) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "La clasificación es requerida", path: ["typeClassification"] }) }
       if (!data.monthOperation?.length) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Debe seleccionar al menos un mes", path: ["monthOperation"] }) }
+      if (!data.yearOperation?.length) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Debe seleccionar el año", path: ["yearOperation"] }) }
+      if (data.yearOperation?.length && data.yearOperation.length > 1) { ctx.addIssue({ code: z.ZodIssueCode.custom, message: "No permitido selección multiple", path: ["yearOperation"] }) }
       break;
 
     case 'capacitación':

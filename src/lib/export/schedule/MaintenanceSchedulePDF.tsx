@@ -10,22 +10,24 @@ dayjs.locale("es")
 interface MaintenancePDFProps {
   typeClassification: string
   monthOperation: string[]
+  yearOperation: string[]
   cvs: Curriculum[]
   createdBy: User
   client: User
 }
 
 /** Cronograma de mantenimiento */
-const MaintenancePDF = ({ cvs, client, createdBy, monthOperation, typeClassification }: MaintenancePDFProps) => {
+const MaintenancePDF = ({ cvs, client, createdBy, monthOperation, yearOperation, typeClassification }: MaintenancePDFProps) => {
   const equipments = useMemo(() => cvs.filter(cv => cv?.typeClassification.includes(typeClassification)).map((e) => `${e?.name} - ${e?.modelEquip}`), [cvs])
   const equipmentChunks = chunkTable(equipments, 13)
+  const year = yearOperation[0]
   return (
     <Document>
       {equipmentChunks.map((chunk, pageIndex) => (
         <Page key={`page-${pageIndex}`} size="A4" orientation='landscape' style={styles.page}>
           <View style={styles.container}>
             <HeaderSection client={client} typeClass={typeClassification} />
-            <MaintenanceTable equipments={chunk} months={monthOperation} />
+            <MaintenanceTable equipments={chunk} months={monthOperation} year={year} />
             <FooterSection createdBy={createdBy} />
           </View>
         </Page>
@@ -109,7 +111,7 @@ const HeaderSection = ({ client, typeClass }: { client: User, typeClass: string 
 )
 
 /** Tabla de mantenimiento */
-const MaintenanceTable = ({ equipments = [], months = [] }: { equipments: string[], months: string[] }) => {
+const MaintenanceTable = ({ equipments = [], months = [], year }: { equipments: string[], months: string[], year: string }) => {
   const rowsPerPage = 13 //Static number of rows per page
   const selectedMonths = months.map(month => month.toLowerCase())
   const emptyRowsCount = Math.max(0, rowsPerPage - equipments.length)
@@ -118,7 +120,7 @@ const MaintenanceTable = ({ equipments = [], months = [] }: { equipments: string
     <View style={[attendanceStyles.tableContainer, { marginTop: '0pt' }]}>
       {/* Encabezado de la tabla */}
       <View style={[attendanceStyles.tableHeader, { padding: '15pt' }]}>
-        <Text style={attendanceStyles.headerText}>AÑO {dayjs().year()}</Text>
+        <Text style={attendanceStyles.headerText}>AÑO {year}</Text>
       </View>
 
       {/* Encabezados de columnas */}

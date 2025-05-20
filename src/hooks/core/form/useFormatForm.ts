@@ -56,7 +56,12 @@ export const useScheduleForm = (onSuccess?: () => void) => {
   const { data: cvs = [] } = useQueryFormat().fetchFormatByQuery<Curriculum>('cv', { enabled: !!clientId && typeSchedule === 'mantenimiento' }) //get cvs to maintenance
   const { data: offices = [] } = useQueryLocation().fetchLocationByQuery<Office>('office', { enabled: !!client && typeSchedule === 'capacitación' }) //get offices (areas) to training
   /*---------------------------------------------------------------------------------------------------------*/
-  const areas = useMemo(() => {
+  const equips = useMemo(() => { //formating equipments
+    if (!client || !cvs.length || typeSchedule !== 'mantenimiento') return []
+    return cvs.filter(cv => cv?.office?.headquarter?.client?._id === client._id)
+  }, [client, cvs])
+
+  const areas = useMemo(() => { //formating offices
     if (!client || !offices.length || typeSchedule !== 'capacitación') return []
     const clientOffices = offices.filter(office => office?.headquarter?.client?._id === client._id)
     const uniqueAreas = Array.from(new Set(clientOffices.map(office => office.group).filter(Boolean)))
@@ -69,7 +74,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
    */
   const submit = useCallback(async (e: ScheduleFormProps) => {
     if (!userAllowed) { setOnSubmit(null); isProcessing.current = false; return notifyError({ message: 'No tienes permiso para crear cronogramas' }) }
-    if ((e.typeSchedule === 'mantenimiento' && !cvs.length) || (e.typeSchedule === 'capacitación' && !areas.length)) return
+    if ((e.typeSchedule === 'mantenimiento' && !equips.length) || (e.typeSchedule === 'capacitación' && !areas.length)) return
     if (!client || isProcessing.current) return
     isProcessing.current = true
     try { //build path fileName and upload pdf
@@ -78,7 +83,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
       const path = `client/${e.client}/schedule/${fileName}`
 
       const type = e.typeSchedule
-      const adds = type === 'capacitación' ? { areas } : (type === 'mantenimiento' ? { cvs } : {})
+      const adds = type === 'capacitación' ? { areas } : (type === 'mantenimiento' ? { cvs: equips } : {})
       const PDF = type === 'capacitación' ? TrainingPDF : (type === 'mantenimiento' ? MaintenancePDF : AttendancePDF)
       const blob = await downloadPDFDirect({ fileName, component: PDF as any, props: { ...e, client, createdBy: user, ...adds } })
       if (!blob) return notifyError({ message: 'No se pudo crear el cronograma' }) //if dont download pdf, return error
@@ -86,7 +91,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
       await createFile({ file: blob, path }).then(async (url) => await createSchedule({ ...schedule, url, createdBy: user?._id }))
     } finally { setOnSubmit(null); isProcessing.current = false }
     methods.reset()
-  }, [createFile, downloadPDFDirect, areas, cvs])
+  }, [createFile, downloadPDFDirect, areas, equips])
 
   /**
    * Función que se ejecuta cuando se envía el formulario
