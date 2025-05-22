@@ -40,7 +40,10 @@ const CardIterable = ({
   }
 
   return (
-    <FormItem className="space-y-4">
+    <FormItem className={cn(
+      "space-y-4 transition-all duration-300",
+      disabled ? "opacity-0 h-0 overflow-hidden" : "opacity-100"
+    )}>
       {/* Cards */}
       {items.map((item, index) => (
         <Card
@@ -92,12 +95,7 @@ const CardIterable = ({
               })}
 
               {onSubmit && (
-                <Button
-                  disabled={disabled}
-                  variant="outline"
-                  onClick={onSubmit}
-                  className="mt-2"
-                >
+                <Button variant="outline" onClick={onSubmit} className="mt-2">
                   Guardar
                 </Button>
               )}
@@ -113,11 +111,9 @@ const CardIterable = ({
           type="button"
           variant="outline"
           onClick={handleAppend}
-          className={cn(
-            'flex w-full text-sm h-[5vh]',
-            theme === 'dark'
-              ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
-              : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
+          className={cn('flex w-full text-sm h-[5vh]', theme === 'dark'
+            ? 'bg-zinc-700 border-zinc-600 text-zinc-100 hover:bg-zinc-600'
+            : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-100'
           )}
         >
           {titleButton}

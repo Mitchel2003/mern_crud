@@ -4,24 +4,33 @@ import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { resolveProviderHierarchy } from '@/lib/utils'
 import { styles } from "@/constants/values.constants"
 
+// Constantes para el cálculo del espacio
+const A4_HEIGHT = 842; // Altura de página A4 en puntos
+const ESTIMATED_FORM_MAX_HEIGHT = 700; // Altura máxima estimada
+const SECTION_TITLE_HEIGHT = 30; // Altura del título de sección
+const PAGE_MARGINS = 40; // Márgenes superior e inferior combinados
+
 interface MaintenancePDFProps { mt: Maintenance }
-const MaintenancePDF = ({ mt }: MaintenancePDFProps) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.container}>
-        <HeaderSection />{/* Title Section */}
-        <ClientSection mt={mt} />{/* Client Section */}
-        <EquipmentSection mt={mt} />{/* Equipment Section */}
-        <BiomedicalSection cv={mt.curriculum} />{/* Biomedical Classification */}
-        <TechnicalSection mt={mt} />{/* Technical Characteristics */}
-        <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
-        <ObservationsSection mt={mt} />{/* Observaciones */}
-        <ServiceProviderSection mt={mt} />{/* ProviderService */}
-        {mt.metadata?.files && mt.metadata.files.length > 0 && <ImagesGallerySection files={mt.metadata?.files} />}
-      </View>
-    </Page>
-  </Document>
-)
+const MaintenancePDF = ({ mt }: MaintenancePDFProps) => {
+  const hasImages = mt.metadata?.files && Array.isArray(mt.metadata.files) && mt.metadata.files.length > 0
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.container}>
+          <HeaderSection />{/* Title Section */}
+          <ClientSection mt={mt} />{/* Client Section */}
+          <EquipmentSection mt={mt} />{/* Equipment Section */}
+          <BiomedicalSection cv={mt.curriculum} />{/* Biomedical Classification */}
+          <TechnicalSection mt={mt} />{/* Technical Characteristics */}
+          <InspectionsSection cv={mt.curriculum} />{/* Inspecciones */}
+          <ObservationsSection mt={mt} />{/* Observaciones */}
+          <ServiceProviderSection mt={mt} />{/* ProviderService */}
+        </View>
+        {hasImages && <ImagesGallerySection files={mt.metadata!.files} />}
+      </Page>
+    </Document>
+  )
+}
 
 export default MaintenancePDF
 /*---------------------------------------------------------------------------------------------------------*/
@@ -362,41 +371,13 @@ const ServiceProviderSection = ({ mt }: { mt: Maintenance }) => {
 
 /** Images Gallery Section */
 const ImagesGallerySection = ({ files }: { files: string[] }) => {
-  // Constantes para el cálculo del espacio
-  const A4_HEIGHT = 842; // Altura de página A4 en puntos
-  const ESTIMATED_FORM_MAX_HEIGHT = 700; // Altura máxima estimada del formulario (ajustar según necesidad)
-  const SECTION_TITLE_HEIGHT = 30; // Altura del título de sección
-  const PAGE_MARGINS = 40; // Márgenes superior e inferior combinados
-
-  // Calculamos el espacio disponible para las imágenes
-  const calculateAvailableSpace = () => {
-    // Espacio disponible estimado (ajustar estos valores según tus pruebas)
-    const availableHeight = A4_HEIGHT - ESTIMATED_FORM_MAX_HEIGHT - SECTION_TITLE_HEIGHT - PAGE_MARGINS;
-
-    // Calculamos la altura óptima para las imágenes basada en el espacio disponible
-    const imageCount = files.length;
-    const imagesPerRow = 3; // Mantenemos 3 columnas
-    const rows = Math.ceil(imageCount / imagesPerRow);
-
-    // Distribuimos el espacio disponible entre las filas necesarias
-    // con un mínimo y máximo para evitar imágenes demasiado pequeñas o grandes
-    const calculatedHeight = Math.floor(availableHeight / rows);
-
-    // Establecemos límites para la altura
-    const minHeight = 120; // Altura mínima para que las imágenes sean visibles
-    const maxHeight = 160; // Altura máxima para evitar que las imágenes sean demasiado grandes
-
-    return Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
-  };
-
-  // Obtenemos la altura óptima para las imágenes
-  const optimalHeight = calculateAvailableSpace()
+  const optimalHeight = calculateAvailableSpace(files)
   return (
     <>
-      <View style={styles.sectionTitle} fixed>
+      <View style={styles.sectionTitle}>
         <Text style={styles.sectionTitleText}>IMÁGENES DEL MANTENIMIENTO</Text>
       </View>
-      <View style={styles.imagesContainer} wrap={false}>
+      <View style={styles.imagesContainer}>
         {files.map((imageUrl, index) => (
           <View key={index} style={[styles.imageWrapper, { height: optimalHeight + 6 }]}>
             <Image
@@ -424,4 +405,22 @@ const getStatusStyles = (status: string) => {
     default:
       return { badge: styles.statusDefault, text: styles.statusDefaultText }
   }
+}
+/** Calculamos el espacio disponible para las imágenes */
+const calculateAvailableSpace = (files: string[]) => {
+  const availableHeight = A4_HEIGHT - ESTIMATED_FORM_MAX_HEIGHT - SECTION_TITLE_HEIGHT - PAGE_MARGINS;
+
+  //Calculamos la altura óptima para las imágenes basada en el espacio disponible
+  const imageCount = files.length;
+  const imagesPerRow = 3; //Mantenemos 3 columnas
+  const rows = Math.ceil(imageCount / imagesPerRow);
+
+  //Distribuimos el espacio disponible entre las filas necesarias
+  //con un mínimo y máximo para evitar imágenes demasiado pequeñas o grandes
+  const calculatedHeight = Math.floor(availableHeight / rows);
+
+  //Establecemos límites para la altura
+  const minHeight = 130; //Altura mínima para que las imágenes sean visibles
+  const maxHeight = 160; //Altura máxima para evitar que las imágenes sean demasiado grandes
+  return Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
 }

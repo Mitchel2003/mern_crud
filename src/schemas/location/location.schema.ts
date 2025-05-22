@@ -3,8 +3,46 @@ import { z } from "zod"
 export const signMaintenanceSchema = z.object({
   preview: z.string().optional(),
   signature: z.array(
-    z.object({ png: z.string() })
+    z.object({
+      ref: z.string({ required_error: "La firma es requerida" })
+        .min(1, "Debes seleccionar una firma")
+    })
   ).optional().default([]),
+  image: z.array(
+    z.object({
+      ref: z.instanceof(File, { message: "Debe seleccionar una imagen" })
+        .refine(file => file.size <= 5 * 1024 * 1024, "La imagen no debe exceder 5MB")
+        .refine(file => ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type), "La imagen debe ser PNG, JPG o JPEG")
+    })
+  ).optional().default([]),
+}).superRefine((data, ctx) => {
+  // Validate that only one of signature or image is provided
+  if ((data.signature?.length > 0 && data.image?.length > 0) && !data.preview) {
+    ctx.addIssue({
+      path: ['signature'],
+      code: z.ZodIssueCode.custom,
+      message: "Solo puedes proporcionar una firma o una imagen, no ambas",
+    })
+    ctx.addIssue({
+      path: ['image'],
+      code: z.ZodIssueCode.custom,
+      message: "Solo puedes proporcionar una firma o una imagen, no ambas",
+    })
+  }
+
+  // Validate that at least one of signature or image is provided
+  if ((data.signature?.length === 0 && data.image?.length === 0) && !data.preview) {
+    ctx.addIssue({
+      path: ['signature'],
+      code: z.ZodIssueCode.custom,
+      message: "Debes proporcionar una firma o una imagen",
+    })
+    ctx.addIssue({
+      path: ['image'],
+      code: z.ZodIssueCode.custom,
+      message: "Debes proporcionar una firma o una imagen",
+    })
+  }
 })
 
 export const officeSchema = z.object({

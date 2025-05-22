@@ -138,8 +138,8 @@ export const countryDefaultValues: CountryFormProps = { name: '' }
 export const stateDefaultValues: StateFormProps = { name: '', country: '' }
 export const cityDefaultValues: CityFormProps = { name: '', state: '' }
 export const headquarterDefaultValues: HeadquarterFormProps = { name: '', address: '', client: '', city: '', state: '', country: '' }
+export const signMaintenanceDefaultValues: SignMaintenanceFormProps = { preview: '', signature: [], image: [] }
 export const officeDefaultValues: OfficeFormProps = { name: '', headquarter: '', services: [] }
-export const signMaintenanceDefaultValues: SignMaintenanceFormProps = { preview: '', signature: [] }
 /*---------------------------------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------default auth values--------------------------------------------------*/
@@ -773,7 +773,6 @@ export const styles = StyleSheet.create({ //styles basics
 
   // Estilos para la seccion de imagenes
   imagesContainer: {
-    marginTop: 5,
     width: "100%",
     marginBottom: 5,
     display: "flex",

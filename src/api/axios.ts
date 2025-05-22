@@ -83,8 +83,14 @@ export const cachedAxios = setupCache(instance, {
      * Busca: /user, /users, /auth, /notifications en cualquier parte
      * Permite parámetros de búsqueda (como ?role=company)
      * Ignora mayúsculas/minúsculas con /i
+     * 
+     * List of sensitive endpoints:
+     * - /auth => allow synchronous refresh token
+     * - /user(s)? => to avoid cache users (between tables)
+     * - /notifications => to avoid cache notifications (freshness)
+     * - /signatures => to avoid cache signatures (between different headquarters)
      */
-    const sensitivePattern = /\/(user(s)?|auth|notifications)\/?(?:\?|$)/i
+    const sensitivePattern = /\/(user(s)?|auth|notifications|signatures)\/?(?:\?|$)/i
     if (sensitivePattern.test(url)) return false
     return true
   }

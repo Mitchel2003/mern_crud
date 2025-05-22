@@ -73,7 +73,7 @@ const ImagePreview = React.forwardRef<HTMLDivElement, ImagePreviewProps>(({
               >
                 <>
                   {hasImages ? (
-                    <>
+                    <div className='flex items-center justify-center'>
                       <img
                         alt={alt ?? "Preview image"}
                         className={cn("object-cover", sizeImage)}
@@ -157,7 +157,7 @@ const ImagePreview = React.forwardRef<HTMLDivElement, ImagePreviewProps>(({
                           </div>
                         </>
                       )}
-                    </>
+                    </div>
                   ) : (
                     <div className={cn('flex flex-col items-center justify-center w-full h-full gap-2 p-4', theme === 'dark'
                       ? 'bg-zinc-700/50 text-zinc-100'

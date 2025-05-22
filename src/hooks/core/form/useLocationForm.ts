@@ -27,21 +27,10 @@ import {
 export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?: () => void) => {
   const { createLocation: createSignature } = useLocationMutation('signature')
   const { updateFormat: updateMaintenance } = useFormatMutation('maintenance')
+  const { notifySuccess, notifyError } = useNotification()
   const { createFile } = useFormatMutation('file')
-  const { notifySuccess } = useNotification()
   const queryLocation = useQueryLocation()
 
-  /**
-   * issues with re-render (fetch)
-   * 
-   * when solicit sign, the component is called
-   * so the fetch its executed,
-   * 
-   * but when close dialog (without submit)
-   * and we going to another context (other headquarter)
-   * so the refetch not is executed, so we can see the last sign (inconsistence)
-   */
-  // console.log(headquarter?._id)
   const headquarter = maintenances?.[0]?.curriculum?.office?.headquarter
   const { data: signature } = queryLocation.fetchLocationByQuery<Signature>('signature', { headquarter: headquarter?._id, enabled: !!headquarter })
 
@@ -51,9 +40,8 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
     mode: "onChange",
   })
 
-  useEffect(() => {
-    signature && methods.reset({ preview: signature?.[0]?.url })
-    // console.log(signature)
+  useEffect(() => { //to load the form on update mode "id"
+    signature && methods.reset({ preview: signature?.[0]?.url || '' })
   }, [signature])
 
   /**
@@ -64,18 +52,18 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
   const handleSubmit = useFormSubmit({
     onSubmit: async (e: SignMaintenanceFormProps) => {
       //prepare and evaluate local fields (signature)
-      let sign: Signature | undefined
-      const newSignature = e.signature?.[0]?.png
-      const signedAt = new Date()
-      if (newSignature) { //create this new reference
-        const signatureFile = dataUrlToFile(newSignature)
-        const path = `client/${headquarter?.client?._id}`
-          + `/headquarters/${headquarter?._id}/signatures/${Date.now()}`
-        const fileUrl = await createFile({ file: signatureFile, path })
+      let sign: Signature | undefined //signature ref
+      const newSignature = e.signature?.[0]?.ref || e.image?.[0]?.ref
+      const signedAt = new Date() //to save the date of the signature
+      if (newSignature) { //in case was submitted a new signature, create a new reference
+        let signatureFile: File | string //if the new signature is a file, use it, otherwise convert blob to file
+        newSignature instanceof File ? signatureFile = newSignature : signatureFile = dataUrlToFile(newSignature)
+        const path = `client/${headquarter?.client?._id}/headquarters/${headquarter?._id}/signatures/${Date.now()}`
+        const fileUrl = await createFile({ file: signatureFile, path }) //create the file in the storage
         sign = await createSignature({ headquarter: headquarter?._id, url: fileUrl })
       } //Use the old reference if there is no new signature
       else { sign = signature?.[0] } //most recent
-      if (!maintenances?.length || !sign) return
+      if (!maintenances?.length || !sign) return notifyError({ title: '❌ Error al firmar', message: 'Sin firma seleccionada' })
       await Promise.all(maintenances.map(mt => updateMaintenance({ id: mt._id, data: { signature: sign?._id, signedAt } })))
       notifySuccess({ title: '✅ Documentos firmados', message: `Se han firmado ${maintenances?.length || 0} mantenimiento(s) correctamente` })
       methods.reset()
@@ -109,7 +97,7 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  useEffect(() => {
+  useEffect(() => { //to load the form on update mode "id"
     office && methods.reset({
       name: office.name,
       headquarter: office.headquarter?._id || '',
@@ -117,6 +105,11 @@ export const useOfficeForm = (id?: string, onSuccess?: () => void) => {
     })
   }, [office, methods.reset])
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: OfficeFormProps) => {
       //remember that value of services is ['service1 - group', 'service2 - group', ...]
@@ -160,7 +153,7 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  useEffect(() => {
+  useEffect(() => { //to load the form on update mode "id"
     headquarter && methods.reset({
       name: headquarter.name,
       address: headquarter.address,
@@ -171,6 +164,11 @@ export const useHeadquarterForm = (id?: string, onSuccess?: () => void) => {
     })
   }, [headquarter, cities, clients])
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: HeadquarterFormProps) => {
       const { name, city, client, address } = data
@@ -213,13 +211,15 @@ export const useCityForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  useEffect(() => {
-    city && methods.reset({
-      name: city.name,
-      state: city.state?._id || ''
-    })
+  useEffect(() => { //to load the form on update mode "id"
+    city && methods.reset({ name: city.name, state: city.state?._id || '' })
   }, [city, states])
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: CityFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
@@ -255,13 +255,15 @@ export const useStateForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  useEffect(() => {
-    state && methods.reset({
-      name: state.name,
-      country: state.country?._id || ''
-    })
+  useEffect(() => { //to load the form on update mode "id"
+    state && methods.reset({ name: state.name, country: state.country?._id || '' })
   }, [state, countries])
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: StateFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)
@@ -295,12 +297,15 @@ export const useCountryForm = (id?: string, onSuccess?: () => void) => {
     mode: "onChange",
   })
 
-  useEffect(() => {
-    country && methods.reset({
-      name: country.name
-    })
+  useEffect(() => { //to load the form on update mode "id"
+    country && methods.reset({ name: country.name })
   }, [country])
 
+  /**
+   * Función que se ejecuta cuando se envía el formulario
+   * nos permite controlar el envío del formulario y la ejecución de la request
+   * @param e - Valores del formulario
+   */
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: CountryFormProps) => {
       id ? updateLocation({ id, data }) : createLocation(data)

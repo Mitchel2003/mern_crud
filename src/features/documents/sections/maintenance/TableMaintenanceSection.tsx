@@ -8,6 +8,7 @@ import ImagePreview from "#/common/fields/ImagePreview"
 import CardIterable from "#/common/fields/CardIterable"
 import SignatureField from "#/common/fields/Signature"
 import DialogSubmit from '#/common/elements/Dialog'
+import ImageField from "#/common/fields/Image"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
 import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
@@ -339,29 +340,50 @@ export default TableMaintenanceSection
 /*--------------------------------------------------tools--------------------------------------------------*/
 interface Props extends ThemeContextProps { methods: UseFormReturn<any> }
 /** Permite construir un array de campos para el dialogo de asignacion de actividad */
-const fields = ({ methods, theme }: Props): DialogField[] => [{
-  name: "preview",
-  component: (
-    <ImagePreview
-      theme={theme}
-      name="preview"
-      alt="imgEquip"
-      sizeImage='max-w-full max-h-72'
-      className={cn(methods.getValues('signature')?.length > 0 ? 'hidden' : 'block')}
-    />
-  )
-}, {
-  name: "signature",
-  component: (
-    <CardIterable
-      limit={1}
-      theme={theme}
-      name="signature"
-      titleButton="Agregar nueva firma"
-      fields={fieldsCard.map(field => ({ name: field.name, component: <SignatureField {...field} theme={theme} /> }))}
-    />
-  )
-}]
+const fields = ({ methods, theme }: Props): DialogField[] => {
+  const watchSignature = methods.watch('signature') || [];
+  const watchImage = methods.watch('image') || [];
 
-/** Permite construir un array de campos para el dialogo de firma */
-const fieldsCard = [{ name: "signature.png", label: "Firma", height: 150, showDownload: false }]
+  const hasSignature = watchSignature.length > 0;
+  const hasImage = watchImage.length > 0;
+  return [{
+    name: "preview",
+    component: (
+      <ImagePreview
+        theme={theme}
+        name="preview"
+        alt="imgEquip"
+        sizeImage='max-w-full max-h-72'
+        className={cn(hasImage || hasSignature ? 'hidden' : 'block')}
+      />
+    )
+  }, {
+    name: "signature",
+    component: (
+      <CardIterable
+        limit={1}
+        theme={theme}
+        name="signature"
+        disabled={hasImage}
+        titleButton="Añadir firma digital"
+        fields={fieldsSignature.map(field => ({ name: field.name, component: <SignatureField {...field} theme={theme} /> }))}
+      />
+    )
+  }, {
+    name: "image",
+    component: (
+      <CardIterable
+        limit={1}
+        name="image"
+        theme={theme}
+        disabled={hasSignature}
+        titleButton="Añadir imagen de la firma"
+        fields={fieldsImage.map(field => ({ name: field.name, component: <ImageField {...field} theme={theme} /> }))}
+      />
+    )
+  }]
+}
+
+/** Allow us reference to the fields associated with the signature and image */
+const fieldsImage = [{ name: "image.ref", label: "Imagen de la firma", sizeImage: "w-60 h-60" }]
+const fieldsSignature = [{ name: "signature.ref", label: "Firma digital", height: 150, showDownload: false }]
