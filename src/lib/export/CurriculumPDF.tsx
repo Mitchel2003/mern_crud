@@ -1,11 +1,11 @@
-import { formatDateTime, toLabel_technicalSpecification } from "@/constants/format.constants"
-import { Curriculum, Accessory, User } from "@/interfaces/context.interface"
+import { formatDateTime, formatDate, toLabel_technicalSpecification } from "@/constants/format.constants"
+import { Curriculum, Accessory, User, Maintenance } from "@/interfaces/context.interface"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import { resolveProviderHierarchy } from '@/lib/utils'
 import { styles } from "@/constants/values.constants"
 
-interface CurriculumPDFProps { cv: Curriculum; client: User; accs?: Accessory[] }
-const CurriculumPDF = ({ cv, accs, client }: CurriculumPDFProps) => (
+interface CurriculumPDFProps { cv: Curriculum; client: User; accs?: Accessory[]; mts?: Maintenance[] }
+const CurriculumPDF = ({ cv, accs, client, mts = [] }: CurriculumPDFProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.container}>
@@ -19,6 +19,7 @@ const CurriculumPDF = ({ cv, accs, client }: CurriculumPDFProps) => (
         <CharacteristicsSection cv={cv} />{/* Características */}
         <ServiceProviderSection cv={cv} />{/* ProviderService */}
       </View>
+      {mts && mts.length > 0 && <MaintenanceHistorySection maintenances={mts} />}
     </Page>
   </Document>
 )
@@ -196,15 +197,15 @@ const EquipmentSection = ({ cv, accessories }: { cv: Curriculum, accessories?: A
 
     {/* equipment dates */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
         <Text style={styles.label}>COMPRA:</Text>
         <Text>{formatDateTime(cv?.datePurchase)}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>INSTALACIÓN:</Text>
         <Text>{formatDateTime(cv?.dateInstallation)}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>OPERACIÓN:</Text>
         <Text>{formatDateTime(cv?.dateOperation)}</Text>
       </View>
@@ -212,45 +213,45 @@ const EquipmentSection = ({ cv, accessories }: { cv: Curriculum, accessories?: A
 
     {/** stakeholders */}
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
         <Text style={styles.label}>FABRICANTE:</Text>
-        <Text>{cv.manufacturer.name}</Text>
+        <Text>{cv.manufacturer.name.length > 35 ? cv.manufacturer.name.substring(0, 35) + '...' : cv.manufacturer.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.manufacturer.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>PAÍS:</Text>
         <Text>{cv.manufacturer.country}</Text>
       </View>
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
         <Text style={styles.label}>PROVEEDOR:</Text>
-        <Text>{cv.supplier.name}</Text>
+        <Text>{cv.supplier.name.length > 35 ? cv.supplier.name.substring(0, 35) + '...' : cv.supplier.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.supplier.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>CIUDAD:</Text>
         <Text>{cv.supplier.city}</Text>
       </View>
     </View>
 
     <View style={styles.infoRow}>
-      <View style={[styles.infoCol, styles.col3, { width: '40%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '50%' }]}>
         <Text style={styles.label}>REPRESENTANTE:</Text>
-        <Text>{cv.representative.name}</Text>
+        <Text>{cv.representative.name.length > 35 ? cv.representative.name.substring(0, 35) + '...' : cv.representative.name}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>TELEFONO:</Text>
         <Text>{cv.representative.phone}</Text>
       </View>
-      <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
+      <View style={[styles.infoCol, styles.col3, { width: '25%' }]}>
         <Text style={styles.label}>CIUDAD:</Text>
         <Text>{cv.representative.city}</Text>
       </View>
@@ -482,4 +483,78 @@ const ServiceProviderSection = ({ cv }: { cv: Curriculum }) => {
       </View>
     </View>
   )
+}
+
+/** Historial de mantenimientos */
+const MaintenanceHistorySection = ({ maintenances }: { maintenances: Maintenance[] }) => {
+  const truncateText = (text: string, maxLength: number = 150) => {
+    if (!text) return 'N/A'
+    if (text.length <= maxLength) return text
+    return text.substring(0, maxLength) + '...'
+  }
+
+  return (
+    <View style={styles.container} break>
+      <View style={styles.maintenanceHistoryHeader}>
+        <Text style={styles.maintenanceHistoryHeaderText}>
+          HISTORIAL DE MANTENIMIENTOS
+        </Text>
+      </View>
+
+      {/* Encabezados de la tabla */}
+      <View style={styles.maintenanceTableHeader}>
+        <View style={[styles.maintenanceTableHeaderCell, styles.maintenanceTableColumnDate]}>
+          <Text style={styles.maintenanceTableHeaderText}>FECHA</Text>
+        </View>
+        <View style={[styles.maintenanceTableHeaderCell, styles.maintenanceTableColumnType]}>
+          <Text style={styles.maintenanceTableHeaderText}>TIPO</Text>
+        </View>
+        <View style={[styles.maintenanceTableHeaderCell, styles.maintenanceTableColumnStatus]}>
+          <Text style={styles.maintenanceTableHeaderText}>ESTADO</Text>
+        </View>
+        <View style={[styles.maintenanceTableHeaderCell, styles.maintenanceTableColumnObservations]}>
+          <Text style={styles.maintenanceTableHeaderText}>OBSERVACIONES</Text>
+        </View>
+      </View>
+
+      {/* Filas de la tabla */}
+      {maintenances.map((maintenance, index) => (
+        <View key={index} style={[styles.maintenanceTableRow, index % 2 === 0 ? styles.maintenanceTableRowEven : styles.maintenanceTableRowOdd]}>
+          <View style={[styles.maintenanceTableCell, styles.maintenanceTableColumnDate]}>
+            <Text style={styles.maintenanceTableCellText}>
+              {formatDate(maintenance.dateMaintenance) || 'N/A'}
+            </Text>
+          </View>
+          <View style={[styles.maintenanceTableCell, styles.maintenanceTableColumnType]}>
+            <Text style={styles.maintenanceTableCellText}>
+              {maintenance.typeMaintenance || 'N/A'}
+            </Text>
+          </View>
+          <View style={[styles.maintenanceTableCell, styles.maintenanceTableColumnStatus]}>
+            <Text style={[styles.maintenanceTableCellStatus, { color: getStatusColor(maintenance.statusEquipment) }]}>
+              {maintenance.statusEquipment || 'N/A'}
+            </Text>
+          </View>
+          <View style={[styles.maintenanceTableCell, styles.maintenanceTableColumnObservations]}>
+            <Text style={styles.maintenanceTableCellObservations}>
+              {truncateText(maintenance.observations, 150)}
+            </Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  )
+}
+/*---------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------tools--------------------------------------------------*/
+/** Función para determinar el color del estado */
+const getStatusColor = (status?: string) => {
+  if (!status) return '#000000'
+  switch (status.toLowerCase()) {
+    case 'funcionando': return '#16a34a' // Verde
+    case 'en espera de repuestos': return '#ca8a04' // Amarillo
+    case 'fuera de servicio': return '#dc2626' // Rojo
+    default: return '#000000' // Negro
+  }
 }

@@ -588,6 +588,9 @@ export const styles = StyleSheet.create({ //styles basics
     objectFit: 'contain',
     alignSelf: 'flex-end',
   },
+  /*---------------------------------------------------------------------------------------------------------*/
+
+  /*--------------------------------------------------maintenance--------------------------------------------------*/
   /* Maintenance - PDF */
   // Observations section
   sectionHeader: {
@@ -742,7 +745,6 @@ export const styles = StyleSheet.create({ //styles basics
     height: '70pt',
     objectFit: 'contain',
   },
-
   // Estilos para la sección de no referencia
   noReferenceContainer: {
     justifyContent: 'center',
@@ -770,7 +772,6 @@ export const styles = StyleSheet.create({ //styles basics
     lineHeight: 1.5,
     fontSize: 10,
   },
-
   // Estilos para la seccion de imagenes
   imagesContainer: {
     width: "100%",
@@ -791,6 +792,71 @@ export const styles = StyleSheet.create({ //styles basics
     borderRadius: 4,
     objectFit: "cover",
     border: "1px solid #ccc",
+  },
+  // Estilos para la tabla de historial de mantenimientos
+  maintenanceHistoryHeader: {
+    padding: 5,
+    backgroundColor: '#000000',
+  },
+  maintenanceHistoryHeaderText: {
+    fontSize: 9,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontFamily: 'Helvetica-Bold',
+  },
+  maintenanceTableHeader: {
+    minHeight: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#E5E5E5',
+    borderBottom: '1pt solid black',
+  },
+  maintenanceTableHeaderCell: {
+    padding: 4,
+    borderRight: '1pt solid black',
+  },
+  maintenanceTableHeaderText: {
+    fontSize: 8,
+    fontFamily: 'Helvetica-Bold',
+  },
+  maintenanceTableRow: {
+    minHeight: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottom: '1pt solid #ccc',
+  },
+  maintenanceTableRowEven: {
+    backgroundColor: '#f9f9f9',
+  },
+  maintenanceTableRowOdd: {
+    backgroundColor: 'white',
+  },
+  maintenanceTableCell: {
+    padding: 4,
+    borderRight: '1pt solid #ccc',
+  },
+  maintenanceTableCellText: {
+    fontSize: 8,
+  },
+  maintenanceTableCellObservations: {
+    fontSize: 8,
+    lineHeight: 1.3,
+  },
+  maintenanceTableCellStatus: {
+    fontSize: 8,
+  },
+  maintenanceTableColumnDate: {
+    width: '15%',
+  },
+  maintenanceTableColumnType: {
+    width: '15%',
+  },
+  maintenanceTableColumnStatus: {
+    width: '20%',
+  },
+  maintenanceTableColumnObservations: {
+    borderRight: 'none',
+    width: '50%',
   }
 })
 

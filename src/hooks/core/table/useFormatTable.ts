@@ -35,6 +35,7 @@ export const useScheduleTable = () => {
 
   /**
    * Función que se ejecuta cuando se elimina un cronograma
+   * Seguidamente se eliminan los archivos asociados (storage)
    * @param {Schedule} schedule - Cronograma a eliminar
    */
   const deleteSchedule = useCallback(async (schedule: Schedule) => {
@@ -72,6 +73,7 @@ export const useSolicitTable = () => {
 
   /**
    * Función que se ejecuta cuando se elimina una solicitud
+   * Seguidamente se eliminan los archivos asociados (storage)
    * @param {Solicit} solicit - Solicitud a eliminar
    */
   const deleteSolicit = useCallback(async (solicit: Solicit) => {
@@ -149,6 +151,7 @@ export const useMaintenanceTable = () => {
 
   /**
    * Función que se ejecuta cuando se elimina un mantenimiento
+   * Seguidamente se eliminan los archivos asociados (storage)
    * @param {Maintenance} mt - Mantenimiento a eliminar
    */
   const deleteMaintenance = useCallback(async (mt: Maintenance) => {
@@ -189,9 +192,9 @@ interface ResourceMap {
 /** Hook principal que orquesta los sub-hooks de curriculum para la tabla */
 export const useCurriculumTable = () => {
   const [onDownloadZipMts, setOnDownloadZipMts] = useState<CurriculumChildren[] | undefined>(undefined)
-  const [onDownloadZip, setOnDownloadZip] = useState<Curriculum[] | undefined>(undefined)
-  const [onDownload, setOnDownload] = useState<Curriculum | undefined>(undefined)
-  const [onDelete, setOnDelete] = useState<Curriculum | undefined>(undefined)
+  const [onDownloadZip, setOnDownloadZip] = useState<CurriculumChildren[] | undefined>(undefined)
+  const [onDownload, setOnDownload] = useState<CurriculumChildren | undefined>(undefined)
+  const [onDelete, setOnDelete] = useState<CurriculumChildren | undefined>(undefined)
   const { downloadPDF, downloadZIP, downloadFilesAsZIP } = usePDFDownload()
   const { deleteFormat: deleteMt } = useFormatMutation("maintenance")
   const { deleteFormat: deleteAcc } = useFormatMutation("accessory")
@@ -245,8 +248,9 @@ export const useCurriculumTable = () => {
     }))
     //2. Group maintenances by curriculum ID
     const maintenanceGroups = normalizedMts.reduce((acc, mt) => {
-      const equipmentId = mt.curriculum?._id
-      if (!equipmentId) return acc
+      const equipmentId = mt.curriculum?._id //curriculum id
+      const hasSignature = mt.signature?._id //signature (posible un-signed maintenance)
+      if (!equipmentId || !hasSignature) return acc //if the maintenance has a signature, skip it
       if (!acc[equipmentId]) acc[equipmentId] = { allMaintenances: [], curriculum: mt.curriculum }
       acc[equipmentId].allMaintenances.push(mt)
       return acc
@@ -272,18 +276,19 @@ export const useCurriculumTable = () => {
 
   /**
    * Función que se ejecuta cuando se descarga currículos multiple
-   * @param {Curriculum[]} cvs - Currículos a descargar
+   * @param {CurriculumChildren[]} cvs - Currículos a descargar
    */
-  const downloadFileZip = useCallback(async (cvs: Curriculum[]) => {
+  const downloadFileZip = useCallback(async (cvs: CurriculumChildren[]) => {
     if (!zipFinished) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
-    const pdfComponents = cvs.map(cv => { //Prepare each cv with its resources from map
+    const pdfComponents = cvs.map(cv => { //Prepare each cv from map
       const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
-      const curriculumAccs = resources.curriculumAccs || [] //accs
       const client = cv?.office?.headquarter?.client //client context
+      const accs = resources.curriculumAccs || [] //accessories curriculum
+      const mts = cv.childRows.filter(mt => mt.signedAt) //maintenances signed associated
       const fileName = `${cv?.name}-${cv?.modelEquip}-${new Date().toISOString().split('T')[0]}.pdf`
-      return { fileName, component: CurriculumPDF, props: { cv, client: client!, accs: curriculumAccs } }
+      return { fileName, component: CurriculumPDF, props: { cv, client, accs, mts } }
     })
     //Generate zip name based on date and number of equipments
     const zipName = `hojas-de-vida-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
@@ -298,11 +303,12 @@ export const useCurriculumTable = () => {
     if (!zipFinished) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
-    const curriculumPromises = cvs.map(async (cv) => { //Prepare promises for generating curriculum PDFs
+    const curriculumPromises = cvs.map(async (cv) => {
       const resources = zipMap.get(cv._id) || { curriculumAccs: [] }
-      const curriculumAccs = resources.curriculumAccs || [] //accs
       const client = cv?.office?.headquarter?.client //client context
-      const pdf = await pdfToBase64(CurriculumPDF, { cv, client: client, accs: curriculumAccs })
+      const accs = resources.curriculumAccs || [] //accessories curriculum
+      const mts = cv.childRows.filter(mt => mt.signedAt) //maintenances signed
+      const pdf = await pdfToBase64(CurriculumPDF, { cv, client, accs, mts })
       return { pdf, fileName: `${cv.name} - ${cv.modelEquip}/Hoja de vida.pdf` }
     }) //Prepare promises for generating maintenance PDFs
     const maintenancePromises = cvs.flatMap((cv) =>
@@ -313,32 +319,34 @@ export const useCurriculumTable = () => {
         }) : []
     )
     //Execute all promises in parallel and generate the zip
-    const [curriculumPDFs, maintenancePDFs] = await Promise.all([Promise.all(curriculumPromises), Promise.all(maintenancePromises)])
-    const pdfFiles = [...curriculumPDFs, ...maintenancePDFs]
     const zipName = `equipos-completos-${new Date().toISOString().split('T')[0]}-${cvs.length}equipos.zip`
+    const [curriculumPDFs, maintenancePDFs] = await Promise.all([Promise.all(curriculumPromises), Promise.all(maintenancePromises)])
+    const pdfFiles = [...curriculumPDFs, ...maintenancePDFs] //merge all pdfs and prepare data collection for the zip (cvs and mts)
     await downloadFilesAsZIP({ pdfFiles, zipName }).finally(() => { isProcessing.current = false; setOnDownloadZipMts(undefined) })
   }, [downloadFilesAsZIP, zipMap, zipFiles, zipFinished])
 
   /**
    * Función que se ejecuta cuando se descarga un currículo
-   * @param {Curriculum} cv - Currículo a descargar
+   * @param {CurriculumChildren} cv - Currículo a descargar
    */
-  const downloadFile = useCallback(async (cv: Curriculum) => {
+  const downloadFile = useCallback(async (cv: CurriculumChildren) => {
     if (!accs) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
+    const mts = cv.childRows.filter(mt => mt.signedAt)
     const client = cv?.office?.headquarter?.client
-    await downloadPDF({ //Download curriculum PDF
+    await downloadPDF({ //Download curriculum PDF      
       fileName: `hoja-de-vida-${cv.name}-${cv.modelEquip}.pdf`,
-      component: CurriculumPDF, props: { cv, accs, client: client }
+      component: CurriculumPDF, props: { cv, client, accs, mts }
     }).finally(() => { setOnDownload(undefined); isProcessing.current = false })
   }, [downloadPDF, accs])
 
   /**
    * Función que se ejecuta cuando se elimina un currículo
-   * @param {Curriculum} cv - Currículo a eliminar
+   * Seguidamente se eliminan los mantenimientos asociados
+   * @param {CurriculumChildren} cv - Currículo a eliminar
    */
-  const deleteCurriculum = useCallback(async (cv: Curriculum) => {
+  const deleteCurriculum = useCallback(async (cv: CurriculumChildren) => {
     if (!accs || !mts) return //await for this dependencies
     if (isProcessing.current) return
     isProcessing.current = true
@@ -365,9 +373,9 @@ export const useCurriculumTable = () => {
   ])
 
   return {
-    handleDelete: (cv: Curriculum) => setOnDelete(cv),
-    handleDownload: (cv: Curriculum) => setOnDownload(cv),
-    handleDownloadZip: (cvs: Curriculum[]) => setOnDownloadZip(cvs),
+    handleDelete: (cv: CurriculumChildren) => setOnDelete(cv),
+    handleDownload: (cv: CurriculumChildren) => setOnDownload(cv),
+    handleDownloadZip: (cvs: CurriculumChildren[]) => setOnDownloadZip(cvs),
     handleDownloadZipMts: (cvs: CurriculumChildren[]) => setOnDownloadZipMts(cvs),
     curriculums: useMemo(() => formatTableData(cvs, mts), [cvs, mts, formatTableData])
   }
