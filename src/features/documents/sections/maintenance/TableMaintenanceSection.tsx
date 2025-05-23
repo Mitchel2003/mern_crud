@@ -76,42 +76,43 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<Maintenance>[] = [{
-      size: 120,
+      size: 100,
       header: 'Equipo',
       id: 'curriculum.name',
       accessorFn: (row) => row.curriculum.name,
     }, {
-      size: 70,
       header: "Modelo",
+      size: isMobile ? 50 : 60,
       id: "curriculum.modelEquip",
       accessorFn: (row) => row.curriculum?.modelEquip || 'Sin modelo'
     }, {
-      size: 50,
       header: "Sede",
+      size: isMobile ? 50 : 60,
       id: "curriculum.office.headquarter.name",
       accessorFn: (row) => row.curriculum?.office?.headquarter?.name || 'Sin sede'
     }];
 
     !isClient && array.push({// to show columns conditional
-      size: 120,
+      size: 100,
       header: "Cliente",
-      id: "office.headquarter.client.username",
+      id: "curriculum.office.headquarter.client.username",
       accessorFn: (row) => row.curriculum?.office?.headquarter?.client?.username || 'Sin cliente'
-    });
+    })
 
-    /** servicio y consultorio */
-    isClient && array.push({
-      size: 80,
+    array.push({
+      size: 100,
       header: "Servicio",
       id: "curriculum.service",
       accessorFn: (row) => row.curriculum?.service
     }, {
-      size: 120,
+      size: 100,
       header: "Consultorio",
       id: "curriculum.office.name",
-      accessorFn: (row) => row.curriculum?.office?.name,
-    }, {
-      size: 70,
+      accessorFn: (row) => row.curriculum?.office?.name
+    });
+
+    !isClient && array.push({
+      size: 80,
       id: "updatedAt",
       header: "Ultima actualización",
       accessorFn: (row) => formatDateTime(row.updatedAt)

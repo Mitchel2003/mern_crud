@@ -62,34 +62,46 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<CurriculumChildren>[] = [{
-      size: 130,
+      size: 100,
       id: 'name',
       header: 'Equipo',
       accessorFn: (row) => row.name,
     }, {
-      size: 80,
       header: "Modelo",
       id: "modelEquip",
+      size: isMobile ? 50 : 60,
       accessorFn: (row) => row.modelEquip || 'Sin modelo'
     }, {
-      size: 80,
       header: "Sede",
+      size: isMobile ? 50 : 60,
       id: "office.headquarter.name",
       accessorFn: (row) => row.office?.headquarter?.name || 'Sin sede'
     }];
 
     !isClient && array.push({// to show columns conditional
-      size: 150,
+      size: 100,
       header: "Cliente",
       id: "office.headquarter.client.username",
       accessorFn: (row) => row.office?.headquarter?.client?.username || 'Sin cliente'
     });
 
     array.push({
+      size: 100,
+      id: "service",
+      header: "Servicio",
+      accessorFn: (row) => row.service
+    }, {
+      size: 100,
+      id: "office.name",
+      header: "Consultorio",
+      accessorFn: (row) => row.office?.name
+    });
+
+    !isClient && array.push({
       size: 80,
-      id: "createdAt",
-      header: "Fecha de creación",
-      accessorFn: (row) => formatDateTime(row.createdAt)
+      id: "updatedAt",
+      header: "Ultima actualización",
+      accessorFn: (row) => formatDateTime(row.updatedAt)
     });
     return array
   }, [isClient])
