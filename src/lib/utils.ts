@@ -1,4 +1,3 @@
-import { User } from "@/interfaces/context.interface"
 import { type ClassValue, clsx } from "clsx"
 import { FC, createElement } from "react"
 import { pdf } from "@react-pdf/renderer"
@@ -195,31 +194,4 @@ export const chunkTable = (items: string[], size: number) => {
   for (let i = 0; i < items.length; i += size) chunks.push(items.slice(i, i + size))
   if (chunks.length === 0) chunks.push([])
   return chunks
-}
-
-/**
- * Verify if a user has the required metadata (logo or signature)
- * @param user - The user to verify, possibly a company (main or sub)
- * @returns true if the user has at least one of the required metadata
- */
-const hasRequiredMetadata = (user?: User): boolean => !!(user?.metadata?.logo || user?.metadata?.signature)
-
-/**
- * Solves the user and company hierarchy to obtain the correct provider data
- * @param user - The user (createdBy) responsible of creating the document
- * @returns The company with the complete data (can be main or sub)
- */
-export const resolveProviderHierarchy = (user: User): User | undefined => {
-  if (!user) return undefined
-  //If it is collaborator, always use its company associated
-  if (user.role === 'collaborator' && user.belongsTo) return resolveProviderHierarchy(user.belongsTo)
-
-  //If it is company (main or sub)
-  if (user.role === 'company') {
-    //If this company has the required metadata
-    if (hasRequiredMetadata(user)) return user
-    //If it doesn't have metadata but has belongsTo (company.sub), search in its main company
-    if (user.belongsTo) return resolveProviderHierarchy(user.belongsTo)
-  }
-  return user //To any other user, return it directly
 }

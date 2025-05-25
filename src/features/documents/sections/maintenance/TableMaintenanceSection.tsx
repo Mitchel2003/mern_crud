@@ -15,7 +15,6 @@ import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.inter
 import { useSignMaintenanceForm } from "@/hooks/core/form/useLocationForm"
 import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 import { tableTranslations } from "@/constants/values.constants"
-import { formatDateTime } from "@/constants/format.constants"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { DialogField } from "@/interfaces/props.interface"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
@@ -109,13 +108,11 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
       header: "Consultorio",
       id: "curriculum.office.name",
       accessorFn: (row) => row.curriculum?.office?.name
-    });
-
-    !isClient && array.push({
+    }, {
       size: 80,
-      id: "updatedAt",
-      header: "Ultima actualización",
-      accessorFn: (row) => formatDateTime(row.updatedAt)
+      header: "Tipo",
+      id: "typeMaintenance",
+      accessorFn: (row) => row.typeMaintenance
     });
     return array
   }, [isClient])

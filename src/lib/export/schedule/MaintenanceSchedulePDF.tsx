@@ -1,7 +1,8 @@
 import { attendanceStyles, styles } from "@/constants/values.constants"
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
-import { chunkTable, resolveProviderHierarchy } from "@/lib/utils"
 import { Curriculum, User } from "@/interfaces/context.interface"
+import { resolveProviderHierarchy } from "@/utils/helpers"
+import { chunkTable } from "@/lib/utils"
 import { useMemo } from 'react'
 import dayjs from "dayjs"
 import "dayjs/locale/es"

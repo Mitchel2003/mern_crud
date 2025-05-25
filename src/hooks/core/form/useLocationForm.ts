@@ -7,6 +7,7 @@ import { useNotification } from "@/hooks/ui/useNotification"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { useQueryUser } from "@/hooks/query/useAuthQuery"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { promisePool } from "@/utils/helpers"
 import { dataUrlToFile } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { useEffect } from "react"
@@ -65,7 +66,8 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
       } //Use the old reference if there is no new signature
       else { sign = signature?.[0] } //most recent
       if (!maintenances?.length || !sign) return notifyError({ title: '❌ Error al firmar', message: 'Sin firma seleccionada' })
-      await Promise.all(maintenances.map(mt => updateMaintenance({ id: mt._id, data: { signature: sign?._id, signedAt } })))
+      const updateTasks = maintenances.map(mt => () => updateMaintenance({ id: mt._id, data: { signature: sign?._id, signedAt } }))
+      await promisePool(updateTasks, 6) //pool promises to handle concurrency execution, allow improve performance (avoid overload)
       notifySuccess({ title: '✅ Documentos firmados', message: `Se han firmado ${maintenances?.length || 0} mantenimiento(s) correctamente` })
       methods.reset()
     },

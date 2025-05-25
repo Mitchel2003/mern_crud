@@ -1,7 +1,7 @@
 import { formatDate, toLabel_technicalSpecification } from "@/constants/format.constants"
 import { Curriculum, Maintenance } from '@/interfaces/context.interface'
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { resolveProviderHierarchy } from '@/lib/utils'
+import { resolveProviderHierarchy } from '@/utils/helpers'
 import { styles } from "@/constants/values.constants"
 
 // Constantes para el cálculo del espacio

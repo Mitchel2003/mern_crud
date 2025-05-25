@@ -1,7 +1,7 @@
 import { formatDateTime, formatDate, toLabel_technicalSpecification } from "@/constants/format.constants"
 import { Curriculum, Accessory, User, Maintenance } from "@/interfaces/context.interface"
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
-import { resolveProviderHierarchy } from '@/lib/utils'
+import { resolveProviderHierarchy } from '@/utils/helpers'
 import { styles } from "@/constants/values.constants"
 
 interface CurriculumPDFProps { cv: Curriculum; client: User; accs?: Accessory[]; mts?: Maintenance[] }
