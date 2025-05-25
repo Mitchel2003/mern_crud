@@ -58,7 +58,8 @@ export const useSignMaintenanceForm = (maintenances?: Maintenance[], onSuccess?:
       if (newSignature) { //in case was submitted a new signature, create a new reference
         let signatureFile: File | string //if the new signature is a file, use it, otherwise convert blob to file
         newSignature instanceof File ? signatureFile = newSignature : signatureFile = dataUrlToFile(newSignature)
-        const path = `client/${headquarter?.client?._id}/headquarters/${headquarter?._id}/signatures/${Date.now()}`
+        const nameFile = `${Date.now()}.${signatureFile.name.split('.').pop()}` //generate a unique name for file
+        const path = `client/${headquarter?.client?._id}/headquarters/${headquarter?._id}/signatures/${nameFile}`
         const fileUrl = await createFile({ file: signatureFile, path }) //create the file in the storage
         sign = await createSignature({ headquarter: headquarter?._id, url: fileUrl })
       } //Use the old reference if there is no new signature

@@ -16,6 +16,7 @@ import {
   authSchema, UserFormProps, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
+import { extractMetadataUrl } from "@/constants/format.constants"
 
 
 /*--------------------------------------------------signature form--------------------------------------------------*/
@@ -154,11 +155,12 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
           ].filter(f => f.file instanceof File)
           //handle file uploads in your paths
           await Promise.all(files.map(async ({ file, exist, ref, base }) => {
-            const path = `${base}/${id}/preview/${ref}`
-            exist && file && await deleteFile({ path }).then(async () => {
-              const photoUrl = await createFile({ file, path })
-              await updateUser({ id, data: { metadata: { [ref]: photoUrl } } })
-            })
+            if (!file) return //if no file found, skip and continue with next
+            const extension = file.name.split('.').pop() //png, jpg, jpeg, etc
+            const toDelete = extractMetadataUrl([exist as string])?.[0] //extract name
+            toDelete && await deleteFile({ path: `${base}/${id}/preview/${toDelete}` })
+            await createFile({ file, path: `${base}/${id}/preview/${ref}.${extension}` })
+              .then(async (url) => await updateUser({ id, data: { metadata: { [ref]: url } } }))
           }))
         })
       ) : (
@@ -171,9 +173,10 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
           ].filter(f => f.file instanceof File)
           //handle file uploads in your paths
           await Promise.all(files.map(async ({ file, ref, base }) => {
-            if (!file) return //if no file found, skip
-            const path = `${base}/${e._id}/preview/${ref}`
-            const photoUrl = await createFile({ file, path })
+            if (!file) return //if no file found, skip and continue with next
+            const extension = file.name.split('.').pop() //png, jpg, etc
+            const path = `${base}/${e._id}/preview/${ref}.${extension}`
+            const photoUrl = await createFile({ file, path }) //get url
             await updateUser({ id: e._id, data: { metadata: { [ref]: photoUrl } } })
           })) //allow permissions to above created user (client)
           if (to === 'client' && credentials?.role === 'company') {
