@@ -1,6 +1,6 @@
 import { Building, Building2, Copy, FileCheck, FileText, ListChecks, Mail, PenTool } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
-import { User, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
 import { copyToClipboard, resolveProviderHierarchy } from "@/lib/utils"
 import { Card, CardContent } from "#/ui/card"
 import { ScrollArea } from "#/ui/scroll-area"
