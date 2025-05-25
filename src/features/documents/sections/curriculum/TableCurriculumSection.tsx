@@ -104,7 +104,7 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
       accessorFn: (row) => formatDateTime(row.updatedAt)
     });
     return array
-  }, [isClient])
+  }, [isMobile, isClient])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({

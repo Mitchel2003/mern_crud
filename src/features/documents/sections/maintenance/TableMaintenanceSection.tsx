@@ -15,6 +15,7 @@ import { Maintenance, ThemeContextProps, User } from "@/interfaces/context.inter
 import { useSignMaintenanceForm } from "@/hooks/core/form/useLocationForm"
 import { useMaintenanceTable } from "@/hooks/core/table/useFormatTable"
 import { tableTranslations } from "@/constants/values.constants"
+import { formatDateTime } from "@/constants/format.constants"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { DialogField } from "@/interfaces/props.interface"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
@@ -109,13 +110,13 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
       id: "curriculum.office.name",
       accessorFn: (row) => row.curriculum?.office?.name
     }, {
-      size: 80,
-      header: "Tipo",
-      id: "typeMaintenance",
-      accessorFn: (row) => row.typeMaintenance
+      size: isMobile ? 50 : 80,
+      id: "dateNextMaintenance",
+      header: isMobile ? "Proximo" : "Prox. mantenimiento",
+      accessorFn: (row) => row?.dateNextMaintenance ? formatDateTime(row.dateNextMaintenance) : 'Sin fecha'
     });
     return array
-  }, [isClient])
+  }, [isMobile, isClient])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({
