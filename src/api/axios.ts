@@ -77,8 +77,7 @@ export const cachedAxios = setupCache(instance, {
   cachePredicate: (response) => { //decides if the response should be cached, returns true by default
     const contentLength = Number(response.headers?.['content-length'] || '0')
     if (contentLength > 200 * 1024) return false //too large to cache (200kb)
-    const url = (response.config?.url || '').toLowerCase()
-
+    const requestPath = (response.config?.url || '').toLowerCase()
     /**
      * Busca: /user, /users, /auth, /notifications en cualquier parte
      * Permite parámetros de búsqueda (como ?role=company)
@@ -91,7 +90,7 @@ export const cachedAxios = setupCache(instance, {
      * - /signatures => to avoid cache signatures (between different headquarters)
      */
     const sensitivePattern = /\/(user(s)?|auth|notifications|signatures)\/?(?:\?|$)/i
-    if (sensitivePattern.test(url)) return false
+    if (sensitivePattern.test(requestPath)) return false
     return true
   }
 })

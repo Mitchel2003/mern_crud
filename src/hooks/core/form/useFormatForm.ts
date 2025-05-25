@@ -287,8 +287,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
           let newUrls: string[] = []
           if (toAdd.length > 0) {
             newUrls = (await Promise.all(toAdd.map(async (file) => {
-              const unique = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-              const path = `files/${mt.curriculum?._id}/maintenances/${unique}`
+              const path = `files/${mt.curriculum?._id}/maintenances/${file.name}`
               const url = await createFile({ file, path })
               return url ?? undefined //expected string
             }))).filter((url): url is string => Boolean(url))
@@ -305,8 +304,7 @@ export const useMaintenanceForm = (id?: string, onSuccess?: () => void) => {
           /** Upload files to storage and update metadata maintenance */
           if (annexes.length === 0) return //if we dont have some files
           const urls = (await Promise.all(annexes.map(async (file) => {
-            const unique = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-            const path = `files/${mt.curriculum?._id}/maintenances/${unique}`
+            const path = `files/${mt.curriculum?._id}/maintenances/${file.name}`
             const url = await createFile({ file, path })
             return url ?? undefined //expected string
           }))).filter((url): url is string => Boolean(url))
@@ -409,6 +407,16 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
       }
       id ? (
         updateCV({ id, data }).then(async () => {
+          /** Upload new photo if exists */
+          const file = e.photoUrl?.[0]?.file
+          const extension = file?.name.split('.').pop()
+          const toDelete = extractMetadataUrl([cv?.photoUrl as string])?.[0]
+          file && toDelete && await deleteFile({ path: `files/${id}/preview/${toDelete}` })
+          file && await createFile({ file, path: `files/${id}/preview/img.${extension}` })
+            .then(async (photoUrl) => await updateCV({ id, data: { photoUrl } }))
+          /*--------------------------------------------------------------------------------*/
+
+          /*------------------------- accessories and metadata -------------------------*/
           /** Check if there are changes in the accessories */
           const hasChangesAccessories = (() => {
             if (e.newAccessories?.length !== acc.length) return true
@@ -458,18 +466,12 @@ export const useCurriculumForm = (id?: string, onSuccess?: () => void) => {
               await updateCV({ id, data: { metadata: { ...(cv?.metadata || {}), files: urlsUpdated } } })
             }
           }
-          /** Upload new photo if exists */
-          const file = e.photoUrl?.[0]?.file
-          const path = `files/${id}/preview/img`
-          file && await deleteFile({ path }).then(async () => {
-            const photoUrl = await createFile({ file, path })
-            await updateCV({ id, data: { photoUrl } })
-          })
         })
       ) : userAllowed ? (
         createCV({ ...data, createdBy: user._id }).then(async (cv) => {
-          const file = e.photoUrl?.[0]?.file
-          const path = `files/${cv._id}/preview/img`
+          const file = e.photoUrl?.[0]?.file //file to upload (max 1)
+          const extension = file?.name.split('.').pop() //png etc
+          const path = `files/${cv._id}/preview/img.${extension}`
           const annexes = e.newAnnexes?.map(item => item.file) || []
           /** Create new accessories and save with reference respectitvely */
           await Promise.all(e.newAccessories?.map(async (acc) => await createAcc({ ...acc, curriculum: cv._id })))

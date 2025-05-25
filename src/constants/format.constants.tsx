@@ -32,8 +32,9 @@ export const getFileType = (fileName: string): string => {
 }
 /**
  * Extracts the metadata from a Firebase Storage URL
- * @param url The full Firebase Storage file URL
- * @returns The extracted metadata, or null if not found
+ * @param {string[]} urls - The full Firebase Storage file URL (metadata)
+ * @returns {string[]} The extracted metadata, representing the file name
+ * @example ["document.pdf", "document.docx"]
  */
 export function extractMetadataUrl(urls: string[]): string[] | null {
   if (!urls || urls.length === 0) return null

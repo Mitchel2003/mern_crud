@@ -1,8 +1,8 @@
 import { Building, Building2, Copy, FileCheck, FileText, ListChecks, Mail, PenTool } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "#/ui/tooltip"
 import { User, Curriculum, ThemeContextProps } from "@/interfaces/context.interface"
+import { copyToClipboard, resolveProviderHierarchy } from "@/lib/utils"
 import { Card, CardContent } from "#/ui/card"
-import { copyToClipboard } from "@/lib/utils"
 import { ScrollArea } from "#/ui/scroll-area"
 import { Separator } from "#/ui/separator"
 import { Link } from "react-router-dom"
@@ -11,12 +11,9 @@ import { Badge } from "#/ui/badge"
 import { Label } from "#/ui/label"
 import { cn } from "@/lib/utils"
 
-export interface FooterPreviewCVProps extends ThemeContextProps {
-  cv: Curriculum
-  com?: User
-}
-
-const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
+export interface FooterPreviewCVProps extends ThemeContextProps { cv: Curriculum }
+const FooterPreviewCV = ({ cv, theme }: FooterPreviewCVProps) => {
+  const provider = resolveProviderHierarchy(cv.createdBy)
   return (
     <>
       <section className="animate-in fade-in-50 duration-500">
@@ -106,7 +103,7 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
               <div className={cn("w-32 h-32 rounded-lg border overflow-hidden", theme === 'dark' ? 'border-zinc-700 bg-zinc-800' : 'border-purple-100 bg-white')}>
                 <img
                   alt="Logo proveedor"
-                  src={com?.metadata?.logo || '/placeholder.svg?height=128&width=128'}
+                  src={provider?.metadata?.logo || '/placeholder.svg?height=128&width=128'}
                   className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
@@ -124,11 +121,11 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
                   <div className="space-y-3">
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">Nombre del proveedor</Label>
-                      <p className="font-medium">{com?.username || 'No especificado'}</p>
+                      <p className="font-medium">{provider?.username || 'No especificado'}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">NIT</Label>
-                      <p className="font-medium">{com?.nit || 'No especificado'}</p>
+                      <p className="font-medium">{provider?.nit || 'No especificado'}</p>
                     </div>
                   </div>
                 </div>
@@ -143,7 +140,7 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
                       <Label className="text-muted-foreground">Invima</Label>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="font-mono">
-                          {com?.invima || 'No especificado'}
+                          {provider?.invima || 'No especificado'}
                         </Badge>
                         <TooltipProvider>
                           <Tooltip>
@@ -152,7 +149,7 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
                                 variant="ghost"
                                 size="icon"
                                 className="h-6 w-6"
-                                onClick={() => copyToClipboard(com?.invima || '')}
+                                onClick={() => copyToClipboard(provider?.invima || '')}
                               >
                                 <Copy className="h-3 w-3" />
                               </Button>
@@ -169,7 +166,7 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
                       <Label className="text-muted-foreground">Licencia profesional</Label>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="font-mono">
-                          {com?.profesionalLicense || 'No especificado'}
+                          {provider?.profesionalLicense || 'No especificado'}
                         </Badge>
                         <TooltipProvider>
                           <Tooltip>
@@ -178,7 +175,7 @@ const FooterPreviewCV = ({ cv, com, theme }: FooterPreviewCVProps) => {
                                 variant="ghost"
                                 size="icon"
                                 className="h-6 w-6"
-                                onClick={() => copyToClipboard(com?.profesionalLicense || '')}
+                                onClick={() => copyToClipboard(provider?.profesionalLicense || '')}
                               >
                                 <Copy className="h-3 w-3" />
                               </Button>
