@@ -56,7 +56,7 @@ const SchedulePage = () => {
 
             {/* tabs content */}
             <TabsContent value="table">
-              <TableScheduleSection theme={theme} onChange={() => handle('form')} params={params} />
+              <TableScheduleSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} />
             </TabsContent>
             <TabsContent value="form">
               <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>

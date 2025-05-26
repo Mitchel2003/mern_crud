@@ -8,7 +8,7 @@ import { BarChart2, Eye } from "lucide-react"
 import { useMemo } from "react"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
-import { Schedule, ThemeContextProps } from "@/interfaces/context.interface"
+import { Schedule, ThemeContextProps, User } from "@/interfaces/context.interface"
 import { useScheduleTable } from "@/hooks/core/table/useFormatTable"
 import { tableTranslations } from "@/constants/values.constants"
 import { formatDateTime } from "@/constants/format.constants"
@@ -17,6 +17,7 @@ import { useIsMobile } from "@/hooks/ui/use-mobile"
 interface TableScheduleSectionProps extends ThemeContextProps {
   params?: { type?: string, createdAt?: string } | null
   onChange: () => void
+  credentials: User
 }
 
 /**
@@ -26,9 +27,10 @@ interface TableScheduleSectionProps extends ThemeContextProps {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con los consultorios, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
+const TableScheduleSection = ({ theme, params, credentials }: TableScheduleSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { schedules, handleDelete, handleDownload } = useScheduleTable()
+  const isClient = credentials?.role === 'client'
   const isMobile = useIsMobile()
 
   /** Header stats */
@@ -61,9 +63,9 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<Schedule>[] = [{
-      size: 200,
       id: "type",
       filterVariant: 'select',
+      size: isMobile ? 100 : 150,
       header: "Tipo de cronograma",
       accessorFn: (row) => row.type,
       filterSelectOptions: ['mantenimiento', 'capacitación', 'acta de asistencia'],
@@ -79,14 +81,9 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
         </Box>
       )
     }, {
-      size: 200,
-      id: "client",
-      header: "Cliente",
-      accessorFn: (row) => row.client?.username || 'Sin cliente'
-    }, {
-      size: 150,
       header: "Clasificación",
       id: "typeClassification",
+      size: isMobile ? 100 : 150,
       accessorFn: (row) => row.typeClassification,
       Cell: ({ row }) => (
         <Box sx={{
@@ -98,14 +95,21 @@ const TableScheduleSection = ({ theme, params }: TableScheduleSectionProps) => {
           {row.original.typeClassification}
         </Box>
       )
-    }, {
-      size: 150,
-      id: "createdAt",
-      header: "Fecha de creación",
-      accessorFn: (row) => formatDateTime(row.createdAt)
     }];
+
+    !isClient && array.push({
+      id: "client",
+      header: "Cliente",
+      size: isMobile ? 150 : 200,
+      accessorFn: (row) => row.client?.username || 'Sin cliente'
+    }, {
+      id: "createdAt",
+      header: "Fecha creación",
+      size: isMobile ? 100 : 120,
+      accessorFn: (row) => formatDateTime(row.createdAt)
+    });
     return array
-  }, [])
+  }, [isMobile, isClient])
 
   /** Table config (MRT) */
   const table = useMaterialReactTable({

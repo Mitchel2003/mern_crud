@@ -139,26 +139,26 @@ export default ScheduleDrawer
 /*--------------------------------------------------tools--------------------------------------------------*/
 // Opciones de cronogramas
 const options = ({ theme }: ThemeContextProps): CronogramaOption[] => [{
+  icon: Calendar,
   id: "mantenimiento",
   title: "Mantenimiento",
-  description: "Cronogramas de mantenimiento preventivo y correctivo para equipos",
-  icon: Calendar,
+  description: "Cronogramas de mantenimiento para equipos",
   path: `/form/schedule/${encodeQueryParams({ type: 'mantenimiento' })}`,
   gradient: theme === "dark" ? "from-teal-600 to-emerald-700" : "from-teal-500 to-emerald-600",
   stats: "12 programados",
 }, {
+  icon: BookOpen,
   id: "capacitaciones",
   title: "Capacitaciones",
-  description: "Planificación de capacitaciones técnicas y formaciones",
-  icon: BookOpen,
+  description: "Planificación de capacitaciones, formaciones técnicas",
   path: `/form/schedule/${encodeQueryParams({ type: 'capacitación' })}`,
   gradient: theme === "dark" ? "from-blue-600 to-indigo-700" : "from-blue-500 to-indigo-600",
   stats: "4 pendientes",
 }, {
+  icon: Users,
   id: "asistencia",
   title: "Asistencia",
-  description: "Registro y control de asistencia a mantenimientos y capacitaciones",
-  icon: Users,
+  description: "Control de asistencia a mantenimientos y capacitaciones",
   path: `/form/schedule/${encodeQueryParams({ type: 'acta de asistencia' })}`,
   gradient: theme === "dark" ? "from-purple-600 to-violet-700" : "from-purple-500 to-violet-600",
   stats: "8 registros",
