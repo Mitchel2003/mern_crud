@@ -113,7 +113,7 @@ const EquipmentSection = ({ mt }: { mt: Maintenance }) => (
       </View>
       <View style={[styles.infoCol, styles.col3, { width: '30%' }]}>
         <Text style={styles.label}>INVENTARIO:</Text>
-        <Text>{mt.curriculum.codeEquip || 'N/R'}</Text>
+        <Text>{mt.curriculum.inventory || 'N/R'}</Text>
       </View>
     </View>
     <View style={styles.infoRow}>

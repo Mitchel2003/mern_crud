@@ -51,6 +51,7 @@ export type User = BaseMDB & {
   belongsTo?: User
   classification?: string[]
   metadata?: Record<string, any>
+  inventory?: string
 }
 
 export type AuthContext = {
@@ -77,8 +78,8 @@ export type LocationType = 'country' | 'state' | 'city' | 'headquarter' | 'offic
 export type Country = BaseMDB & { name: string }
 export type State = BaseMDB & { name: string; country: Country }
 export type City = BaseMDB & { name: string; state: State }
-export type Headquarter = BaseMDB & { name: string; address: string; client: User; city: City }
-export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter }
+export type Headquarter = BaseMDB & { name: string; address: string; client: User; city: City; inventory?: string }
+export type Office = BaseMDB & { name: string; group: string; services: string[]; headquarter: Headquarter; inventory?: string }
 export type Signature = BaseMDB & { url: string; active: boolean; headquarter: Headquarter }
 
 export type LocationContext = {
@@ -148,7 +149,7 @@ export type Maintenance = BaseMDB & {
   createdBy: User
 }
 export type Curriculum = BaseMDB & {
-  codeEquip: string //proximamente (to stock)
+  inventory: string
   //basicData
   name: string
   brand: string

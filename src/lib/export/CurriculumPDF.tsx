@@ -117,34 +117,37 @@ const EquipmentSection = ({ cv, accessories }: { cv: Curriculum, accessories?: A
         </View>
 
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col3, { width: "50%" }]}>
+          <View style={[styles.infoCol, styles.col2, { width: "50%" }]}>
             <Text style={styles.label}>MARCA:</Text>
             <Text>{cv.brand}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
+          <View style={[styles.infoCol, styles.col2, { width: "50%" }]}>
             <Text style={styles.label}>MODELO:</Text>
             <Text>{cv.modelEquip}</Text>
-          </View>
-          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
-            <Text style={styles.label}>SERIE:</Text>
-            <Text>{cv.serie}</Text>
           </View>
         </View>
 
         <View style={styles.infoRow}>
-          <View style={[styles.infoCol, styles.col4]}>
+          <View style={[styles.infoCol, styles.col2, { width: "50%" }]}>
+            <Text style={styles.label}>SERIE:</Text>
+            <Text>{cv.serie}</Text>
+          </View>
+          <View style={[styles.infoCol, styles.col2, { width: "50%" }]}>
             <Text style={styles.label}>INVIMA:</Text>
             <Text>{cv.healthRecord}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col4]}>
+        </View>
+
+        <View style={styles.infoRow}>
+          <View style={[styles.infoCol, styles.col2, { width: "50%" }]}>
             <Text style={styles.label}>INVENTARIO:</Text>
-            <Text>{cv.codeEquip || 'N/A'}</Text>
+            <Text>{cv.inventory || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col4]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>GARANTÍA:</Text>
             <Text>{cv.warranty || 'N/A'}</Text>
           </View>
-          <View style={[styles.infoCol, styles.col4]}>
+          <View style={[styles.infoCol, styles.col3, { width: "25%" }]}>
             <Text style={styles.label}>VALOR:</Text>
             <Text>{cv.price || 'N/A'}</Text>
           </View>

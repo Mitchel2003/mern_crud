@@ -95,13 +95,11 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
       id: "office.name",
       header: "Consultorio",
       accessorFn: (row) => row.office?.name
-    });
-
-    !isClient && array.push({
+    }, {
       size: 80,
-      id: "updatedAt",
-      header: "Ultima actualización",
-      accessorFn: (row) => formatDateTime(row.updatedAt)
+      id: "inventory",
+      header: "Inventario",
+      accessorFn: (row) => row.inventory || 'N/A'
     });
     return array
   }, [isMobile, isClient])
