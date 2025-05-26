@@ -108,7 +108,7 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
               theme={theme}
               name="newManufacturer"
               titleButton="Nuevo fabricante"
-              disabled={!isDirtyField('newManufacturer', ['name', 'phone', 'country']) || hasErrors('newManufacturer')}
+              disabledSubmit={!isDirtyField('newManufacturer', ['name', 'phone', 'country']) || hasErrors('newManufacturer')}
               fields={manufacturerFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => ConfirmTrigger({
                 resetData: { name: '', phone: '', country: '' },
@@ -133,7 +133,7 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
               theme={theme}
               name="newSupplier"
               titleButton="Nuevo proveedor"
-              disabled={!isDirtyField('newSupplier', ['name', 'phone', 'city']) || hasErrors('newSupplier')}
+              disabledSubmit={!isDirtyField('newSupplier', ['name', 'phone', 'city']) || hasErrors('newSupplier')}
               fields={supplierFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => ConfirmTrigger({
                 resetData: { name: '', phone: '', city: '' },
@@ -158,7 +158,7 @@ const DetailsEquipmentSection = ({ theme, options }: DetailsEquipmentProps) => {
               theme={theme}
               name="newRepresentative"
               titleButton="Nuevo representante"
-              disabled={!isDirtyField('newRepresentative', ['name', 'phone', 'city']) || hasErrors('newRepresentative')}
+              disabledSubmit={!isDirtyField('newRepresentative', ['name', 'phone', 'city']) || hasErrors('newRepresentative')}
               fields={representativeFields.map(field => ({ name: field.name, component: <InputField {...field} theme={theme} /> }))}
               onSubmit={() => ConfirmTrigger({
                 resetData: { name: '', phone: '', city: '' },

@@ -12,6 +12,7 @@ interface CardFieldProps { name: string, component: ReactElement }
 interface CardIterableFieldProps extends ThemeContextProps {
   onSubmit?: (e: React.MouseEvent) => void
   fields: CardFieldProps[]
+  disabledSubmit?: boolean
   titleButton?: string
   disabled?: boolean
   limit?: number
@@ -20,9 +21,10 @@ interface CardIterableFieldProps extends ThemeContextProps {
 
 const CardIterable = ({
   titleButton = 'Agregar',
+  disabledSubmit = false,
+  disabled = false,
   limit = 1,
   onSubmit,
-  disabled,
   fields,
   theme,
   name,
@@ -46,26 +48,19 @@ const CardIterable = ({
     )}>
       {/* Cards */}
       {items.map((item, index) => (
-        <Card
-          key={item.id}
-          className={cn(
-            'relative',
-            theme === 'dark'
-              ? 'bg-zinc-900 border-zinc-700'
-              : 'bg-white border-gray-300'
-          )}
-        >
+        <Card key={item.id} className={cn('relative', theme === 'dark'
+          ? 'bg-zinc-900 border-zinc-700'
+          : 'bg-white border-gray-300'
+        )}>
           {/* Delete button */}
           <Button
             size="sm"
             type="button"
             variant="ghost"
             onClick={() => remove(index)}
-            className={cn(
-              'absolute top-2 right-2',
-              theme === 'dark'
-                ? 'text-zinc-300 hover:text-zinc-100'
-                : 'text-gray-800 hover:text-gray-600'
+            className={cn('absolute top-2 right-2', theme === 'dark'
+              ? 'text-zinc-300 hover:text-zinc-100'
+              : 'text-gray-800 hover:text-gray-600'
             )}
           >
             <X className="h-4 w-4" />
@@ -95,7 +90,12 @@ const CardIterable = ({
               })}
 
               {onSubmit && (
-                <Button variant="outline" onClick={onSubmit} className="mt-2">
+                <Button
+                  className="mt-2"
+                  variant="outline"
+                  onClick={onSubmit}
+                  disabled={disabledSubmit}
+                >
                   Guardar
                 </Button>
               )}
@@ -117,9 +117,9 @@ const CardIterable = ({
           )}
         >
           {titleButton}
-          <PlusCircle className={cn(
-            'ml-2 h-4 w-4',
-            theme === 'dark' ? 'text-gray-300' : 'text-zinc-600'
+          <PlusCircle className={cn('ml-2 h-4 w-4', theme === 'dark'
+            ? 'text-gray-300'
+            : 'text-zinc-600'
           )} />
         </Button>
       )}
