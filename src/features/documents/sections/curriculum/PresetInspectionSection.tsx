@@ -47,7 +47,7 @@ const PresetInspectionSection = ({ theme, options }: PresetInspectionProps) => {
             name="newInspection"
             titleButton="Nueva inspección"
             fields={inspectionFields({ theme })}
-            disabled={!isDirtyField('newInspection', ['name', 'typeInspection']) || hasErrors('newInspection')}
+            disabledSubmit={!isDirtyField('newInspection', ['name', 'typeInspection']) || hasErrors('newInspection')}
             onSubmit={() => ConfirmTrigger({
               resetData: { name: '', typeInspection: [] },
               description: '¿Deseas añadir una inspección?',
