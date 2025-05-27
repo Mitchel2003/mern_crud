@@ -56,29 +56,29 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    href: '/form/maintenance',
     title: 'Total Mantenimientos',
     value: maintenances?.length || 0,
+    href: `/form/${isHistory ? 'maintenance-history' : 'maintenance'}`,
   }, {
     icon: Clock,
     color: 'warning',
     title: 'En Espera de Repuestos',
     value: maintenances?.filter(m => m.statusEquipment === 'en espera de repuestos').length || 0,
-    href: `/form/maintenance/${encodeQueryParams({ statusEquipment: 'en espera de repuestos' })}`,
+    href: `/form/${isHistory ? 'maintenance-history' : 'maintenance'}/${encodeQueryParams({ statusEquipment: 'en espera de repuestos' })}`,
   }, {
     color: 'danger',
     icon: AlertTriangle,
     title: 'Fuera de Servicio',
     value: maintenances?.filter(m => m.statusEquipment === 'fuera de servicio').length || 0,
-    href: `/form/maintenance/${encodeQueryParams({ statusEquipment: 'fuera de servicio' })}`,
+    href: `/form/${isHistory ? 'maintenance-history' : 'maintenance'}/${encodeQueryParams({ statusEquipment: 'fuera de servicio' })}`,
   }]
 
   /** Config table columns */
   const columns = useMemo(() => {
     const array: MRT_ColumnDef<Maintenance>[] = [{
-      size: 100,
       header: 'Equipo',
       id: 'curriculum.name',
+      size: isMobile ? 70 : 80,
       accessorFn: (row) => row.curriculum.name,
     }, {
       header: "Modelo",
@@ -93,28 +93,33 @@ const TableMaintenanceSection = ({ theme, params, credentials, isHistory, onChan
     }];
 
     !isClient && array.push({// to show columns conditional
-      size: 100,
       header: "Cliente",
+      size: isMobile ? 70 : 80,
       id: "curriculum.office.headquarter.client.username",
       accessorFn: (row) => row.curriculum?.office?.headquarter?.client?.username || 'Sin cliente'
     })
 
     array.push({
-      size: 100,
       header: "Servicio",
       id: "curriculum.service",
+      size: isMobile ? 60 : 80,
       accessorFn: (row) => row.curriculum?.service
     }, {
-      size: 100,
       header: "Consultorio",
+      size: isMobile ? 60 : 80,
       id: "curriculum.office.name",
       accessorFn: (row) => row.curriculum?.office?.name
     }, {
+      header: "Estado",
+      id: "statusEquipment",
       size: isMobile ? 50 : 80,
+      accessorFn: (row) => row.statusEquipment || 'Sin estado'
+    }, {
+      header: "Prox. mt",
       id: "dateNextMaintenance",
-      header: isMobile ? "Proximo" : "Prox. mantenimiento",
+      size: isMobile ? 50 : 80,
       accessorFn: (row) => row?.dateNextMaintenance ? formatDateTime(row.dateNextMaintenance) : 'Sin fecha'
-    });
+    })
     return array
   }, [isMobile, isClient])
 
