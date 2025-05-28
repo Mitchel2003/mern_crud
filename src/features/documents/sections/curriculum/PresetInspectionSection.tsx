@@ -64,8 +64,8 @@ const PresetInspectionSection = ({ theme, options }: PresetInspectionProps) => {
         theme={theme}
         title={title}
         cancelLabel="Cancelar"
-        confirmLabel="Confirmar"
         onOpenChange={setShow}
+        confirmLabel="Confirmar"
         description={description}
         onConfirm={handleConfirm}
         variant={isDestructive ? "destructive" : "default"}

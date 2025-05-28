@@ -1,8 +1,8 @@
 import { MaterialReactTable, MRT_ColumnDef, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, useMaterialReactTable } from "material-react-table"
 import { BarChart2, BookMarkedIcon, CalendarClock, Eye, FileCogIcon } from 'lucide-react'
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
+import { Delete, Download, QrCode, Update } from "@mui/icons-material"
 import { PageHeader, Stat } from '#/common/elements/HeaderPage'
-import { Delete, Download, Update } from "@mui/icons-material"
 import AlertDialog from "#/common/elements/AlertDialog"
 
 import { Curriculum, Maintenance, ThemeContextProps, User } from "@/interfaces/context.interface"
@@ -12,6 +12,7 @@ import { useCurriculumTable, useMaintenanceTable } from "@/hooks/core/table/useF
 import { formatDate, formatDateTime } from "@/constants/format.constants"
 import { tableTranslations } from "@/constants/values.constants"
 import { generatePDF } from "@/lib/qrs/QRCodeGenerator"
+import { generateLabels } from "@/lib/qrs/QRCodePrint"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 import { encodeQueryParams } from "@/lib/query"
 import { useNavigate } from "react-router-dom"
@@ -285,25 +286,46 @@ const TableCurriculumSection = ({ theme, params, credentials, onChange }: TableC
 
           {/** Download QRs (ZIP) */}
           {!isClient && (
-            <Button
-              size="small"
-              color="info"
-              variant="outlined"
-              startIcon={<Download />}
-              onClick={() => {
-                const selectedRows = table.getSelectedRowModel().flatRows
-                const firstEquipment = selectedRows[0].original.name
-                const otherCount = selectedRows.length - 1
-                confirmAction({
-                  title: 'Descargar QRs',
-                  description: `¿Deseas descargar los QRs de:
-                  ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
-                  action: () => generatePDF(selectedRows.map(row => row.original))
-                })
-              }}
-            >
-              Descargar QRs
-            </Button>
+            <>
+              <Button
+                size="small"
+                color="warning"
+                variant="outlined"
+                startIcon={<QrCode />}
+                onClick={() => {
+                  const selectedRows = table.getSelectedRowModel().flatRows
+                  const firstEquipment = selectedRows[0].original.name
+                  const otherCount = selectedRows.length - 1
+                  confirmAction({
+                    title: 'Descargar QRs',
+                    description: `¿Deseas descargar los QRs de:
+                    ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
+                    action: () => generatePDF(selectedRows.map(row => row.original))
+                  })
+                }}
+              >
+                Descargar QRs
+              </Button>
+              <Button
+                size="small"
+                color="error"
+                variant="outlined"
+                startIcon={<QrCode />}
+                onClick={() => {
+                  const selectedRows = table.getSelectedRowModel().flatRows
+                  const firstEquipment = selectedRows[0].original.name
+                  const otherCount = selectedRows.length - 1
+                  confirmAction({
+                    title: 'Descargar QRs para imprimir',
+                    description: `¿Deseas descargar los QRs de:
+                    ${firstEquipment}${otherCount > 0 ? ` y otros ${otherCount} currículums` : ''}?`,
+                    action: () => generateLabels(selectedRows.map(row => row.original))
+                  })
+                }}
+              >
+                QRs para impresión
+              </Button>
+            </>
           )}
         </Box>
       </Box>
