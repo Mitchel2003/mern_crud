@@ -25,7 +25,7 @@ function App() {
 
                   <Route path="/equipment" element={<Render.EquipmentHub />} />
                   <Route path="/equipment/:id" element={<Render.EquipmentHub />} />
-                  <Route path="/form/curriculum/preview/:id" element={<Render.PreviewCurriculumPage />} />
+                  <Route path="/form/curriculum/preview/:id" element={<Render.CurriculumPreviewPage />} />
 
                   {/* protected routes */}
                   <Route element={<ProtectedRoute />}>
@@ -67,6 +67,7 @@ function App() {
                     <Route path="/client" element={<Render.ClientPage />} /> {/*new client*/}
                     <Route path="/clients" element={<Render.ClientPage />} /> {/*list clients*/}
                     <Route path="/client/:id" element={<Render.ClientPage />} /> {/*edit client*/}
+                    <Route path="/client/preview/:id" element={<Render.ClientPreviewPage />} /> {/*preview client*/}
 
                     {/* location routes */}
                     <Route path="/location/office" element={<Render.OfficePage />} /> {/*new office*/}

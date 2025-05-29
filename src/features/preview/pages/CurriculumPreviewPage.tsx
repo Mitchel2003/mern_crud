@@ -1,5 +1,5 @@
 import { Curriculum, Maintenance, Inspection, Accessory } from "@/interfaces/context.interface"
-import Section from "@/features/documents/sections/preview/curriculum/PreviewCV"
+import Section from "@/features/preview/sections/curriculum/PreviewCV"
 import { useQueryFormat } from "@/hooks/query/useFormatQuery"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useMemo } from "react"
 
-const PreviewCurriculumSection = () => {
+const CurriculumPreviewPage = () => {
   const queryFormat = useQueryFormat()
   const { isAuth } = useAuthContext()
   const { theme } = useThemeContext()
@@ -57,4 +57,4 @@ const PreviewCurriculumSection = () => {
   )
 }
 
-export default PreviewCurriculumSection
+export default CurriculumPreviewPage

@@ -396,14 +396,10 @@ const ImagesGallerySection = ({ files }: { files: string[] }) => {
 /** Estilos del estado del equipo (Maintenance pdf). */
 const getStatusStyles = (status: string) => {
   switch (status.toLowerCase()) {
-    case 'funcionando':
-      return { badge: styles.statusSuccess, text: styles.statusSuccessText }
-    case 'en espera de repuestos':
-      return { badge: styles.statusWarning, text: styles.statusWarningText }
-    case 'fuera de servicio':
-      return { badge: styles.statusError, text: styles.statusErrorText }
-    default:
-      return { badge: styles.statusDefault, text: styles.statusDefaultText }
+    case 'funcionando': return { badge: styles.statusSuccess, text: styles.statusSuccessText }
+    case 'en espera de repuestos': return { badge: styles.statusWarning, text: styles.statusWarningText }
+    case 'fuera de servicio': return { badge: styles.statusError, text: styles.statusErrorText }
+    default: return { badge: styles.statusDefault, text: styles.statusDefaultText }
   }
 }
 /** Calculamos el espacio disponible para las imágenes */

@@ -1,4 +1,3 @@
-// Importaciones de pages dashboard
 import CollaboratorDashboardPage from '@/features/dashboard/pages/CollaboratorDashboardPage'
 import ClientDashboardPage from '@/features/dashboard/pages/ClientDashboardPage'
 import AdminDashboardPage from '@/features/dashboard/pages/AdminDashboardPage'
@@ -8,6 +7,10 @@ import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import RegisterPage from '@/features/home/pages/RegisterPage'
 import LoginPage from '@/features/home/pages/LoginPage'
 import HomePage from '@/features/home/pages/HomePage'
+
+// Importaciones de pages preview
+import CurriculumPreviewPage from '@/features/preview/pages/CurriculumPreviewPage'
+import ClientPreviewPage from '@/features/preview/pages/ClientPreviewPage'
 
 // Importaciones de pages navigation
 import EquipmentHub from '@/features/navigation/pages/EquipmentHub'
@@ -37,6 +40,7 @@ const TriggerPages = { ScannerPage } as const
 const CalendarPages = { CalendarPage } as const
 const NavigationPages = { EquipmentHub } as const
 const HomePages = { HomePage, LoginPage, RegisterPage } as const
+const ClientPages = { ClientPreviewPage, CurriculumPreviewPage } as const
 const DashboardPages = { DashboardPage, AdminDashboardPage, ClientDashboardPage, CollaboratorDashboardPage } as const
 
 /**
@@ -50,6 +54,7 @@ export const RenderPages = {
   ...NavigationPages,
   ...CalendarPages,
   ...TriggerPages,
+  ...ClientPages,
   ...HomePages,
 } as const
 

@@ -17,7 +17,6 @@ import CompanyPage from './CompanyPage'
 import ClientPage from './ClientPage'
 
 // Importaciones de preview and reusables pages
-import PreviewCurriculumPage from './preview/PreviewCurriculumPage'
 import ClientFlowPage from './reusables/ClientFlowPage'
 
 /**
@@ -32,8 +31,8 @@ import ClientFlowPage from './reusables/ClientFlowPage'
  * necesarias en los archivos que consumen estos componentes.
  */
 
+const SpecialPages = { ClientFlowPage } as const
 const UserPages = { CollaboratorPage, CompanyPage, ClientPage } as const
-const SpecialPages = { PreviewCurriculumPage, ClientFlowPage } as const
 const LocationPages = { HeadquarterPage, CountryPage, OfficePage, StatePage, CityPage } as const
 const DocumentPages = { MaintenancePage, CurriculumPage, SchedulePage, SolicitPage } as const
 

@@ -79,11 +79,7 @@ export const cachedAxios = setupCache(instance, {
     if (contentLength > 200 * 1024) return false //too large to cache (200kb)
     const requestPath = (response.config?.url || '').toLowerCase()
     /**
-     * Busca: /user, /users, /auth, /notifications en cualquier parte
-     * Permite parámetros de búsqueda (como ?role=company)
-     * Ignora mayúsculas/minúsculas con /i
-     * 
-     * List of sensitive endpoints:
+     * List of sensitive endpoints to avoid cache:
      * - /auth => allow synchronous refresh token
      * - /user(s)? => to avoid cache users (between tables)
      * - /notifications => to avoid cache notifications (freshness)
@@ -91,6 +87,13 @@ export const cachedAxios = setupCache(instance, {
      */
     const sensitivePattern = /\/(user(s)?|auth|notifications|signatures)\/?(?:\?|$)/i
     if (sensitivePattern.test(requestPath)) return false
+
+    /**
+     * List of urls to ignore, to avoid cache:
+     * - /client/preview/:id => client preview page (refreshes every time)
+     */
+    const routePattern = /\/client\/preview\/\w+$/i
+    if (routePattern.test(requestPath)) return false
     return true
   }
 })

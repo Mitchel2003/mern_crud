@@ -5,7 +5,7 @@ import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material"
 import { Delete, SupervisedUserCircle, Update } from "@mui/icons-material"
 import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import { useUserTable } from "@/hooks/core/table/useAuthTable"
-import { BarChart2, CalendarClock, Eye } from 'lucide-react'
+import { BarChart2, CalendarClock, Eye } from "lucide-react"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { useIsMobile } from "@/hooks/ui/use-mobile"
 
