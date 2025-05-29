@@ -128,7 +128,8 @@ export const NotificationProvider = ({ children }: Props): JSX.Element => {
    * @returns {number} - The number of unread notifications that match the pattern
    */
   const getNotificationCount = useCallback((path: string): number => {
-    if (!notifications || notifications.length === 0) return 0
+    if (path.length === 0) return 0 //If no path, means represent a collapsible item
+    if (!notifications || notifications.length === 0) return 0 //If no notifications
     return notifications.filter(notification => !notification.isRead && notification?.url?.includes(path)).length
   }, [notifications])
 

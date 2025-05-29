@@ -5,11 +5,11 @@ import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 
 // Define layout constants
-const MARGIN = 10       // Margin in mm
+const MARGIN = 4        // Margin in mm
 const PAGE_WIDTH = 210  // A4 width in mm
 const PAGE_HEIGHT = 297 // A4 height in mm
-const CARDS_PER_ROW = 2
-const CARDS_PER_COL = 3
+const CARDS_PER_ROW = 4
+const CARDS_PER_COL = 5
 const APP_NAME = "Gest.ing"
 
 // Card dimensions
@@ -17,13 +17,12 @@ const CARD_WIDTH = (PAGE_WIDTH - (MARGIN * 2) - ((CARDS_PER_ROW - 1) * 5)) / CAR
 const CARD_HEIGHT = (PAGE_HEIGHT - (MARGIN * 2) - ((CARDS_PER_COL - 1) * 10)) / CARDS_PER_COL
 
 // QR code size (dynamic based on card size)
-const QR_SIZE = CARD_WIDTH * 0.5
-const QR_MARGIN_TOP = 20
+const QR_SIZE = CARD_WIDTH * 0.4
+const QR_MARGIN_TOP = 12
 
 // Text positioning
-const TITLE_FONT_SIZE = 12
-const MODEL_FONT_SIZE = 10
-// const TEXT_FONT_SIZE = 10
+const TITLE_FONT_SIZE = 10
+const INVENTORY_FONT_SIZE = 8
 
 interface DrawProps { x: number, y: number, width: number, height: number, radius?: number }
 /**
@@ -50,8 +49,8 @@ export const generatePDF = async (rows: Curriculum[]) => {
     // Draw the rounded rectangle
     doc.roundedRect(x, y, width, height, radius, radius, 'S')
     // Draw inner border with gradient effect
-    doc.setDrawColor(220, 220, 220)
     doc.setLineWidth(0.1)
+    doc.setDrawColor(220, 220, 220)
     doc.roundedRect(x + 0.5, y + 0.5, width - 1, height - 1, radius, radius, 'S')
   }
 
@@ -62,14 +61,14 @@ export const generatePDF = async (rows: Curriculum[]) => {
     doc.roundedRect(x, y, width, height, radius, radius, 'F')
     // Add header area with slight gradient
     doc.setFillColor(245, 245, 245)
-    doc.rect(x, y, width, 15, 'F')
+    doc.rect(x, y, width, 10, 'F')
   }
 
   // Generate all QR codes in parallel
   const qrPromises = rows.map(async row => {
     const url = `${config.frontendUrl}/equipment/${row._id}`
     return QRCode.toDataURL(url, { width: QR_SIZE * 10, margin: 0, color: { dark: '#000000', light: '#FFFFFF' } })
-      .then(qrCode => ({ name: row.name, model: row.modelEquip, qrCode }))
+      .then(qrCode => ({ name: row.name, inventory: row.inventory, qrCode }))
   })
 
   // Wait for all QR codes to be generated
@@ -96,26 +95,26 @@ export const generatePDF = async (rows: Curriculum[]) => {
         cardIndex++
 
         const x = MARGIN + (col * (CARD_WIDTH + 5))
-        const y = MARGIN + (row * (CARD_HEIGHT + 10))
+        const y = MARGIN + (row * (CARD_HEIGHT + 5))
 
         // Draw card background and border
         drawCardBackground({ x, y, width: CARD_WIDTH, height: CARD_HEIGHT })
         drawRoundedRect({ x, y, width: CARD_WIDTH, height: CARD_HEIGHT })
 
         // Add decorative header line
-        doc.setLineWidth(0.8)
+        doc.setLineWidth(0.5)
         doc.setDrawColor(30, 136, 229) //Blue color
-        doc.line(x, y + 15, x + CARD_WIDTH, y + 15)
+        doc.line(x, y + 10, x + CARD_WIDTH, y + 10)
 
         // Logo and app name in header
-        const logoWidth = 15
-        const logoHeight = 10
-        doc.addImage(logoImage as string, 'PNG', x + 5, y + 2.5, logoWidth, logoHeight)
+        const logoWidth = 10
+        const logoHeight = 6
+        doc.addImage(logoImage as string, 'PNG', x + 10, y + 2, logoWidth, logoHeight)
 
         // App name next to logo
-        doc.setFontSize(12)
+        doc.setFontSize(10)
         doc.setTextColor(80, 80, 80)
-        doc.text(APP_NAME, x + logoWidth + 21, y + 9)
+        doc.text(APP_NAME, x + logoWidth + 12, y + 6.5)
 
         // Add QR code
         const qrY = y + QR_MARGIN_TOP
@@ -133,19 +132,20 @@ export const generatePDF = async (rows: Curriculum[]) => {
         doc.setTextColor(50, 50, 50)
 
         // Center text and handle long names with word wrapping
-        const nameY = qrY + QR_SIZE + 8
+        const nameY = qrY + QR_SIZE + 4
         const nameMaxWidth = CARD_WIDTH - 10
         const nameLines = doc.splitTextToSize(item.name, nameMaxWidth)
-        doc.text(nameLines, x + CARD_WIDTH / 2, nameY, { align: 'center' })
+        const truncatedName = nameLines.slice(0, 2) //Limit 2 lines
+        doc.text(truncatedName, x + CARD_WIDTH / 2, nameY, { align: 'center' })
 
-        // Add model information
-        doc.setFontSize(MODEL_FONT_SIZE)
+        // Add inventory information
+        doc.setFontSize(INVENTORY_FONT_SIZE)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(100, 100, 100)
 
-        const modelY = nameY + (nameLines.length * 5) + 2
-        const modelLines = doc.splitTextToSize(`Modelo: ${item.model}`, nameMaxWidth)
-        doc.text(modelLines, x + CARD_WIDTH / 2, modelY, { align: 'center' })
+        const inventoryY = nameY + (truncatedName.length * 4)
+        const inventoryLines = doc.splitTextToSize(`Inventario: ${item.inventory}`, nameMaxWidth)
+        doc.text(inventoryLines, x + CARD_WIDTH / 2, inventoryY, { align: 'center' })
 
         // Add decorative corner elements
         doc.setDrawColor(30, 136, 229) // Blue accent color
