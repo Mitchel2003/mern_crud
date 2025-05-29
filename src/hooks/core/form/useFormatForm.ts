@@ -209,7 +209,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
           company && await createNotification({ //create notification inbox with redirect
             title, message: body, type: data.priority ? 'payment' : 'alert',
             recipient: company._id, sender: client?._id,
-            url: `${baseFrontendUrl}/form/solicit`,
+            url: `${baseFrontendUrl}/form/solicits`,
           })
         })
       }

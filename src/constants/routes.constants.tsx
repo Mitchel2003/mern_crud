@@ -79,7 +79,7 @@ const routePermissions: RoutePermission[] = [
   {// Solicitud (form)
     isPrefix: true,
     path: '/form/solicit',
-    allowed: ['client'],
+    allowed: ['admin', 'company:main', 'client'],
   },
   {// Solicitud (table)
     isPrefix: true,
