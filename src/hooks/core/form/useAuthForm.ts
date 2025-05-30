@@ -107,7 +107,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const { data: companies = [] } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: allow })
 
   const companyFormat = useMemo(() => ( //to form company (filter main-providers)
-    companies.filter((e) => to === 'company' ? !e.belongsTo : (credentials?.role === "company" && !e.belongsTo))
+    companies.filter((e) => to === 'company' ? !e.belongsTo : e)
   ), [credentials, companies, id])
 
   const methods = useForm<UserFormProps>({
@@ -137,7 +137,7 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
       previewCompanyLogo: user.metadata?.logo,
       previewCompanySignature: user.metadata?.signature,
     })
-  }, [id, user])
+  }, [companies, clients, user, id])
 
   const handleSubmit = useFormSubmit({
     onSubmit: async (data: UserFormProps) => {
@@ -198,8 +198,8 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
     methods,
     ...handleSubmit,
     options: {
-      companies: [...(companyFormat)].map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}` })) || [],
-      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || []
+      clients: clients?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.nit ? `NIT: ${e?.nit}` : 'Sin NIT'}`, icon: UserRoundCheck })) || [],
+      companies: [...(companyFormat)].map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.role === 'company' && !e?.belongsTo ? 'Prestador' : 'Sub prestador'}` })) || []
     }
   }
 }

@@ -32,8 +32,8 @@ const CTASection = ({ theme }: CTASectionProps) => {
                 Gestión de Documentación Técnica
               </motion.h2>
               <motion.p
-                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className={cn('text-lg mb-6', theme === 'dark' ? 'text-white/90' : 'text-gray-700')}
               >

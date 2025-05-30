@@ -35,9 +35,27 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
   const queryUser = useQueryUser()
   const isMobile = useIsMobile()
 
-  const prefix = to === 'company' && belongsTo ? 'sub-' : '' //to build title and description
-  const { data: company } = queryUser.fetchUserById<User>(belongsTo as string, { enabled: !!belongsTo })
-  const typeClass = useMemo(() => (company?.classification?.length && company.classification.length > 0 ? company.classification : typeClassCollection), [company])
+  const { data: company, isLoading: isLoadingCompany } = queryUser.fetchUserById<User>(belongsTo as string, { enabled: !!belongsTo })
+  console.log(company)
+
+  /**
+   * Dynamically filter available clients based on selected company permissions
+   * - If no company selected or still loading: return all clients
+   * - If company selected: filter out clients already in company permissions
+   */
+  const availableClients = useMemo(() => {//improve this logic
+    if (!company || isLoadingCompany) return options.clients
+    // Filter out clients that the selected company already has permissions for
+    return options.clients.filter(clientOption => {
+      // If company has no permissions yet, all clients are available
+      if (!company.permissions || company.permissions.length === 0) { console.log('no permissions'); return true }
+      console.log(company.permissions)
+      return !company.permissions.includes(clientOption.value)
+    })
+  }, [options.clients, company, isLoadingCompany])
+
+  const prefix = to === 'company' && belongsTo ? 'sub-' : ''
+  const typeClass = useMemo(() => company?.classification?.length ? company.classification : typeClassCollection, [company])
   return (
     <>
       <FormProvider {...methods}>
@@ -122,20 +140,20 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
                 />
               )}
               {/** Section permissions (available for company and collaborator) */}
-              {to !== 'client' && (
+              {(to !== 'client' && belongsTo) && (
                 <SelectMulti
                   theme={theme}
                   name="permissions"
-                  span="Selecciona varios"
-                  options={options.clients}
                   label="Acceso a clientes"
-                  placeholder={`Selecciona los clientes asociados`}
+                  options={availableClients}
+                  span={isLoadingCompany ? 'Cargando clientes disponibles...' : 'Selecciona varios'}
+                  placeholder={isLoadingCompany ? 'Cargando...' : `Selecciona los clientes asociados`}
                 />
               )}
             </div>
 
             {/** Section references relationships (company and collaborator) */}
-            {(to === 'company' || to === 'collaborator') && (
+            {to !== 'client' && (
               <div className={cn(`grid gap-4 ${belongsTo && 'md:grid-cols-2'}`)}>
                 <Select
                   theme={theme}
