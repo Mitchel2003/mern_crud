@@ -17,7 +17,7 @@ import AreaField from "#/common/fields/Area"
 const ClassificationSection = ({ theme }: ThemeContextProps) => {
   const { watch } = useFormContext()
   const type = watch('typeSchedule')
-  const currentYear = dayjs().year()
+  const currentYear = 2024
   return (
     <>
       {type === 'acta de asistencia' && (
