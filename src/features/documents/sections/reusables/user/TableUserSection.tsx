@@ -158,7 +158,7 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
 
     /*--------------------------------------------------row action menu--------------------------------------------------*/
     renderRowActionMenuItems: ({ row, closeMenu }) => {// to define row action menu (customizable)
-      const baseItems = [// To show for all users (base)
+      const baseItems = to === 'client' ? [// To show for all users (base)
         // View user
         <MenuItem key={0} sx={{ m: 0 }} onClick={() => {
           closeMenu()
@@ -171,7 +171,7 @@ const TableUserSection = ({ to, theme, params, credentials, onChange }: TableUse
           <ListItemIcon> <Eye /> </ListItemIcon>
           Visualizar
         </MenuItem>
-      ];
+      ] : [];
 
       const conditionalItems = !isClient ? [// To show only company, collaborator and admin (conditional)
         // Edit user

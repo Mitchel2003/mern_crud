@@ -222,7 +222,7 @@ const validateUserData = (data: any, credentials: any, ctx: any) => {
       ctx.addIssue({ path: ["belongsTo"], code: z.ZodIssueCode.custom, message: "La clasificación es requerida para colaborador" });
     }
     if (!data.permissions || data.permissions.length === 0) {
-      ctx.addIssue({ path: ["permissions"], code: z.ZodIssueCode.custom, message: `Los permisos son requeridos para colaborador` });
+      ctx.addIssue({ path: ["permissions"], code: z.ZodIssueCode.custom, message: "Los permisos son requeridos para colaborador" });
     }
     if (!data.classification || data.classification.length === 0) {
       ctx.addIssue({ path: ["classification"], code: z.ZodIssueCode.custom, message: "La clasificación es requerida para colaborador" });
@@ -234,11 +234,13 @@ const validateUserData = (data: any, credentials: any, ctx: any) => {
     if (!data.nit || data.nit.trim() === "") {
       ctx.addIssue({ path: ["nit"], code: z.ZodIssueCode.custom, message: `El NIT es requerido para prestadores de servicios` });
     }
-    if (!data.invima || data.invima.trim() === "") {
-      ctx.addIssue({ path: ["invima"], code: z.ZodIssueCode.custom, message: "El Invima es requerido para prestadores de servicios" });
-    }
-    if (!data.profesionalLicense || data.profesionalLicense.trim() === "") {
-      ctx.addIssue({ path: ["profesionalLicense"], code: z.ZodIssueCode.custom, message: "La licencia profesional es requerida para prestadores de servicios" });
+    if (data.classification?.length) {
+      if (data.classification.includes('biomédico') && (!data.invima || data.invima.trim() === "")) {
+        ctx.addIssue({ path: ["invima"], code: z.ZodIssueCode.custom, message: "El Invima es requerido para prestadores de servicio" });
+      }
+      if (!data.classification.includes('biomédico') && (!data.profesionalLicense || data.profesionalLicense.trim() === "")) {
+        ctx.addIssue({ path: ["profesionalLicense"], code: z.ZodIssueCode.custom, message: "La licencia profesional es requerida para prestadores de servicio" });
+      }
     }
     if (!data.permissions || data.permissions.length === 0) {
       ctx.addIssue({ path: ["permissions"], code: z.ZodIssueCode.custom, message: `Los permisos son requeridos para prestadores de servicios` });

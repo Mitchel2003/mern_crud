@@ -177,7 +177,7 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
 
   const { data: cv, isLoading } = useQueryFormat().fetchFormatById<Curriculum>('cv', id as string)
   const { data: com } = useQueryUser().fetchUserByQuery<User>({ role: 'company' })
-  const company = com?.[0]
+  const client = cv?.office?.headquarter?.client
 
   const methods = useForm<SolicitFormProps>({
     resolver: zodResolver(solicitSchema),
@@ -187,6 +187,22 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
 
   //to load the form on update mode "id"
   useEffect(() => { id && cv && methods.reset({ ...observationData.mapValues(cv) }) }, [id, cv, isLoading])
+
+  /**
+   * Filters the company users by permissions and classification
+   * - Principals: Only need to have the client permission
+   * - Subordinates: Need to have the client permission and the equipment classification
+   */
+  const companies = useMemo(() => {
+    if (!com || !client?._id || !cv?.typeClassification) return []
+    return com.filter(company => {
+      const hasClientPermission = company.permissions?.includes(client._id)
+      if (!hasClientPermission) return false
+      if (!company.belongsTo) return true //is company:main
+      //if is subordinate, must have the classification expected
+      return company.classification?.includes(cv.typeClassification)
+    })
+  }, [cv, com, client])
 
   /**
    * Función que se ejecuta cuando se envía el formulario
@@ -206,15 +222,16 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
         file && (photoUrl = await createFile({ file, path }))
         //we create the solicit and send notification message
         createFormat({ ...data, photoUrl }).then(async () => {
-          const client = cv?.office?.headquarter?.client
           const title = `Nueva solicitud de ${client?.username}`
           const body = `(${data.priority ? 'URGENTE' : 'PENDIENTE'}) ${data.message}`
-          company && await sendNotification({ id: company._id, title, body }) //messaging
-          company && await createNotification({ //create notification inbox with redirect
-            title, message: body, type: data.priority ? 'payment' : 'alert',
-            recipient: company._id, sender: client?._id,
-            url: `${baseFrontendUrl}/form/solicits`,
-          })
+          await Promise.all(companies?.map(async (company) => { //send notifications
+            await sendNotification({ id: company._id, title, body })
+            await createNotification({ //notification inbox with redirect
+              title, message: body, type: data.priority ? 'payment' : 'alert',
+              recipient: company._id, sender: client?._id,
+              url: `${baseFrontendUrl}/form/solicits`,
+            })
+          }))
         })
       }
       methods.reset()

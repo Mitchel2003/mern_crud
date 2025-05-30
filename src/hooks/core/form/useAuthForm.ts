@@ -106,9 +106,9 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const { data: clients = [] } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: allow })
   const { data: companies = [] } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: allow })
 
-  const companyFormat = useMemo(() => { //to form company (filter main-providers)
-    return companies.filter((e) => to === 'company' ? !e.belongsTo : e.belongsTo)
-  }, [companies, id])
+  const companyFormat = useMemo(() => ( //to form company (filter main-providers)
+    companies.filter((e) => to === 'company' ? !e.belongsTo : (credentials?.role === "company" && !e.belongsTo))
+  ), [credentials, companies, id])
 
   const methods = useForm<UserFormProps>({
     resolver: zodResolver(userSchema),

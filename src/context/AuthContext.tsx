@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
    * @param {object} data - Contiene el ID del usuario y el título y el mensaje de la notificación.
    */
   const sendNotification = async (data: object): Promise<void> => {
-    try { await useApi('fcm').void(data).then(() => notifyInfo(txt('send-notification'))) }
+    try { await useApi('fcm').void(data) } //send notification push
     catch (e) { notifyError(txt('send-notification', e)) }
   }
   /**

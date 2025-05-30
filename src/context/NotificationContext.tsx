@@ -55,11 +55,9 @@ export const NotificationProvider = ({ children }: Props): JSX.Element => {
    * @throws {Error} Si ocurre un error al crear la notificación
    */
   const createNotification = useCallback(async (data: CreateNotificationProps) => {
-    try {
-      await useApi('notifications/create').void(data).then(() => fetchUnreadCount(false))
-      notifySuccess({ message: 'Notificación enviada correctamente' })
-    } catch (e: unknown) { notifyError({ message: formatError(e) }) }
-  }, [notifyError, notifySuccess, fetchUnreadCount])
+    try { await useApi('notifications/create').void(data).then(() => fetchUnreadCount(false)) }
+    catch (e: unknown) { notifyError({ message: formatError(e) }) }
+  }, [notifyError, fetchUnreadCount])
   /**
    * Marca una notificación como leída
    * @param {string} id - El ID de la notificación
