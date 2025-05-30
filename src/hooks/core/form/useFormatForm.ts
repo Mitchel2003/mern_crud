@@ -140,8 +140,8 @@ export const useActivityForm = (onSuccess?: () => void) => {
       await createActivity({ ...e, status: 'pendiente' }).then(async () => {
         const title = `Nueva actividad - ${user?.username}`
         const body = `Revisa tu bandeja de entradas`
-        await sendNotification({ id: e.collaborator, title, body }) //messaging
-        await createNotification({ //create notification inbox with redirect
+        await sendNotification({ id: e.collaborator, title, body })
+        await createNotification({ //notification inbox with redirect
           recipient: e.collaborator, sender: user?._id,
           title, message: body, type: 'alert',
           url: `${baseFrontendUrl}/calendar`,
@@ -200,7 +200,11 @@ export const useSolicitForm = (id?: string, onSuccess?: () => void) => {
       if (id) { //ID correspond to cv associated
         const file = e.photoUrl?.[0]?.file //blob
         let photoUrl: string | undefined = undefined
-        file && (photoUrl = await createFile({ file, path: `files/${id}/solicit/img_${Date.now()}` }))
+        const extension = file?.name.split('.').pop()
+        const name = `img_${Date.now()}.${extension}`
+        const path = `files/${id}/solicit/${name}` //upload
+        file && (photoUrl = await createFile({ file, path }))
+        //we create the solicit and send notification message
         createFormat({ ...data, photoUrl }).then(async () => {
           const client = cv?.office?.headquarter?.client
           const title = `Nueva solicitud de ${client?.username}`
