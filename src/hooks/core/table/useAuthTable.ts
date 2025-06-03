@@ -15,14 +15,17 @@ export const useUserTable = (to: RoleProps) => {
   const { user: credentials } = useAuthContext()
   const isProcessing = useRef<boolean>(false)
 
+  const isCompany = credentials?.role === 'company'
   const { data: users = [] } = useQueryUser().fetchUserByQuery<User>({ role: to })
   const { data: companies, isLoading: isLoadingCompanies } = useQueryUser().fetchUserByQuery<User>({ role: 'company', enabled: to === 'client' && !!onDelete })
   const { data: collaborators, isLoading: isLoadingCollaborators } = useQueryUser().fetchUserByQuery<User>({ role: 'collaborator', enabled: to === 'client' && !!onDelete })
   const isLoading = isLoadingCompanies || isLoadingCollaborators
 
-  const userFormat = useMemo(() => { //to table company (filter sub-providers when user logged is company)
-    return credentials?.role === 'company' && to === 'company' ? users?.filter((e) => e.belongsTo) : users
-  }, [credentials?.role, users, to])
+  /** Dynamically filter available users based on type table and role context */
+  const userFormat = useMemo(() => ( //to table company and collaborator (sort)
+    isCompany && to === 'company' ? users?.filter(e => e.belongsTo) //get sub:companies
+      : (isCompany && to === 'collaborator' ? users?.filter(e => e.belongsTo?._id === credentials?._id) : users)
+  ), [credentials, users, to])
 
   /**
    * Función que se ejecuta cuando se elimina un usuario

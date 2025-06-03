@@ -35,24 +35,20 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
   const queryUser = useQueryUser()
   const isMobile = useIsMobile()
 
-  const { data: company, isLoading: isLoadingCompany } = queryUser.fetchUserById<User>(belongsTo as string, { enabled: !!belongsTo })
-  console.log(company)
+  const clients = options.clients
+  const { data: company, isLoading: isLoading } = queryUser.fetchUserById<User>(belongsTo as string, { enabled: !!belongsTo })
 
   /**
    * Dynamically filter available clients based on selected company permissions
-   * - If no company selected or still loading: return all clients
    * - If company selected: filter out clients already in company permissions
    */
-  const availableClients = useMemo(() => {//improve this logic
-    if (!company || isLoadingCompany) return options.clients
-    // Filter out clients that the selected company already has permissions for
-    return options.clients.filter(clientOption => {
-      // If company has no permissions yet, all clients are available
-      if (!company.permissions || company.permissions.length === 0) { console.log('no permissions'); return true }
-      console.log(company.permissions)
-      return !company.permissions.includes(clientOption.value)
+  const availableClients = useMemo(() => {
+    if (!company || isLoading) return clients
+    return clients.filter(client => { //all clients available if not permissions yet
+      if (!company.permissions || company.permissions.length === 0) return true
+      return company.permissions.includes(client.value)
     })
-  }, [options.clients, company, isLoadingCompany])
+  }, [isLoading, company, clients])
 
   const prefix = to === 'company' && belongsTo ? 'sub-' : ''
   const typeClass = useMemo(() => company?.classification?.length ? company.classification : typeClassCollection, [company])
@@ -140,14 +136,14 @@ const FormUserSection = ({ id, to, theme, onChange }: FormUserSectionProps) => {
                 />
               )}
               {/** Section permissions (available for company and collaborator) */}
-              {(to !== 'client' && belongsTo) && (
+              {(to !== 'client' || belongsTo) && (
                 <SelectMulti
                   theme={theme}
                   name="permissions"
                   label="Acceso a clientes"
                   options={availableClients}
-                  span={isLoadingCompany ? 'Cargando clientes disponibles...' : 'Selecciona varios'}
-                  placeholder={isLoadingCompany ? 'Cargando...' : `Selecciona los clientes asociados`}
+                  span={isLoading ? 'Cargando clientes disponibles...' : 'Selecciona varios'}
+                  placeholder={isLoading ? 'Cargando...' : `Selecciona los clientes asociados`}
                 />
               )}
             </div>

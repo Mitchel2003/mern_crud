@@ -214,7 +214,7 @@ export const links = (): NavItemProps[] => {
       href: '/dashboard',
       icon: TerminalSquare
     },
-    {// documents
+    {/** documents */
       icon: PermMedia,
       href: '/equipment',
       label: 'Mis equipos'
@@ -227,7 +227,7 @@ export const links = (): NavItemProps[] => {
       href: '/dashboard',
       label: 'Panel del usuario',
     },
-    {// users
+    {/** users */
       label: 'Usuarios',
       icon: UserCircle2,
       subItems: [
@@ -260,27 +260,27 @@ export const links = (): NavItemProps[] => {
         }
       ]
     },
-    {// solicits
+    {/** solicits */
       icon: MoveToInbox,
       href: '/form/solicits',
       label: 'Solicitudes',
     },
-    {// curriculums
+    {/** curriculums */
       icon: Devices,
       href: '/form/curriculums',
       label: 'Equipos',
     },
-    {// maintenances
+    {/** maintenances */
       icon: HomeRepairService,
       href: '/form/maintenances',
       label: 'Mantenimientos',
     },
-    {// maintenances history
+    {/** maintenances history */
       icon: ManageSearch,
       href: '/form/maintenance-history',
       label: 'Historial mantenimientos',
     },
-    {// cronogramas
+    {/** cronogramas */
       icon: WorkHistory,
       href: '/form/schedule',
       label: 'Cronogramas',
@@ -292,6 +292,11 @@ export const links = (): NavItemProps[] => {
       icon: Dashboard,
       href: '/dashboard',
       label: 'Panel del usuario',
+    },
+    {/** users collaborators */
+      icon: SupervisorAccount,
+      label: 'Mis colaboradores',
+      href: '/collaborators',
     },
     {/** institution **/
       label: 'Gestion de clientes',
@@ -310,17 +315,27 @@ export const links = (): NavItemProps[] => {
         }
       ]
     },
-    {// curriculums
+    {/** solicits */
+      icon: MoveToInbox,
+      href: '/form/solicits',
+      label: 'Solicitudes',
+    },
+    {/** curriculums */
       icon: Devices,
       href: '/form/curriculums',
       label: 'Equipos',
     },
-    {// maintenances
+    {/** maintenances */
       icon: HomeRepairService,
       href: '/form/maintenances',
       label: 'Mantenimientos',
     },
-    {// cronogramas
+    {/** maintenances history */
+      icon: ManageSearch,
+      href: '/form/maintenance-history',
+      label: 'Historial mantenimientos',
+    },
+    {/** cronogramas */
       icon: WorkHistory,
       href: '/form/schedule',
       label: 'Cronogramas',
@@ -341,7 +356,7 @@ export const links = (): NavItemProps[] => {
       icon: TerminalSquare,
       label: 'Panel del usuario',
     },
-    {// users
+    {/** users */
       label: 'Usuarios',
       icon: UserCircle2,
       subItems: [
@@ -355,22 +370,6 @@ export const links = (): NavItemProps[] => {
           label: 'Colaboradores',
           href: '/collaborators',
         },
-      ]
-    },
-    {/** forms **/
-      icon: FilesIcon,
-      label: 'Formularios',
-      subItems: [
-        {// curriculums
-          icon: FileTextIcon,
-          href: '/form/curriculums',
-          label: 'Currículums',
-        },
-        {// maintenances
-          icon: WrenchIcon,
-          href: '/form/maintenances',
-          label: 'Mantenimientos',
-        }
       ]
     },
     {/** institution **/
@@ -390,7 +389,23 @@ export const links = (): NavItemProps[] => {
         }
       ]
     },
-    {// complementaries
+    {/** forms **/
+      icon: FilesIcon,
+      label: 'Formularios',
+      subItems: [
+        {// curriculums
+          icon: FileTextIcon,
+          href: '/form/curriculums',
+          label: 'Currículums',
+        },
+        {// maintenances
+          icon: WrenchIcon,
+          href: '/form/maintenances',
+          label: 'Mantenimientos',
+        }
+      ]
+    },
+    {/** complementaries */
       label: 'Complementarios',
       icon: GitPullRequestArrowIcon,
       subItems: [

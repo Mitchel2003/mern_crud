@@ -6,6 +6,7 @@ import { useFormatMutation } from "@/hooks/query/useFormatQuery"
 import { useFormSubmit } from "@/hooks/core/useFormSubmit"
 import { zodResolver } from "@hookform/resolvers/zod"
 
+import { extractMetadataUrl } from "@/constants/format.constants"
 import { useAuthContext } from "@/context/AuthContext"
 import { useEffect, useMemo, useState } from "react"
 import { UserRoundCheck } from "lucide-react"
@@ -16,8 +17,6 @@ import {
   authSchema, UserFormProps, ClientFlowProps,
   forgotPasswordSchema, ForgotPasswordFormProps,
 } from "@/schemas/auth/auth.schema"
-import { extractMetadataUrl } from "@/constants/format.constants"
-
 
 /*--------------------------------------------------signature form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de firma */
@@ -78,18 +77,6 @@ export const useForgotPasswordForm = (onSuccess?: () => void) => {
  * @param id - ID del usuario a actualizar, si no se proporciona, la request corresponde a crear
  * @param to - Contexto del formulario usuario, actualmente manejados: admin, company, client, collaborator
  * @param onSuccess - Función a ejecutar cuando el formulario se envía correctamente
- * 
- * @description fetch logic implemented to get sub-companies:
- * we need to get sub-companies; but the challenge is to get from user logged in
- * 
- * @example
- * in the first case:
- * when we're creating a collaborator, but im are a company (main)
- * so, the subcompanies are all companies that have belongsTo = company._id
- * 
- * in the second case:
- * when we're creating a collaborator, but im are a company (sub)
- * so, the subcompanies are all companies that have belongsTo = company.belongsTo
  */
 export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void) => {
   const { createFile, deleteFile } = useFormatMutation('file')
@@ -102,12 +89,15 @@ export const useUserForm = (id?: string, to?: RoleProps, onSuccess?: () => void)
   const canAccess = (credentials?.role === 'company' || credentials?.role === 'admin')
   const allow = (to === 'company' || to === 'collaborator') && canAccess
 
+  const isCompany = credentials?.role === 'company'
   const { data: user } = queryUser.fetchUserById<User>(id as string, { enabled: !!id })
   const { data: clients = [] } = queryUser.fetchUserByQuery<User>({ role: 'client', enabled: allow })
   const { data: companies = [] } = queryUser.fetchUserByQuery<User>({ role: 'company', enabled: allow })
 
-  const companyFormat = useMemo(() => ( //to form company (filter main-providers)
-    companies.filter((e) => to === 'company' ? !e.belongsTo : e)
+  /** Dynamically filter available companies based on type format and role context */
+  const companyFormat = useMemo(() => ( //to form company and collaborator (sort)
+    isCompany && to === 'company' ? companies.filter(e => !e.belongsTo) //get main:companies
+      : (isCompany && to === 'collaborator' ? companies.filter(e => e.belongsTo) : companies)
   ), [credentials, companies, id])
 
   const methods = useForm<UserFormProps>({
