@@ -42,6 +42,13 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
   const isMobile = useIsMobile()
   const navigate = useNavigate()
 
+  /** Dynamically filter available collaborators based on permissions */
+  const collaboratorsFormat = useMemo(() => { //to form activity (sort)
+    if (!solicit) return [] //avoid continue if no solicit in context
+    const clientId = solicit.curriculum.office.headquarter.client._id
+    return collaborators?.filter(col => col.permissions?.includes(clientId)).map(({ label, value, icon }) => ({ label, value, icon })) || []
+  }, [collaborators, solicit])
+
   /** Header stats */
   const stats: Stat[] = [{
     color: 'info',
@@ -424,7 +431,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
         title="Asignar Actividad"
         onOpenChange={setShowDialog}
         labelSubmit="Poner en marcha"
-        fields={fields({ solicit, collaborators, theme })}
+        fields={fields({ solicit, collaborators: collaboratorsFormat, theme })}
         description="Indica el operador que atendera la solicitud"
         /** handler alert dialog confirm */
         onOpenAlertDialogChange={setOpen}

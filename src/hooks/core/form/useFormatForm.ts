@@ -156,7 +156,10 @@ export const useActivityForm = (onSuccess?: () => void) => {
   return {
     methods,
     ...handleSubmit,
-    collaborators: collaborators?.map((e) => ({ value: e?._id || '', label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`, icon: UserRoundCheck })) || [],
+    collaborators: collaborators?.map((e) => ({
+      label: `${e?.username || 'Sin nombre'} - ${e?.phone || 'Sin teléfono'}`,
+      permissions: e.permissions, icon: UserRoundCheck, value: e?._id || '',
+    })) || [],
   }
 }
 /*---------------------------------------------------------------------------------------------------------*/
