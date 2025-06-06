@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils"
 
 interface CalendarProps extends ThemeContextProps { isLoading: boolean; events: Event[] }
 const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
-  const handleEventClick = (event: Event) => { setSelectedEvent(event) }
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const {
@@ -31,6 +30,9 @@ const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
     setSelectedEvent,
     calculateEventStyle
   } = useCalendar()
+
+  /** handle behavior when an event is clicked */
+  const handleEventClick = (event: Event) => { setSelectedEvent(event) }
 
   if (isLoading) return <div>Loading...</div>
   return (
@@ -363,11 +365,10 @@ const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
                 </p>
 
                 <Separator />
-                <p><strong>Organizador:</strong> {selectedEvent.organizer}</p>
                 <p><strong>Descripción:</strong> {selectedEvent.description}</p>
 
                 {/* Acciones contextuales */}
-                {selectedEvent.metadata && <CalendarEventActions event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+                {selectedEvent.metadata && <CalendarEventActions theme={theme} event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
               </div>
             </div>
           </div>

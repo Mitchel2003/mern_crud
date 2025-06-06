@@ -27,11 +27,10 @@ interface TableSolicitSectionProps extends ThemeContextProps {
 }
 
 /**
- * Permite construir un componente de tabla para mostrar los consultorios.
- * @param credentials - Credenciales del usuario
- * @param theme - El tema contexto de la aplicación
+ * Permite construir un componente de tabla para mostrar las solicitudes.
+ * @param params - Parametros de la tabla, pertenecen al sistema de busqueda
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
- * @returns react-query table con los consultorios, posee una configuracion de columnas y un dropdown de acciones
+ * @returns react-query table con las solicitudes, posee una configuracion de columnas y un dropdown de acciones
  */
 const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()

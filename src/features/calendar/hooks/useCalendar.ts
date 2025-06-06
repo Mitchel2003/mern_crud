@@ -3,26 +3,26 @@ import { useState, useEffect, useCallback } from "react"
 
 export interface CalendarHookResult {
   selectedEvent: Event | null
-  currentDate: Date
-  currentView: string
   displayMonth: string
   displayDate: string
+  currentView: string
+  currentDate: Date
 
   // Días y slots
   miniCalendarInfo: MiniCalendarInfo
-  weekDays: WeekDay[]
   monthDays: MonthDay[]
+  weekDays: WeekDay[]
   timeSlots: number[]
 
   // Funciones de navegación
-  goToToday: () => void
   goToPrevious: () => void
+  goToToday: () => void
   goToNext: () => void
 
   // Funciones de manejo de eventos
-  setSelectedEvent: (event: Event | null) => void
-  setCurrentView: (view: string) => void
   setCurrentDate: (date: Date) => void
+  setCurrentView: (view: string) => void
+  setSelectedEvent: (event: Event | null) => void
 
   // Utilidades
   isSameDay: (date1: Date, date2: Date) => boolean
@@ -36,7 +36,7 @@ export interface CalendarHookResult {
 export function useCalendar(): CalendarHookResult {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [currentView, setCurrentView] = useState("week")
+  const [currentView, setCurrentView] = useState("month")
   const [displayMonth, setDisplayMonth] = useState("")
   const [displayDate, setDisplayDate] = useState("")
 

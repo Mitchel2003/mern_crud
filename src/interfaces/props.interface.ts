@@ -1,3 +1,4 @@
+import { Activity, Solicit } from "@/interfaces/context.interface"
 import { type LucideIcon } from "lucide-react"
 
 /*--------------------------------------------------Component Props--------------------------------------------------*/
@@ -147,22 +148,21 @@ export interface Event {
   endTime: string
   title: string
   color: string
-  id: number
+  id: string
   date: Date
   client: string
   location: string
   attendees: string[]
   description: string
-  organizer: string
   // Metadatos para acciones contextuales
-  metadata?: {
-    activityId: string        // ID original de la actividad
-    activityType?: string     // Tipo de actividad (mantenimiento, capacitación, etc.)
-    activityStatus: string    // Estado actual (pendiente, en proceso, completado)
-    solicitId: string         // ID de la solicitud
-    solicitStatus: string     // Estado de la solicitud
-    curriculumId?: string     // ID del equipo/curriculum
-    priority: boolean         // Si es prioritario
+  metadata: {
+    lastResumedAt: Date | null           // Fecha y hora de la última pausa
+    isActive: boolean                    // Si la actividad está activa
+    priority: boolean                    // Si es prioritario
+    solicit: Solicit                     // Solicitud en contexto
+    activityId: string                   // ID original de la actividad
+    curriculumId?: string                // ID del equipo/curriculum para quien se asigna la actividad
+    activityStatus: Activity['status']   // Estado actual (pendiente, en proceso, completado)
   }
 }
 

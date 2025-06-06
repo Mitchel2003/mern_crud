@@ -3,7 +3,6 @@ import { BaseMDB, FileReference } from "@/interfaces/db.interface"
 import { QueryOptions } from "@/interfaces/hook.interface"
 /*--------------------------------------------------ThemeContext--------------------------------------------------*/
 export type Theme = 'light' | 'dark'
-
 export type ThemeContext = {
   toggleTheme: () => void
   theme: Theme
@@ -115,9 +114,9 @@ export type SupplierHeadquarter = BaseMDB & { headquarter: string, supplier: Sup
 export type Schedule = BaseMDB & {
   typeClassification: 'biomédico' | 'red de frio' | 'equipo computo'
   type: 'capacitación' | 'mantenimiento' | 'acta de asistencia'
+  client: User
   name: string
   url: string
-  client: User
 }
 
 export type Activity = BaseMDB & {
@@ -125,16 +124,18 @@ export type Activity = BaseMDB & {
   dateAssignment: Date
   collaborator: User
   solicit: Solicit
+  isActive: boolean
+  timeSpent?: number
+  lastResumedAt?: Date
 }
 export type Solicit = BaseMDB & {
   status: 'pendiente' | 'asignado' | 'cerrado'
+  curriculum: Curriculum
   photoUrl?: string
   priority: boolean
   message: string
-  curriculum: Curriculum
 }
 export type Maintenance = BaseMDB & {
-  //timestandard
   dateNextMaintenance?: Date
   dateMaintenance: Date
 
