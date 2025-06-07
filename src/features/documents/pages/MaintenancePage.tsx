@@ -21,9 +21,17 @@ const MaintenancePage = () => {
   const { id } = useParams()
 
   const isHistory = location.pathname.includes('history')
-  const table = createTheme({ palette: { mode: theme } }) //theme table
-  const { tab, isQuery, handle } = useTabs({ id, to: route }) //handle tabs
-  const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
+  const table = createTheme({ palette: { mode: theme } })
+
+  /* ------------------------------------------------------------------
+   * Detect when the encoded param corresponds to a curriculum context.
+   * we want the UI to open directly on the FORM tab instead of the table
+   * ------------------------------------------------------------------ */
+  const isEncoded = id ? id.startsWith('%7B') || id.startsWith('{') : false
+  const params = isEncoded ? JSON.parse(decodeURIComponent(id!)) : null
+  const startOn = params?.curriculumId ? 'form' : undefined //to form 
+
+  const { tab, isQuery, handle } = useTabs({ id, to: route, startOn })
   const userAllowed = user?.role === 'company' || user?.role === 'collaborator'
   return (
     <Suspense fallback={<Skeleton theme={theme} />}>
@@ -59,11 +67,11 @@ const MaintenancePage = () => {
 
             {/* tabs content */}
             <TabsContent value="table">
-              <TableMaintenanceSection theme={theme} onChange={() => handle('form')} credentials={user!} params={params} isHistory={isHistory} />
+              <TableMaintenanceSection theme={theme} credentials={user!} isHistory={isHistory} params={isQuery ? params : null} onChange={() => handle('form')} />
             </TabsContent>
             <TabsContent value="form">
               <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
-                <FormMaintenanceSection id={id} theme={theme} onChange={() => handle('table')} />
+                <FormMaintenanceSection id={id} theme={theme} onChange={() => handle('table')} autocomplete={params?.curriculumId} />
               </Card>
             </TabsContent>
           </Tabs>

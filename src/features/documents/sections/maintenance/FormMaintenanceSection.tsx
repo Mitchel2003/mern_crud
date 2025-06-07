@@ -16,15 +16,17 @@ import ReferenceSection from "./ReferenceSection"
 interface FormMaintenanceSectionProps extends ThemeContextProps {
   footer?: React.ComponentType<FooterFormProps>
   id: string | undefined
+  autocomplete?: string
   onChange: () => void
 }
 
-const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMaintenanceSectionProps) => {
-  const { open, methods, referenceData, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(id, onChange)
+const FormMaintenanceSection = ({ id, theme, autocomplete, onChange, footer: Footer }: FormMaintenanceSectionProps) => {
+  const mt: string | undefined = autocomplete ? undefined : id //helps to avoid overriding when editing maintenance
+  const { open, methods, referenceData, setOpen, onConfirm, handleSubmit } = useMaintenanceForm(mt, onChange)
 
   const formSections = useMemo(() => [
-    <ReferenceSection key="reference" theme={theme} id={!!id} options={referenceData} />,
-    <ObservationSection key="observation" theme={theme} id={!!id} />
+    <ReferenceSection key="reference" theme={theme} id={!!mt} options={referenceData} autocomplete={autocomplete} />,
+    <ObservationSection key="observation" theme={theme} id={!!mt} />
   ], [referenceData])
 
   return (
@@ -34,8 +36,8 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
           {/* -------------------- Header form -------------------- */}
           <HeaderForm
             theme={theme}
-            title={id ? "Edición mantenimiento de equipo" : "Registro mantenimiento de equipo"}
-            description={id ? "Actualiza los datos del mantenimiento de equipo" : "Diligencia la información para registrar una mantenimiento de equipo"}
+            title={mt ? "Edición mantenimiento de equipo" : "Registro mantenimiento de equipo"}
+            description={mt ? "Actualiza los datos del mantenimiento de equipo" : "Diligencia la información para registrar una mantenimiento de equipo"}
             breadcrumbs={[
               { description: "Codigo: FHV-01" },
               { description: "Vigente desde: 01/08/2019" },
@@ -72,7 +74,7 @@ const FormMaintenanceSection = ({ id, theme, onChange, footer: Footer }: FormMai
         theme={theme}
         onConfirm={onConfirm}
         onOpenChange={() => setOpen(false)}
-        description={`¿Estás seguro? ${id ? "Se guardará los cambios" : "Se creará un nuevo mantenimiento"}`}
+        description={`¿Estás seguro? ${mt ? "Se guardará los cambios" : "Se creará un nuevo mantenimiento"}`}
         confirmLabel="Confirmar"
         cancelLabel="Cancelar"
         title="Confirmación"

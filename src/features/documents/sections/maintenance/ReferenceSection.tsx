@@ -11,15 +11,17 @@ import InputField from "#/common/fields/Input"
 import { Separator } from "#/ui/separator"
 import { Button } from "#/ui/button"
 import { Badge } from "#/ui/badge"
+import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 interface ReferenceProps extends ThemeContextProps {
   options: { clients: User[], offices: Office[], curriculums: Curriculum[], headquarters: Headquarter[] }
+  autocomplete?: string
   id: boolean
 }
 
-const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
-  const { watch } = useFormContext()
+const ReferenceSection = ({ id, theme, options, autocomplete }: ReferenceProps) => {
+  const { watch, setValue } = useFormContext()
   const hqId = watch('headquarter')
   const clientId = watch('client')
   const officeId = watch('office')
@@ -27,10 +29,25 @@ const ReferenceSection = ({ id, theme, options }: ReferenceProps) => {
 
   //fetch on the component instead of hooks: by reactive find image of equipment selected
   const { data: img } = useQueryFormat().fetchAllFiles<Metadata>({ path: `files/${cvId}/preview`, enabled: !!cvId })
-  const headquarters = id ? options.headquarters : options.headquarters?.filter(head => head.client?._id === clientId)
-  const curriculums = id ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)
-  const offices = id ? options.offices : options.offices?.filter(office => office.headquarter?._id === hqId)
+  const headquarters = (id || autocomplete) ? options.headquarters : options.headquarters?.filter(head => head.client?._id === clientId)
+  const curriculums = (id || autocomplete) ? options.curriculums : options.curriculums?.filter(cv => cv.office?._id === officeId)
+  const offices = (id || autocomplete) ? options.offices : options.offices?.filter(office => office.headquarter?._id === hqId)
   const selectedCv = curriculums?.find(cv => cv._id === cvId)
+
+  useEffect(() => {
+    if ((!headquarters || !curriculums || !offices) || !autocomplete) return
+    const cv = options.curriculums?.find(cv => cv._id === autocomplete)
+    if (!cv || id) return //if there is no cv or is editing, do nothing
+
+    const office = cv.office?._id
+    const headquarter = cv.office?.headquarter?._id
+    const client = cv.office?.headquarter?.client?._id
+    client && setValue('client', client) //set client
+    headquarter && setValue('headquarter', headquarter)
+    office && setValue('office', office) //also set office
+    setValue('curriculum', cv._id) //finaly use autocomplete
+  }, [autocomplete, options.curriculums, id])
+
   return (
     <div className="space-y-6">
       {/* -------------------- Selects -------------------- */}

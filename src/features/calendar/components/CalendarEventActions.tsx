@@ -1,8 +1,10 @@
+import { CheckCircle, Clock, Play, PlayIcon, PauseIcon, SquareActivity } from 'lucide-react'
 import DetailsSolicitDrawer from '@/features/calendar/components/DetailsSolicitDrawer'
 import { useCalendarEvents } from '@/features/calendar/hooks/useCalendarEvents'
-import { CheckCircle, Clock, Play, PlayIcon, PauseIcon } from 'lucide-react'
 import { ThemeContextProps } from '@/interfaces/context.interface'
 import { Event } from '@/interfaces/props.interface'
+import { encodeQueryParams } from "@/lib/query"
+import { useNavigate } from "react-router-dom"
 import { CardContent } from '#/ui/card'
 import { Button } from '#/ui/button'
 import { useState } from 'react'
@@ -36,8 +38,9 @@ export const CalendarEventActions = ({ theme, event, onClose }: EventActionsProp
         )}
 
         <ActionButton
+          event={event}
           isActive={isActive}
-          activityStatus={activityStatus}
+          status={activityStatus}
           startActivity={startActivity}
           pauseActivity={pauseActivity}
           resumeActivity={resumeActivity}
@@ -65,13 +68,15 @@ interface ActionButtonProps {
   resumeActivity: () => Promise<void>
   pauseActivity: () => Promise<void>
   startActivity: () => Promise<void>
-  activityStatus: string
   isActive: boolean
+  status: string
+  event: Event
 }
 
 /** Renderiza los botones según el estado de la actividad */
-const ActionButton = ({ activityStatus, isActive, startActivity, pauseActivity, resumeActivity, completeActivity }: ActionButtonProps) => {
-  switch (activityStatus) {
+const ActionButton = ({ event, status, isActive, startActivity, pauseActivity, resumeActivity, completeActivity }: ActionButtonProps) => {
+  const navigate = useNavigate()
+  switch (status) {
     case 'pendiente':
       return (
         <Button variant="default" onClick={startActivity} className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white">
@@ -82,14 +87,19 @@ const ActionButton = ({ activityStatus, isActive, startActivity, pauseActivity, 
     case 'en proceso':
       return (
         <>
-          <Button
-            variant={isActive ? 'destructive' : 'warning'}
-            onClick={isActive ? pauseActivity : resumeActivity}
-            className="w-full justify-start"
-          >
+          {/* Boton de mantenimiento */}
+          <Button variant="secondary" className="w-full justify-start" onClick={() => navigate(`/form/maintenance/${encodeQueryParams({ curriculumId: event.metadata?.curriculumId })}`)}>
+            <SquareActivity className="h-5 w-5" />
+            Realizar mantenimiento
+          </Button>
+
+          {/* Botones de pausa y continuar */}
+          <Button variant={isActive ? 'destructive' : 'warning'} className="w-full justify-start" onClick={isActive ? pauseActivity : resumeActivity}>
             {isActive ? <PauseIcon /> : <PlayIcon />}
             {isActive ? 'Pausar actividad' : 'Continuar actividad'}
           </Button>
+
+          {/* Boton de completar actividad */}
           <Button variant="success" className="w-full justify-start" onClick={completeActivity}>
             <CheckCircle className="h-5 w-5" />
             Marcar como completada
