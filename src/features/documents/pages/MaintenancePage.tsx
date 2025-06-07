@@ -31,6 +31,7 @@ const MaintenancePage = () => {
   const params = isEncoded ? JSON.parse(decodeURIComponent(id!)) : null
   const startOn = params?.curriculumId ? 'form' : undefined //to form 
 
+  /** handle tabs behavior, support encoded params to table */
   const { tab, isQuery, handle } = useTabs({ id, to: route, startOn })
   const userAllowed = user?.role === 'company' || user?.role === 'collaborator'
   return (

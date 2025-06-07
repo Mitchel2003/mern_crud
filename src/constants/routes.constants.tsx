@@ -1,4 +1,4 @@
-import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, Users, UserSquare, UserCircle2 } from 'lucide-react'
+import { LocateFixedIcon, TerminalSquare, FileTextIcon, FilesIcon, UserPlus, MapPin, LogIn, Info, Flag, Home, WrenchIcon, LucideMap, GitPullRequestArrowIcon, Users, UserSquare, UserCircle2, FileClock } from 'lucide-react'
 import { PermMedia, SwitchAccount, Dashboard, SupervisorAccount, Badge, WorkHistory, MoveToInbox, Devices, HomeRepairService, ManageSearch } from '@mui/icons-material'
 import { NavItemProps } from '@/interfaces/props.interface'
 import { RoleProps } from '@/interfaces/context.interface'
@@ -280,6 +280,11 @@ export const links = (): NavItemProps[] => {
       href: '/form/maintenance-history',
       label: 'Historial mantenimientos',
     },
+    {/** solicits history */
+      icon: FileClock,
+      href: '/form/solicit-history',
+      label: 'Historial solicitudes',
+    },
     {/** cronogramas */
       icon: WorkHistory,
       href: '/form/schedule',
@@ -334,6 +339,11 @@ export const links = (): NavItemProps[] => {
       icon: ManageSearch,
       href: '/form/maintenance-history',
       label: 'Historial mantenimientos',
+    },
+    {/** solicits history */
+      icon: FileClock,
+      href: '/form/solicit-history',
+      label: 'Historial solicitudes',
     },
     {/** cronogramas */
       icon: WorkHistory,

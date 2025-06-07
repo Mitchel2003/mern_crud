@@ -24,6 +24,7 @@ import { useMemo, useState } from "react"
 interface TableSolicitSectionProps extends ThemeContextProps {
   params?: { status?: string, createdAt?: string } | null
   onChange: () => void
+  isHistory?: boolean
 }
 
 /**
@@ -32,14 +33,16 @@ interface TableSolicitSectionProps extends ThemeContextProps {
  * @param onChange - Funcion setTab que permite cambiar entre las pestañas tabs
  * @returns react-query table con las solicitudes, posee una configuracion de columnas y un dropdown de acciones
  */
-const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
+const TableSolicitSection = ({ theme, params, isHistory }: TableSolicitSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
   const { methods, collaborators, open, setOpen, onConfirm, handleSubmit } = useActivityForm(() => setShowDialog(false))
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [solicit, setSolicit] = useState<Solicit | null>(null)
-  const { solicits, handleDelete } = useSolicitTable()
+  const { solicits: slts, handleDelete } = useSolicitTable()
   const isMobile = useIsMobile()
   const navigate = useNavigate()
+
+  const solicits = useMemo(() => (slts.filter(s => isHistory ? s.status === 'cerrado' : s.status !== 'cerrado')), [isHistory, slts])
 
   /** Dynamically filter available collaborators based on permissions */
   const collaboratorsFormat = useMemo(() => { //to form activity (sort)
@@ -52,7 +55,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
   const stats: Stat[] = [{
     color: 'info',
     icon: BarChart2,
-    href: `/form/solicit`,
+    href: `/form/${isHistory ? 'solicit-history' : 'solicit'}`,
     value: solicits?.length || 0,
     title: `Total de solicitudes`,
   }, {
@@ -60,7 +63,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
     icon: AlertCircle,
     title: 'Pendientes',
     value: solicits?.filter(s => s?.status === 'pendiente').length || 0,
-    href: `/form/solicit/${encodeQueryParams({ status: 'pendiente' })}`,
+    href: `/form/${isHistory ? 'solicit-history' : 'solicit'}/${encodeQueryParams({ status: 'pendiente' })}`,
   }]
 
   /** Config table columns */
@@ -403,7 +406,7 @@ const TableSolicitSection = ({ theme, params }: TableSolicitSectionProps) => {
           stats={stats}
           icon={Campaign}
           variant="gradient"
-          title="Solicitudes"
+          title={`${!isMobile && isHistory ? 'Historial de' : ''} Solicitudes`}
           badge={!isMobile ? { text: "Sistema Activo", variant: "success", dot: true } : undefined}
         />
         <MaterialReactTable table={table} />

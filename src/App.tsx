@@ -49,6 +49,8 @@ function App() {
                     <Route path="/form/solicit" element={<Render.SolicitPage />} />
                     <Route path="/form/solicits" element={<Render.SolicitPage />} />
                     <Route path="/form/solicit/:id" element={<Render.SolicitPage />} />
+                    <Route path="/form/solicit-history" element={<Render.SolicitPage />} />
+                    <Route path="/form/solicit-history/:id" element={<Render.SolicitPage />} />
 
                     <Route path="/form/schedule" element={<Render.SchedulePage />} />
                     <Route path="/form/schedules" element={<Render.SchedulePage />} />

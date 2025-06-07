@@ -4,11 +4,11 @@ import { createTheme, ThemeProvider } from "@mui/material"
 import { useThemeContext } from "@/context/ThemeContext"
 import Skeleton from "#/common/skeletons/SkeletonLarge"
 import { useAuthContext } from "@/context/AuthContext"
-import { useParams } from "react-router-dom"
 import { Suspense } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/ui/tabs'
 import { PlusCircle, TableProperties } from 'lucide-react'
+import { useParams, useLocation } from "react-router-dom"
 import { useTabs } from '@/hooks/core/useTabs'
 import { Card } from '#/ui/card'
 import { cn } from '@/lib/utils'
@@ -17,10 +17,14 @@ const route = '/form/solicit'
 const SolicitPage = () => {
   const { theme } = useThemeContext()
   const { user } = useAuthContext()
+  const location = useLocation()
   const { id } = useParams()
 
+  const isHistory = location.pathname.includes('history')
   const startOn = user?.role === 'client' ? 'form' : 'table'
-  const table = createTheme({ palette: { mode: theme } }) //theme table
+  const table = createTheme({ palette: { mode: theme } })
+
+  /** handle tabs behavior, support encoded params to table */
   const { tab, isQuery, handle } = useTabs({ id, to: route, startOn })
   const params = id && isQuery ? JSON.parse(decodeURIComponent(id)) : null
   const userAllowed = user?.role === 'admin'
@@ -31,6 +35,7 @@ const SolicitPage = () => {
           <Tabs value={tab} onValueChange={handle}>
             {/* Local action tabs */}
             <TabsList className={cn(
+              isHistory && 'hidden',
               !userAllowed && 'hidden',
               "bg-muted/60 backdrop-blur transition-all",
               "supports-[backdrop-filter]:bg-background/60"
@@ -57,7 +62,7 @@ const SolicitPage = () => {
 
             {/* tabs content */}
             <TabsContent value="table">
-              <TableSolicitSection theme={theme} onChange={() => handle('form')} params={params} />
+              <TableSolicitSection theme={theme} isHistory={isHistory} params={params} onChange={() => handle('form')} />
             </TabsContent>
             <TabsContent value="form">
               <Card className={cn('relative w-full', theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
