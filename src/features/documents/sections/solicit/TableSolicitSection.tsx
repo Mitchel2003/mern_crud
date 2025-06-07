@@ -37,21 +37,21 @@ interface TableSolicitSectionProps extends ThemeContextProps {
  */
 const TableSolicitSection = ({ theme, params, isHistory }: TableSolicitSectionProps) => {
   const { show, setShow, handleConfirm, confirmAction, title, description, isDestructive } = useDialogConfirm()
-  const { methods, collaborators, open, setOpen, onConfirm, handleSubmit } = useActivityForm(() => setShowDialog(false))
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [solicit, setSolicit] = useState<Solicit | null>(null)
   const { solicits: slts, handleDelete } = useSolicitTable()
   const isMobile = useIsMobile()
   const navigate = useNavigate()
 
+  const clientId = useMemo(() => solicit?.curriculum.office.headquarter.client?._id || null, [solicit])
   const solicits = useMemo(() => (slts.filter(s => isHistory ? s.status === 'cerrado' : s.status !== 'cerrado')), [isHistory, slts])
+  const { methods, collaborators, open, setOpen, onConfirm, handleSubmit } = useActivityForm(clientId, () => setShowDialog(false))
 
   /** Dynamically filter available collaborators based on permissions */
-  const collaboratorsFormat = useMemo(() => { //to form activity (sort)
-    if (!solicit) return [] //avoid continue if no solicit in context
-    const clientId = solicit.curriculum.office.headquarter.client._id
+  const collaboratorsFormat = useMemo(() => { //to form activity (filter)
+    if (!clientId) return [] //avoid continue without client id, important to form activity
     return collaborators?.filter(col => col.permissions?.includes(clientId)).map(({ label, value, icon }) => ({ label, value, icon })) || []
-  }, [collaborators, solicit])
+  }, [collaborators, clientId])
 
   /** Header stats */
   const stats: Stat[] = [{

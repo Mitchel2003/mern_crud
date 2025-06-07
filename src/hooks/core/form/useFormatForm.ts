@@ -113,7 +113,7 @@ export const useScheduleForm = (onSuccess?: () => void) => {
 
 /*--------------------------------------------------activity form--------------------------------------------------*/
 /** Hook personalizado para manejar el formulario de creación de actividades */
-export const useActivityForm = (onSuccess?: () => void) => {
+export const useActivityForm = (client: string | null, onSuccess?: () => void) => {
   const { createFormat: createActivity } = useFormatMutation('activity')
   const { updateFormat: updateSolicit } = useFormatMutation('solicit')
   const { createNotification } = useNotificationContext()
@@ -138,8 +138,8 @@ export const useActivityForm = (onSuccess?: () => void) => {
     onSubmit: async (e: ActivityFormProps) => {
       if (user?.role !== 'company') return notifyError({ message: 'No tienes permiso para crear actividades' })
       await createActivity({ ...e, status: 'pendiente' }).then(async () => {
-        const title = `Nueva actividad - ${user?.username}`
         const body = `Revisa tu bandeja de entradas`
+        const title = `Nueva actividad - ${user?.username}`
         await sendNotification({ id: e.collaborator, title, body })
         await createNotification({ //notification inbox with redirect
           recipient: e.collaborator, sender: user?._id,
@@ -147,6 +147,11 @@ export const useActivityForm = (onSuccess?: () => void) => {
           url: `${baseFrontendUrl}/calendar`,
         }) //Update solicit status to assigned, after creating activity
         await updateSolicit({ id: e.solicit, data: { status: 'asignado' } })
+        client && await sendNotification({//alert to client with message
+          body: `Será atendida por ${user?.username}`,
+          title: 'Tu solicitud ha sido asignada',
+          id: client,
+        })
       })
       methods.reset()
     },
