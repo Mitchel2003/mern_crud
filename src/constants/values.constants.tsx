@@ -181,8 +181,10 @@ export const solicitDefaultValues: SolicitFormProps = {
   photoUrl: [],
 }
 export const activityDefaultValues: ActivityFormProps = {
+  timeHours: { start: '08:00', end: '17:00' },
   dateAssignment: undefined,
   collaborator: '',
+  description: '',
   solicit: '',
 }
 export const scheduleDefaultValues: ScheduleFormProps = {

@@ -121,12 +121,18 @@ export type Schedule = BaseMDB & {
 
 export type Activity = BaseMDB & {
   status: 'pendiente' | 'en proceso' | 'completado'
+  timeHours: { start: string; end: string }
   dateAssignment: Date
-  collaborator: User
-  solicit: Solicit
+  description: string
+
+  //state active
   isActive: boolean
   timeSpent?: number
   lastResumedAt?: Date
+
+  //references
+  solicit: Solicit
+  collaborator: User
 }
 export type Solicit = BaseMDB & {
   status: 'pendiente' | 'asignado' | 'cerrado'

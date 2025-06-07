@@ -5,8 +5,10 @@ import { PageHeader, Stat } from "#/common/elements/HeaderPage"
 import AlertDialog from "#/common/elements/AlertDialog"
 import { Campaign, Delete } from "@mui/icons-material"
 import DialogSubmit from '#/common/elements/Dialog'
+import TimeRange from "#/common/fields/TimeRange"
 import SelectField from "#/common/fields/Select"
 import InputField from "#/common/fields/Input"
+import AreaField from "#/common/fields/Area"
 import DateField from "#/common/fields/Date"
 
 import { useDialogConfirmContext as useDialogConfirm } from "@/context/DialogConfirmContext"
@@ -467,6 +469,16 @@ const fields = ({ solicit, collaborators, theme }: Props): DialogField[] => [{
     />
   )
 }, {
+  name: "timeHours",
+  component: (
+    <TimeRange
+      theme={theme}
+      name="timeHours"
+      label="Selecciona el rango de horas de la visita"
+      defaultValue={{ start: "08:00", end: "17:00" }}
+    />
+  )
+}, {
   name: "dateAssignment",
   component: (
     <DateField
@@ -485,6 +497,16 @@ const fields = ({ solicit, collaborators, theme }: Props): DialogField[] => [{
       label="Colaborador"
       options={collaborators}
       placeholder={`Selecciona el colaborador encargado`}
+    />
+  )
+}, {
+  name: "description",
+  component: (
+    <AreaField
+      theme={theme}
+      name="description"
+      label="Descripción"
+      placeholder="Ingrese la descripción"
     />
   )
 }]

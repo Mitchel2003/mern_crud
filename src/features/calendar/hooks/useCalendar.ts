@@ -146,16 +146,16 @@ export function useCalendar(): CalendarHookResult {
   const calculateEventStyle = useCallback((startTime: string, endTime: string) => {
     const startHour = parseInt(startTime.split(":")[0])
     const endHour = parseInt(endTime.split(":")[0])
-    const top = `${(startHour - 8) * 60 + parseInt(startTime.split(":")[1])}px`
+    const top = `${(startHour - 6) * 60 + parseInt(startTime.split(":")[1])}px`
     const height = `${(endHour - startHour) * 60 - parseInt(startTime.split(":")[1]) + parseInt(endTime.split(":")[1])}px`
     return { top, height }
   }, [])
 
   // Calcular los días y slots
   const weekDays = getWeekDays()
-  const miniCalendarInfo = getMiniCalendarDays()
   const monthDays = getMonthDays()
-  const timeSlots = Array.from({ length: 9 }, (_, i) => i + 8) // 8 AM to 4 PM
+  const miniCalendarInfo = getMiniCalendarDays()
+  const timeSlots = Array.from({ length: 15 }, (_, i) => i + 6) // 6 to 20 hours
 
   return {
     selectedEvent,

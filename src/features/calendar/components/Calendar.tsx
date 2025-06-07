@@ -173,10 +173,10 @@ const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
                     </h3>
                   </div>
                   <div className="flex-1 overflow-y-auto">
-                    <div className="relative" style={{ height: "calc(9 * 60px)" }}>
+                    <div className="relative" style={{ height: "calc(15 * 60px)" }}>
                       {/* Líneas de hora */}
                       {timeSlots.map((hour) => (
-                        <div key={hour} style={{ top: `${(hour - 8) * 60}px` }} className="absolute w-full border-t border-zinc-200 dark:border-zinc-700 flex">
+                        <div key={hour} style={{ top: `${(hour - 6) * 60}px` }} className="absolute w-full border-t border-zinc-200 dark:border-zinc-700 flex">
                           <div className="w-16 pr-2 text-right text-xs text-zinc-500 dark:text-zinc-400">
                             {hour}:00
                           </div>
@@ -228,10 +228,10 @@ const CalendarUI = ({ theme, events, isLoading = false }: CalendarProps) => {
                     })}
                   </div>
                   <div className="flex-1 overflow-y-auto">
-                    <div className="relative" style={{ height: "calc(9 * 60px)" }}>
+                    <div className="relative" style={{ height: "calc(15 * 60px)" }}>
                       {/* Líneas de hora */}
                       {timeSlots.map((hour) => (
-                        <div key={hour} style={{ top: `${(hour - 8) * 60}px` }} className={cn("absolute w-full border-t border-zinc-200 dark:border-zinc-700 flex")}>
+                        <div key={hour} style={{ top: `${(hour - 6) * 60}px` }} className={cn("absolute w-full border-t border-zinc-200 dark:border-zinc-700 flex")}>
                           <div className={cn("w-16 pr-2 text-right text-xs text-zinc-500 dark:text-zinc-400")}>
                             {hour}:00
                           </div>

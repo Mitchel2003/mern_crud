@@ -1,5 +1,4 @@
 import { useCalendarActivities } from "@/features/calendar/hooks/useCalendarActivities"
-import TeamAvailabilitySection from "../sections/TeamAvailabilitySection"
 import UpcomingEventsSection from "../sections/UpcomingEventsSection"
 import HeaderCalendarSection from "../sections/HeaderCalendarSection"
 import Calendar from "@/features/calendar/components/Calendar"
@@ -19,7 +18,6 @@ const CalendarPage = () => {
         <HeaderCalendarSection theme={theme} credentials={credentials} />{/* Encabezado del Calendario */}
         <UpcomingEventsSection theme={theme} upcomingEvents={[]} />{/* Sección de Próximos Eventos */}
         <Calendar theme={theme} events={events} isLoading={isLoading} />{/* Componente adaptado */}
-        <TeamAvailabilitySection theme={theme} teamMembers={[]} />{/* Sección de users */}
       </motion.div>
     </main>
   )
