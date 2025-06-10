@@ -3,12 +3,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { NotificationProvider } from '@/context/NotificationContext'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useAuthContext } from '@/context/AuthContext'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import ScrollToTop from '@/hooks/ui/useScrollTop'
 import { Outlet } from 'react-router-dom'
 
 import { AnimatedBackground as AnimatedBG } from '#/layout/AnimatedBackground'
-import SubscriptionOverlay from '@/layouts/Suscription-Overlay'
 import { SidebarInset, SidebarProvider } from '#/ui/sidebar'
 import { LoadingScreen } from "#/ui/loading-screen"
 import { Sidebar } from '#/layout/Sidebar'
@@ -17,14 +16,11 @@ import Footer from '#/layout/Footer'
 import Navbar from '#/layout/Navbar'
 
 const RootLayout = () => {
-  const [subscriptionVisible, setSubscriptionVisible] = useState(false)
   const [openSidebar, setOpenSidebar] = useState(true)
   const { user, isAuth } = useAuthContext()
 
   const isExpanded = !isAuth || (user?.role === 'admin') //add (role === 'company')
   useMemo(() => setOpenSidebar(isExpanded), [isExpanded, isAuth]) //to handle sidebar
-
-  useEffect(() => { if (user?.role === 'company' || user?.role === 'collaborator') setSubscriptionVisible(true) }, [user])
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -39,7 +35,7 @@ const RootLayout = () => {
                 <AnimatedBG>
                   <Navbar />
                   <main className="z-10">
-                    {subscriptionVisible ? <SubscriptionOverlay visible={subscriptionVisible} /> : <Outlet />}
+                    <Outlet />
                   </main>
                   <Footer />
                 </AnimatedBG>
