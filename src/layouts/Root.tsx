@@ -3,8 +3,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { NotificationProvider } from '@/context/NotificationContext'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useAuthContext } from '@/context/AuthContext'
-import { useMemo, useState } from 'react'
 import ScrollToTop from '@/hooks/ui/useScrollTop'
+import { useMemo, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { AnimatedBackground as AnimatedBG } from '#/layout/AnimatedBackground'
@@ -19,7 +19,7 @@ const RootLayout = () => {
   const [openSidebar, setOpenSidebar] = useState(true)
   const { user, isAuth } = useAuthContext()
 
-  const isExpanded = !isAuth || (user?.role === 'admin') //add (role === 'company')
+  const isExpanded = !isAuth || (user?.role === 'admin' || user?.role === 'company')
   useMemo(() => setOpenSidebar(isExpanded), [isExpanded, isAuth]) //to handle sidebar
   return (
     <>
