@@ -55,10 +55,7 @@ export const deleteFile = async (path: string): Promise<void> => {
  */
 export const deleteFolder = async (path: string): Promise<void> => {
   try {
-    const filesResult = await storageService.getFilesWithMetadata(path)
-    if (!filesResult.success && filesResult.error.name !== 'NotFound') throw filesResult.error
-    if (!filesResult.success || filesResult.data.length === 0) return
     const result = await storageService.deleteFolder(path)
-    if (!result.success) throw result.error
+    if (!result.success) throw result.error //is ErrorAPI
   } catch (e) { throw e instanceof ErrorAPI ? e : new ErrorAPI(normalizeError(e, 'eliminar carpeta')) }
 }

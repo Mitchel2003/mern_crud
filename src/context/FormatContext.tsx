@@ -1,4 +1,4 @@
-import { uploadFile as upload, deleteFile as remove, getFiles } from "@/controllers/storage.controller"
+import { uploadFile as upload, deleteFile as removeFile, deleteFolder as removeFolder, getFiles } from "@/controllers/storage.controller"
 import { FormatContext, FormatType } from "@/interfaces/context.interface"
 import { useNotification } from "@/hooks/ui/useNotification"
 import { QueryOptions } from "@/interfaces/hook.interface"
@@ -138,7 +138,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los metadatos del archivo eliminado o undefined.
    */
   const deleteFile = async (data: FileReference): Promise<any> => {
-    try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-file')); return e }) }
+    try { return await removeFile(data.path).then((e) => { notifySuccess(txt('delete-file')); return e }) }
     catch (e) { notifyError(txt('delete-file', e)); return undefined }
   }
   /**
@@ -148,7 +148,7 @@ export const FormatProvider = ({ children }: Props): JSX.Element => {
    * @returns {Promise<any>} Los metadatos del archivo eliminado o undefined.
    */
   const deleteFolder = async (data: FileReference): Promise<any> => {
-    try { return await remove(data.path).then((e) => { notifySuccess(txt('delete-folder')); return e }) }
+    try { return await removeFolder(data.path).then((e) => { notifySuccess(txt('delete-folder')); return e }) }
     catch (e) { notifyError(txt('delete-folder', e)); return undefined }
   }
   /*---------------------------------------------------------------------------------------------------------*/
